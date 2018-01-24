@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 
-import { generateFilterEvents } from 'lib/mixpanel/eventGenerators/filters';
+import { generateFilterEvents } from 'visualizationCanvas/lib/mixpanel/eventGenerators/filters';
 
 // A few helpers to make test verifier data generation less tedious.
 const eventProps = (type, hidden) => ({

@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import GeospatialCell from 'components/TableCell/GeospatialCell';
+import GeospatialCell from 'datasetManagementUI/components/TableCell/GeospatialCell';
 import React from 'react';
 import { shallow } from 'enzyme';
 

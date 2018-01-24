@@ -1,4 +1,4 @@
-import { parseDate } from 'lib/parseDate';
+import { parseDate } from 'datasetManagementUI/lib/parseDate';
 
 export const EDIT_OUTPUT_SCHEMA = 'EDIT_OUTPUT_SCHEMA';
 export function editOutputSchema(id, payload) {

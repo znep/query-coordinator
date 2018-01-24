@@ -1,14 +1,14 @@
 import uuid from 'uuid';
 import _ from 'lodash';
-import { parseDate } from 'lib/parseDate';
+import { parseDate } from 'datasetManagementUI/lib/parseDate';
 import {
   apiCallStarted,
   apiCallSucceeded,
   apiCallFailed,
   UPDATE_REVISION
-} from 'reduxStuff/actions/apiCalls';
-import * as dsmapiLinks from 'links/dsmapiLinks';
-import { socrataFetch, checkStatus, getJson } from 'lib/http';
+} from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import * as dsmapiLinks from 'datasetManagementUI/links/dsmapiLinks';
+import { socrataFetch, checkStatus, getJson } from 'datasetManagementUI/lib/http';
 
 export const EDIT_REVISION = 'EDIT_REVISION';
 export const SET_REVISION_VALUE = 'SET_REVISION_VALUE';

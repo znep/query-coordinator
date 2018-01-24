@@ -47,6 +47,7 @@ en:
         insufficent_view_permission: You do not have permission to view this page.
         offset_too_large: Sorry, we do not support paging over a large set of results. You should try filtering down the result set first.
       filters:
+        awaiting_approval: Awaiting approval
         clear: Clear All Filters
         asset_types:
           label: Asset Types
@@ -276,11 +277,16 @@ en:
           edit_prompt_message: Edit the source file for this dataset.
           title: Download this Resource
       asset_action_bar:
+        confirmation:
+          agree: OK
+          cancel: Cancel
         manage_access: Manage Collaborators
         publication_action:
           change_audience: Change Audience
           delete_dataset: Delete this Dataset
+          delete_dataset_confirm: Are you sure you want to delete this dataset?
           discard_draft: Delete this Draft
+          discard_draft_confirm: Are you sure you want to delete this draft?
           draft:
             primary_action_text: Publish
           pending:
@@ -289,7 +295,9 @@ en:
             creating_working_copy: Creating Working Copy...
             primary_action_text: Edit
           revert_published: Revert to last published version
+          transfer_ownership: Transfer Ownership
           view_published: View published version
+          withdraw_approval_request: Withdraw Approval Request
         publication_state:
           draft: Draft
           pending: Pending
@@ -298,6 +306,26 @@ en:
         open_color_picker: Open Color Picker
         pickable_color: Pickable color
         with_currently_selected_color: with currently selected color
+      export:
+        action_buttons:
+          download: Download
+          export: Export
+        csv_for_excel: CSV for Excel
+        csv_for_excel_europe: CSV for Excel (Europe)
+        csv_without_geo: CSV (without geospatial data)
+        flannel_title: Download %{dataset_title}
+        flannel_description: Download %{dataset_title} for offline use in other applications.
+        flannel_additional_links_title: Additional Formats
+        json_without_geo: JSON (without geospatial data)
+        original: Original
+        shapefile: Shapefile
+        tsv_for_excel: TSV for Excel
+        all_data: All Data
+        filtered_data: Filtered Data
+        not_available: N/A
+        row:
+          one: row
+          other: rows
       filter_bar:
         add_filter: Add Filter
         apply: Apply
@@ -405,6 +433,13 @@ en:
           delete: Delete
           validate: Validate
           create: Save
+    pager:
+      of: of
+      invalid_page_error: Invalid page number. Please enter a value between {first} and {last}.
+      last_page: Last page
+      next_page: Next page
+      page: Page
+      previous_page: Previous page
     site_chrome:
       access_manager:
         accept: OK
@@ -416,7 +451,7 @@ en:
         add: Add
         audience:
           organization:
-            subtitle: Everyone in my Organization can view and edit
+            subtitle: Everyone in my Organization can view
             title: Organization
           private:
             subtitle: Only specific people in my Organization can view and edit
@@ -428,17 +463,29 @@ en:
         change: Change
         change_owner:
           subtitle: The owner will appear on this asset's Primer page and have the ability to delete this asset.
+          success_toast: Ownership transferred!
           title: Transfer Ownership
-        change_scope:
-          subtitle: Who can see this dataset?
+        change_audience:
+          subtitle: Who can see this asset?
+          success_toast: Audience updated!
           title: Change Audience Scope
         current_owner: Current Owner
+        manage_collaborators:
+          subtitle: Add people to collaborate on the draft version of this asset
+          success_toast: Collaborators updated!
+          title: Add Collaborators
         new_owner: New Owner
+        no_collaborators: No collaborators have been added yet. Add some below.
         no_results: No results found. Try again or enter a full email address.
         owner: Owner
         people: People
         permissions_saved: Permissions saved!
         please_select: Please select a user to transfer ownership to
+        publish:
+          subtitle: Choose who to publish this dataset to
+          success_toast: Asset published!
+          title: Publish Asset
+        publish_button: Publish
         save: Save
         summary:
           subtitle: Who can see this dataset?
@@ -698,13 +745,24 @@ en:
         warning: This is a PREVIEW version of your site.
     visualizations:
       aggregations:
+        avg: Avg
         count: Count
+        max: Max
+        median: Median
+        min: Min
         none: None
         sum: Sum
       base_layers:
         esri: Esri
         simple_blue: Simple Blue
         simple_grey: Simple Grey
+      base_map_styles:
+        basic: Basic
+        streets: Streets
+        bright: Bright
+        light: Light
+        dark: Dark
+        satellite: Satellite
       charts:
         bar_chart:
           error_exceeded_max_bar_count: For optimal performance and legibility bar charts are limited to {0} bars. Use filters to render a more specific chart.
@@ -965,10 +1023,13 @@ en:
             point_aggregation_options:
               none: None
               heat_map: Heat Map
+              region_map: Region Map
             point_map_options:
               resize_points_by_value: Resize Points by Value
               color_points_by_value: Color by Value
               no_value: None
+            region_map:
+              placeholder: Select custom boundary...
             region:
               groups:
                 ready_to_use: Ready To Use
@@ -1014,10 +1075,23 @@ en:
           uhoh: Uh oh!
         legends_and_flyouts:
           fields:
+            additional_flyout_values:
+              add_flyout_value: Add Flyout Value
+              no_value: None
+              remove_flyout_value: Remove Flyout Value
+              select_column: Select Column...
             row_inspector_title:
               no_value: No Point Inspector Title
-            show_legends:
-              title: Show Legends
+            show_legend:
+              title: Show Legend
+            show_legend_opened:
+              title: Show Legend Open by Default
+            maps_flyout_title:
+              no_value: None
+              title: Flyout Title
+            placeholders:
+              point: point
+              points: points
             units_one:
               placeholder: Row
               title: Singular
@@ -1026,16 +1100,46 @@ en:
               title: Plural
             sum_aggregation_unit: Total
           subheaders:
+            additional_flyout_values: Additional Flyout Values
             legends:
               title: Legends
             row_inspector_title: Point Inspector Title
+            maps_flyout_details_title: Flyout Details
             flyout_units:
               description: Unit label displayed in flyouts describing chart values.
+              description_for_maps: Unit label displayed in flyouts describing multiple points in a location.
               title: Flyout Unit Label
             flyout_details:
               title: Flyout Details
           title: Legends and Flyouts
         nothing_here: There's nothing to configure in this pane yet!
+        basemap:
+          fields:
+            base_map_style:
+              title: Type
+            base_map_opacity:
+              title: Opacity
+            geo_coder_control:
+              title: Show Search Bar
+            geo_locate_control:
+              title: Show Locate Button
+            lower_right_latitude:
+              title: Lower Right Latitude
+            lower_right_longitude:
+              title: Lower Right Longitude
+            navigation_control:
+              title: Show Navigation Buttons
+            search_boundary:
+              description: Shift, click and drag on the map area to select a new search boundary.
+            upper_left_latitude:
+              title: Upper Left Latitude
+            upper_left_longitude:
+              title: Upper Left Longitude
+          subheaders:
+            base_map: Basemap
+            map_controls: Map Controls
+            search_boundary: Search Boundary
+          title: Basemap
         presentation:
           custom_color_palette_error: The custom color palette failed to load.
           fields:
@@ -1070,7 +1174,7 @@ en:
               minimum: Min
               maximum: Max
             max_cluster_size:
-              title: Max Cluster Size
+              title: Cluster Size
             point_color:
               title: Point Color
             point_opacity:
@@ -1106,6 +1210,7 @@ en:
               title: Top Axis Title
           subheaders:
             axis_titles: Axis Titles
+            base_map: Base Map
             colors: Color
             clusters: Clusters
             data_labels: Data Labels

@@ -1,10 +1,17 @@
 import _ from 'lodash';
 import uuid from 'uuid';
-import { socrataFetch, checkStatus, getJson } from 'lib/http';
-import { apiCallStarted, apiCallSucceeded, apiCallFailed, LOAD_ROWS } from 'reduxStuff/actions/apiCalls';
-import * as DisplayState from 'lib/displayState';
-import * as Selectors from 'selectors';
-import * as dsmapiLinks from 'links/dsmapiLinks';
+
+import { socrataFetch, checkStatus, getJson } from 'datasetManagementUI/lib/http';
+import {
+  apiCallStarted,
+  apiCallSucceeded,
+  apiCallFailed,
+  LOAD_ROWS
+} from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import { showFlashMessage } from 'datasetManagementUI/reduxStuff/actions/flashMessage';
+import * as DisplayState from 'datasetManagementUI/lib/displayState';
+import * as Selectors from 'datasetManagementUI/selectors';
+import * as dsmapiLinks from 'datasetManagementUI/links/dsmapiLinks';
 
 export const PAGE_SIZE = 50;
 export const LOAD_ROW_ERRORS_SUCCESS = 'LOAD_ROW_ERRORS_SUCCESS';
@@ -154,6 +161,9 @@ export function loadNormalPreview(apiCall) {
         dispatch(apiCallSucceeded(callId));
       })
       .catch(error => {
+        // Pretty weak-sauce, since needToLoadAnything will pretty much ensure
+        // this only happens once, but better than nothing.
+        dispatch(showFlashMessage('error', I18n.data_preview.parse_error));
         dispatch(apiCallFailed(callId, error));
       });
   };

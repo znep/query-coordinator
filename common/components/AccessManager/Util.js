@@ -1,6 +1,7 @@
 import isEmail from 'validator/lib/isEmail';
-import { DOMAIN_RIGHTS } from './Constants';
-import { fetchJsonWithDefaulHeaders } from '../../http';
+import { fetchJsonWithDefaulHeaders } from 'common/http';
+
+import { DOMAIN_RIGHTS, MODES } from './Constants';
 
 /**
  * Returns true is the "userList" already contains a user that has the
@@ -122,6 +123,26 @@ export const userAutocompleteUrl = (query, domain) => `/api/catalog/v1/users/aut
  * @param {string} assetUid UID (4x4) of asset to get/put permissions for
  */
 export const permissionsUrl = (assetUid) => `/api/views/${assetUid}/permissions`;
+
+/**
+ * Get the url to hit to publish an asset
+ * @param {string} assetUid UID (4x4) of asset to get/put permissions for
+ */
+export const publishUrl = (assetUid) => `/api/views/${assetUid}/publication.json`;
+
+/**
+ * Determines if, when saving, the asset should be published after changing
+ * its permissions.
+ * @param {string} mode Current mode of access manager
+ */
+export const shouldPublishOnSave = (mode) => mode === MODES.PUBLISH;
+
+/**
+ * Whather or not the "Confim" button in the footer should default to disabled
+ * when the access manager opens up with the given mode
+ * @param {string} mode Current mode of access manager
+ */
+export const confirmButtonDisabledByDefault = (mode) => mode === MODES.CHANGE_OWNER;
 
 /**
  * Returns a promise of a fetch call with the given url and options,

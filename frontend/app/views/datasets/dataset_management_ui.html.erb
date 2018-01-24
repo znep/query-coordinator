@@ -4,13 +4,8 @@
 <% end %>
 
 <% @site_chrome_admin_header_options = {size: 'small'} %>
-<% @suppress_site_chrome_header = render_site_admin_chrome? %>
 
-<%- if @suppress_site_chrome_header -%>
-<div id="app" class="no-chrome-header">
-<%- else -%>
 <div id="app">
-<%- end -%>
   <div id="initial-spinner-container">
     <span class="spinner-default spinner-large"></span>
   </div>
@@ -36,6 +31,6 @@
       customMetadataFieldsets: <%== get_dataset_management_ui_custom_metadata.to_json %>
     };
   </script>
-  <%= render :partial => 'templates/mixpanel_tracking_no_util' %>
-  <%= include_webpack_bundle 'dataset-management-ui/main.js' %>
+
+  <%= include_webpack_bundle 'shared/datasetManagementUI' %>
 <% end %>

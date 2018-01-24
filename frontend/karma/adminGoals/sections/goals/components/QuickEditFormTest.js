@@ -4,7 +4,7 @@ import Immutable from 'immutable';
 import translations from 'mockTranslations';
 import mockGoalsByIds from '../../../data/cachedGoals';
 import mockDatasets from '../../../data/datasets';
-import QuickEditForm, { QuickEditFormComponent } from 'sections/goals/components/QuickEditForm/QuickEditForm';
+import QuickEditForm, { QuickEditFormComponent } from 'adminGoals/sections/goals/components/QuickEditForm/QuickEditForm';
 import { shallow } from 'enzyme';
 
 const mockGoals = Immutable.fromJS(mockGoalsByIds).valueSeq().toList().toJS();

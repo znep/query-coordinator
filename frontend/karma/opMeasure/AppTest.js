@@ -1,44 +1,37 @@
 import { assert } from 'chai';
-import App from 'App';
+import { shallow } from 'enzyme';
 
-import { ModeStates } from 'lib/constants';
-
-import { getStore } from './testStore';
+import { App } from 'opMeasure/App';
+import EditBar from 'opMeasure/components/EditBar';
+import PreviewBar from 'opMeasure/components/PreviewBar';
+import InfoPane from 'opMeasure/components/InfoPane';
+import { ModeStates } from 'opMeasure/lib/constants';
 
 describe('App', () => {
-  it('renders', () => {
-    const element = renderComponentWithStore(App);
-    assert.ok(element);
-  });
-
   describe('edit mode', () => {
     let element;
 
     beforeEach(() => {
-      const store = getStore({
-        view: {
-          mode: ModeStates.EDIT
-        }
-      });
-
-      element = renderComponentWithStore(App, {}, store);
+      element = shallow(<App mode={ModeStates.EDIT} activePane="summary" isEditing={false} />);
     });
 
     it('renders an edit bar', () => {
-      assert.ok(element.querySelector('.edit-bar'));
+      assert.lengthOf(element.find(EditBar), 1);
     });
 
     it('does not render a preview bar', () => {
-      assert.isNull(element.querySelector('.preview-bar'));
+      element.instance().componentDidMount();
+      assert.isFalse(element.find(PreviewBar).exists());
       assert.isNull(document.querySelector('.preview-mode'));
     });
 
     it('does not display site chrome', () => {
+      element.instance().componentDidMount();
       assert.ok(document.querySelector('.hide-site-chrome'));
     });
 
     it('renders an InfoPane', () => {
-      assert.ok(element.querySelector('.info-pane'));
+      assert.lengthOf(element.find(InfoPane), 1);
     });
 
     // TODO: make assertions about contents rendered into each tab + sidebar
@@ -48,30 +41,26 @@ describe('App', () => {
     let element;
 
     beforeEach(() => {
-      const store = getStore({
-        view: {
-          mode: ModeStates.PREVIEW
-        }
-      });
-
-      element = renderComponentWithStore(App, {}, store);
+      element = shallow(<App mode={ModeStates.PREVIEW} activePane="summary" isEditing={false} />);
     });
 
     it('does not render an edit bar', () => {
-      assert.isNull(element.querySelector('.edit-bar'));
+      assert.isFalse(element.find(EditBar).exists());
     });
 
     it('renders a preview bar', () => {
-      assert.ok(element.querySelector('.preview-bar'));
+      element.instance().componentDidMount();
+      assert.lengthOf(element.find(PreviewBar), 1);
       assert.ok(document.querySelector('.preview-mode'));
     });
 
     it('displays site chrome', () => {
+      element.instance().componentDidMount();
       assert.isNull(document.querySelector('.hide-site-chrome'));
     });
 
     it('renders an InfoPane', () => {
-      assert.ok(element.querySelector('.info-pane'));
+      assert.lengthOf(element.find(InfoPane), 1);
     });
 
     // TODO: make assertions about contents rendered into each tab + sidebar
@@ -81,30 +70,26 @@ describe('App', () => {
     let element;
 
     beforeEach(() => {
-      const store = getStore({
-        view: {
-          mode: ModeStates.VIEW
-        }
-      });
-
-      element = renderComponentWithStore(App, {}, store);
+      element = shallow(<App mode={ModeStates.VIEW} activePane="summary" isEditing={false} />);
     });
 
     it('does not render an edit bar', () => {
-      assert.isNull(element.querySelector('.edit-bar'));
+      assert.isFalse(element.find(EditBar).exists());
     });
 
     it('does not render a preview bar', () => {
-      assert.isNull(element.querySelector('.preview-bar'));
+      element.instance().componentDidMount();
+      assert.isFalse(element.find(PreviewBar).exists());
       assert.isNull(document.querySelector('.preview-mode'));
     });
 
     it('displays site chrome', () => {
+      element.instance().componentDidMount();
       assert.isNull(document.querySelector('.hide-site-chrome'));
     });
 
     it('renders an InfoPane', () => {
-      assert.ok(element.querySelector('.info-pane'));
+      assert.lengthOf(element.find(InfoPane), 1);
     });
 
     // TODO: make assertions about contents rendered into each tab + sidebar

@@ -1,21 +1,10 @@
-@import '../../common.module.scss';
+@import 'common/components/AccessManager/common.module.scss';
 
-.form {
-  padding-left: 10%;
+.chooser {
   margin-bottom: 15px;
-}
-
-.footer {
   display: flex;
-  justify-content: end;
-}
-
-.confirm-button {
-  padding-left: 50px;
-  padding-right: 50px;
-  color: $white !important;
-
-  &:hover {
-    text-decoration: none;
-  }
+  justify-content: space-around;
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
 }

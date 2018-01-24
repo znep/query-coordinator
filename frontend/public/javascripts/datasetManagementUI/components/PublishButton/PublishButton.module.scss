@@ -22,6 +22,7 @@
 .flyoutContent {
   composes: flyout-content from global;
   min-width: 260px;
+  padding: 1em;
 
   ul {
     list-style-type: none;

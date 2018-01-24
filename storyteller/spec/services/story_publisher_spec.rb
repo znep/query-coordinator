@@ -70,10 +70,68 @@ RSpec.describe StoryPublisher do
         }
       end
 
-      it 'raises without existing draft story' do
+      it 'raises an appropriate message' do
         expect {
           subject
         }.to raise_error(/Could not find a draft story with matching uid and digest./)
+      end
+    end
+
+    context 'when the specified draft is not the latest' do
+      let!(:older_draft_story) do
+        FactoryGirl.create(:draft_story_with_blocks,
+          uid: 'orde-ring',
+          created_at: Time.at(1),
+          digest: 'old'
+        )
+      end
+      let!(:newer_draft_story) do
+        FactoryGirl.create(:draft_story_with_blocks,
+          uid: 'orde-ring',
+          created_at: Time.at(2),
+          digest: 'new'
+        )
+      end
+      let(:params) do
+        {
+          uid: older_draft_story.uid,
+          digest: older_draft_story.digest
+        }
+      end
+
+      it 'raises an appropriate message' do
+        expect {
+          subject
+        }.to raise_error(/Rejected specified draft story for publication due to staleness./)
+      end
+    end
+
+    context 'when the specified draft has already been published' do
+      let!(:published_story) do
+        FactoryGirl.create(:published_story_with_blocks,
+          uid: 'dupl-cate',
+          digest: 'digest',
+          created_at: Time.at(2)
+        )
+      end
+      let!(:corresponding_draft_story) do
+        FactoryGirl.create(:draft_story_with_blocks,
+          uid: 'dupl-cate',
+          digest: 'digest',
+          created_at: Time.at(1)
+        )
+      end
+      let(:params) do
+        {
+          uid: corresponding_draft_story.uid,
+          digest: corresponding_draft_story.digest
+        }
+      end
+
+      it 'raises an appropriate message' do
+        expect {
+          subject
+        }.to raise_error(/Rejected specified draft story for publication because it has already been published./)
       end
     end
 

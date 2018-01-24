@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Publishing from 'components/Publishing/Publishing';
-import * as Selectors from 'selectors';
-import { hideModal } from 'reduxStuff/actions/modal';
-import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
+import Publishing from 'datasetManagementUI/components/Publishing/Publishing';
+import * as Selectors from 'datasetManagementUI/selectors';
+import { hideModal } from 'datasetManagementUI/reduxStuff/actions/modal';
+import * as ApplyRevision from 'datasetManagementUI/reduxStuff/actions/applyRevision';
 
 export function mapStateToProps({ entities }, { params }) {
   const revision = _.values(entities.revisions)[0];

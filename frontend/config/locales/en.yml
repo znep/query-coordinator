@@ -435,10 +435,33 @@ en:
     settings:
       title: Settings
       introduction:
-        paragraph_1: This Approval workflow allows you to control whether or not assets published by privileged users on your site immediately become available to the public, or if such assets require review before becoming publicly-available. You can set different behavior for "Official" assets (i.e. those owned by users with roles on your site) and "Community" assets (i.e. those owned by users without roles on your site, typically data consumers from the general public) below.
-        paragraph_2: 'Note: Only "approved" assets are available to the public and discoverable in your data catalog. Once an asset has been "approved" in the Approval Queue, all future edits to this asset will be automatically approved by the system. Of course, assets can be manually "rejected" later, if necessary.'
+        summary: Your Approval workflow provides designated Approvers with a queue where they can review data submitted for public release, take approval action where appropriate, and reverse prior actions when necessary.
+      learn_more: Learn more on the Socrata Knowledge Base
+      user_management: Go to User Management
+      official_assets:
+        title: Official assets
+        subtitle: When data assets are published to the public by roled users on your site, these assets should...
+        manual_approval:
+          required:
+            title: Require manual approval
+            subtitle: These assets will appear in the Approval Queue and will require action from an Approver before becoming available to the public. After review, these assets will appear in the Previously Reviewed tab and sitewide Activity Log for auditing purposes.
+          not_required:
+            title: NOT require manual approval
+            subtitle: These assets will become available to the public immediately upon publishing (i.e. they will be automatically approved by the system) and will never appear in the Approval Queue. They will still appear in the Previously Reviewed tab and sitewide Activity Log for auditing purposes.
+      community_assets:
+        title: Community assets
+        subtitle: When data assets (charts, maps, filtered views) using public data are created and saved by members of the community on your site, these assets should...
+        manual_approval:
+          required:
+            title: Require manual approval before appearing in your data catalog
+            subtitle: These assets will appear in the Approval Queue and will require action from an Approver before appearing in your data catalog. After review, these assets will appear in the Previously Reviewed tab for auditing purposes.
+          not_required:
+            title: Appear in the data catalog by default
+            subtitle: These assets will never appear in the Approval Queue and will appear in your data catalog by default. They will also appear in the Previously Reviewed tab for auditing purposes.
+          auto_rejected:
+            title: Never appear in the data catalog by default
+            subtitle: These assets will never appear in the Approval Queue and will not appear in your data catalog by default. They will still appear in the Previously Reviewed tab for auditing purposes.
       approval_process:
-        official: Official asset settings
         roled_users: Assets published by roled users (publishers, designers, etc.)...
         automatic: Is automatically approved and appears in the data catalog
         manual: Requires manual approval to appear in the data catalog
@@ -447,7 +470,6 @@ en:
         public_users: Content published on this site by the public...
         automatically_approve: Automatically Approve
         explanation: Access to these items will be shown in history
-        learn_more: Learn more about Community content
         reapproval: Re-approval
         working_copies: Working copies of approved assets require re-approval to appear in the data catalog
         approvers: Approvers
@@ -457,6 +479,9 @@ en:
       save: Save
       edit: Edit
       missing_workflow: 'Error: Cannot find Approvals workflow'
+      notifications:
+        save_success: Changes saved successfully.
+        save_error: Something went wrong. Please contact support@socrata.com if the issue persists.
     title: Routing and Approval
   catalog_landing_page:
     activation:
@@ -566,35 +591,19 @@ en:
     search:
       hint: Search
     title: Search & Browse %{params}
+
+  ######## WARNING ########
+  # These are _NOT_ the strings for platform-ui/common!
+  # This is a legacy namespace. Try not to use it.
+  # You probably want commmon/i18n/config/locales/en.yml
+  ######## WARNING ########
   common:
     action_buttons:
       back: Back
     asset_selector:
-      action_buttons:
-        back: Back
-        select: Select
       header_title: Select Featured Content
       header_title_with_category: Select Featured Content in %{category}
       header_title_without_category: Select Featured Content
-      results_container:
-        no_results: No results
-        of: of
-        pager:
-          invalid_page_error: Invalid page number. Please enter a value between {first} and {last}.
-          last_page: Last page
-          next_page: Next page
-          page: Page
-          previous_page: Previous page
-        search: Search
-        search_this_category: Search this category
-        sort:
-          sort_by: Sort by
-          sort_types:
-            alphabetical: Alphabetical
-            most_accessed: Most Accessed
-            most_relevant: Most Relevant
-            recently_added: Recently Added
-            recently_updated: Recently Updated
     contact_dataset_owner: Contact Dataset Owner
     contact_data_asset_owner: Contact Data Asset Owner
     dataset_contents:
@@ -637,6 +646,7 @@ en:
       header_title: Feature an External Resource
       open_editor_button: Feature an External Resource
       preview: Preview
+    export:
     feedback:
       close: Close
       panel_details_html: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.
@@ -733,11 +743,14 @@ en:
   controls:
     grid_view_column_editor:
       close_without_saving: All unsaved changes will be lost. Are you sure you want to close the Column Editor?
+      convert_column_data_type: Convert Type
+      convert_column_data_type_confirm: Converting the data type of a column may require significant recomputation. Your current changes will be saved, but once the recomputation is complete your page will be refreshed.
       title: Manage Columns
       of: of
       error:
         save: There was an error saving your changes. Please try again. If this problem persists, contact Socrata support.
         delete: There was an error deleting the specified column. Please try again. If this problem persists, contact Socrata support.
+        convert_column_data_type: There was an error converting this column to the specified data type.
       column_properties: Column Properties
       column_formatting: Column Formatting
       delete_column: Delete Column
@@ -772,18 +785,18 @@ en:
           display_format:
             title: Display Format
           currency:
-            title: Currency
+            title: Currency Format
             common: Common
             other_currency: Other
           advanced:
-            title: Advanced
+            title: " "
             precision: Specify decimal precision
-            show_thousands_separators: Show thousands-separators
+            show_thousands_separators: Show thousands separators
             override_thousands_separator:
-              title: Override thousands-separator
+              title: Override thousands separator
               placeholder: "e.g. ,"
             override_decimal_separator:
-              title: Override decimal-separator
+              title: Override decimal separator
               placeholder: "e.g. ."
         date_formatting:
           display_format:
@@ -1849,8 +1862,6 @@ en:
       comment: Comment on this Dataset
       contact_asset_owner: Contact Data Asset Owner
       contact_owner: Contact Dataset Owner
-      download: Download
-      export: Export
       explore_data: Explore Data
       visualize: Visualize
       odata: Access Data via OData
@@ -1931,17 +1942,6 @@ en:
       create_visualization_link: Create Visualization
     default_row_label: row
     done: Done
-    export:
-      csv_for_excel: CSV for Excel
-      csv_for_excel_europe: CSV for Excel (Europe)
-      csv_without_geo: CSV (without geospatial data)
-      flannel_title: Download %{dataset_title}
-      flannel_description: Download %{dataset_title} for offline use in other applications.
-      flannel_additional_links_title: Additional Formats
-      json_without_geo: JSON (without geospatial data)
-      original: Original
-      shapefile: Shapefile
-      tsv_for_excel: TSV for Excel
     error: Error
     explore_data:
       more: More...
@@ -2158,6 +2158,7 @@ en:
       columns: Columns
       rows: Rows
       title: Data Preview
+      parse_error: We had trouble parsing these rows. Please check your inputs for invalid data.
     blob_preview:
       whats_this: What's This?
       filetype: Filetype
@@ -2381,6 +2382,10 @@ en:
       containing_this_code: "Create a file (eg: my-update-script.py) containing this code:"
       use_a_task_scheduler: Use a task scheduler like Cron or Windows Task Scheduler to run your script on a regular basis using the following command
       activity_log: See a log of your updates here
+      choose_update_replace: Choose whether you want the script to update or replace
+      update: Update
+      replace: Replace
+      append_vs_update: When you have a row identifier set, and a row in the incoming data has the same identifier, the row in your dataset will be replaced with the new one. When you do not have a row identifier set, all incoming rows will be appended to your dataset.
     parse_options:
       title: File Configuration Options
       header_count: Header Count
@@ -2410,7 +2415,7 @@ en:
         source_error: There was an error with the data source
         transform_error: There was an unexpected error with the following expression
       geocode_shortcut:
-        title: Georeference your dataset
+        title: Georeference your Dataset
         what_is_geocoding: Transform your data into coordinates
         lat_long: Lat/Long
         addr_separate: Address (separated)
@@ -2525,7 +2530,8 @@ en:
       add_url: + Add Another URL
       dataset_title: "External Dataset {0}"
       error_url: Not a valid URL
-      error_href_exists: This dataset has been linked to data on an external server. Uploading a new source or importing data from a URL is no longer possible.
+      error_href_exists: This dataset has been linked to data on an external server. In order to upload a new data file or import data from a URL please first go to the {0} and remove the link(s).
+      error_href_exists_link_text: Link to an External Data Source tab
       error_no_dupes: This field must be unique
       error_no_empties: This field cannot be empty
       error_schema_exists: A data source has already been imported for this dataset. Linking to data from an external server is no longer possible.
@@ -2557,7 +2563,7 @@ en:
       error_invalid_name: invalid name
       no_source_col: No Source Column
     show_uploads:
-      filetypes: Parseable file types are
+      filetypes: Parsable file types are
       flash_error_message: Unsupported file type
       directory_error_message: Directory uploads are not supported
       from_url: URL Source
@@ -2565,7 +2571,7 @@ en:
       no_uploads: No data sources yet
       sources: Data Sources
       submessage: ...or click Browse to choose a file from your computer
-      non_parsable_accepted: Non-parsable files can also be uploaded for storage
+      non_parsable_accepted: Other file types are also accepted and will become a "Files and Documents" asset type.
       dirs_not_supported: Directory uploads are not supported
       upload_link: Upload a Data File
       url_link: Import Data from URL
@@ -3180,6 +3186,8 @@ en:
     exit_preview_mode: Exit Preview Mode
     measure:
       about_this_measure: About This Measure
+      as_of_today: as of today
+      as_of_last: as of last closed reporting period
       calculation_type: Calculation Type
       dividing_by_zero: PLACEHOLDER - Division by zero
       edit_modal:
@@ -3300,8 +3308,11 @@ en:
       reporting_period: Reporting Period
     measure_visualization: Measure visualization
     metric: Metric
-    no_dataset: Metric calculation not available
+    no_calculation: Metric calculation has not been configured
+    no_dataset: Dataset has not been connected
+    no_reporting_period: Reporting period has not been configured
     no_visualization: Metric calculation not available
+    not_enough_data: Not enough data for current reporting period
     preview: Preview
     render_error: There was a problem rendering this page.
     save: Save
@@ -3452,6 +3463,8 @@ en:
         name: Create Data Lens pages
       create_datasets:
         name: Create new datasets, charts, maps, and other views
+      create_measures:
+        name: Create new Performance measures
       create_pages:
         name: Create new DataSlate pages
       create_story:
@@ -3486,6 +3499,8 @@ en:
         name: Add, remove, and manage Socrata-to-Socrata federation relationships
       manage_approval:
         name: Review and approve assets submitted for 'open' release
+      manage_goals:
+        name: Manage performance goals
       manage_provenance:
         name: Update an asset's provenance (community/official) via API
       manage_spatial_lens:
@@ -3580,10 +3595,8 @@ en:
       your: Your Rating
     admin:
       activity_feed:
-        tabs:
-          all: All Activity
-          failure: Data Update Failures
-          deleted: Deleted Assets
+        any_user: Any User
+        api_error: API Error
         asset_types:
           blob: File or Document
           calendar: Calendar
@@ -3602,13 +3615,14 @@ en:
           pulse: Pulse
           story: Story
           working_copy: Working Copy
+        cancel: Cancel
         columns:
+          acting_user_name: Initiated By
           actions: Actions
           activity_type: Event
-          acting_user_name: Initiated By
+          affected_item: Item Affected
           asset_type: Type
           created_at: Date
-          dataset_name: Item Affected
         download: Download
         event_messages:
           failure:
@@ -3813,6 +3827,7 @@ en:
           clear: Clear
           data_range:
             label: Date
+            tooltip: Select a date
           desktop:
             expand: Expand Filters
             contract: Contract Filters
@@ -3829,11 +3844,46 @@ en:
               asset_permissions_changed: Asset Permissions Changed
               collaborator_added: Collaborator Added
               collaborator_removed: Collaborator Removed
-              data_update_started: Data Update Started
-              data_update_in_progress: Data Update In Progress
-              data_update_success: Data Update Success
-              data_update_success_with_data_errors: Data Update Success With Data Errors
               data_update_failure: Data Update Failure
+              data_update_import_failure: Data Update Import Failure
+              data_update_import_in_progress: Data Update Import In Progress
+              data_update_import_started: Data Update Import Started
+              data_update_import_success_with_data_errors: Data Update Import Success With Data Errors
+              data_update_import_success: Data Update Import Success
+              data_update_in_progress: Data Update In Progress
+              data_update_prepare_curated_region_failure: Data Update Prepare Curated Region Failure
+              data_update_prepare_curated_region_in_progress: Data Update Prepare Curated Region In Progress
+              data_update_prepare_curated_region_started: Data Update Prepare Curated Region Started
+              data_update_prepare_curated_region_success_with_data_errors: Data Update Prepare Curated Region Success With Data Errors
+              data_update_prepare_curated_region_success: Data Update Prepare Curated Region Success
+              data_update_replace_failure: Data Update Replace Failure
+              data_update_replace_in_progress: Data Update Replace In Progress
+              data_update_replace_started: Data Update Replace Started
+              data_update_replace_success_with_data_errors: Data Update Replace Success With Data Errors
+              data_update_replace_success: Data Update Replace Success
+              data_update_restore_failure: Data Update Restore Failure
+              data_update_restore_in_progress: Data Update Restore In Progress
+              data_update_restore_started: Data Update Restore Started
+              data_update_restore_success_with_data_errors: Data Update Restore Success With Data Errors
+              data_update_restore_success: Data Update Restore Success
+              data_update_started: Data Update Started
+              data_update_success_with_data_errors: Data Update Success With Data Errors
+              data_update_success: Data Update Success
+              data_update_sync_failure: Data Update Sync Failure
+              data_update_sync_in_progress: Data Update Sync In Progress
+              data_update_sync_started: Data Update Sync Started
+              data_update_sync_success_with_data_errors: Data Update Sync Success With Data Errors
+              data_update_sync_success: Data Update Sync Success
+              data_update_unknown_failure: Data Update Unknown Failure
+              data_update_unknown_in_progress: Data Update Unknown In Progress
+              data_update_unknown_started: Data Update Unknown Started
+              data_update_unknown_success_with_data_errors: Data Update Unknown Success With Data Errors
+              data_update_unknown_success: Data Update Unknown Success
+              data_update_upsert_failure: Data Update Upsert Failure
+              data_update_upsert_in_progress: Data Update Upsert In Progress
+              data_update_upsert_started: Data Update Upsert Started
+              data_update_upsert_success_with_data_errors: Data Update Upsert Success With Data Errors
+              data_update_upsert_success: Data Update Upsert Success
               draft_created: Draft Created
               draft_deleted: Draft Deleted
               draft_published: Draft Published
@@ -3854,13 +3904,20 @@ en:
         result_count:
           one: "%{first}-%{last} of 1 result"
           other: "%{first}-%{last} of %{count} results"
+        restore: Restore
+        restored: Restored
+        restore_confirmation: Are you sure you want to restore the dataset "%{dataset}"?
+        restore_success: Success! Your dataset was restored.
         services:
           DeltaImporter2: DataSync
           Imports2: Web Interface
           ResourcesAPI: <a href="https://dev.socrata.com/publishers/upsert.html">Resource API</a>
           PublishingAPI: Publishing API
         show_details: Show Details
-        table_fetch_error: Sorry, there was an error fetching results. Please reload the page and try again.
+        tabs:
+          all: All Activity
+          failure: Data Update Failures
+          deleted: Deleted Assets
         type: Type
       assets:
         asset_inventory: Assets
@@ -6033,7 +6090,7 @@ en:
           title: Download
         edit_column:
           subtitle: Edit the metadata associated with columns in this dataset or delete the column entirely
-          title: Edit Column
+          title: Edit Columns
         feed:
           route_to_more_views_subtitle: Looking for additional activity on this dataset? Click on More Views tab.
           subtitle: The discussion feed shows you the conversation and activity around a dataset
@@ -6156,7 +6213,6 @@ en:
           subtitle: Manage the permissions of this %{view_type}
           success: Your permissions have been saved
           title: Permissions
-          title_with_access_manager: Manage Access
           validation:
             valid_saved: This view must be valid and saved
         print:
@@ -7009,6 +7065,8 @@ en:
     pm: pm
   users:
     actions:
+      confirm_remove_invited_user: Are you sure you want to remove '%{email}'?
+      confirm_remove_user: Are you sure you want to remove '%{screenName}'?
       remove_invited_user: Remove
       remove_role: Remove
       reset_password: Reset Password
@@ -7045,17 +7103,18 @@ en:
       invited_users: Invited Users
       users: Users
     notifications:
-      invited_user_removed: Invited user removed.
-      resent_email_success: Invited user invitation resent.
       add_user_success: Successfully added user.
+      invited_user_removed: Invited user removed.
       password_reset: Password reset.
+      remove_invited_user_success: Successfully removed invited user '%{email}'.
+      resent_email_success: Invited user invitation resent.
       role_changed: User's role successfully changed.
       role_removed: User's role removed.
     no_results: No results
     roles:
-      default: default
-      custom: custom
       all: All Roles
+      custom: custom
+      default: default
   visualization_canvas:
     add_visualization: Add Visualization
     alert_not_signed_in: You will not be able to save this visualization because you are not logged in.

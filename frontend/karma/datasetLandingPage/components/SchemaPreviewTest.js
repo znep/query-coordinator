@@ -1,6 +1,6 @@
 import { expect, assert } from 'chai';
-import { SchemaPreview } from 'components/SchemaPreview';
-import mockView from 'data/mockView';
+import { SchemaPreview } from 'datasetLandingPage/components/SchemaPreview';
+import mockView from '../data/mockView';
 
 describe('components/SchemaPreview', function() {
   function getProps(props) {

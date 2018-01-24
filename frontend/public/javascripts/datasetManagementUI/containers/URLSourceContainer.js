@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import URLSource from 'components/URLSource/URLSource';
-import * as Actions from 'reduxStuff/actions/createSource';
-import * as Selectors from 'selectors';
+import URLSource from 'datasetManagementUI/components/URLSource/URLSource';
+import * as Actions from 'datasetManagementUI/reduxStuff/actions/createSource';
+import * as Selectors from 'datasetManagementUI/selectors';
 
 const mapStateToProps = ({ entities }, { params }) => {
   const rev = Selectors.currentRevision(entities, _.toNumber(params.revisionSeq));

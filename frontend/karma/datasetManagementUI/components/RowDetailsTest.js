@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
-import RowDetails from 'components/RowDetails/RowDetails';
+import RowDetails from 'datasetManagementUI/components/RowDetails/RowDetails';
 
 describe('components/RowDetails', () => {
   it('returns ViewRowDetails component if dataset is published', () => {

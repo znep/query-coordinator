@@ -4,15 +4,19 @@ import cssModules from 'react-css-modules';
 import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
+import Button from 'common/components/Button';
 import UserSearch from 'common/components/UserSearch';
 import UserSearchResultPropType from 'common/components/UserSearch/UserSearchResultPropType';
 
+import * as addUsersActions from 'common/components/AccessManager/actions/AddUsersActions';
+import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
+
+import SelectedUsersPropType from 'common/components/AccessManager/propTypes/SelectedUsersPropType';
+import UserAccessLevelPropType from 'common/components/AccessManager/propTypes/UserAccessLevelPropType';
+
+import AccessLevelDropdown from 'common/components/AccessManager/components/AccessLevelDropdown';
+
 import styles from './add-user.module.scss';
-import AccessLevelDropdown from '../AccessLevelDropdown';
-import * as addUsersActions from '../../actions/AddUsersActions';
-import * as permissionsActions from '../../actions/PermissionsActions';
-import SelectedUsersPropType from '../../propTypes/SelectedUsersPropType';
-import UserAccessLevelPropType from '../../propTypes/UserAccessLevelPropType';
 
 /**
  * Contains the search box to select users to add,
@@ -62,44 +66,27 @@ class AddUser extends Component {
     };
 
     return (
-      <div styleName="section">
-        <span styleName="label">
-          {I18n.t('shared.site_chrome.access_manager.people')}
-        </span>
-        <UserSearch {...userSearchProps} />
-      </div>
+      <UserSearch {...userSearchProps} />
     );
   }
 
-  renderAccessLevelDropdown = () => {
+  render() {
     const {
       accessLevel,
       onAccessLevelDropdownChanged
     } = this.props;
 
     return (
-      <div styleName="section">
-        <span styleName="label">
-          {I18n.t('shared.site_chrome.access_manager.access_level')}
-        </span>
+      <div styleName="container">
+        {this.renderUserSearch()}
         <AccessLevelDropdown
           onSelection={onAccessLevelDropdownChanged}
           value={accessLevel} />
-      </div>
-    );
-  }
-
-  render() {
-    return (
-      <div styleName="container">
-        {this.renderUserSearch()}
-        {this.renderAccessLevelDropdown()}
-        <button
+        <Button
           onClick={this.confirmSelectedUsers}
-          styleName="add-user-button"
-          className="btn btn-primary">
+          styleName="add-user-button">
           {I18n.t('shared.site_chrome.access_manager.add')}
-        </button>
+        </Button>
       </div>
     );
   }

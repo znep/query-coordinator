@@ -22,13 +22,13 @@ const assetTypeOptions = [
   { title: getTranslation('asset_types.options.charts'), value: 'chart', icon: chartIcon },
   { title: getTranslation('asset_types.options.datasets'), value: 'dataset', icon: datasetIcon },
   { title: getTranslation('asset_types.options.datalenses,visualizations'),
-    value: 'datalens', icon: datalensIcon },
+    value: 'data_lens', icon: datalensIcon },
   { title: getTranslation('asset_types.options.external'), value: 'href', icon: externalIcon },
   { title: getTranslation('asset_types.options.files'), value: 'blob', icon: fileIcon },
   { title: getTranslation('asset_types.options.filtered'), value: 'filter', icon: filteredIcon },
   { title: getTranslation('asset_types.options.forms'), value: 'form', icon: formIcon },
   { title: getTranslation('asset_types.options.maps'), value: 'map', icon: mapIcon },
-  { title: getTranslation('asset_types.options.stories'), value: 'stories', icon: storyIcon },
+  { title: getTranslation('asset_types.options.stories'), value: 'story', icon: storyIcon },
   { title: getTranslation('asset_types.options.working_copies'), value: 'draft', icon: workingIcon }
 ];
 

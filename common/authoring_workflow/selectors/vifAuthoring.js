@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
 import {
+  VECTOR_BASE_MAP_STYLES,
   COLOR_PALETTES,
   ERROR_BARS_DEFAULT_BAR_COLOR,
   SERIES_TYPE_FLYOUT
@@ -119,7 +120,7 @@ export const getPointSize = createSelector(
 
 export const getPointMapPointSize = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.pointMapPointSize', 1)
+  (vif) => _.get(vif, 'series[0].mapOptions.pointMapPointSize', 10)
 );
 
 export const getMapType = createSelector(
@@ -134,12 +135,12 @@ export const getPointSizeByColumn = createSelector(
 
 export const getMinimumPointSize = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.minimumPointSize', 3)
+  (vif) => _.get(vif, 'series[0].mapOptions.minimumPointSize', 10)
 );
 
 export const getMaximumPointSize = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.maximumPointSize', 7)
+  (vif) => _.get(vif, 'series[0].mapOptions.maximumPointSize', 18)
 );
 
 export const getNumberOfDataClasses = createSelector(
@@ -149,7 +150,7 @@ export const getNumberOfDataClasses = createSelector(
 
 export const getMaxClusteringZoomLevel = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.maxClusteringZoomLevel', 8)
+  (vif) => _.get(vif, 'series[0].mapOptions.maxClusteringZoomLevel', 11)
 );
 
 export const getPointThreshold = createSelector(
@@ -159,12 +160,12 @@ export const getPointThreshold = createSelector(
 
 export const getClusterRadius = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.clusterRadius', 50)
+  (vif) => _.get(vif, 'series[0].mapOptions.clusterRadius', 80)
 );
 
 export const getMaxClusterSize = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.maxClusterSize', 20)
+  (vif) => _.get(vif, 'series[0].mapOptions.maxClusterSize', 40)
 );
 
 export const getStackRadius = createSelector(
@@ -215,6 +216,62 @@ export const getQuantificationMethod = createSelector(
 export const getPointAggregation = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'series[0].mapOptions.pointAggregation', 'none')
+);
+
+export const getBaseMapStyle = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.baseMapStyle', VECTOR_BASE_MAP_STYLES.basic.value)
+);
+
+export const getBaseMapOpacity = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.baseMapOpacity', 1)
+);
+
+export const getNavigationControl = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.navigationControl', true)
+);
+
+export const getGeoCoderControl = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.geoCoderControl', true)
+);
+
+export const getGeoLocateControl = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.geoLocateControl', true)
+);
+
+
+export const getMapFlyoutTitleColumnName = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.mapFlyoutTitleColumnName', null)
+);
+
+export const getAdditionalFlyoutColumns = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.additionalFlyoutColumns', [])
+);
+
+export const getSearchBoundaryUpperLeftLatitude = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.searchBoundaryUpperLeftLatitude', '')
+);
+
+export const getSearchBoundaryUpperLeftLongitude = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.searchBoundaryUpperLeftLongitude', '')
+);
+
+export const getSearchBoundaryLowerRightLatitude = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.searchBoundaryLowerRightLatitude', '')
+);
+
+export const getSearchBoundaryLowerRightLongitude = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.searchBoundaryLowerRightLongitude', '')
 );
 
 export const getColorScale = createSelector(
@@ -306,6 +363,11 @@ export const getShowValueLabelsAsPercent = createSelector(
 export const getShowLegend = (defaultValue = false) => createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'configuration.showLegend', defaultValue)
+);
+
+export const getShowLegendOpened = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'configuration.showLegendOpened', false)
 );
 
 export const getXAxisScalingMode = createSelector(

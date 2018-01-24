@@ -5,7 +5,7 @@ describe BrowseController do
 
   before(:each) do
     init_anonymous_environment
-    rspec_stub_feature_flags_with(cetera_search: true)
+    stub_feature_flags_with(cetera_search: true)
     allow(subject).to receive(:enable_site_chrome?).and_return(false)
     allow(CurrentDomain).to receive(:configUpdatedAt).and_return(1477332911)
   end
@@ -13,7 +13,7 @@ describe BrowseController do
   describe 'GET /browse' do
     context 'when domain is not locked down' do
       before(:each) do
-        CurrentDomain.stub(:feature?).with(:staging_lockdown) { false }
+        allow(CurrentDomain).to receive(:feature?).with(:staging_lockdown).and_return(false)
       end
 
       context 'when user is not logged in' do
@@ -39,7 +39,7 @@ describe BrowseController do
 
     context 'when domain is locked down' do
       before(:each) do
-        CurrentDomain.stub(:feature?).with(:staging_lockdown) { true }
+        allow(CurrentDomain).to receive(:feature?).with(:staging_lockdown).and_return(true)
       end
 
       context 'when user is not logged in' do
@@ -112,7 +112,7 @@ describe BrowseController do
       render_views
 
       before do
-        rspec_stub_feature_flags_with(:cetera_search => true)
+        stub_feature_flags_with(:cetera_search => true)
       end
 
       it 'should not use browse2 when rendering the asset picker' do

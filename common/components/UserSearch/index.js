@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import I18n from '../../i18n';
-import UserSearchResultPropType from './UserSearchResultPropType';
+import UserSearchResultPropType, { UserPropType } from './UserSearchResultPropType';
 import MultiSelect from '../MultiSelect';
 import UserSearchResult from './UserSearchResult';
 import SelectedUserPillContents from './SelectedUserPillContents';
@@ -25,7 +25,7 @@ class UserSearch extends Component {
     removeSelectedUser: PropTypes.func.isRequired,
 
     // The list of all the currently selected users
-    selectedUsers: PropTypes.arrayOf(UserSearchResultPropType),
+    selectedUsers: PropTypes.arrayOf(UserPropType),
 
     // Called when the user is typing in to the search box
     userSearchQueryChanged: PropTypes.func.isRequired

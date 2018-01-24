@@ -1,8 +1,8 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { RelatedViewList } from 'components/RelatedViewList';
-import mockServerConfig from 'data/mockServerConfig';
-import mockRelatedView from 'data/mockRelatedView';
+import { RelatedViewList } from 'datasetLandingPage/components/RelatedViewList';
+import mockServerConfig from '../data/mockServerConfig';
+import mockRelatedView from '../data/mockRelatedView';
 
 describe('components/RelatedViewList', function() {
   function resetServerConfig() {

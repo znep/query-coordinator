@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ACTIVITY_TYPES } from 'containers/RecentActionsContainer';
+import { ACTIVITY_TYPES } from 'datasetManagementUI/containers/RecentActionsContainer';
 import {
   RevisionActivity,
   SourceActivity,
@@ -8,7 +8,7 @@ import {
   TaskSetActivity,
   TaskSetFinishedActivity,
   TaskSetFailedActivity
-} from 'components/RecentActionItems/RecentActionItems';
+} from 'datasetManagementUI/components/RecentActionItems/RecentActionItems';
 
 const RecentActions = ({ activities, params }) => {
   const items = activities.map((activity, idx) => {

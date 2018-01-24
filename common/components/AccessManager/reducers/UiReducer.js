@@ -1,22 +1,26 @@
 import I18n from 'common/i18n';
 
-import * as uiActions from '../actions/UiActions';
-import * as permissionsActions from '../actions/PermissionsActions';
+import { confirmButtonDisabledByDefault } from 'common/components/AccessManager/Util';
 
-// changing the header text
-const changeHeader = (state, action) => ({
-  ...state,
-  headerText: action.title,
-  headerSubtitle: action.subtitle
-});
+import * as uiActions from 'common/components/AccessManager/actions/UiActions';
+import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
 
 // main cancel button is clicked; close the modal
-const cancelButtonClicked = (state) => {
-  return { ...state, visible: false };
-};
+const cancelButtonClicked = (state) => ({
+  ...state,
+  visible: false
+});
 
 // see the saga for the calls this action actually does
 const saveButtonClicked = state => ({ ...state, saveInProgress: true });
+
+const setConfirmButtonDisabled = (state, action) => ({
+  ...state,
+  footer: {
+    ...state.footer,
+    confirmButtonDisabled: action.disabled
+  }
+});
 
 // usually outside forces telling us to show the access manager modal
 const showAccessManager = (state, action) => {
@@ -25,7 +29,14 @@ const showAccessManager = (state, action) => {
     visible: true,
 
     // optionally refresh the page when saving succeeds
-    refreshPageOnSave: action.refreshPageOnSave
+    refreshPageOnSave: action.refreshPageOnSave,
+
+    mode: action.mode,
+
+    footer: {
+      ...state.footer,
+      confirmButtonDisabled: confirmButtonDisabledByDefault(action.mode)
+    }
   };
 };
 
@@ -78,11 +89,17 @@ const dismissToastMessage = (state) => ({
   toastMessageVisible: false
 });
 
+const redirectTo = (state, action) => {
+  const { url } = action;
+
+  window.location.href = url;
+
+  return state;
+};
+
 export default (state = {}, action) => {
   switch (action.type) {
     // uiActions
-    case uiActions.CHANGE_HEADER:
-      return changeHeader(state, action);
     case uiActions.CANCEL_BUTTON_CLICKED:
       return cancelButtonClicked(state, action);
     case uiActions.SAVE_BUTTON_CLICKED:
@@ -91,6 +108,10 @@ export default (state = {}, action) => {
       return showAccessManager(state, action);
     case uiActions.DISMISS_TOAST_MESSAGE:
       return dismissToastMessage(state, action);
+    case uiActions.REDIRECT_TO:
+      return redirectTo(state, action);
+    case uiActions.SET_CONFIRM_BUTTON_DISABLED:
+      return setConfirmButtonDisabled(state, action);
 
     // permissionsActions
     case permissionsActions.SAVE_SUCCESS:
@@ -99,6 +120,7 @@ export default (state = {}, action) => {
       return saveFail(state, action);
     case permissionsActions.FETCH_PERMISSIONS_FAIL:
       return fetchPermissionsFail(state, action);
+
     default:
       return state;
   }

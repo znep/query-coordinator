@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
-import PublishConfirmation from 'components/PublishConfirmation/PublishConfirmation';
+import PublishConfirmation from 'datasetManagementUI/components/PublishConfirmation/PublishConfirmation';
 
 describe('components/PublishConfirmation', () => {
   let component;

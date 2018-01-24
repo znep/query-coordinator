@@ -22,14 +22,16 @@ export class AboutThisMeasure extends Component {
     }
 
     let reportingPeriodText = '—';
-    if (reportingPeriodType === PeriodTypes.OPEN) {
-      reportingPeriodText = I18n.t(
-        `open_performance.measure.edit_modal.reporting_period.size.${reportingPeriodSize}_to_date`
-      );
-    } else if (reportingPeriodType === PeriodTypes.CLOSED) {
-      reportingPeriodText = I18n.t(
-        `open_performance.measure.edit_modal.reporting_period.size.${reportingPeriodSize}`
-      );
+    if (reportingPeriodType && reportingPeriodSize) {
+      if (reportingPeriodType === PeriodTypes.OPEN) {
+        reportingPeriodText = I18n.t(
+          `open_performance.measure.edit_modal.reporting_period.size.${reportingPeriodSize}_to_date`
+        );
+      } else if (reportingPeriodType === PeriodTypes.CLOSED) {
+        reportingPeriodText = I18n.t(
+          `open_performance.measure.edit_modal.reporting_period.size.${reportingPeriodSize}`
+        );
+      }
     }
 
     let calculationTypeText = '—';
@@ -51,7 +53,7 @@ export class AboutThisMeasure extends Component {
                 <dt className="metadata-pair-key">
                   {I18n.t('open_performance.measure.reporting_period')}
                 </dt>
-                <dd className="metadata-pair-value">
+                <dd className="metadata-pair-value reporting-period-text">
                   {reportingPeriodText}
                 </dd>
               </div>
@@ -59,7 +61,7 @@ export class AboutThisMeasure extends Component {
                 <dt className="metadata-pair-key">
                   {I18n.t('open_performance.measure.calculation_type')}
                 </dt>
-                <dd className="metadata-pair-value">
+                <dd className="metadata-pair-value calculation-type-text">
                   {calculationTypeText}
                 </dd>
               </div>

@@ -5,11 +5,11 @@ import configureStore from 'redux-mock-store';
 import {
   applyRevision,
   updatePermission
-} from 'reduxStuff/actions/applyRevision';
+} from 'datasetManagementUI/reduxStuff/actions/applyRevision';
 import state from '../data/stateWithRevision';
 import fetchMock from 'fetch-mock';
-import * as dsmapiLinks from 'links/dsmapiLinks';
-import * as coreLinks from 'links/coreLinks';
+import * as dsmapiLinks from 'datasetManagementUI/links/dsmapiLinks';
+import * as coreLinks from 'datasetManagementUI/links/coreLinks';
 
 const mockStore = configureStore([thunk]);
 

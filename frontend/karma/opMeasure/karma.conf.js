@@ -2,12 +2,10 @@ const _ = require('lodash');
 
 const karmaConfig = require('../helpers/karma_config');
 const webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
-  'op-measure.config.js',
-  [ 'karma/opMeasure' ]
+  'shared.config.js',
+  [ 'karma/opMeasure' ],
+  [ 'opMeasure' ]
 );
-webpackConfig.externals = {
-  jquery: 'jQuery'
-};
 
 // NOTE: This will not work with webpack v2
 const babelPluginRewire = require.resolve('babel-plugin-rewire');
@@ -21,7 +19,6 @@ if (!hasRewire) {
 module.exports = function (karma) {
   karma.set(karmaConfig({
     files: [
-      'public/javascripts/jquery-2.2.4.js',
       'karma/opMeasure/index.js'
     ],
     webpack: webpackConfig

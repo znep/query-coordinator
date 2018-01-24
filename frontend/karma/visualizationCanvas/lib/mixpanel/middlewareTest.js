@@ -1,9 +1,9 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 
-import * as actions from 'actions';
-import * as generateFilterEventsModule from 'lib/mixpanel/eventGenerators/filters';
-import { middleware, __RewireAPI__ as middlewareAPI } from 'lib/mixpanel/middleware';
+import * as actions from 'visualizationCanvas/actions';
+import * as generateFilterEventsModule from 'visualizationCanvas/lib/mixpanel/eventGenerators/filters';
+import { middleware, __RewireAPI__ as middlewareAPI } from 'visualizationCanvas/lib/mixpanel/middleware';
 
 describe('Mixpanel middleware', () => {
   let store;

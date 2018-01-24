@@ -123,7 +123,7 @@ describe InternalController do
 
     before do
       allow(current_user).to receive(:is_superadmin?).and_return(true)
-      rspec_stub_feature_flags_with(flags)
+      stub_feature_flags_with(flags)
     end
 
     MODULE_NAMES_UNDER_TEST.each do |module_name|

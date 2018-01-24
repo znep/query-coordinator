@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { StoryForm } from 'components/FeaturedContentModal/StoryForm';
+import { StoryForm } from 'datasetLandingPage/components/FeaturedContentModal/StoryForm';
 import { Simulate } from 'react-dom/test-utils';
 
 describe('components/FeaturedContentModal/StoryForm', function() {

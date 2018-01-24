@@ -5,15 +5,15 @@ import configureStore from 'redux-mock-store';
 import {
   createUploadSource,
   createViewSource
-} from 'reduxStuff/actions/createSource';
+} from 'datasetManagementUI/reduxStuff/actions/createSource';
 import mockAPI from '../testHelpers/mockAPI';
 import mockSocket from '../testHelpers/mockSocket';
 import { bootstrapChannels } from '../data/socketChannels';
-import { addLocation } from 'reduxStuff/actions/history';
-import rootReducer from 'reduxStuff/reducers/rootReducer';
-import { getInitialState } from 'reduxStuff/store';
+import { addLocation } from 'datasetManagementUI/reduxStuff/actions/history';
+import rootReducer from 'datasetManagementUI/reduxStuff/reducers/rootReducer';
+import { getInitialState } from 'datasetManagementUI/reduxStuff/store';
 import fetchMock from 'fetch-mock';
-import * as dsmapiLinks from 'links/dsmapiLinks';
+import * as dsmapiLinks from 'datasetManagementUI/links/dsmapiLinks';
 
 const socket = mockSocket(
   bootstrapChannels.map(bc => {

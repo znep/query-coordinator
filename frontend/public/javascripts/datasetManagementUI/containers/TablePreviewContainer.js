@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import TablePreview from 'components/TablePreview/TablePreview';
+import TablePreview from 'datasetManagementUI/components/TablePreview/TablePreview';
 
 function mapStateToProps({ entities }, { params }) {
   return {

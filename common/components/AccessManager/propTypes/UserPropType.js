@@ -8,6 +8,6 @@ export default PropTypes.shape({
   id: PropTypes.string,
   displayName: PropTypes.string,
   email: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['user', 'team']),
+  type: PropTypes.oneOf(['user', 'interactive', 'team']),
   accessLevels: PropTypes.arrayOf(UserAccessLevelPropType)
 });

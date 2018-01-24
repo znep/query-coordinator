@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import TextArea from 'components/ContactForm/TextArea';
+import TextArea from 'datasetLandingPage/components/ContactForm/TextArea';
 
 describe('components/ContactForm/TextArea', function() {
   var defaultProps;

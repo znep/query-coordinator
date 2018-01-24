@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import ErrorPill from 'components/ErrorPill/ErrorPill';
-import { singularOrPlural } from 'lib/util';
+import ErrorPill from 'datasetManagementUI/components/ErrorPill/ErrorPill';
+import { singularOrPlural } from 'datasetManagementUI/lib/util';
 import styles from './ErrorPointer.module.scss';
 
 function ErrorPointer({ errorInfo, direction, scrollToColIdx }) {

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import ParseOptions from 'containers/ParseOptionsContainer';
+import ParseOptions from 'datasetManagementUI/containers/ParseOptionsContainer';
 import classNames from 'classnames';
 import styles from './ShowOutputSchema.module.scss';
 

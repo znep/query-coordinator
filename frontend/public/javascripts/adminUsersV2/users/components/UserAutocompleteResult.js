@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import cssModules from 'react-css-modules';
-import { resultFocusChanged, queryChanged, resultVisibilityChanged } from 'common/autocomplete/actions';
+import * as Actions from 'common/autocomplete/actions';
 import { Result } from 'common/autocomplete/components/Results/Result';
 import styles from 'common/autocomplete/components/Results/results.module.scss';
 
@@ -77,17 +77,11 @@ UserAutocompleteResult.propTypes = {
   name: PropTypes.string.isRequired
 };
 
-const mapDispatchToProps = dispatch => ({
-  onResultFocusChanged: newFocus => {
-    dispatch(resultFocusChanged(newFocus));
-  },
-  onQueryChanged: query => {
-    dispatch(queryChanged(query));
-  },
-  onResultsVisibilityChanged: visible => {
-    dispatch(resultVisibilityChanged(visible));
-  }
-});
+const mapDispatchToProps = {
+  onResultFocusChanged: Actions.resultFocusChanged,
+  onQueryChanged: Actions.queryChanged,
+  onResultsVisibilityChanged: Actions.resultVisibilityChanged
+};
 
 const ConnectedUserAutocompleteResult = connect(null, mapDispatchToProps)(
   cssModules(UserAutocompleteResult, styles)

@@ -18,19 +18,28 @@ const updateMeasureProperty = (state, propertyPath, value) => ({
 });
 
 const setCalculationType = (state, type) => {
-  // Changing type clears everything under 'metricConfig'.
+  // Changing type clears almost everything under 'metricConfig'.
   // This is by design.
   assert(
     _.includes(_.values(CalculationTypeNames), type),
     `Unknown calculation type given: ${type}`
   );
 
-  const newState = {
-    ...state
-  };
+  const newState = _.cloneDeep(state);
 
   _.set(newState, 'measure.metricConfig', {
     type
+  });
+
+  const pathsToKeep = [
+    'measure.metricConfig.reportingPeriod',
+    'measure.metricConfig.dateColumn'
+  ];
+
+  pathsToKeep.forEach((path) => {
+    if (_.has(state, path)) {
+      _.set(newState, path, _.get(state, path));
+    }
   });
 
   // Set some defaults for calculation types.
@@ -51,12 +60,16 @@ const setCalculationType = (state, type) => {
 
 const resetDataSource = (state) => {
   const { measure, errors } = state;
+  const defaultCalculationType = CalculationTypeNames.COUNT;
 
   return {
     ...state,
     measure: {
       ...measure,
-      dataSourceLensUid: null
+      dataSourceLensUid: null,
+      metricConfig: {
+        type: defaultCalculationType
+      }
     },
     cachedRowCount: undefined,
     dataSourceView: null,
@@ -104,7 +117,6 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
     }
 
     case actions.editor.SET_DATA_SOURCE_METADATA_SUCCESS: {
-      const { measure, errors } = state;
       const { uid, rowCount, dataSourceView, displayableFilterableColumns } = action;
       // N.B.: This action is dispatched when the editor is loaded. It does not imply the user
       // chose a new data source - we could just be loading an existing measure.
@@ -113,6 +125,8 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       assertIsString(uid);
       assertIsNumber(rowCount);
       assertIsOneOfTypes(dataSourceView, 'object');
+
+      const { measure } = state;
 
       return {
         ...state,
@@ -124,7 +138,6 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
         dataSourceView: dataSourceView,
         displayableFilterableColumns: displayableFilterableColumns,
         errors: {
-          ...errors,
           fetchDataSourceViewError: false,
           setDataSourceMetadataError: false
         }
@@ -133,11 +146,10 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
 
     // Invalid state: dataset fetch request failed
     case actions.editor.FETCH_DATA_SOURCE_VIEW_FAIL: {
-      const newState = resetDataSource(state);
-      const { errors } = newState;
+      const { errors } = state;
 
       return {
-        ...newState,
+        ...state,
         errors: {
           ...errors,
           fetchDataSourceViewError: true
@@ -147,11 +159,10 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
 
     // Invalid state: set dataset metadata failed due to missing calendar_date column
     case actions.editor.SET_DATA_SOURCE_METADATA_FAIL: {
-      const newState = resetDataSource(state);
-      const { errors } = newState;
+      const { errors } = state;
 
       return {
-        ...newState,
+        ...state,
         errors: {
           ...errors,
           setDataSourceMetadataError: true
@@ -295,8 +306,10 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       return _.set(state, 'measure.metadata.shortName', action.shortName);
 
     case actions.editor.OPEN_EDIT_MODAL: {
+      const editorDataSourceLensUid = _.get(state, 'measure.dataSourceLensUid');
+
       let nextState = {
-        ...state,
+        activePanel: EditTabs.GENERAL_INFO,
         isEditing: true,
         coreView: { ...action.coreView },
         measure: { ...action.measure },
@@ -304,6 +317,15 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
         pristineMeasure: _.cloneDeep(action.measure),
         validationErrors: validate().validationErrors
       };
+
+      // Generally, it makes sense to clear out the state and start fresh when opening the edit modal.
+      // However, in the scenario where the user selects a data source, accepts, then opens the edit modal
+      // again, we need to re-populate the datasource data
+      if (action.viewDataSourceLensUid === editorDataSourceLensUid) {
+        nextState.cachedRowCount = state.cachedRowCount;
+        nextState.dataSourceView = state.dataSourceView;
+        nextState.displayableFilterableColumns = state.displayableFilterableColumns;
+      }
 
       // If no calculation type is set, defaults to 'count'
       const currentType = _.get(nextState, 'measure.metricConfig.type');

@@ -1,5 +1,5 @@
 import dotProp from 'dot-prop-immutable';
-import { UPLOAD_FILE_SUCCESS, UPLOAD_FILE_FAILURE } from 'reduxStuff/actions/uploadFile';
+import { UPLOAD_FILE_SUCCESS, UPLOAD_FILE_FAILURE } from 'datasetManagementUI/reduxStuff/actions/uploadFile';
 
 const uploadFile = (state, action) => {
   switch (action.type) {

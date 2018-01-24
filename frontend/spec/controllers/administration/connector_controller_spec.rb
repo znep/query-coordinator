@@ -7,7 +7,7 @@ describe Administration::ConnectorController do
     init_environment
     init_current_user(subject)
     stub_site_chrome
-    rspec_stub_feature_flags_with(:enable_catalog_federator_connector => true)
+    stub_feature_flags_with(:enable_catalog_federator_connector => true)
   end
 
   context 'when user does not have USE_DATA_CONNECTORS right' do

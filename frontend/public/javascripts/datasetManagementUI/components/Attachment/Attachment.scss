@@ -1,0 +1,19 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+.dsmp-attachment {
+  display: flex;
+  margin-bottom: 13px;
+}
+
+.dsmp-remove-button {
+  margin-left: 1em;
+  color: $error-text;
+  line-height: 42px;
+}
+
+.dsmp-filename {
+  padding-left: 5px;
+  flex-grow: 1;
+  margin-bottom: 0px;
+}

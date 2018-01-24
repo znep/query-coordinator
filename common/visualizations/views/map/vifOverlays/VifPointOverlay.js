@@ -1,108 +1,152 @@
 import _ from 'lodash';
 
 import VifOverlay from './VifOverlay';
-import SoqlHelpers from '../../../dataProviders/SoqlHelpers';
-import utils from 'common/js_utils';
+import { getBaseMapLayerStyles } from '../baseMapStyle';
 
-const POINTS_SOURCE_ID = 'pointVectorDataSource';
-const LAYERS = {
-  CLUSTER_CIRCLE: 'cluster-circle',
-  CLUSTER_COUNT_LABEL: 'cluster-count-label',
-  CLUSTER_SINGLE_LABEL: 'cluster-single-label'
-};
+import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
+import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
+import PointsAndStacks from './partials/PointsAndStacks';
+import Clusters from './partials/Clusters';
+import { COLOR_BY_BUCKETS_COUNT } from 'common/visualizations/views/mapConstants';
+import RenderByHelper from 'common/visualizations/helpers/RenderByHelper';
+
+const OTHER_COLOR_BY_CATEGORY = '__$$other$$__';
+const COLOR_BY_CATEGORY_ALIAS = '__color_by_category__';
+const RESIZE_BY_ALIAS = '__resize_by__';
+const COUNT_ALIAS = '__count__';
 
 export default class VifPointOverlay extends VifOverlay {
-  setup(vif) {
-    this._map.addSource(POINTS_SOURCE_ID, {
-      'type': 'vector',
-      'geojsonTile': true,
-      'cluster': true,
-      'clusterRadius': 80,
-      'aggregateBy': 'count',
-      'tiles': [this.getDataUrl(vif)]
-    });
+  constructor(map) {
+    const sourceIds = [].concat(PointsAndStacks.sourceIds()).concat(Clusters.sourceIds());
+    const layerIds = [].concat(PointsAndStacks.layerIds()).concat(Clusters.layerIds());
+    super(map, sourceIds, layerIds);
 
-    this._map.addLayer({
-      'id': LAYERS.CLUSTER_CIRCLE,
-      'type': 'circle',
-      'source': POINTS_SOURCE_ID,
-      'source-layer': '_geojsonTileLayer',
-      'paint': {
-        'circle-radius': {
-          type: 'interval',
-          property: 'sum',
-          stops: [
-              [0, 14],
-              [10, 17],
-              [150, 22],
-              [100000, 28]
-          ]
-        },
-        'circle-color': getClusterCircleColor(vif)
-      }
-    });
-    this._map.addLayer({
-      id: LAYERS.CLUSTER_COUNT_LABEL,
-      type: 'symbol',
-      'source': POINTS_SOURCE_ID,
-      'source-layer': '_geojsonTileLayer',
-      'filter': ['all', ['has', 'point_count']],
-      layout: {
-        'text-field': '{sum_abbrev}',
-        'text-size': 12
-      }
-    });
-
-    this._map.addLayer({
-      id: LAYERS.CLUSTER_SINGLE_LABEL,
-      type: 'symbol',
-      'source': POINTS_SOURCE_ID,
-      'source-layer': '_geojsonTileLayer',
-      'filter': ['all', ['!has', 'point_count']],
-      layout: {
-        'text-field': '{count}',
-        'text-size': 12
-      }
-    });
+    this._pointsAndStacks = new PointsAndStacks(map);
+    this._clusters = new Clusters(map);
   }
 
-  update(vif) {
-    this._map.setPaintProperty(LAYERS.CLUSTER_CIRCLE, 'circle-color', getClusterCircleColor(vif));
+  async setup(vif) {
+    const renderOptions = await this._prepare(vif);
+
+    this._pointsAndStacks.setup(vif, renderOptions);
+    this._clusters.setup(vif, renderOptions);
+
+    return renderOptions;
   }
 
-  destroy() {
-    _.each(_.values(LAYERS), (layerId) => {
-      this._map.removeLayer(layerId);
-    });
+  async update(vif) {
+    const renderOptions = await this._prepare(vif);
 
-    this._map.removeSource(POINTS_SOURCE_ID);
+    this._pointsAndStacks.update(vif, renderOptions);
+    this._clusters.update(vif, renderOptions);
+
+    return renderOptions;
   }
 
-  getDataUrl(vif) {
-    const domain = _.get(vif, 'series[0].dataSource.domain');
-    const datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
-    const columnName = _.get(vif, 'series[0].dataSource.dimension.columnName');
+  // Makes required soql calls
+  //    * getting top values for coloring by.
+  //    * getting range for resizePointsBy buckets.
+  // and returns the renerOptions.
+  async _prepare(vif) {
+    this._preparingForVif = vif;
+    const colorByColumn = vif.getPointColorByColumn();
+    const resizeByColumn = vif.getPointResizeByColumn();
 
-    utils.assertIsOneOfTypes(columnName, 'string');
-    utils.assertIsOneOfTypes(domain, 'string');
-    utils.assertIsOneOfTypes(datasetUid, 'string');
+    try {
+      let colorByCategories;
+      let resizeByRange;
+
+      [colorByCategories, resizeByRange] = await Promise.all([
+        RenderByHelper.getColorByCategories(vif, this._pointDataset(vif), colorByColumn),
+        RenderByHelper.getResizeByRange(vif, this._pointDataset(vif), resizeByColumn)
+      ]);
+
+      if (this._preparingForVif !== vif) {
+        return Promise.reject('VIF updated while preparing');
+      }
+
+      return {
+        colorByCategories,
+        resizeByRange,
+        countBy: COUNT_ALIAS,
+        colorBy: COLOR_BY_CATEGORY_ALIAS,
+        aggregateAndResizeBy: resizeBy(vif),
+        layerStyles: getBaseMapLayerStyles(vif),
+        dataUrl: this.getDataUrl(vif, colorByCategories)
+      };
+    } catch (error) {
+      throw ('Error preparing point map.', error);
+    }
+  }
+
+  _pointDataset(vif) {
+    const datasetConfig = {
+      domain: vif.getDomain(),
+      datasetUid: vif.getDatasetUid()
+    };
+
+    if (_.isUndefined(this._dataset) || !_.isEqual(this._existingPointDatasetConfig, datasetConfig)) {
+      this.__pointDatasetInstance = new SoqlDataProvider(datasetConfig, true);
+      this._existingPointDatasetConfig = datasetConfig;
+    }
+
+    return this.__pointDatasetInstance;
+  }
+
+  getDataUrl(vif, colorByCategories) {
+    const columnName = vif.getColumnName();
+    const colorByColumn = vif.getPointColorByColumn();
+    const resizeByColumn = vif.getPointResizeByColumn();
 
     let conditions = [`{{'${columnName}' column condition}}`];
-
     const filters = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
     if (!_.isEmpty(filters)) {
       conditions.push(filters);
     }
 
-    return `https://${domain}/resource/${datasetUid}.geojson?$query=` +
-      `select count(*),snap_for_zoom(${columnName},{snap_zoom}) ` +
+    let selects = [`snap_for_zoom(${columnName},{snap_zoom})`];
+    let groups = [`snap_for_zoom(${columnName},{snap_zoom})`];
+
+    if (_.isString(colorByColumn) && !_.isEmpty(colorByCategories)) {
+      // We are not grouping by colorByColumn. In case that column had 10K unique values,
+      // then grouping by the colorByColumn and snapToGrid, will return
+      // 10K * snappedToGrid location => number of results. Which will be too much.
+      // Instead, we are only interesed in the top x values(colorByCategories) in the colorbyColumn.
+      // So we select/group the remaining values as OTHER_COLOR_BY_CATEGORY and the top x in separate groups.
+
+      // We are concatenating empty string to the resizeBy column to convert it to string.
+      // Otherwise, depending on whether it is a numeric column or string column, we need to
+      // use quotes around values(colorByCategories value) in case statement.
+      const colorByCategoriesString = _.map(colorByCategories, SoqlHelpers.soqlEncodeValue);
+      selects.push('CASE(' +
+        `${colorByColumn} in (${colorByCategoriesString}),` + // if Condition
+        `${colorByColumn}||'',` + // if value
+        'true,' + // else condition
+        `'${OTHER_COLOR_BY_CATEGORY}'` + // else value
+        `) as ${COLOR_BY_CATEGORY_ALIAS}`);
+
+      groups.push(COLOR_BY_CATEGORY_ALIAS);
+    }
+
+    if (_.isString(resizeByColumn)) {
+      selects.push(`sum(${resizeByColumn}) as ${RESIZE_BY_ALIAS}`);
+      conditions.push(`${resizeByColumn} is NOT NULL`);
+    }
+    selects.push(`count(*) as ${COUNT_ALIAS}`);
+
+    return `https://${vif.getDomain()}/resource/${vif.getDatasetUid()}.geojson?$query=` +
+      `select ${selects.join(',')} ` +
       `where ${conditions.join(' AND ')} ` +
-      `group by snap_for_zoom(${columnName}, {snap_zoom}) ` +
-      'limit 100000 ' +
+      `group by ${groups.join(',')} ` +
+      'limit 50000 ' +
       '#substituteSoqlParams_tileParams={z}|{x}|{y}';
   }
 }
 
-function getClusterCircleColor(vif) {
-  return _.get(vif, 'series[0].color.primary');
+function resizeBy(vif) {
+  const resizeByColumn = vif.getPointResizeByColumn();
+  if (_.isString(resizeByColumn)) {
+    return RESIZE_BY_ALIAS;
+  }
+  return COUNT_ALIAS;
 }

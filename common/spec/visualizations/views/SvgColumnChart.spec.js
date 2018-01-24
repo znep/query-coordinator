@@ -389,6 +389,42 @@ describe('SvgColumnChart', () => {
       isMenuVisible = $legendMenu.is(':visible');
       assert.isTrue(isMenuVisible, 'menu actually is not visible');
     });
+
+    it('should show the legend menu opened', () => {
+
+      columnChart = createColumnChart(null, {
+        configuration: {
+          showLegend: true,
+          showLegendOpened: true
+        }
+      });
+
+      columnChart.chart.render(null, testData);
+
+      // Verify button exists
+      //
+      const $button = columnChart.element.find('.socrata-legend-button');
+      const buttonExists = ($button.length > 0);
+      assert.isTrue(buttonExists, 'button actually does not exist');
+
+      // Verify menu exists
+      //
+      const $legendMenu = columnChart.element.find('.socrata-legend-menu');
+      const menuExists = ($legendMenu.length > 0);
+      assert.isTrue(menuExists, 'menu actually does not exist');
+
+      // Verify menu is shown
+      //
+      let isMenuVisible = $legendMenu.is(':visible');
+      assert.isTrue(isMenuVisible, 'menu actually is not visible');
+
+      $button.click();
+
+      // Verify menu is not shown
+      //
+      isMenuVisible = $legendMenu.is(':visible');
+      assert.isFalse(isMenuVisible, 'menu actually is visible');
+    });
   });
 
   describe('when configured to show legend', () => {

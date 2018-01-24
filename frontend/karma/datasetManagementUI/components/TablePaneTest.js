@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
-import TablePane from 'pages/ShowOutputSchema/TablePane';
+import TablePane from 'datasetManagementUI/pages/ShowOutputSchema/TablePane';
 import dotProp from 'dot-prop-immutable';
 import {
   ShowOutputSchemaProps,

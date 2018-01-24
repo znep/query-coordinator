@@ -2,7 +2,7 @@
 .metadataContainer {
   :global {
     .metadata-table-wrapper {
-      padding: 1em;
+      padding: 1em 0;
       .landing-page-section {
         padding: 0;
       }
@@ -19,10 +19,6 @@
       .entry-main {
         border: none;
       }
-    }
-
-    .info-pane.result-card {
-      border-right: none;
     }
 
     .entry-content {

@@ -7,8 +7,8 @@ import Immutable from 'immutable';
 
 import mockTranslations from '../../../mockTranslations';
 
-import * as Actions from 'sections/goals/actions';
-import * as SharedActions from 'sections/shared/actions';
+import * as Actions from 'adminGoals/sections/goals/actions';
+import * as SharedActions from 'adminGoals/sections/shared/actions';
 
 const START_TIME = moment.utc().toISOString();
 const END_TIME = moment.utc().add(1, 'day').toISOString();

@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import Notification from 'containers/NotificationContainer';
-import styles from './UploadNotification.module.scss';
+import Notification from 'datasetManagementUI/containers/NotificationContainer';
 import moment from 'moment';
 
 const isURL = (source) => source.source_type.type === 'url';
@@ -48,7 +47,7 @@ function isSourceStreamable(source) {
 
 function getStreamyWarning(source) {
   if (!source.finished_at && !source.failed_at && !isSourceStreamable(source)) {
-    return (<p className={styles.message}>
+    return (<p className="message">
       {I18n.notifications.non_streamable_source}
     </p>);
   }
@@ -66,7 +65,7 @@ function failureDetailsMessage(source) {
 const errorMessage = (source) => {
   if (failureDetailsMessage(source)) {
     return (
-      <div className={styles.msgContainer}>
+      <div className="message-container">
         {failureDetailsMessage(source)}
       </div>
     );
@@ -79,7 +78,7 @@ const errorMessage = (source) => {
   };
 
   const badConnection = (
-    <div className={styles.msgContainer}>
+    <div className="message-container">
       <h6>
         {I18n.notifications.connection_error_title}
       </h6>
@@ -119,7 +118,7 @@ const UploadNotification = ({ source }) => {
 
   if (source.failed_at) {
     message = (
-      <span className={styles.message}>
+      <span className="message">
         {getFailureTitle(source)}
       </span>
     );
@@ -128,10 +127,10 @@ const UploadNotification = ({ source }) => {
   } else {
 
     message = (
-      <span className={styles.message}>
+      <span className="message">
         {getProgressTitle(source)}
         {' '}
-        <span className={styles.subMessage}>
+        <span className="sub-message">
           {getFilename(source)}
           {getStreamyWarning(source)}
         </span>

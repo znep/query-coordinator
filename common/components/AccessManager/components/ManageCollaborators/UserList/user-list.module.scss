@@ -1,0 +1,11 @@
+@import '../../../common.module.scss';
+
+.no-users-message {
+  background-color: $light-grey-5;
+  color: $light-grey-1;
+  border: 1px dashed $light-grey-1;
+  padding-top: 15px;
+  padding-bottom: 30px;
+  margin-bottom: 16px;
+  text-align: center;
+}

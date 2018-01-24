@@ -322,6 +322,10 @@ class DatasetLandingPage
       end
     end
 
+    def export_formats
+      %w(csv csv_for_excel csv_for_excel_europe json rdf rss tsv_for_excel xml)
+    end
+
     private
 
     def share_facebook_url(view)
@@ -378,10 +382,6 @@ class DatasetLandingPage
 
     def comment_url(view)
       "#{data_grid_path(view)}?pane=feed" if view.module_enabled?(:allow_comments)
-    end
-
-    def export_formats
-      %w(csv csv_for_excel csv_for_excel_europe json rdf rss tsv_for_excel xml)
     end
 
     def custom_metadata_fieldsets(view)

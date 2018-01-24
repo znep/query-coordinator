@@ -206,16 +206,16 @@ describe AnalyticsController do
       end
 
       it 'should return a 200 with all good data' do
-        MetricQueue.instance.should_receive(:push_metric).with('1', 'js-page-view', 1)
-        MetricQueue.instance.should_receive(:push_metric).with('1', 'browser-chrome', 1)
-        MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'browser-chrome', 1)
-        MetricQueue.instance.should_receive(:push_metric).with('1', 'browser-chrome-55', 1)
-        MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'browser-chrome-55', 1)
-        MetricQueue.instance.should_receive(:push_metric).with('1', 'js-page-view-browse', 1)
-        MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'js-page-load-samples', 1)
-        MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'js-page-load-time', 2615)
-        MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'js-page-load-tz-480-time', 2615)
-        MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'js-response-start-time', 1036)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1', 'js-page-view', 1)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1', 'browser-chrome', 1)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1-intern', 'browser-chrome', 1)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1', 'browser-chrome-55', 1)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1-intern', 'browser-chrome-55', 1)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1', 'js-page-view-browse', 1)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1-intern', 'js-page-load-samples', 1)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1-intern', 'js-page-load-time', 2615)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1-intern', 'js-page-load-tz-480-time', 2615)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1-intern', 'js-response-start-time', 1036)
 
         post :add_all, good_metrics_body.to_json
         expect(response).to have_http_status(:success)
@@ -223,16 +223,16 @@ describe AnalyticsController do
       end
 
       it 'should return a 207 with some bad metrics' do
-        controller.request.should_receive(:referer).twice.and_return('http://pandora.box')
+        allow(request).to receive(:referer).twice.and_return('http://pandora.box')
 
-        MetricQueue.instance.should_receive(:push_metric).with('1', 'js-page-view', 1)
-        MetricQueue.instance.should_receive(:push_metric).with('1', 'browser-chrome-55', 1)
-        MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'browser-chrome-55', 1)
-        MetricQueue.instance.should_receive(:push_metric).with('1', 'js-page-view-browse', 1)
-        MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'js-page-load-samples', 1)
-        MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'js-page-load-time', 2615)
-        MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'js-page-load-tz-480-time', 2615)
-        MetricQueue.instance.should_receive(:push_metric).with('1-intern', 'js-response-start-time', 1036)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1', 'js-page-view', 1)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1', 'browser-chrome-55', 1)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1-intern', 'browser-chrome-55', 1)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1', 'js-page-view-browse', 1)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1-intern', 'js-page-load-samples', 1)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1-intern', 'js-page-load-time', 2615)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1-intern', 'js-page-load-tz-480-time', 2615)
+        expect(MetricQueue.instance).to receive(:push_metric).with('1-intern', 'js-response-start-time', 1036)
 
         post :add_all, a_few_bad_metrics_body.to_json, 'Referer' => 'A Test Referer'
         expect(response).to have_http_status(207)
@@ -265,7 +265,7 @@ describe AnalyticsController do
       end
 
       it 'should return a 207 with some bad metrics' do
-        controller.request.should_receive(:referer).twice.and_return('http://pandora.box')
+        allow(request).to receive(:referer).twice.and_return('http://pandora.box')
         post :add_all, a_few_bad_metrics_body.to_json, 'Referer' => 'A Test Referer'
         expect(response).to have_http_status(207)
         expect(response.body).to eq(a_few_bad_metrics_response.to_json)

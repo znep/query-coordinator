@@ -4,17 +4,20 @@ import sinon from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
 import { shallow } from 'enzyme';
 
-import { CalculationPanel, mapStateToProps } from 'components/EditModal/CalculationPanel';
+import { CalculationPanel, mapStateToProps } from 'opMeasure/components/EditModal/CalculationPanel';
 
 describe('CalculationPanel', () => {
   const getProps = (props) => {
     return {
+      calculationType: 'count',
       hasDataSource: true,
+      measure: {},
       onChangeDecimalPlaces: _.noop,
       onChangeUnitLabel: _.noop,
+      onSelectColumn: _.noop,
+      onSelectDateColumn: _.noop,
       onSetCalculationType: sinon.stub(),
       openDataSourceTab: _.noop,
-      calculationType: 'count',
       ...props
     };
   };

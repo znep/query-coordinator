@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { assert } from 'chai';
 
-import reducer from 'reducers/validate';
-import * as actions from 'actions/validate';
+import reducer from 'opMeasure/reducers/validate';
+import * as actions from 'opMeasure/actions/validate';
 
 describe('Validation reducer', () => {
   let state;

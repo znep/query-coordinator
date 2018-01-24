@@ -236,13 +236,15 @@ export const setShortName = (shortName) => ({
 export const OPEN_EDIT_MODAL = 'OPEN_EDIT_MODAL';
 export const openEditModal = () => async (dispatch, getState) => {
   // Need to fetch view metadata first.
-  const dataSourceLensUid = _.get(getState(), 'view.measure.dataSourceLensUid');
-  await fetchDataSourceView(dataSourceLensUid)(dispatch, getState);
+  const viewDataSourceLensUid = _.get(getState(), 'view.measure.dataSourceLensUid');
+  await fetchDataSourceView(viewDataSourceLensUid)(dispatch, getState);
   const { measure, coreView } = getState().view;
+
   dispatch({
     type: OPEN_EDIT_MODAL,
     coreView,
-    measure
+    measure,
+    viewDataSourceLensUid
   });
 };
 

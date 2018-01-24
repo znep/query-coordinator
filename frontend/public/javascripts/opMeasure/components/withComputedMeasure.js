@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 
 import airbrake from 'common/airbrake';
 
-import { calculateMeasure as defaultCalculateMeasure } from '../measureCalculator';
+import { getMetricValue as defaultGetMetricValue } from '../measureCalculator';
 
 // Avoid recomputing measures if there's already been a request for the same (reference-equal)
 // measure. Avoids recomputation in these common scenarios:
@@ -23,7 +23,7 @@ const computationCache = new Map();
 
 // This function takes a component...
 export default function withComputedMeasure(
-  calculateMeasure = defaultCalculateMeasure // Allow for dependency injection in tests
+  getMetricValue = defaultGetMetricValue // Allow for dependency injection in tests
 ) {
   return (WrappedComponent) => {
     const wrappedComponentDisplayName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -74,9 +74,9 @@ export default function withComputedMeasure(
 
       makeRequest() {
         const { measure } = this.props;
-        const promise = computationCache.get(measure) || calculateMeasure(measure);
+        const promise = computationCache.get(measure) || getMetricValue(measure);
         computationCache.set(measure, promise);
-        // TODO: handle calculateMeasure promise failures
+        // TODO: handle getMetricValue promise failures
         promise.then(
           (result) => {
             this.setState(

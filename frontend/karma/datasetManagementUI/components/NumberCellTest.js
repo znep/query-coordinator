@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import renderNumber from 'components/TableCell/NumberCell';
+import renderNumber from 'datasetManagementUI/components/TableCell/NumberCell';
 import React from 'react';
 import { shallow } from 'enzyme';
 

@@ -1,15 +1,16 @@
 import { assert } from 'chai';
 import moment from 'moment';
 
-import Table from 'components/Table';
-import * as mockData from '../../data/mockFetchTable';
+import Table from 'adminActivityFeedSoql/components/Table';
+import mockTranslations from '../../mockTranslations';
+import mockData from '../../data/mockFetchTable';
 
 import testStore from '../../testStore';
 
 describe('Table/Body renders cell', () => {
   const store = testStore({
     table: {
-      data: mockData.data1
+      data: mockData
     }
   });
 
@@ -25,26 +26,26 @@ describe('Table/Body renders cell', () => {
     const thisCell = element.querySelector('tbody tr:nth-of-type(1) td.initiated-by a');
 
     assert.isNotNull(thisCell);
-    assert.equal(thisCell.getAttribute('href'), `/profile/${mockData.data1[0].acting_user_id}`);
-    assert.equal(thisCell.textContent, mockData.data1[0].acting_user_name);
+    assert.equal(thisCell.getAttribute('href'), `/profile/${mockData[0].acting_user_id}`);
+    assert.equal(thisCell.textContent, mockData[0].acting_user_name);
   });
 
   it('event', () => {
     const thisCell = element.querySelector('tbody tr:nth-of-type(1) td.event');
-
-    assert.equal(thisCell.textContent, mockData.data1[0].activity_type);
+    const translation = mockTranslations.filters.events.options[_.snakeCase(mockData[0].activity_type)];
+    assert.equal(thisCell.textContent, translation);
   });
 
   it('item-affected', () => {
     const thisCell = element.querySelector('tbody tr:nth-of-type(1) td.item-affected');
 
-    assert.equal(thisCell.textContent, mockData.data1[0].affected_item);
+    assert.equal(thisCell.textContent, mockData[0].affected_item);
   });
 
   it('date', () => {
     const thisCell = element.querySelector('tbody tr:nth-of-type(1) td.date');
     const formattedDate = moment(
-      mockData.data1[0].created_at,
+      mockData[0].created_at,
       moment.ISO_8601).format('MMMM D, YYYY hh:mm:ss A'
     );
 

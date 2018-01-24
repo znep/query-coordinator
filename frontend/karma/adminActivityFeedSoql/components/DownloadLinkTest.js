@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 
-import DownloadLink from 'components/DownloadLink';
-import * as mockData from '../data/mockFetchTable';
+import DownloadLink from 'adminActivityFeedSoql/components/DownloadLink';
+import mockData from '../data/mockFetchTable';
 import mockTranslations from '../mockTranslations';
 import testStore from '../testStore';
 
@@ -25,7 +25,7 @@ describe('DownloadLink', () => {
   describe('With Data', () => {
     const store = testStore({
       table: {
-        data: mockData.data1
+        data: mockData
       },
       filters: {},
       order: {}

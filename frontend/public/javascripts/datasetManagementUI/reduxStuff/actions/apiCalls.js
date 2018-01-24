@@ -1,3 +1,6 @@
+import { socrataFetch, getJson } from 'datasetManagementUI/lib/http';
+import { sessionStatus } from 'datasetManagementUI/links/links';
+
 // TODO: move these constants to some other file
 // these actions should be reusable with another set of operations
 export const LOAD_ROWS = 'LOAD_ROWS';
@@ -40,8 +43,25 @@ export const apiCallSucceeded = id => ({
 });
 
 export const API_CALL_FAILED = 'API_CALL_FAILED';
-export const apiCallFailed = (id, error) => ({
-  type: API_CALL_FAILED,
-  id,
-  error
-});
+export const apiCallFailed = (id, error) => dispatch => {
+  if (typeof id !== 'undefined' && id !== null) {
+    dispatch({
+      type: API_CALL_FAILED,
+      id,
+      error
+    });
+  }
+
+  // if user session is expired, redirect to login page
+  return socrataFetch(sessionStatus)
+    .then(getJson)
+    .then(resp => {
+      console.log('sessionStatus resp:', resp);
+      if (resp.expired === 'expired') {
+        window.location.reload();
+      }
+    })
+    .catch(requestErr => {
+      console.error('session status error:', requestErr);
+    });
+};

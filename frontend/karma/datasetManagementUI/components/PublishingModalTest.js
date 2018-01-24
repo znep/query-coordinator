@@ -3,8 +3,8 @@ import dotProp from 'dot-prop-immutable';
 import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
-import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
-import Publishing, { computeProgress } from 'components/Publishing/Publishing';
+import * as ApplyRevision from 'datasetManagementUI/reduxStuff/actions/applyRevision';
+import Publishing, { computeProgress } from 'datasetManagementUI/components/Publishing/Publishing';
 
 describe('components/Publishing', () => {
   const rowsToBeUpserted = 1000;

@@ -60,6 +60,55 @@ describe View do
     end
   end
 
+  describe '#can_edit_measure?' do
+    let(:non_measure_view) do
+      View.new({
+        "id" => "test-test",
+        "name" => "Im a measure",
+        "viewType" => "not_measure",
+        "displayType" => "not_measure"
+      })
+    end
+
+    let(:measure_view) do
+      View.new({
+        "id" => "test-test",
+        "name" => "Im a measure",
+        "viewType" => "measure",
+        "displayType" => "measure",
+        "rights" => rights
+      })
+    end
+
+    it 'raises a RunTimeError when view is not a measure' do
+      expect { non_measure_view.can_edit_measure? }.to raise_error(RuntimeError)
+    end
+
+    describe 'on a view with mutation rights' do
+      let(:rights) { [ViewRights::ADD, ViewRights::DELETE, ViewRights::WRITE, ViewRights::UPDATE_VIEW] }
+
+      it 'returns true' do
+        expect(measure_view.can_edit_measure?).to be(true)
+      end
+    end
+
+    describe 'on a view with read only rights' do
+      let(:rights) { [ViewRights::READ] }
+
+      it 'returns false' do
+        expect(measure_view.can_edit_measure?).to be(false)
+      end
+    end
+
+    describe 'on a view with no rights' do
+      let(:rights) { [] }
+
+      it 'returns false' do
+        expect(measure_view.can_edit_measure?).to be(false)
+      end
+    end
+  end
+
   describe 'draft display types' do
     let(:fake_views) do
       [
@@ -141,7 +190,7 @@ describe View do
     end
 
     it 'returns a hash from ids to values' do
-      CurrentDomain.stubs(:cname => 'localhost')
+      allow(CurrentDomain).to receive(:cname).and_return('localhost')
 
       stub_request(:get, 'http://localhost:8080/views.json?ids%5B%5D=fake-fak1&ids%5B%5D=fake-fak2&ids%5B%5D=fake-fak3').
          with(:headers => request_headers).
@@ -318,7 +367,7 @@ describe View do
 
   describe '.named_resource_url' do
     before do
-      CurrentDomain.stubs(:cname => 'localhost')
+      allow(CurrentDomain).to receive(:cname).and_return('localhost')
     end
 
     it 'does not return a url if there is no resourceName' do

@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 
-import { ReportingPeriodSize } from 'components/EditModal/ReportingPeriodSize';
+import { ReportingPeriodSize } from 'opMeasure/components/EditModal/ReportingPeriodSize';
 
 describe('ReportingPeriodSize', () => {
   const getProps = (props) => ({

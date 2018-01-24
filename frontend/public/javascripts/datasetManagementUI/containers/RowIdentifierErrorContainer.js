@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import { hideModal } from 'reduxStuff/actions/modal';
-import RowIdentifierError from 'components/RowIdentifierError/RowIdentifierError';
+import { hideModal } from 'datasetManagementUI/reduxStuff/actions/modal';
+import RowIdentifierError from 'datasetManagementUI/components/RowIdentifierError/RowIdentifierError';
 
 function mapDispatchToProps(dispatch) {
   return {

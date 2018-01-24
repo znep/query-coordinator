@@ -126,6 +126,11 @@ module ApplicationHelper
       FeatureFlags.derive(nil, request).open_performance_standalone_measures
   end
 
+  def current_user_can_create_measure?
+    op_standalone_measures_enabled? &&
+      current_user.has_right?(UserRights::CREATE_MEASURES)
+  end
+
 # PAGE-HEADER
 
   def get_favicon_tag
@@ -1048,11 +1053,6 @@ module ApplicationHelper
       current_user.has_right?(UserRights::CREATE_STORY)
   end
 
-  def current_user_can_create_measure?
-    # TODO: Pending the future of rights management, add an appropriate rights check.
-    op_standalone_measures_enabled?
-  end
-
   # ONCALL-3032: Spam e-mail sent via the Socrata platform
   #
   # The ability for unauthenticated users to send 'share this dataset via email' messages
@@ -1243,10 +1243,19 @@ module ApplicationHelper
   # - If the Asset Action Bar shows up, and
   # - If UI elements replaced by the A2B are hidden
   def render_asset_action_bar?
+    _req = defined?(request) ? request : nil
     return false unless FeatureFlags.value_for(:enable_asset_action_bar,
-                                               view: @view, request: request)
+                                               view: @view, request: _req)
 
     return false unless current_user_can_see_asset_action_bar?
+    return false if action_name == 'new'
+
+    # On DSMUI, we also need a second flag to decide rendering.
+    on_dsmui = controller_name == 'datasets' &&
+      %w(show_revision current_revision).include?(action_name)
+    return false if on_dsmui &&
+      FeatureFlags.value_for(:enable_asset_action_bar_on_dsmui,
+                             view: @view, request: _req) == false
 
     # Currently we want it to show on DSLP and nowhere else,
     # but it will eventually be in other places.

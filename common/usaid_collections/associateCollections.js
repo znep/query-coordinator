@@ -17,6 +17,7 @@
 
 import _ from 'lodash';
 import 'whatwg-fetch';
+import utils from 'common/js_utils';
 
 // copied from dsmui/lib/http
 const defaultFetchOptions = {
@@ -85,7 +86,13 @@ export function mergeNewAccessPoint(view, newAccessPoint) {
 
 function linkFor(fourfour, name, category) {
   const location = document.location;
-  const path = `/${category || 'dataset'}/${name}/${fourfour}`;
+  let categoryPath;
+  if (category) {
+    categoryPath = utils.convertToUrlComponent(category);
+  } else {
+    categoryPath = 'dataset';
+  }
+  const path = `/${categoryPath}/${utils.convertToUrlComponent(name)}/${fourfour}`;
   return encodeURI(`${location.protocol}//${location.hostname}${path}`);
 }
 

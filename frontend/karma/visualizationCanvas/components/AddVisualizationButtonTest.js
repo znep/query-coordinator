@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { AddVisualizationButton } from 'components/AddVisualizationButton';
+import { AddVisualizationButton } from 'visualizationCanvas/components/AddVisualizationButton';
 
 describe('AddVisualizationButton', () => {
   const getProps = (props) => {

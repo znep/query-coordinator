@@ -112,7 +112,7 @@ describe('Button', function() {
       children: ['Content']
     };
     const element = shallow(<Button {...props} />);
-    assert.equal(element.text(), '');
+    assert.equal(element.find('.btn-content').prop('style').visibility, 'hidden');
   });
 });
 

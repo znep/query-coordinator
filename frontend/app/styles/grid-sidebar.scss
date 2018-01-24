@@ -274,6 +274,7 @@ body.grid-view-classic {
  * body, and the updated ones are under the '.grid-view-2017-refresh' class.
  */
 body.grid-view-2017-refresh {
+
   #gridSidebar {
     position: absolute;
     top: 0;
@@ -849,6 +850,23 @@ body.grid-view-2017-refresh {
 
                 &.prompt {
                   color: #c4c4c4;
+                }
+              }
+
+              textarea {
+                margin: 0 0 4px 0;
+                padding: 0.5em;
+                color: #5e5e5e;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 15px;
+                font-weight: 400 !important;
+                border-radius: 1px;
+                box-shadow: none;
+                box-sizing: border-box;
+                resize: vertical;
+
+                &.prompt {
+                  color: #c7c7c7;
                 }
               }
             }

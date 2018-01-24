@@ -26,7 +26,7 @@ function dimension(vif, seriesIndex) {
   switch (aggregationFunction) {
 
     case 'sum':
-      return ' SUM(`{0}`)'.format(columnName);
+      return 'SUM(`{0}`)'.format(columnName);
 
     case 'count':
       return 'COUNT(*)';
@@ -83,10 +83,22 @@ function measure(vif, seriesIndex) {
   switch (aggregationFunction) {
 
     case 'sum':
-      return ' SUM(`{0}`)'.format(columnName);
+      return 'SUM(`{0}`)'.format(columnName);
 
     case 'count':
       return 'COUNT(*)';
+
+    case 'avg':
+      return 'AVG(`{0}`)'.format(columnName);
+
+    case 'max':
+      return 'MAX(`{0}`)'.format(columnName);
+
+    case 'median':
+      return 'MEDIAN(`{0}`)'.format(columnName);
+
+    case 'min':
+      return 'MIN(`{0}`)'.format(columnName);
 
     default:
       return '`{0}`'.format(columnName);
@@ -763,5 +775,6 @@ module.exports = {
   whereClauseNotFilteringOwnColumn,
   whereClauseFilteringOwnColumn,
   filterToWhereClauseComponent,
-  soqlEncodeValue
+  soqlEncodeValue,
+  soqlEncodeColumnName
 };

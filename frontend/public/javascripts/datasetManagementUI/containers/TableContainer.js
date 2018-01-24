@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { browserHistory } from 'react-router';
-import * as Selectors from 'selectors';
-import * as DisplayState from 'lib/displayState';
-import * as Links from 'links/links';
-import Table from 'components/Table/Table';
+import * as Selectors from 'datasetManagementUI/selectors';
+import * as DisplayState from 'datasetManagementUI/lib/displayState';
+import * as Links from 'datasetManagementUI/links/links';
+import Table from 'datasetManagementUI/components/Table/Table';
 
 // TODO: this is wrong...this only gets a single input column....not all
 const getInputColumns = (entities, outputColumns) =>

@@ -66,7 +66,6 @@ namespace :test do
       'visualizationCanvas' => 'update_visualization_canvas_translations',
 
       'approvals' => nil,
-      'exampleTestSuite' => nil,
       'internal_asset_manager' => nil,
       'oldUx' => nil,
       'userProfile' => nil,
@@ -240,6 +239,7 @@ namespace :test do
       task :update_dataset_landing_page_translations do
         translation_map = {
           '': 'dataset_landing_page',
+          dataset_landing_page: 'dataset_landing_page',
           data_types: 'core.data_types',
           common: 'common'
         }

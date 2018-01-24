@@ -1,6 +1,7 @@
 @import 'common/styleguide/variables/colors';
 
 @import "variables/breakpoints";
+@import "common/export-flannel";
 @import "common/feedback-panel";
 
 @import "common/visualizations/views/styles/socrata-visualizations";
@@ -74,13 +75,14 @@ body {
       }
     }
 
-    input, textarea {
+    #share-embed-code-field,
+    #share-link-field {
       width: 100%;
       padding: 0.5rem;
       margin: 0.5rem 0;
     }
 
-    textarea {
+    #share-embed-code-field {
       height: 80px;
       max-width: 100%;
       font-family: monospace;
@@ -333,16 +335,6 @@ body {
   .visualization-canvas-body {
     margin: 0 auto;
 
-    &.edit-mode, &.preview-mode {
-      .info-pane {
-        .entry-header {
-          .entry-actions {
-            display: none;
-          }
-        }
-      }
-    }
-
     .info-pane {
       padding-top: 15px;
       margin-bottom: 0;
@@ -362,6 +354,7 @@ body {
           display: flex;
           flex: 1 1 10%;
           justify-content: flex-end;
+          padding-top: 10px;
         }
       }
 
@@ -392,12 +385,6 @@ body {
         position: relative;
         z-index: 4;
 
-        &:hover, &:focus {
-          .action-btns .btn {
-            opacity: 1;
-          }
-        }
-
         .action-btns {
           $btn-z-index: 5;
 
@@ -412,7 +399,6 @@ body {
             vertical-align: top;
             font-size: 12px;
             height: 30px;
-            opacity: 0;
 
             &:hover, &:focus {
               opacity: 1;
@@ -568,5 +554,13 @@ footer#site-chrome-footer {
 
   footer#site-chrome-footer {
     display: none;
+  }
+}
+
+.btn-container {
+  display: inline-block;
+
+  .btn {
+    line-height: 16px;
   }
 }

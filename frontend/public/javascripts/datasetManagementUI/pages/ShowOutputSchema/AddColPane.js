@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import AddColForm from 'containers/AddColFormContainer';
-import SchemaPreivewTable from 'containers/SchemaPreviewTableContainer';
-import FlashMessage from 'containers/FlashMessageContainer';
+import AddColForm from 'datasetManagementUI/containers/AddColFormContainer';
+import SchemaPreivewTable from 'datasetManagementUI/containers/SchemaPreviewTableContainer';
+import FlashMessage from 'datasetManagementUI/containers/FlashMessageContainer';
 import styles from './ShowOutputSchema.module.scss';
 
 class AddColPane extends Component {

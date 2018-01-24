@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
 import _ from 'lodash';
-import SetupAutomation from 'components/SetupAutomation/SetupAutomation';
+import SetupAutomation from 'datasetManagementUI/components/SetupAutomation/SetupAutomation';
 
 describe('components/SetupAutomation', () => {
   const defaultProps = {
@@ -28,14 +28,25 @@ describe('components/SetupAutomation', () => {
       }
     },
     fourfour: 'four-four',
-    importConfigName: 'foo-config',
     outputSchemaId: 382,
+    createImportConfig: _.noop,
     onDismiss: sinon.spy()
   };
 
-  it('renders', () => {
+  it('renders dropdown when no importConfig is present', () => {
     const component = shallow(<SetupAutomation {...defaultProps} />);
-    const code = component.find('UploadSourcePythonCode');
+    const selector = component.find('DataActionChooser');
+    assert.isTrue(selector.exists());
+  });
+
+  it('renders code when importConfig is present', () => {
+    const component = shallow(<SetupAutomation {...defaultProps } />);
+    component.instance().setState({
+      importConfig: {
+        name: 'foo'
+      }
+    })
+    const code = component.find('ImportConfigSteps');
     assert.isTrue(code.exists());
   });
 

@@ -1,7 +1,8 @@
 var karmaConfig = require('../helpers/karma_config');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
-  'example.config.js', // UPDATE
-  [ 'karma/exampleTestSuite' ] // UPDATE
+  'shared.config.js',
+  [ 'karma/exampleTestSuite' ], // UPDATE
+  [ 'exampleTestSuite' ] // UPDATE
 );
 
 module.exports = function (karma) {

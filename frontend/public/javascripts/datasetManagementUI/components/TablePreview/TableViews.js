@@ -2,9 +2,9 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router';
-import NotifyButton from 'containers/NotifyButtonContainer';
-import * as Links from 'links/links';
-import DatasetPreview from 'containers/DatasetPreviewContainer';
+import NotifyButton from 'datasetManagementUI/containers/NotifyButtonContainer';
+import * as Links from 'datasetManagementUI/links/links';
+import DatasetPreview from 'datasetManagementUI/containers/DatasetPreviewContainer';
 import styles from './TablePreview.module.scss';
 import SocrataIcon from 'common/components/SocrataIcon';
 

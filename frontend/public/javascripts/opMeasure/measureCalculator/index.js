@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { SoqlDataProvider, SoqlHelpers } from 'common/visualizations/dataProviders';
+import ReportingPeriods from '../lib/reportingPeriods';
 import { CalculationTypeNames } from '../lib/constants';
 import { assert, assertIsOneOfTypes } from 'common/js_utils';
 
@@ -48,51 +49,42 @@ const setupSoqlDataProvider = (measure) => {
 
 /* Helper functions. Should use BigNumbers where possible. */
 
-const addColumnConditionWhereClause = (query, fieldName, columnCondition) => {
+const columnConditionWhereClause = (fieldName, columnCondition) => {
   if (columnCondition) {
-    const whereClause = SoqlHelpers.filterToWhereClauseComponent({
+    return SoqlHelpers.filterToWhereClauseComponent({
       columnName: fieldName,
       ...columnCondition
     });
-    if (_.isEmpty(whereClause)) {
-      return query;
-    } else {
-      return `${query} where ${whereClause}`;
-    }
-  } else {
-    return query;
   }
+  return null;
 };
 
+const joinWhereClauses = (whereClauses) => _(whereClauses).compact().join(' AND ');
+
 // Returns: BigNumber.
-const count = async (dataProvider, fieldName, columnCondition) => {
-  if (_.isEmpty(columnCondition)) {
-    // Can short circuit with faster query here.
-    return new BigNumber(await dataProvider.getRowCount());
-  }
+const count = async (dataProvider, fieldName, whereClauses) => {
+  assert(whereClauses.length > 0, 'At least one where clause must be supplied.');
 
   const countAlias = '__measure_count_alias__';
-  const query = addColumnConditionWhereClause(
-    `select count(${fieldName}) as ${countAlias}`,
-    fieldName,
-    columnCondition
-  );
+  const query = `select count(${fieldName}) as ${countAlias} where ${joinWhereClauses(whereClauses)}`;
   const data = await dataProvider.rawQuery(query);
   return new BigNumber(data[0][countAlias]);
 };
 
-// Returns: BigNumber.
-const sum = async (dataProvider, fieldName, columnCondition) => {
+// Returns: BigNumber (when rows are present) or null (when no rows are present).
+const sum = async (dataProvider, fieldName, whereClauses) => {
+  assert(whereClauses.length > 0, 'At least one where clause must be supplied.');
+
   const sumAlias = '__measure_sum_alias__';
 
-  const query = addColumnConditionWhereClause(
-    `select sum(${fieldName}) as ${sumAlias}`,
-    fieldName,
-    columnCondition
-  );
+  const query = `select sum(${fieldName}) as ${sumAlias} where ${joinWhereClauses(whereClauses)}`;
 
   const data = await dataProvider.rawQuery(query);
-  return new BigNumber(data[0][sumAlias]);
+  if (_.has(data, [0, sumAlias])) {
+    return new BigNumber(data[0][sumAlias]);
+  } else {
+    return null;
+  }
 };
 
 const excludeNullsFilter = (fieldName) => ({
@@ -102,80 +94,79 @@ const excludeNullsFilter = (fieldName) => ({
 });
 
 /* Measure types
- * Should generally return objects like:
- * {
- *   result: string (usually from BigNumber#toFixed),
- *   // calculation-specific fields:
- *   numerator: string (Rate)
- *   denominator: string (Rate)
- *   dividingByZero: bool (Rate)
- * }
- *
- * If any parts of the calculation are not defined (i.e., missing a required
- * field), the corresponding properties should not be specified. For instance,
- * here's what a Rate calculation with an invalid denominator should return:
- * {
- *   numerator: BigNumber<XXX>
- * }
- *
- * And here is what an undefined sum calculation should return:
- * { }
  */
 
-export const calculateCountMeasure = async (measure) => {
+export const calculateCountMeasure = async (errors, measure, dateRangeWhereClause) => {
+  const dataProvider = setupSoqlDataProvider(measure);
+  const dateColumn = _.get(measure, 'metricConfig.dateColumn');
+  const column = _.get(measure, 'metricConfig.arguments.column');
+
+  let result = null;
+
+  if (column && dataProvider && dateRangeWhereClause) {
+    const columnCondition = _.get(measure, 'metricConfig.arguments.includeNullValues') ?
+      null : excludeNullsFilter(column);
+
+    result = (await count(
+      dataProvider,
+      column,
+      [columnConditionWhereClause(column, columnCondition), dateRangeWhereClause]
+    )).toFixed(0); // No sense having decimals for counts.
+  } else {
+    errors.calculationNotConfigured = !column || !dateColumn;
+  }
+
+  return { ...errors, result };
+};
+
+export const calculateSumMeasure = async (errors, measure, dateRangeWhereClause) => {
   const dataProvider = setupSoqlDataProvider(measure);
   const column = _.get(measure, 'metricConfig.arguments.column');
-  if (!dataProvider || !column) {
-    return {};
-  }
-
-  const columnCondition = _.get(measure, 'metricConfig.arguments.includeNullValues') ?
-    null : excludeNullsFilter(column);
-
-  const result = await count(
-    dataProvider,
-    column,
-    columnCondition
-  );
-
-  return {
-    result: result.toFixed(0) // No sense having decimals for counts.
-  };
-};
-
-export const calculateSumMeasure = async (measure) => {
-  const dataProvider = setupSoqlDataProvider(measure);
-  const column = _.get(measure, 'metricConfig.arguments.column');
+  const dateColumn = _.get(measure, 'metricConfig.dateColumn');
   const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces');
 
-  if (!dataProvider || !column) {
-    return {};
+  let result = null;
+
+  if (column && dataProvider && dateRangeWhereClause) {
+    result = (await sum(dataProvider, column, [dateRangeWhereClause])).toFixed(decimalPlaces);
+  } else {
+    errors.calculationNotConfigured = !column || !dateColumn;
   }
 
-  return {
-    result: (await sum(dataProvider, column)).toFixed(decimalPlaces)
-  };
+  return { ...errors, result };
 };
 
-export const calculateRecentValueMeasure = async (measure) => {
+export const calculateRecentValueMeasure = async (errors, measure, endDate) => {
   const dataProvider = setupSoqlDataProvider(measure);
-  const valueColumnFieldName = _.get(measure, 'metricConfig.arguments.valueColumn');
-  const dateColumnFieldName = _.get(measure, 'metricConfig.dateColumn');
+  const valueColumn = _.get(measure, 'metricConfig.arguments.valueColumn');
+  const dateColumn = _.get(measure, 'metricConfig.dateColumn');
   const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces');
 
-  if (!dataProvider || !valueColumnFieldName || !dateColumnFieldName) {
-    return {};
-  }
-  const data = await dataProvider.rawQuery(
-    `select ${valueColumnFieldName} order by ${dateColumnFieldName} DESC limit 1`
-  );
+  let result = null;
 
-  return {
-    result: new BigNumber(_.values(data[0])[0]).toFixed(decimalPlaces)
-  };
+  if (endDate && valueColumn && dateColumn && dataProvider) {
+    const endDateSoql = SoqlHelpers.soqlEncodeValue(endDate.toDate());
+    const dateColumnEncoded = SoqlHelpers.soqlEncodeColumnName(dateColumn);
+
+    const where = `${dateColumnEncoded} < ${endDateSoql} AND ${valueColumn} is not null`;
+    const data = await dataProvider.rawQuery(
+      `select ${valueColumn} where ${where} order by ${dateColumn} DESC limit 1`
+    );
+
+    result = new BigNumber(_.values(data[0])[0]).toFixed(decimalPlaces);
+  } else {
+    errors.calculationNotConfigured = !valueColumn || !dateColumn;
+  }
+
+  return { ...errors, result };
 };
 
-export const calculateRateMeasure = async (measure, dataProvider = setupSoqlDataProvider(measure)) => {
+export const calculateRateMeasure = async (
+  errors,
+  measure,
+  dateRangeWhereClause,
+  dataProvider = setupSoqlDataProvider(measure)
+) => {
   const {
     aggregationType,
     numeratorColumn,
@@ -197,96 +188,181 @@ export const calculateRateMeasure = async (measure, dataProvider = setupSoqlData
     );
   }
 
+  const dateColumn = _.get(measure, 'metricConfig.dateColumn');
   const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces');
   const asPercent = _.get(measure, 'metricConfig.display.asPercent');
 
-  if (!dataProvider) {
-    return {};
-  }
+  const numeratorOk = !!numeratorColumn;
+  const denominatorOk = (denominatorColumn || !_.isEmpty(fixedDenominator));
+  if (aggregationType && (numeratorOk || denominatorOk) && dataProvider && dateRangeWhereClause) {
+    const numeratorColumnConditionWhereClause =
+      columnConditionWhereClause(numeratorColumn, numeratorColumnCondition);
 
-  let numeratorPromise; // Note: This will get filters added soon.
-  let denominatorPromise = _.isEmpty(fixedDenominator) ?
-    null :
-    Promise.resolve(fixedDenominator);
+    let numeratorPromise; // Note: This will get filters added soon.
+    let denominatorPromise = _.isEmpty(fixedDenominator) ?
+      null :
+      Promise.resolve(fixedDenominator);
 
-  // Come up with promises for numerator and denominator.
-  // If either numerator or denominator have the possibility
-  // of calculating, we should proceed. The app will provide
-  // partial results in edit mode even if half of the fraction
-  // is not fully-specified.
-  switch (aggregationType) {
-    case CalculationTypeNames.COUNT: {
-      numeratorPromise = numeratorColumn ?
-        count(dataProvider, numeratorColumn, numeratorColumnCondition) :
-        null;
+    // Come up with promises for numerator and denominator.
+    // If either numerator or denominator have the possibility
+    // of calculating, we should proceed. The app will provide
+    // partial results in edit mode even if half of the fraction
+    // is not fully-specified.
+    switch (aggregationType) {
+      case CalculationTypeNames.COUNT: {
+        numeratorPromise = numeratorColumn ?
+          count(
+            dataProvider, numeratorColumn, [numeratorColumnConditionWhereClause, dateRangeWhereClause]
+          ) : null;
 
-      const denominatorColumnCondition = denominatorIncludeNullValues ?
-        null : excludeNullsFilter(denominatorColumn);
+        const denominatorColumnConditionWhereClause = denominatorIncludeNullValues ?
+          null :
+          columnConditionWhereClause(denominatorColumn, excludeNullsFilter(denominatorColumn));
 
-      denominatorPromise = denominatorPromise ||
-        (denominatorColumn ? count(dataProvider, denominatorColumn, denominatorColumnCondition) : null);
-      break;
+        denominatorPromise = denominatorPromise ||
+          (denominatorColumn ?
+            count(
+              dataProvider, denominatorColumn, [denominatorColumnConditionWhereClause, dateRangeWhereClause]
+            ) : null);
+        break;
+      }
+      case CalculationTypeNames.SUM:
+        numeratorPromise = numeratorColumn ?
+          sum(dataProvider, numeratorColumn, [numeratorColumnConditionWhereClause, dateRangeWhereClause]) :
+          null;
+
+        denominatorPromise = denominatorPromise ||
+          (denominatorColumn ? sum(dataProvider, denominatorColumn, [dateRangeWhereClause]) : null);
+        break;
+      default:
+        throw new Error(`Unknown aggregation type: ${aggregationType}`);
     }
-    case CalculationTypeNames.SUM:
-      numeratorPromise = numeratorColumn ?
-        sum(dataProvider, numeratorColumn, numeratorColumnCondition) :
-        null;
 
-      denominatorPromise = denominatorPromise ||
-        (denominatorColumn ? sum(dataProvider, denominatorColumn) : null);
-      break;
-    case undefined:
-      // Numerator column cannot be computed if we don't have an aggregation.
-      // However, we can compute the denominator if it is fixed.
-      // We don't need to do anything here as denominatorPromise will
-      // already be set up for us - we just need to avoid the default:
-      // case.
-      break;
-    default:
-      throw new Error(`Unknown aggregation type: ${aggregationType}`);
+    let numerator = await numeratorPromise;
+    let denominator = await denominatorPromise;
+    if (numerator) { numerator = new BigNumber(numerator); }
+    if (denominator) { denominator = new BigNumber(denominator); }
+
+    const calculation = {};
+    if (numerator) { calculation.numerator = numerator.toString(); }
+    if (denominator) {
+      calculation.denominator = denominator.toString();
+      calculation.dividingByZero = denominator.isZero();
+    }
+    if (numerator && denominator) {
+      calculation.result = numerator.dividedBy(denominator).
+        times(asPercent ? '100' : '1').
+        toFixed(decimalPlaces);
+    } else {
+      errors.calculationNotConfigured = true;
+    }
+
+    return {
+      ...errors,
+      ...calculation
+    };
+  } else {
+    errors.calculationNotConfigured =
+      !numeratorOk || !denominatorOk || !aggregationType || !dateColumn;
+
+    // Special case: If the denominator is fixed, we can always at least return that.
+    if (!_.isEmpty(fixedDenominator)) {
+      return {
+        ...errors,
+        denominator: fixedDenominator.toString(),
+        dividingByZero: new BigNumber(fixedDenominator).isZero()
+      };
+    }
+
+    return errors;
   }
-
-  let numerator = await numeratorPromise;
-  let denominator = await denominatorPromise;
-  if (numerator) { numerator = new BigNumber(numerator); }
-  if (denominator) { denominator = new BigNumber(denominator); }
-
-  const calculation = {};
-  if (numerator) { calculation.numerator = numerator.toString(); }
-  if (denominator) {
-    calculation.denominator = denominator.toString();
-    calculation.dividingByZero = denominator.isZero();
-  }
-  if (numerator && denominator) {
-    calculation.result = numerator.dividedBy(denominator).
-      times(asPercent ? '100' : '1').
-      toFixed(decimalPlaces);
-  }
-
-  return calculation;
 };
 
-export const calculateMeasure = async (measure) => {
+export const calculateMeasure = async (measure, dateRange) => {
   assertIsOneOfTypes(measure, 'object');
+  // Our error detection logic needs to be very robust and be able to provide sensible guidance to the user
+  // in common cases. The easiest way we came up with is to have an errors hash that we poke error states
+  // into as we go along.
+  const errors = {};
 
   const calculationType = _.get(measure, 'metricConfig.type');
+  const dateColumn = _.get(measure, 'metricConfig.dateColumn');
+  const reportingPeriod = _.get(measure, 'metricConfig.reportingPeriod');
+  // Did the user even specify a reporting period?
+  errors.noReportingPeriodConfigured = !ReportingPeriods.isConfigValid(reportingPeriod);
+  // ... and if they did, does it give us a valid date range for today's value?
+  errors.noReportingPeriodAvailable = !dateRange;
 
-  if (_.isUndefined(calculationType)) {
-    return {}; // Calculation undefined, but that's fine. See comment at top of section.
-  }
+  errors.dataSourceNotConfigured = _.isUndefined(_.get(measure, 'dataSourceLensUid'));
 
-  assertIsOneOfTypes(calculationType, 'string');
+  // A blank dateRange can happen if:
+  //   * The start date is in the future, or
+  //   * The period type is "closed" and we haven't closed any reporting periods (i.e.,
+  //     it's 1/1/2018, the period length is 1 year, and the first period started on 6/01/2017).
+  const dateRangeWhereClause = (dateRange && dateColumn) ? dateRange.asSoQL(dateColumn) : null;
 
   switch (calculationType) {
     case CalculationTypeNames.COUNT:
-      return calculateCountMeasure(measure);
+      return calculateCountMeasure(errors, measure, dateRangeWhereClause);
     case CalculationTypeNames.SUM:
-      return calculateSumMeasure(measure);
+      return calculateSumMeasure(errors, measure, dateRangeWhereClause);
     case CalculationTypeNames.RECENT:
-      return calculateRecentValueMeasure(measure);
+      return calculateRecentValueMeasure(
+        errors,
+        measure,
+        dateRange ? dateRange.end : null,
+        dateColumn
+      );
     case CalculationTypeNames.RATE:
-      return calculateRateMeasure(measure);
+      return calculateRateMeasure(errors, measure, dateRangeWhereClause);
+    case undefined:
+      errors.calculationNotConfigured = true;
+      return errors;
     default:
       throw new Error(`Unknown calculation type: ${calculationType}`);
   }
+};
+
+// getMetricSeries and getMetricValue return one or more "measure computation result" objects. These objects
+// are designed to not only communicate the computed value (if one is available), but also communicate the
+// reason, if any, for a computed value being unavailable. Each object takes this form:
+//
+// {
+//   result: String (usually from BigNumber#toFixed). The computed value. May not be present if an
+//     exceptional condition is present.
+//   numerator: string (Rate measures only)
+//   denominator: string (Rate measures only)
+//
+//   dividingByZero: Boolean (Rate measures only). Indicates the denominator is zero.
+//   dataSourceNotConfigured: Boolean. If set to true, indicates that the data source is not configured.
+//   noReportingPeriodAvailable: Boolean. If set to true, indicates that no reporting period is usable
+//     (this can happen if the start date is in the future, or we're using closed reporting periods and
+//     no period has closed yet).
+//   noReportingPeriodConfigured: Boolean. If set to true, indicates that no reporting period was set
+//     by the user.
+//   calculationNotConfigured: Boolean. Indicates an insufficiently-specified calculation.
+// }
+export const getMetricSeries = async (measure) => {
+  const reportingPeriod = _.get(measure, 'metricConfig.reportingPeriod');
+  if (!ReportingPeriods.isConfigValid(reportingPeriod)) {
+    return [];
+  }
+
+  return await Promise.all(
+    new ReportingPeriods(measure.metricConfig.reportingPeriod).seriesToDate().map((dateRange) =>
+      calculateMeasure(measure, dateRange)
+    )
+  );
+};
+
+// For the number-only embed/metric preview card in the editor.
+export const getMetricValue = async (measure) => {
+  const reportingPeriod = _.get(measure, 'metricConfig.reportingPeriod');
+
+  // Note - this may be undefined in either branch.
+  const period = ReportingPeriods.isConfigValid(reportingPeriod) ?
+    new ReportingPeriods(measure.metricConfig.reportingPeriod).forReportedMetricValue() :
+    undefined;
+
+  return await calculateMeasure(measure, period);
 };

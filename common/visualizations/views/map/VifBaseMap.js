@@ -1,6 +1,12 @@
 import _ from 'lodash';
 import mapboxgl from 'mapbox-gl';
 
+import { getBaseMapStyle } from './baseMapStyle';
+
+const LAYER = {
+  BASE_MAP_RASTER_LAYER: 'raster-base-map-tile'
+};
+
 /**
 * Handles vif center/zoom init/updates.
 * Handles vif baseLayer/baseMapStyle init/updates.
@@ -9,14 +15,25 @@ import mapboxgl from 'mapbox-gl';
 export default class VifBaseMap {
   constructor(map) {
     this._map = map;
+    this._existingVif = {};
   }
 
   initialize(vif) {
-    // TODO: If empty after map implementation, to be removed.
+    this._existingVif = vif;
   }
 
   update(vif) {
     const mapOptions = VifBaseMap.getMapInitOptions(vif);
+    const newBaseMapStyle = getBaseMapStyle(vif);
+    const newBaseMapOpacity = getBaseMapOpacity(vif);
+
+    if (getBaseMapStyle(this._existingVif) !== newBaseMapStyle) {
+      this._map.setStyle(getStyleDef(vif));
+    }
+
+    if (getBaseMapOpacity(this._existingVif) !== newBaseMapOpacity && !isVectorTile(newBaseMapStyle)) {
+      this._map.setPaintProperty(LAYER.BASE_MAP_RASTER_LAYER, 'raster-opacity', newBaseMapOpacity);
+    }
 
     if (mapOptions.zoom && mapOptions.center) {
       this._map.flyTo({
@@ -24,6 +41,7 @@ export default class VifBaseMap {
         center: mapOptions.center
       });
     }
+    this._existingVif = vif;
   }
 
   static getMapInitOptions(vif) {
@@ -39,16 +57,50 @@ export default class VifBaseMap {
       return {
         center: new mapboxgl.LngLat(center.lng, center.lat),
         zoom: zoom,
-        style: getMapStyle(vif)
+        style: getStyleDef(vif)
       };
     } else {
       return {
-        style: getMapStyle(vif)
+        style: getStyleDef(vif)
       };
     }
   }
 }
 
-function getMapStyle(vif) {
-  return _.get(vif, 'configuration.baseMapStyle', 'mapbox://styles/mapbox/light-v9');
+function getStyleDef(vif) {
+  const style = getBaseMapStyle(vif);
+
+  if (isVectorTile(style)) {
+    return style;
+  }
+
+  return {
+    'version' : 8,
+    'glyphs' : 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
+    'sources': {
+      'raster-tiles': {
+        'type': 'raster',
+        'tiles': [style],
+        'tileSize': 256
+      }
+    },
+    'layers': [{
+      'id': LAYER.BASE_MAP_RASTER_LAYER,
+      'type': 'raster',
+      'source': 'raster-tiles',
+      'minzoom': 0,
+      'maxzoom': 22,
+      'paint': {
+        'raster-opacity': getBaseMapOpacity(vif)
+      }
+    }]
+  };
+}
+
+function isVectorTile(style) {
+  return (style + '').indexOf('mapbox://styles/') === 0;
+}
+
+function getBaseMapOpacity(vif) {
+  return Number(_.get(vif, 'configuration.baseMapOpacity', 1));
 }

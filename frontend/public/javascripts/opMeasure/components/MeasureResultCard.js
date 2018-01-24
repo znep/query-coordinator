@@ -5,87 +5,135 @@ import classnames from 'classnames';
 
 import I18n from 'common/i18n';
 import { formatNumber } from 'common/js_utils';
+import { SocrataIcon } from 'common/components';
 
 import withComputedMeasure from './withComputedMeasure';
+import { PeriodTypes } from '../lib/constants';
 
 // Calculates and displays a measure as a tile
 export class MeasureResultCard extends Component {
 
-  renderData() {
-    const { computedMeasure, dataRequestInFlight, placeholder, maxLength } = this.props;
-    const result = _.get(computedMeasure, 'result'); // as a String from toFixed()
-    const dividingByZero = _.get(computedMeasure, 'dividingByZero');
-    const asPercent = _.get(this.props, 'measure.metricConfig.display.asPercent', false);
-    // Default value of -1 for decimalPlaces indicates that no precision was set.
-    const decimalPlaces = _.get(this.props, 'measure.metricConfig.display.decimalPlaces', -1);
+  getSubtitle() {
+    const { measure, computedMeasure } = this.props;
 
-    if (dividingByZero) {
-      return (
-        <div className="measure-dividing-by-zero">
-          {I18n.t('open_performance.measure.dividing_by_zero')}
-        </div>
-      );
-    } else if (result) {
-      const resultClassNames = classnames(
-        'measure-result-big-number',
-        { percent: asPercent }
-      );
-      let formatted = result;
-      const parts = result.split('.');
+    const {
+      calculationNotConfigured,
+      dataSourceNotConfigured,
+      dividingByZero,
+      noReportingPeriodAvailable,
+      noReportingPeriodConfigured
+    } = computedMeasure;
 
-      if (parts[0].length > 6) {
-        // This is a large number, where decimal places are kind of irrelavant.
-        // formatNumber provides the human readable value like 257K and 48M.
-        formatted = formatNumber(Number(result));
-      } else if (parts.length > 1) {
-        if (decimalPlaces === 0) {
-          formatted = parts[0];
-        } else if (decimalPlaces !== -1 && parts[1].length > decimalPlaces) {
-          formatted = `${parts[0]}${I18n.defaultSeparator}${parts[1].substring(0, decimalPlaces)}`;
-        }
-      }
-      // We might still not have room for however many decimalPlaces are requested.
-      if (formatted.length > maxLength) {
-        formatted = formatted.substring(0, maxLength);
-      }
-      return (
-        <div className={resultClassNames} title={formatted}>{formatted}</div>
-      );
-    } else if (dataRequestInFlight) {
-      return (
-        <div className="spinner"></div>
-      );
+    // TODO: Consider removing the else's because we are returning on matches.
+    if (dataSourceNotConfigured || _.isEmpty(computedMeasure)) {
+      return I18n.t('open_performance.no_dataset');
+    } else if (calculationNotConfigured) {
+      return I18n.t('open_performance.no_calculation');
+    } else if (noReportingPeriodConfigured) {
+      return I18n.t('open_performance.no_reporting_period');
+    } else if (noReportingPeriodAvailable) {
+      return I18n.t('open_performance.not_enough_data');
+    } else if (dividingByZero) {
+      return I18n.t('open_performance.measure.dividing_by_zero');
     } else {
-      return (
-        <div className="measure-result-placeholder">{placeholder}</div>
-      );
+      return _.get(measure, 'metricConfig.display.label', '');
     }
   }
 
-  render() {
-    const subtitle = _.get(this.props, 'measure.metricConfig.display.label', '');
-    const hasResult = !!_.get(this.props, 'computedMeasure.result');
+  renderResult(result) {
+    const { maxLength, measure } = this.props;
+    const asPercent = _.get(measure, 'metricConfig.display.asPercent', false);
+    // Default value of -1 for decimalPlaces indicates that no precision was set.
+    const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces', -1);
 
-    const cardClasses = classnames('measure-result-card', {
-      'measure-result-card-empty': !hasResult
-    });
+    const resultClassNames = classnames(
+      'measure-result-big-number',
+      { percent: asPercent }
+    );
+    let formatted = result;
+    const parts = result.split('.');
+
+    if (parts[0].length > 6) {
+      // This is a large number, where decimal places are kind of irrelavant.
+      // formatNumber provides the human readable value like 257K and 48M.
+      formatted = formatNumber(Number(result));
+    } else if (parts.length > 1) {
+      if (decimalPlaces === 0) {
+        formatted = parts[0];
+      } else if (decimalPlaces !== -1 && parts[1].length > decimalPlaces) {
+        formatted = `${parts[0]}${I18n.defaultSeparator}${parts[1].substring(0, decimalPlaces)}`;
+      }
+    }
+    // We might still not have room for however many decimalPlaces are requested.
+    if (formatted.length > maxLength) {
+      formatted = formatted.substring(0, maxLength);
+    }
 
     return (
-      <div className={cardClasses}>
-        {this.renderData()}
+      <div className="measure-result-value">
+        <div className={resultClassNames} title={formatted}>{formatted}</div>
         <div className="measure-result-subtitle">
-          {subtitle}
+          {this.getSubtitle()}
         </div>
+        {this.renderPeriod()}
+      </div>
+    );
+  }
+
+  renderPlaceholder() {
+    return (
+      <div className="measure-result-placeholder">
+        <SocrataIcon name="number" />
+        <div className="measure-result-placeholder-text">
+          {this.getSubtitle()}
+        </div>
+      </div>
+    );
+  }
+
+  renderPeriod() {
+    const { measure } = this.props;
+    const reportingPeriod = _.get(measure, 'metricConfig.reportingPeriod', {});
+    const isClosed = reportingPeriod.type === PeriodTypes.CLOSED;
+
+    return (
+      <div className="reporting-period-type">
+        {
+          isClosed ?
+            I18n.t('open_performance.measure.as_of_last') :
+            I18n.t('open_performance.measure.as_of_today')
+        }
+      </div>
+    );
+  }
+
+  render() {
+    const { computedMeasure, dataRequestInFlight } = this.props;
+    const { result } = computedMeasure;
+
+    const spinner = (
+      <div className="spinner-container">
+        <div className="spinner-default spinner-large"></div>
+      </div>
+    );
+
+    const content = result ?
+      this.renderResult(result) :
+      this.renderPlaceholder();
+
+    return (
+      <div className="measure-result-card">
+        {dataRequestInFlight ? spinner : content}
       </div>
     );
   }
 }
 
 MeasureResultCard.defaultProps = {
-  placeholder: '',
+  computedMeasure: {},
   // maxLength was chosen based on looking at roughly how many digits fit into the div.
   // This is an approximate value that could be refined later.
-  maxLength: 11
+  maxLength: 6
 };
 
 MeasureResultCard.propTypes = {
@@ -99,7 +147,7 @@ MeasureResultCard.propTypes = {
       })
     })
   }).isRequired,
-  placeholder: PropTypes.string,
+  // TODO: Consider adding a shape for computedMeasure
   computedMeasure: PropTypes.object, // See withComputedMeasure.
   dataRequestInFlight: PropTypes.bool,
   maxLength: PropTypes.number // Can override the measure decimalPlaces.

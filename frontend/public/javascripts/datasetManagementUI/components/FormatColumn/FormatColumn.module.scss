@@ -50,6 +50,7 @@
 .thousandsSeparator,
 .decimalSeparator {
   composes: checkbox from global;
+  margin-left: 3px;
 }
 
 .disabled {

@@ -4,7 +4,11 @@ import React, { Component } from 'react';
 import SocrataIcon from 'common/components/SocrataIcon';
 import I18n from 'common/i18n';
 
-class PublicationState extends React.Component {
+class PublicationState extends Component {
+  static propTypes = {
+    publicationState: PropTypes.oneOf(['draft', 'pending', 'published']).isRequired
+  };
+
   render() {
     const { publicationState } = this.props;
     const scope = 'shared.components.asset_action_bar.publication_state';
@@ -31,9 +35,5 @@ class PublicationState extends React.Component {
     );
   }
 }
-
-PublicationState.propTypes = {
-  publicationState: PropTypes.oneOf(['draft', 'pending', 'published']).isRequired
-};
 
 export default PublicationState;

@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { SHOW_MODAL, showModal, HIDE_MODAL, hideModal } from 'reduxStuff/actions/modal';
+import { SHOW_MODAL, showModal, HIDE_MODAL, hideModal } from 'datasetManagementUI/reduxStuff/actions/modal';
 
 describe('modal actions', () => {
   describe('hideModal', () => {

@@ -7,7 +7,7 @@ import I18n from 'common/i18n';
 
 import { COLUMN_TYPES } from '../constants';
 import { getLineColorByColumn, getLineWeightByColumn, getMapType } from '../selectors/vifAuthoring';
-import { getNumericalAndTextColumns, getNumericalColumns } from '../selectors/metadata';
+import { getDisplayableColumns, getNumericalColumns } from '../selectors/metadata';
 import { setLineColorByColumn, setLineWeightByColumn } from '../actions';
 
 export class LineMapOptionsSelector extends Component {
@@ -84,7 +84,7 @@ export class LineMapOptionsSelector extends Component {
     } = this.props;
     const allColumnAttributes = this.renderLineMapOptionsDropdown(
       'line-color-by-value-dropdown',
-      getNumericalAndTextColumns(metadata),
+      getDisplayableColumns(metadata),
       onColorLinesByValueSelection,
       getLineColorByColumn(vifAuthoring)
     );

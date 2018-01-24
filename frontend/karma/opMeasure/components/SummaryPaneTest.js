@@ -2,8 +2,8 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import { assert } from 'chai';
 
-import { AboutThisMeasure } from 'components/AboutThisMeasure';
-import { SummaryPane } from 'components/SummaryPane';
+import { AboutThisMeasure } from 'opMeasure/components/AboutThisMeasure';
+import { SummaryPane } from 'opMeasure/components/SummaryPane';
 
 describe('SummaryPane', () => {
   const getProps = (props) => {
@@ -45,4 +45,5 @@ describe('SummaryPane', () => {
 
     assert.isTrue(element.find('Connect(AboutThisMeasure)').exists());
   });
+
 });

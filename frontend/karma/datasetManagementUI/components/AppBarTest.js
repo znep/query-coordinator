@@ -1,6 +1,6 @@
 import {assert } from 'chai';
 import React from 'react';
-import AppBar from 'components/AppBar/AppBar';
+import AppBar from 'datasetManagementUI/components/AppBar/AppBar';
 import { shallow } from 'enzyme';
 
 describe('components/AppBar', () => {

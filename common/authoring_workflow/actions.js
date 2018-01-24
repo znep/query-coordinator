@@ -614,6 +614,14 @@ export function setShowLegend(showLegend) {
   };
 }
 
+export const SET_SHOW_LEGEND_OPENED = 'SET_SHOW_LEGEND_OPENED';
+export function setShowLegendOpened(showLegendOpened) {
+  return {
+    type: SET_SHOW_LEGEND_OPENED,
+    showLegendOpened
+  };
+}
+
 export const SET_X_AXIS_SCALING_MODE = 'SET_X_AXIS_SCALING_MODE';
 export function setXAxisScalingMode({ shouldFit }) {
   return {
@@ -1030,5 +1038,109 @@ export function setPointAggregation(pointAggregation) {
   return {
     type: SET_POINT_AGGREGATION,
     pointAggregation
+  };
+}
+
+export const SET_BASE_MAP_STYLE = 'SET_BASE_MAP_STYLE';
+export function setBaseMapStyle(baseMapStyle) {
+  return {
+    type: SET_BASE_MAP_STYLE,
+    baseMapStyle
+  };
+}
+
+export const SET_BASE_MAP_OPACITY = 'SET_BASE_MAP_OPACITY';
+export function setBaseMapOpacity(baseMapOpacity) {
+  return {
+    type: SET_BASE_MAP_OPACITY,
+    baseMapOpacity
+  };
+}
+
+export const SET_NAVIGATION_CONTROL = 'SET_NAVIGATION_CONTROL';
+export function setNavigationControl(navigationControl) {
+  return {
+    type: SET_NAVIGATION_CONTROL,
+    navigationControl
+  };
+}
+
+export const SET_GEO_CODER_CONTROL = 'SET_GEO_CODER_CONTROL';
+export function setGeoCoderControl(geoCoderControl) {
+  return {
+    type: SET_GEO_CODER_CONTROL,
+    geoCoderControl
+  };
+}
+
+export const SET_GEO_LOCATE_CONTROL = 'SET_GEO_LOCATE_CONTROL';
+export function setGeoLocateControl(geoLocateControl) {
+  return {
+    type: SET_GEO_LOCATE_CONTROL,
+    geoLocateControl
+  };
+}
+
+export const SET_MAP_FLYOUT_TITLE_COLUMN_NAME = 'SET_MAP_FLYOUT_TITLE_COLUMN_NAME';
+export function setMapFlyoutTitleColumnName(mapFlyoutTitleColumnName) {
+  return {
+    type: SET_MAP_FLYOUT_TITLE_COLUMN_NAME,
+    mapFlyoutTitleColumnName
+  };
+}
+
+export const ADD_BASEMAP_FLYOUT_COLUMN = 'ADD_BASEMAP_FLYOUT_COLUMN';
+export function addBasemapFlyoutColumn(columnName) {
+  return {
+    type: ADD_BASEMAP_FLYOUT_COLUMN,
+    columnName
+  };
+}
+
+export const REMOVE_BASEMAP_FLYOUT_COLUMN = 'REMOVE_BASEMAP_FLYOUT_COLUMN';
+export function removeBasemapFlyoutColumn(relativeIndex) {
+  return {
+    type: REMOVE_BASEMAP_FLYOUT_COLUMN,
+    relativeIndex
+  };
+}
+export const SET_ADDITIONAL_FLYOUT_COLUMNS = 'SET_ADDITIONAL_FLYOUT_COLUMNS';
+export function setAdditionalFlyoutColumns(columnName, relativeIndex) {
+  return {
+    type: SET_ADDITIONAL_FLYOUT_COLUMNS,
+    columnName,
+    relativeIndex
+  };
+}
+
+export const SET_SEARCH_BOUNDARY_UPPER_LEFT_LATITUDE = 'SET_SEARCH_BOUNDARY_UPPER_LEFT_LATITUDE';
+export function setSearchBoundaryUpperLeftLatitude(searchBoundaryUpperLeftLatitude) {
+  return {
+    type: SET_SEARCH_BOUNDARY_UPPER_LEFT_LATITUDE,
+    searchBoundaryUpperLeftLatitude
+  };
+}
+
+export const SET_SEARCH_BOUNDARY_UPPER_LEFT_LONGITUDE = 'SET_SEARCH_BOUNDARY_UPPER_LEFT_LONGITUDE';
+export function setSearchBoundaryUpperLeftLongitude(searchBoundaryUpperLeftLongitude) {
+  return {
+    type: SET_SEARCH_BOUNDARY_UPPER_LEFT_LONGITUDE,
+    searchBoundaryUpperLeftLongitude
+  };
+}
+
+export const SET_SEARCH_BOUNDARY_LOWER_RIGHT_LATITUDE = 'SET_SEARCH_BOUNDARY_LOWER_RIGHT_LATITUDE';
+export function setSearchBoundaryLowerRightLatitude(searchBoundaryLowerRightLatitude) {
+  return {
+    type: SET_SEARCH_BOUNDARY_LOWER_RIGHT_LATITUDE,
+    searchBoundaryLowerRightLatitude
+  };
+}
+
+export const SET_SEARCH_BOUNDARY_LOWER_RIGHT_LONGITUDE = 'SET_SEARCH_BOUNDARY_LOWER_RIGHT_LONGITUDE';
+export function setSearchBoundaryLowerRightLongitude(searchBoundaryLowerRightLongitude) {
+  return {
+    type: SET_SEARCH_BOUNDARY_LOWER_RIGHT_LONGITUDE,
+    searchBoundaryLowerRightLongitude
   };
 }

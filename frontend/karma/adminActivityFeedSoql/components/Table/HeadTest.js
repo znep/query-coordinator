@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { assert } from 'chai';
 
-import Head from 'components/Table/Head';
+import Head from 'adminActivityFeedSoql/components/Table/Head';
 import mockTranslations from '../../mockTranslations';
 
 describe('Table/Head renders cell header', () => {
@@ -39,8 +39,8 @@ describe('Table/Head renders cell header', () => {
 
   it('item_affected', () => {
     assert.equal(
-      element.querySelector('th.dataset-name').textContent,
-      mockTranslations.columns.dataset_name
+      element.querySelector('th.affected-item').textContent,
+      mockTranslations.columns.affected_item
     );
   });
 

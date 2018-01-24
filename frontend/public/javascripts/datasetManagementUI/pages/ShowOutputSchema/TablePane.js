@@ -1,13 +1,13 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { interpolate, easeInOutQuad } from 'lib/interpolate';
+import { interpolate, easeInOutQuad } from 'datasetManagementUI/lib/interpolate';
 import { commaify } from '../../../common/formatNumber';
-import * as Selectors from 'selectors';
-import Table from 'containers/TableContainer';
-import PagerBar from 'containers/PagerBarContainer';
-import ErrorPointer from 'components/ErrorPointer/ErrorPointer';
-import FlashMessage from 'containers/FlashMessageContainer';
+import * as Selectors from 'datasetManagementUI/selectors';
+import Table from 'datasetManagementUI/containers/TableContainer';
+import PagerBar from 'datasetManagementUI/containers/PagerBarContainer';
+import ErrorPointer from 'datasetManagementUI/components/ErrorPointer/ErrorPointer';
+import FlashMessage from 'datasetManagementUI/containers/FlashMessageContainer';
 import styles from './ShowOutputSchema.module.scss';
 
 const COL_WIDTH_PX = 250; // matches style on td in Table.scss

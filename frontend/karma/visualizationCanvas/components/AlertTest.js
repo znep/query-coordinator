@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 
-import { Alert } from 'components/Alert';
+import { Alert } from 'visualizationCanvas/components/Alert';
 
 describe('Alert', () => {
   const getProps = (props) => {

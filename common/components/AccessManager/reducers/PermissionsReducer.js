@@ -1,12 +1,17 @@
-import * as permissionsActions from '../actions/PermissionsActions';
-import * as changeOwnerActions from '../actions/ChangeOwnerActions';
-import { ACCESS_LEVELS } from '../Constants';
-import { userHasAccessLevel, findUserIndexWithAccessLevel } from '../Util';
+import { ACCESS_LEVELS } from 'common/components/AccessManager/Constants';
+import { userHasAccessLevel, findUserIndexWithAccessLevel } from 'common/components/AccessManager/Util';
+
+import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
+import * as changeOwnerActions from 'common/components/AccessManager/actions/ChangeOwnerActions';
+import * as uiActions from 'common/components/AccessManager/actions/UiActions';
 
 // called by AccessManagerSaga when permissions are fetched
 const fetchPermissionsSuccess = (state, action) => ({
   ...state,
-  permissions: action.permissions
+  permissions: action.permissions,
+
+  // we save this off for if the user hits "Cancel"
+  originalPermissions: { ...action.permissions }
 });
 
 // called by AccessManagerSaga when fetching permissions fails
@@ -167,6 +172,22 @@ const changeOwner = (state, action) => {
   };
 };
 
+const cancelButtonClicked = (state) => ({
+  ...state,
+
+  // reset to our original permissions
+  permissions: { ...state.originalPermissions }
+});
+
+const saveSuccess = (state) => ({
+  ...state,
+
+  // set "originalPermissions" to the newly saved permissions
+  // that way, if the user hits "cancel" then opens the modal back up,
+  // they'll see what they just saved
+  originalPermissions: { ...state.permissions }
+});
+
 export default (state = {}, action) => {
   switch (action.type) {
     // permissionsActions
@@ -182,10 +203,16 @@ export default (state = {}, action) => {
       return removeUser(state, action);
     case permissionsActions.ADD_USERS:
       return addUsers(state, action);
+    case permissionsActions.SAVE_SUCCESS:
+      return saveSuccess(state, action);
 
     // changeOwnerActions
     case changeOwnerActions.CONFIRM_SELECTED_OWNER:
       return changeOwner(state, action);
+
+    // uiActions
+    case uiActions.CANCEL_BUTTON_CLICKED:
+      return cancelButtonClicked(state, action);
     default:
       return state;
   }

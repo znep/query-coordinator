@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Notification from 'containers/NotificationContainer';
-import styles from '../UploadNotification/UploadNotification.module.scss';
+import Notification from 'datasetManagementUI/containers/NotificationContainer';
 
 // This component is called by the NotificationList component. Its main purpose
 // is to translate attachment-specific logic into props that the generic Notification
@@ -10,14 +9,14 @@ const AttachmentNotification = ({ percent, filename, status, error }) => {
   let message;
 
   if (error) {
-    message = (<span className={styles.message}>
+    message = (<span className="message">
       {error.message}
     </span>);
   } else {
-    message = (<span className={styles.message}>
+    message = (<span className="message">
       {I18n.notifications.uploading_attachment}
       {' '}
-      <span className={styles.subMessage}>
+      <span className="sub-message">
         {filename}
       </span>
     </span>);

@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { assert } from 'chai';
-import Select from 'components/Select/Select';
+import Select from 'datasetManagementUI/components/Select/Select';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
 

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import NotificationList from 'components/NotificationList/NotificationList';
+import NotificationList from 'datasetManagementUI/components/NotificationList/NotificationList';
 
 const mapStateToProps = ({ ui }) => ({
   notifications: ui.notifications

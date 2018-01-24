@@ -175,16 +175,12 @@ export const ceteraUtils = (() => {
     ceteraQueryString,
     query: (queryOptions) => {
       const { mixpanelContext } = queryOptions;
-
-      if (!mixpanelContext) {
-        console.warn(`No mixpanelContext provided. Mixpanel events may not be reported properly. Consider
-          adding mixpanelContext to this cetera query.`);
-      }
-
       const queryString = ceteraQueryString(queryOptions);
       const fetchUrl = `${CETERA_CATALOG_PATH}?${queryString}`;
 
       const reportToMixpanel = (json) => {
+        // When no mixpanelContext is provided. Mixpanel events may not be reported properly. Consider
+        // adding mixpanelContext to this cetera query.
         if (mixpanelContext) {
           mixpanel.sendPayload(
             mixpanelContext.eventName,
@@ -257,7 +253,7 @@ export const ceteraUtils = (() => {
           ),
           categories: ceteraResult.classification.categories,
           isFederated: resultIsFederated(ceteraResult.metadata.domain),
-          isPublic: true, // Not implemented yet. See cetera::result_row
+          isPublic: ceteraResult.metadata.is_public,
           link: ceteraResult.link,
           previewImageUrl: ceteraResult.preview_image_url,
           tags: ceteraResult.classification.tags,

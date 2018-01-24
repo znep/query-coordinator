@@ -43,8 +43,7 @@ module SocrataSiteChrome
     end
 
     def can_create_measures?
-      # TODO: Pending the future of rights management, add an appropriate rights check.
-      true
+      has_right?('create_measures')
     end
   end
 end

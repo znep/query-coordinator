@@ -4,11 +4,11 @@ import { mount, shallow } from 'enzyme';
 import _ from 'lodash';
 import sinon from 'sinon';
 
-import SignInSignUpSwitcher from 'components/SignInSignUpSwitcher';
-import SignIn from 'components/SignIn';
-import SignInContainer from 'components/SignInContainer';
-import SignUp from 'components/SignUp';
-import LoginModal from 'components/LoginModal';
+import SignInSignUpSwitcher from 'authentication/components/SignInSignUpSwitcher';
+import SignIn from 'authentication/components/SignIn';
+import SignInContainer from 'authentication/components/SignInContainer';
+import SignUp from 'authentication/components/SignUp';
+import LoginModal from 'authentication/components/LoginModal';
 
 import defaultOptions from '../DefaultOptions';
 

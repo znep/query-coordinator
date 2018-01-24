@@ -1286,6 +1286,15 @@ class View < Model
     )
   end
 
+  # Note that both 'administrators' AND 'publishers' have essentially the same level of rights
+  # on the asset, due to the 'edit_others_datasets' right which allows 'publishers' to view/edit/delete
+  # any other users' private or public measure just like 'administrators'
+  def can_edit_measure?
+    raise RuntimeError.new('view is not a measure') unless op_measure?
+
+    mutation_rights?
+  end
+
   def users_with_grant(grant_type)
     (grants || []).select { |grant| !grant.flag?('public') && grant.type.to_s.downcase == grant_type }.
       map { |matched_grant| matched_grant.userId || matched_grant.userEmail }.flatten.sort.uniq
@@ -2062,6 +2071,7 @@ class View < Model
       :name => name,
       :description => html_description,
       :category => category,
+      :exportFormats => DatasetLandingPage.export_formats,
       # If the view is ephemeral, we have columns, but if the view has been saved, columns is an
       # empty array (because Core currently ignores columns for anything that looks like a data lens).
       # We know a view has been saved if it doesn't have an id, so we need to fetch the parent and

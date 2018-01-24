@@ -7,11 +7,11 @@ import { Simulate } from 'react-dom/test-utils';
 import I18nJS from 'i18n-js';
 
 const MockHttpClient = require('../MockHttpClient').default;
-const ActivityFeedApi = require('frontendApi/ActivityFeedApi').default;
+const ActivityFeedApi = require('adminActivityFeed/frontendApi/ActivityFeedApi').default;
 
 import testStore from '../testStore';
 import mockActivities from '../mockActivities';
-import DetailsModal from 'components/DetailsModal';
+import DetailsModal from 'adminActivityFeed/components/DetailsModal';
 import mockTranslations from '../mockTranslations';
 
 describe('DetailsModal', () => {

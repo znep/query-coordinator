@@ -6,7 +6,7 @@ import createLogger from 'redux-logger';
 
 import rootReducer from './reducers';
 
-import { fetchDataSourceView } from 'actions/editor';
+import { fetchDataSourceView } from 'opMeasure/actions/editor';
 import { ModeStates } from './lib/constants';
 
 const middleware = [thunk, createDebounce()];

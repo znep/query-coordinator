@@ -2,9 +2,9 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
-import ParseOption from 'components/ParseOptions/ParseOption';
+import ParseOption from 'datasetManagementUI/components/ParseOptions/ParseOption';
 import entities from 'data/entities';
-import * as Selectors from 'selectors';
+import * as Selectors from 'datasetManagementUI/selectors';
 
 describe('components/ParseOption', () => {
   const defaultProps = () => ({

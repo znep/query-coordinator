@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { LocalizedRolePicker } from '../../roles/components/RolePicker';
-import { connect } from 'react-redux';
-import { roleFilterChanged } from '../../roles/actions';
-import connectLocalization from 'common/i18n/components/connectLocalization';
+import RolePicker from '../../roles/components/RolePicker';
+import { connect as fullConnect } from '../../utils';
+import * as RoleActions from '../../roles/actions';
+import * as Selectors from '../../selectors';
 
 class UserFilter extends Component {
   render() {
@@ -17,7 +17,7 @@ class UserFilter extends Component {
     return (
       <div className="user-filter">
         <div className="user-filter-label">Filter by</div>
-        <LocalizedRolePicker
+        <RolePicker
           initialOption={initialOption}
           roleId={roleId ? roleId : 'all'}
           onRoleChange={onRoleChange}
@@ -34,14 +34,12 @@ UserFilter.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    roleId: state.filters.role_ids
+    roleId: Selectors.getUserRoleFilter(state)
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onRoleChange: roleId => dispatch(roleFilterChanged(roleId))
-  };
+const mapDispatchToProps = {
+  onRoleChange: RoleActions.changeUserRoleFilter
 };
 
-export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(UserFilter));
+export default fullConnect(mapStateToProps, mapDispatchToProps)(UserFilter);

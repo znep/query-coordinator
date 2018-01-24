@@ -17,6 +17,26 @@ main {
   flex-basis: auto;
 }
 
+#site-chrome-admin-header ~ main {
+  &.unfixed-headers-true {
+    margin: 0
+  }
+
+  &.unfixed-headers-false {
+    margin-top: 46px;
+  }
+}
+
+#site-chrome-admin-header.site-chrome-small ~ main {
+  &.unfixed-headers-true {
+    margin: 0
+  }
+
+  &.unfixed-headers-false {
+    margin-top: 32px;
+  }
+}
+
 header, footer {
   flex-shrink: 0;
 }

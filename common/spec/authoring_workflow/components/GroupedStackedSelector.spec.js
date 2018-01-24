@@ -4,7 +4,7 @@ import TestUtils from 'react-dom/test-utils';
 import defaultProps from '../defaultProps';
 import renderComponent from '../renderComponent';
 import { GroupedStackedSelector } from 'common/authoring_workflow/components/GroupedStackedSelector';
-import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants';
+import { getInputDebounceMs } from 'common/authoring_workflow/constants';
 
 function render(type) {
   var props = defaultProps({
@@ -40,7 +40,7 @@ describe('GroupedStackedSelector', function() {
       setTimeout(() => {
         sinon.assert.calledOnce(props[eventName]);
         done();
-      }, INPUT_DEBOUNCE_MILLISECONDS);
+      }, getInputDebounceMs());
     });
   }
 

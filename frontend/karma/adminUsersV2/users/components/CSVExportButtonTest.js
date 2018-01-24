@@ -1,9 +1,9 @@
-import { assert, expect } from 'chai';
+import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
 
 import I18nJS from 'i18n-js';
-import { CSVExportButton } from 'users/components/CSVExportButton';
+import { CSVExportButton } from 'adminUsersV2/users/components/CSVExportButton';
 
 describe('components/CSVExportButton', () => {
   const defaultProps = {

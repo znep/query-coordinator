@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { assert } from 'chai';
-import ApiFlannel from 'components/ApiFlannel';
+import ApiFlannel from 'datasetLandingPage/components/ApiFlannel';
 import { Simulate } from 'react-dom/test-utils';
-import mockView from 'data/mockView';
+import mockView from '../data/mockView';
 
 describe('components/ApiFlannel', () => {
   const getProps = (props) => _.defaultsDeep({}, props, {

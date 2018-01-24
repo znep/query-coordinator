@@ -6,8 +6,11 @@ import { SERIES_TYPE_FLYOUT } from '../constants';
  * Note: These properties are in alphabetical order.
  */
 const paths = {
+  additionalFlyoutColumns: 'series[0].mapOptions.additionalFlyoutColumns',
   baseLayerOpacity: 'configuration.baseLayerOpacity',
   baseLayerUrl: 'configuration.baseLayerUrl',
+  baseMapStyle: 'configuration.baseMapStyle',
+  baseMapOpacity: 'configuration.baseMapOpacity',
   clusterRadius: 'series[0].mapOptions.clusterRadius',
   colorBoundariesBy: 'series[0].mapOptions.colorBoundariesBy',
   colorLinesBy: 'series[0].mapOptions.colorLinesBy',
@@ -24,6 +27,8 @@ const paths = {
   errorBarsBarColor: 'series[0].errorBars.barColor',
   errorBarsLowerBoundColumnName: 'series[0].errorBars.lowerBoundColumnName',
   errorBarsUpperBoundColumnName: 'series[0].errorBars.upperBoundColumnName',
+  geoCoderControl: 'configuration.geoCoderControl',
+  geoLocateControl: 'configuration.geoLocateControl',
   labelBottom: 'configuration.axisLabels.bottom',
   labelLeft: 'configuration.axisLabels.left',
   labelRight: 'configuration.axisLabels.right',
@@ -31,6 +36,7 @@ const paths = {
   limit: 'series[0].dataSource.limit',
   lineWeight: 'series[0].mapOptions.lineWeight',
   mapCenterAndZoom: 'configuration.mapCenterAndZoom',
+  mapFlyoutTitleColumnName: 'series[0].mapOptions.mapFlyoutTitleColumnName',
   mapType: 'series[0].mapOptions.mapType',
   maxClusteringZoomLevel: 'series[0].mapOptions.maxClusteringZoomLevel',
   maxClusterSize: 'series[0].mapOptions.maxClusterSize',
@@ -42,6 +48,7 @@ const paths = {
   measureColumnName: 'series[{0}].dataSource.measure.columnName',
   minimumLineWeight: 'series[0].mapOptions.minimumLineWeight',
   minimumPointSize: 'series[0].mapOptions.minimumPointSize',
+  navigationControl: 'configuration.navigationControl',
   negativeColor: 'configuration.legend.negativeColor',
   numberOfDataClasses: 'series[0].mapOptions.numberOfDataClasses',
   orderBy: 'series[0].dataSource.orderBy',
@@ -63,6 +70,10 @@ const paths = {
   secondaryColor: 'series[{0}].color.secondary',
   secondaryMeasureAxisMaxValue: 'configuration.secondaryMeasureAxisMaxValue',
   secondaryMeasureAxisMinValue: 'configuration.secondaryMeasureAxisMinValue',
+  searchBoundaryLowerRightLatitude: 'series[0].mapOptions.searchBoundaryLowerRightLatitude',
+  searchBoundaryLowerRightLongitude: 'series[0].mapOptions.searchBoundaryLowerRightLongitude',
+  searchBoundaryUpperLeftLatitude: 'series[0].mapOptions.searchBoundaryUpperLeftLatitude',
+  searchBoundaryUpperLeftLongitude: 'series[0].mapOptions.searchBoundaryUpperLeftLongitude',
   series: 'series',
   seriesType: 'series[{0}].type',
   shapefileGeometryLabel: 'configuration.shapefile.geometryLabel',
@@ -73,6 +84,7 @@ const paths = {
   showValueLabels: 'configuration.showValueLabels',
   showValueLabelsAsPercent: 'configuration.showValueLabelsAsPercent',
   showLegend: 'configuration.showLegend',
+  showLegendOpened: 'configuration.showLegendOpened',
   stacked: 'series[0].stacked',
   stackRadius: 'series[0].mapOptions.stackRadius',
   stackedOneHundredPercent: 'series[0].stacked.oneHundredPercent',
@@ -213,6 +225,10 @@ export const load = (dispatch, vif) => {
     }
   }
 
+  if (has(paths.additionalFlyoutColumns)) {
+    dispatch(actions.setAdditionalFlyoutColumns(get(paths.additionalFlyoutColumns)));
+  }
+
   if (has(paths.baseLayerOpacity)) {
     dispatch(actions.setBaseLayerOpacity(get(paths.baseLayerOpacity)));
   }
@@ -298,6 +314,10 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setCenterAndZoom(get(paths.mapCenterAndZoom)));
   }
 
+  if (has(paths.mapFlyoutTitleColumnName)) {
+    dispatch(actions.setMapFlyoutTitleColumnName(get(paths.mapFlyoutTitleColumnName)));
+  }
+
   if (has(paths.measureAxisMaxValue)) {
     dispatch(actions.setMeasureAxisMaxValue(get(paths.measureAxisMaxValue)));
   }
@@ -359,6 +379,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.showLegend)) {
     dispatch(actions.setShowLegend(get(paths.showLegend)));
+  }
+
+  if (has(paths.showLegendOpened)) {
+    dispatch(actions.setShowLegendOpened(get(paths.showLegendOpened)));
   }
 
   if (has(paths.stackedOneHundredPercent)) {
@@ -463,6 +487,34 @@ export const load = (dispatch, vif) => {
     dispatch(actions.setLineWeight(get(paths.lineWeight)));
   }
 
+  if (has(paths.navigationControl)) {
+    dispatch(actions.setNavigationControl(get(paths.navigationControl)));
+  }
+
+  if (has(paths.geoCoderControl)) {
+    dispatch(actions.setGeoCoderControl(get(paths.geoCoderControl)));
+  }
+
+  if (has(paths.geoLocateControl)) {
+    dispatch(actions.setGeoLocateControl(get(paths.geoLocateControl)));
+  }
+
+  if (has(paths.searchBoundaryLowerRightLatitude)) {
+    dispatch(actions.setSearchBoundaryLowerRightLatitude(get(paths.searchBoundaryLowerRightLatitude)));
+  }
+
+  if (has(paths.searchBoundaryLowerRightLongitude)) {
+    dispatch(actions.setSearchBoundaryLowerRightLongitude(get(paths.searchBoundaryLowerRightLongitude)));
+  }
+
+  if (has(paths.searchBoundaryUpperLeftLatitude)) {
+    dispatch(actions.setSearchBoundaryUpperLeftLatitude(get(paths.searchBoundaryUpperLeftLatitude)));
+  }
+
+  if (has(paths.searchBoundaryUpperLeftLongitude)) {
+    dispatch(actions.setSearchBoundaryUpperLeftLongitude(get(paths.searchBoundaryUpperLeftLongitude)));
+  }
+
   if (has(paths.weighLinesBy)) {
     dispatch(actions.setLineWeightByColumn(get(paths.weighLinesBy)));
   }
@@ -485,6 +537,14 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.pointAggregation)) {
     dispatch(actions.setPointAggregation(get(paths.pointAggregation)));
+  }
+
+  if (has(paths.baseMapStyle)) {
+    dispatch(actions.setBaseMapStyle(get(paths.baseMapStyle)));
+  }
+
+  if (has(paths.baseMapOpacity)) {
+    dispatch(actions.setBaseMapOpacity(get(paths.baseMapOpacity)));
   }
 
   dispatch(actions.setDatasetUid(get(paths.datasetUid)));

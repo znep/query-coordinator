@@ -6,8 +6,7 @@
       isAvailable: function() {
 
         return this._view.valid &&
-          (!this._view.temporary || this._view.minorChange) &&
-          this._view.type == 'blist';
+          (!this._view.temporary || this._view.minorChange);
       },
 
       getTitle: function() {

@@ -4,7 +4,7 @@ import { mount } from 'enzyme';
 import _ from 'lodash';
 import sinon from 'sinon';
 
-import LoginModal from 'components/LoginModal';
+import LoginModal from 'authentication/components/LoginModal';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
 
 describe('<LoginModal />', () => {

@@ -4,10 +4,10 @@
  * @param {event} e Click event from whatever triggered this function
  * @param {function} onAccessManagerShown Function to call when the access manager is shown (optional)
  */
-export const showAccessManager = (e, onAccessManagerShown) => {
+export const showAccessManager = (e, onAccessManagerShown, mode = 'change_audience') => {
   // if the access manager is not enabled, we basically do nothing in here
   const accessManagerModalEnabled =
-    _.get(window, 'socrata.featureFlags.enable_access_manager_modal', false);
+    _.get(window, 'socrata.featureFlags.enable_new_dataset_sharing_ux', false);
 
   if (accessManagerModalEnabled) {
     if (onAccessManagerShown) {
@@ -15,7 +15,7 @@ export const showAccessManager = (e, onAccessManagerShown) => {
     }
 
     const refreshOnSave = true;
-    window.socrata.showAccessManager(refreshOnSave);
+    window.socrata.showAccessManager(mode, refreshOnSave);
     e.preventDefault();
   }
 };

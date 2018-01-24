@@ -1,4 +1,3 @@
-import 'script!jquery';
 import { Provider } from 'react-redux';
 
 window.mixpanelConfig = require('./data/mock_mixpanel_config').default;

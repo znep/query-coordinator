@@ -12,12 +12,9 @@ module UserRights
     change_configurations
     chown_datasets
     configure_approvals
-    create_dashboards
     create_data_lens
     create_datasets
     create_pages
-    edit_dashboards
-    edit_goals
     edit_nominations
     edit_others_datasets
     edit_pages
@@ -26,10 +23,8 @@ module UserRights
     feature_items
     federations
     manage_approval
-    manage_goals
     manage_provenance
     manage_spatial_lens
-    manage_stories
     manage_users
     moderate_comments
     review_approvals
@@ -37,10 +32,16 @@ module UserRights
     use_data_connectors
     view_activity_log
     view_all_dataset_status_logs
-    view_dashboards
     view_domain
-    view_goals
     view_others_datasets
+
+    create_dashboards
+    create_measures
+    edit_dashboards
+    edit_goals
+    manage_goals
+    view_dashboards
+    view_goals
 
     create_story
     create_story_copy
@@ -48,6 +49,7 @@ module UserRights
     edit_others_stories
     edit_story
     edit_story_title_desc
+    manage_stories
     manage_story_collaborators
     manage_story_public_version
     manage_story_visibility

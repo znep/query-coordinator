@@ -14,14 +14,14 @@ describe('PointSizePreview', () => {
   it('should have the style width given the pointSize', () => {
     assert.equal(
       $(component).find('.point-preview-indicator').css('width'),
-      '4px'
+      '2px'
     );
   });
 
   it('should have the style height given the pointSize', () => {
     assert.equal(
       $(component).find('.point-preview-indicator').css('height'),
-      '4px'
+      '2px'
     );
   });
 });

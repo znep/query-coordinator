@@ -11,7 +11,7 @@ import { bindActionCreators } from 'redux';
 import { changeNewRoleName, changeNewRoleTemplate } from '../../actions';
 import { NEW_CUSTOM_ROLE } from '../../appStates';
 import BoundedTextInput from '../util/BoundedTextInput';
-import { getAppState, getEditingRoleFromState, getMaxCharacterCountFromState } from '../../selectors';
+import { getAppState, getEditingRoleFromState, getMaxCharacterCountFromState } from '../../adminRolesSelectors';
 import TemplateDropdown from './TemplateDropdown';
 import { connectLocalization } from 'common/components/Localization';
 

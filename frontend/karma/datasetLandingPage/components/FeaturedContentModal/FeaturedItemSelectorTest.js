@@ -1,8 +1,8 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { FeaturedItemSelector } from 'components/FeaturedContentModal/FeaturedItemSelector';
+import { FeaturedItemSelector } from 'datasetLandingPage/components/FeaturedContentModal/FeaturedItemSelector';
 import { Simulate } from 'react-dom/test-utils';
-import mockFeaturedItem from 'data/mockFeaturedItem';
+import mockFeaturedItem from '../../data/mockFeaturedItem';
 
 describe('components/FeaturedContentModal/FeaturedItemSelector', function() {
   function getProps(props) {

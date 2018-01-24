@@ -3,7 +3,7 @@ import immutable from 'immutable';
 import { expect, assert } from 'chai';
 
 import testStore from '../testStore';
-import * as activitiesHelpers from 'helpers/activities';
+import * as activitiesHelpers from 'adminActivityFeed/helpers/activities';
 
 describe('Activity helpers, ', () => {
   it('getEntityType should return correct asset type', () => {

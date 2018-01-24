@@ -7,6 +7,8 @@ const BigNumber = require('bignumber.js');
 const wkt = require('wellknown');
 const I18n = require('common/i18n').default;
 
+BigNumber.config({ ERRORS: false });
+
 // IMPORTANT NOTE: This module fails to localize some things correctly. It began
 // as a port of Data Lens code, which took some serious shortcuts, and there has
 // been insufficient motivation to redo formatting properly. For a clearer idea

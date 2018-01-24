@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import connectLocalization from 'common/i18n/components/connectLocalization';
-import { connect } from 'react-redux';
-import _ from 'lodash';
+import { connect as fullConnect } from '../../utils';
+import * as Selectors from '../../selectors';
 
 export class CSVExportButton extends Component {
   render() {
@@ -21,7 +20,7 @@ CSVExportButton.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  href: _.get(state, 'config.routes.csvUrl')
+  href: Selectors.getUsersCsvUrl(state)
 });
 
-export default connect(mapStateToProps)(connectLocalization(CSVExportButton));
+export default fullConnect(mapStateToProps)(CSVExportButton);

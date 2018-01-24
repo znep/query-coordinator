@@ -1,6 +1,6 @@
 import React from 'react';
 import { assert } from 'chai';
-import { mapStateToProps } from 'containers/PublishConfirmationContainer';
+import { mapStateToProps } from 'datasetManagementUI/containers/PublishConfirmationContainer';
 import state from '../data/stateWithRevision';
 import dotProp from 'dot-prop-immutable';
 

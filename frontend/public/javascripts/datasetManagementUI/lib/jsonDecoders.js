@@ -1,4 +1,4 @@
-import { parseDate } from 'lib/parseDate';
+import { parseDate } from 'datasetManagementUI/lib/parseDate';
 import _ from 'lodash';
 
 // DSMUI's client-side db requires a lot of client-side parsing and normalizing of

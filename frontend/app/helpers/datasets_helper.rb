@@ -462,6 +462,7 @@ module DatasetsHelper
 
   def hide_redirect?
     return false if force_editable?
+    return true if FeatureFlags.derive(view, request).enable_asset_action_bar
 
     [
       !view.is_published?,
@@ -486,16 +487,24 @@ module DatasetsHelper
   end
 
   def hide_edit_column?
-    [
-      !view.is_unpublished?,
-      !enable_2017_grid_view_refresh_for_current_request?,
-      view.is_activity_feed_dataset?
-    ].any?
+    if !enable_2017_grid_view_refresh_for_current_request? || view.is_activity_feed_dataset?
+      true
+    else
+      # If we are doing the derived view publication thing for Fontana's persistent drafts,
+      # then we only want columns to be editable when the view is unpublished.
+      if CurrentDomain.configuration('feature_set').try(:properties).try(:derived_view_publication)
+        !view.is_unpublished?
+      # Otherwise, we always want the columns to be editable (remember, returning false means 'show the thing')
+      else
+        view.is_blist? && view.is_published?
+      end
+    end
   end
 
   def hide_add_row?
     [
       !view.is_unpublished?,
+      !view.is_blist?,
       !enable_2017_grid_view_refresh_for_current_request?,
       view.is_activity_feed_dataset?
     ].any?
@@ -625,7 +634,7 @@ module DatasetsHelper
   def hide_sharing?
     [
       # when this flag is on, sharing is done via the access manager modal
-      FeatureFlags.derive(nil, request).enable_access_manager_modal,
+      FeatureFlags.derive(nil, request).enable_new_dataset_sharing_ux,
       view.is_snapshotted?,
       !view.has_rights?(ViewRights::GRANT),
       view.geoParent.present?,
@@ -645,7 +654,7 @@ module DatasetsHelper
   def hide_plagiarize?
     [
       # when this flag is on, sharing is done via the access manager modal
-      FeatureFlags.derive(nil, request).enable_access_manager_modal,
+      FeatureFlags.derive(nil, request).enable_new_dataset_sharing_ux,
       !CurrentDomain.user_can?(current_user, UserRights::CHOWN_DATASETS),
       view.geoParent.present?,
       view.is_activity_feed_dataset?

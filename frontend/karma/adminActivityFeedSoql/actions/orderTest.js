@@ -4,8 +4,8 @@ import thunk from 'redux-thunk';
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { mockResponse } from 'httpHelpers';
-import * as orderActions from 'actions/order';
-import * as paginationActions from 'actions/pagination';
+import * as orderActions from 'adminActivityFeedSoql/actions/order';
+import * as paginationActions from 'adminActivityFeedSoql/actions/pagination';
 
 describe('order actions', () => {
   const responseData = [{'COLUMN_ALIAS_GUARD__count':'3'}];

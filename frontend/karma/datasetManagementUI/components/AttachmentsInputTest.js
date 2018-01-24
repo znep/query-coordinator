@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import { assert } from 'chai';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import AttachmentsInput from 'components/AttachmentsInput/AttachmentsInput';
+import AttachmentsInput from 'datasetManagementUI/components/AttachmentsInput/AttachmentsInput';
 
 const props = {
   field: {
@@ -55,7 +55,7 @@ describe('components/AttachmentsInput', () => {
     });
 
     it('calls edit callback when text is changed', () => {
-      const inputField = component.find('.filename');
+      const inputField = component.find('.dsmp-filename');
 
       inputField.simulate('change', { target: { value: 'hey' } });
       const [attachment, newName] = component
@@ -66,7 +66,7 @@ describe('components/AttachmentsInput', () => {
     });
 
     it('calls remove callback when remove icon is clicked', () => {
-      const rm = component.find('a.removeButton');
+      const rm = component.find('a.dsmp-remove-button');
       rm.simulate('click', {});
 
       const [attachment] = component.props().removeAttachment.getCall(0).args;

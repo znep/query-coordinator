@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { assert } from 'chai';
 
-import Pagination from 'components/Pagination';
+import Pagination from 'adminActivityFeed/components/Pagination';
 
 describe('Pagination', () => {
   const validateButtons = (output, shouldNextDisabled, shouldPreviousDisabled) => {

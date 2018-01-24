@@ -8,13 +8,13 @@ describe ::Services::Administration::GeoregionAdder do
   let(:geometry_label) { 'name' }
   let(:name) { 'US States' }
   let(:subject) { ::Services::Administration::GeoregionAdder.new }
-  let(:fixture_data) { JSON::parse(File.read('test/fixtures/sample-data.json')) }
+  let(:fixture_data) { json_fixture('sample-data.json') }
 
   describe '#add' do
     before(:each) do
       allow(CurrentDomain).to receive(:cname).and_return('localhost')
       stub_request(:get, 'http://localhost:8080/views/test-data.json').
-        to_return(:status => 200, :body => fixture_data['get_request'].to_json, :headers => {'ContentType' => 'application/json'})
+        to_return(:status => 200, :body => fixture_data.to_json, :headers => {'ContentType' => 'application/json'})
     end
 
     it 'fetches the view' do

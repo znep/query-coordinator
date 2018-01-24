@@ -42,7 +42,14 @@ Header.propTypes = {
   className: PropTypes.string,
   showCloseButton: PropTypes.bool,
   title: PropTypes.string,
-  onDismiss: PropTypes.func.isRequired
+  onDismiss: PropTypes.func
+};
+
+Header.defaultProps = {
+  className: null,
+  showCloseButton: true,
+  title: null,
+  onDismiss: () => {}
 };
 
 export default Header;

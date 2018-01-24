@@ -1,63 +1,39 @@
-import { assert, expect } from 'chai';
-import fetchMock from 'fetch-mock';
-import thunk from 'redux-thunk';
-import configureStore from 'redux-mock-store';
+import { expect } from 'chai';
 
-import { COMPLETE_SUCCESS, SHOW_NOTIFICATION, START } from 'actions';
-import { userSearch } from 'users/actions';
-import { changeUserRole, removeUserRole, USER_ROLE_CHANGE } from 'roles/actions';
-
-import { initialState } from '../helpers/stateFixtures';
+import * as Actions from 'adminUsersV2/roles/actions';
+import reducer, { initialState } from 'adminUsersV2/roles/reducers';
 
 describe('roles/reducers', () => {
+  it('reduces initial state', () => {
+    expect(reducer(undefined, {})).to.eql(initialState);
+  });
 
-  describe('changeUserRole', () => {
-    it('changes the user role when the call returns successfully', (done) => {
-      const mockStore = configureStore([thunk]);
-      const store = mockStore(initialState);
-
-      fetchMock.put('/api/roles/5/users/cr53-8rh5', {});
-
-      store.dispatch(changeUserRole('cr53-8rh5', '5')).
-      then(() => {
-        const actions = store.getActions();
-        expect(actions).to.have.length(3);
-        actions.slice(0,2).forEach((action) => expect(action.type).to.equal(USER_ROLE_CHANGE));
-        expect(actions[0].stage).to.equal(START);
-        expect(actions[1].stage).to.equal(COMPLETE_SUCCESS);
-        expect(actions[2].type).to.equal(SHOW_NOTIFICATION);
-        done();
-      }).
-      catch(err => {
-        done(err);
-      });
+  it('handles LOAD_ROLES_SUCCESS', () => {
+    expect(reducer(initialState, Actions.loadRolesSuccess(['one', 'two']))).to.eql({
+      loadingData: false,
+      roles: ['one', 'two'],
+      userRoleFilter: undefined
     });
   });
 
-  describe('removeUserRole', () => {
-    it('removes the role from the user', (done) => {
-      const mockStore = configureStore([thunk]);
-      const store = mockStore(initialState);
-
-      fetchMock.delete('/api/roles/5/users/cr53-8rh5', {}, { name: 'removeUserRole' });
-
-      store.dispatch(removeUserRole('cr53-8rh5', '5')).
-      then(() => {
-        const actions = store.getActions();
-        expect(actions).to.have.length(3);
-        actions.slice(0,2).forEach((action) => expect(action.type).to.equal(USER_ROLE_CHANGE));
-        expect(actions[0].stage).to.equal(START);
-        expect(actions[1].stage).to.equal(COMPLETE_SUCCESS);
-        expect(actions[2].type).to.equal(SHOW_NOTIFICATION);
-        const [ ignored, { headers } ] = fetchMock.lastCall('removeUserRole');
-        expect(headers['X-CSRF-Token']).to.eql(serverConfig.csrfToken);
-        expect(headers['X-App-Token']).to.eql(serverConfig.appToken);
-        done();
-      }).
-      catch(err => {
-        done(err);
-      });
+  it('handles LOAD_ROLES_FAILURE', () => {
+    expect(reducer(initialState, Actions.loadRolesFailure())).to.eql({
+      loadingData: false,
+      roles: [],
+      userRoleFilter: undefined
     });
   });
 
+  it('handles CHANGE_USER_ROLE_FILTER with a specific role', () => {
+    const roleId = 2;
+    expect(reducer({ userRoleFilter: 1 }, Actions.changeUserRoleFilter(roleId))).to.eql({
+      userRoleFilter: 2
+    });
+  });
+  it('handles CHANGE_USER_ROLE_FILTER with the "all" role', () => {
+    const roleId = 'all';
+    expect(reducer({ userRoleFilter: 1 }, Actions.changeUserRoleFilter(roleId))).to.eql({
+      userRoleFilter: undefined
+    });
+  });
 });

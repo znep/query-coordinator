@@ -1,6 +1,6 @@
 import React from 'react';
 import { assert } from 'chai';
-import { mapStateToProps } from 'containers/PublishingContainer';
+import { mapStateToProps } from 'datasetManagementUI/containers/PublishingContainer';
 
 describe('containers/PublishingContainer', () => {
   const rowsToBeUpserted = 1000;

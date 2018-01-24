@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { soqlProperties as typeProperties } from 'lib/soqlTypes';
+import { soqlProperties as typeProperties } from 'datasetManagementUI/lib/soqlTypes';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import classNames from 'classnames';
 import styles from './TypeIcon.module.scss';

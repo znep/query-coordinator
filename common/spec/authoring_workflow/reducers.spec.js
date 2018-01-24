@@ -109,14 +109,14 @@ describe('AuthoringWorkflow reducer', () => {
         { columnName: 'anything', isFlyoutSeries: false, relativeIndex: 0 },
         'anything',
         'series[0].dataSource.measure.columnName',
-        ['barChart', 'columnChart', 'histogram', 'pieChart', 'regionMap', 'timelineChart']);
+        ['barChart', 'columnChart', 'histogram', 'pieChart', 'regionMap', 'map', 'timelineChart']);
 
       shouldSetVifWithObject(
         'setMeasureAggregation',
         { aggregationFunction: 'count', isFlyoutSeries: false, relativeIndex: 0 },
         'count',
         'series[0].dataSource.measure.aggregationFunction',
-        ['barChart', 'columnChart', 'histogram', 'pieChart', 'regionMap', 'timelineChart']);
+        ['barChart', 'columnChart', 'histogram', 'pieChart', 'regionMap', 'map', 'timelineChart']);
 
       shouldSetVif('setPrimaryColor', [0, '#00F'], 'series[0].color.primary', ['columnChart', 'timelineChart', 'histogram', 'featureMap', 'map']);
       shouldSetVif('setSecondaryColor', [0, '#00F'], 'series[0].color.secondary', ['columnChart', 'histogram']);
@@ -129,9 +129,9 @@ describe('AuthoringWorkflow reducer', () => {
 
       shouldSetVif('setColorPalette', 'alternate2', 'series[0].color.palette', ['pieChart']);
 
-      shouldSetVif('setShapefileUid', 'four-four', 'configuration.shapefile.uid', ['regionMap']);
-      shouldSetVif('setShapefilePrimaryKey', 'imaprimarykey', 'configuration.shapefile.primaryKey', ['regionMap']);
-      shouldSetVif('setShapefileGeometryLabel', 'elaborawhat?', 'configuration.shapefile.geometryLabel', ['regionMap']);
+      shouldSetVif('setShapefileUid', 'four-four', 'configuration.shapefile.uid', ['regionMap', 'map']);
+      shouldSetVif('setShapefilePrimaryKey', 'imaprimarykey', 'configuration.shapefile.primaryKey', ['regionMap', 'map']);
+      shouldSetVif('setShapefileGeometryLabel', 'elaborawhat?', 'configuration.shapefile.geometryLabel', ['regionMap', 'map']);
 
       shouldSetVif('setBaseLayer', 'https://yes.com', 'configuration.baseLayerUrl', ['regionMap', 'featureMap', 'map']);
 
@@ -147,27 +147,26 @@ describe('AuthoringWorkflow reducer', () => {
       shouldSetVif('setUnitsOne', [0, 'Thought'], 'series[0].unit.one', ['regionMap', 'columnChart', 'featureMap', 'map', 'timelineChart', 'histogram', 'pieChart', 'comboChart']);
       shouldSetVif('setUnitsOther', [0, 'Thought'], 'series[0].unit.other', ['regionMap', 'columnChart', 'featureMap', 'map', 'timelineChart', 'histogram', 'pieChart', 'comboChart']);
 
-      shouldSetVif('setRowInspectorTitleColumnName', 'columnName', 'configuration.rowInspectorTitleColumnName', ['featureMap', 'map']);
+      shouldSetVif('setRowInspectorTitleColumnName', 'columnName', 'configuration.rowInspectorTitleColumnName', ['featureMap']);
 
       shouldSetVif('setCenterAndZoom', { zoom: 12, center: { longitude: 90, latitude: 48 } }, 'configuration.mapCenterAndZoom', ['featureMap', 'map', 'regionMap']);
 
       shouldSetVif('setPrecision', 'DAY', 'series[0].dataSource.precision', ['timelineChart']);
       shouldSetVif('setTreatNullValuesAsZero', true, 'configuration.treatNullValuesAsZero', ['timelineChart']);
-
       shouldSetVif('setLimitNoneAndShowOtherCategory', undefined, 'configuration.showOtherCategory', ['barChart']);
-
       shouldSetVif('setShowOtherCategory', true, 'configuration.showOtherCategory', ['barChart', 'pieChart']);
+      shouldSetVif('setShowLegendOpened', true, 'configuration.showLegendOpened', ['barChart', 'columnChart', 'comboChart', 'histogram', 'timelineChart']);
 
       shouldSetVif('setMapType', 'pointMap', 'series[0].mapOptions.mapType', ['map']);
-      shouldSetVif('setPointMapPointSize', 1, 'series[0].mapOptions.pointMapPointSize', ['map']);
+      shouldSetVif('setPointMapPointSize', 4, 'series[0].mapOptions.pointMapPointSize', ['map']);
       shouldSetVif('setPointSizeByColumn', 'columnName', 'series[0].mapOptions.resizePointsBy', ['map']);
-      shouldSetVif('setMinimumPointSize', 3, 'series[0].mapOptions.minimumPointSize', ['map']);
+      shouldSetVif('setMinimumPointSize', 4, 'series[0].mapOptions.minimumPointSize', ['map']);
       shouldSetVif('setMaximumPointSize', 7, 'series[0].mapOptions.maximumPointSize', ['map']);
       shouldSetVif('setNumberOfDataClasses', 5, 'series[0].mapOptions.numberOfDataClasses', ['map']);
       shouldSetVif('setMaxClusteringZoomLevel', 8, 'series[0].mapOptions.maxClusteringZoomLevel', ['map']);
       shouldSetVif('setPointThreshold', 4500, 'series[0].mapOptions.pointThreshold', ['map']);
       shouldSetVif('setClusterRadius', 50, 'series[0].mapOptions.clusterRadius', ['map']);
-      shouldSetVif('setMaxClusterSize', 20, 'series[0].mapOptions.maxClusterSize', ['map']);
+      shouldSetVif('setMaxClusterSize', 24, 'series[0].mapOptions.maxClusterSize', ['map']);
       shouldSetVif('setStackRadius', 20, 'series[0].mapOptions.stackRadius', ['map']);
       shouldSetVif('setPointColorByColumn', 'columnName', 'series[0].mapOptions.colorPointsBy', ['map']);
       shouldSetVif('setLineWeight', 5, 'series[0].mapOptions.lineWeight', ['map']);
@@ -178,6 +177,17 @@ describe('AuthoringWorkflow reducer', () => {
       shouldSetVif('setPointAggregation', 'heat_map', 'series[0].mapOptions.pointAggregation', ['map']);
       shouldSetVif('setBoundaryColorByColumn', 'columnName', 'series[0].mapOptions.colorBoundariesBy', ['map']);
       shouldSetVif('setQuantificationMethod', 'numerical', 'series[0].mapOptions.quantificationMethod', ['map']);
+      shouldSetVif('setBaseMapStyle', 'mapbox://styles/mapbox/bright-v9', 'configuration.baseMapStyle', ['map']);
+      shouldSetVif('setBaseMapOpacity', 0.8, 'configuration.baseMapOpacity', ['map']);
+      shouldSetVif('setNavigationControl', false, 'configuration.navigationControl', ['map']);
+      shouldSetVif('setGeoCoderControl', true, 'configuration.geoCoderControl', ['map']);
+      shouldSetVif('setGeoLocateControl', true, 'configuration.geoLocateControl', ['map']);
+      shouldSetVif('setMapFlyoutTitleColumnName', 'columnName', 'series[0].mapOptions.mapFlyoutTitleColumnName', ['map']);
+      shouldSetVif('setSearchBoundaryUpperLeftLatitude', 64.22826766646368, 'series[0].mapOptions.searchBoundaryUpperLeftLatitude', ['map']);
+      shouldSetVif('setSearchBoundaryUpperLeftLongitude', -138.61595153808594, 'series[0].mapOptions.searchBoundaryUpperLeftLongitude', ['map']);
+      shouldSetVif('setSearchBoundaryLowerRightLatitude', 53.81794822741499, 'series[0].mapOptions.searchBoundaryLowerRightLatitude', ['map']);
+      shouldSetVif('setSearchBoundaryLowerRightLongitude', -128.93642272949219, 'series[0].mapOptions.searchBoundaryLowerRightLongitude', ['map']);
+
 
       describe('when settings the x-axis scaling mode', () => {
 
@@ -222,11 +232,61 @@ describe('AuthoringWorkflow reducer', () => {
           expect(_.get(newState.vifAuthoring.vifs.map, 'configuration.pointOpacity')).to.equal(1);
         });
 
-        it('sets configuration.baseLayerOpacity', function() {
-          var action = actions.setBaseLayerOpacity('0.5');
+        it('sets configuration.baseMapOpacity', function() {
+          var action = actions.setBaseMapOpacity('0.5');
           var newState = reducer(getTestState(), action);
 
-          expect(_.get(newState.vifAuthoring.vifs.map, 'configuration.baseLayerOpacity')).to.equal(0.5);
+          expect(_.get(newState.vifAuthoring.vifs.map, 'configuration.baseMapOpacity')).to.equal(0.5);
+        });
+
+        describe('when a new additional flyout column is added', () => {
+          let state;
+
+          beforeEach(() => {
+            state = getDefaultState();
+          });
+
+          it('should add column field name to additionalFlyoutColumns', () => {
+            const newState = reducer(state, actions.addBasemapFlyoutColumn('COLUMN_NAME'));
+            assert.equal(newState.vifAuthoring.vifs.map.series[0].mapOptions.additionalFlyoutColumns.length, 1);
+          });
+        });
+
+        describe('when a additional flyout column is removed', () => {
+          let state;
+
+          beforeEach(() => {
+            state = reducer(
+              getDefaultState(),
+              actions.addBasemapFlyoutColumn('COLUMN_NAME')
+            );
+          });
+
+          it('should remove the flyout column', () => {
+            assert.equal(state.vifAuthoring.vifs.map.series[0].mapOptions.additionalFlyoutColumns.length, 1);
+            assert.equal(state.vifAuthoring.vifs.map.series[0].mapOptions.additionalFlyoutColumns[0], 'COLUMN_NAME');
+
+            const newState = reducer(state, actions.removeBasemapFlyoutColumn(0));
+            assert.equal(newState.vifAuthoring.vifs.map.series[0].mapOptions.additionalFlyoutColumns.length, 0);
+          });
+        });
+
+        describe('when called setAdditionalFlyoutColumns', () => {
+          let state;
+
+          beforeEach(() => {
+            state = reducer(
+              getDefaultState(),
+              actions.addBasemapFlyoutColumn('COLUMN_NAME')
+            );
+          });
+
+          it('should set the flyout column name', () => {
+            assert.equal(state.vifAuthoring.vifs.map.series[0].mapOptions.additionalFlyoutColumns[0], 'COLUMN_NAME');
+            const newState = reducer(state, actions.setAdditionalFlyoutColumns('NEW_COLUMN_NAME', 0));
+
+            assert.equal(newState.vifAuthoring.vifs.map.series[0].mapOptions.additionalFlyoutColumns[0], 'NEW_COLUMN_NAME');
+          });
         });
       });
 
@@ -262,6 +322,37 @@ describe('AuthoringWorkflow reducer', () => {
             newState.vifAuthoring.vifs.columnChart.series[0].color.primary,
             COLOR_PALETTE_VALUES.categorical[0]
           );
+        });
+      });
+
+      describe('when a new series with a seriesVariant of "line" is appended', () => {
+        let state;
+
+        beforeEach(() => {
+          state = getDefaultState();
+        });
+
+        describe('when considering columnChart', () => {
+          it('should append a normal series to columnChart', () => {
+            const newState = reducer(state, actions.appendSeries({ isInitialLoad: false, seriesVariant: 'line' }));
+            assert.equal(newState.vifAuthoring.vifs.columnChart.series.length, 2);
+            assert.equal(newState.vifAuthoring.vifs.columnChart.series[1].type, 'columnChart');
+          });
+        });
+
+        describe('when considering comboChart', () => {
+          it('should append a "comboChart.line" series to comboChart', () => {
+            const newState = reducer(state, actions.appendSeries({ isInitialLoad: false, seriesVariant: 'line' }));
+            assert.equal(newState.vifAuthoring.vifs.comboChart.series.length, 2);
+            assert.equal(newState.vifAuthoring.vifs.comboChart.series[1].type, 'comboChart.line');
+          });
+        });
+
+        describe('when considering pieChart', () => {
+          it('should not append any series to pieChart', () => {
+            const newState = reducer(state, actions.appendSeries({ isInitialLoad: false, seriesVariant: 'line' }));
+            assert.equal(newState.vifAuthoring.vifs.pieChart.series.length, 1);
+          });
         });
       });
 

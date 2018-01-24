@@ -9,7 +9,7 @@ import defaultProps from '../../defaultProps';
 import renderComponent from '../../renderComponent';
 import vifs from 'common/authoring_workflow/vifs';
 import { LegendsAndFlyoutsPane } from 'common/authoring_workflow/components/panes/LegendsAndFlyoutsPane';
-import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants';
+import { getInputDebounceMs } from 'common/authoring_workflow/constants';
 
 function render(type, props) {
   props = _.merge({}, defaultProps({
@@ -17,6 +17,7 @@ function render(type, props) {
     onChangeUnitOne: sinon.spy(),
     onChangeUnitOther: sinon.spy(),
     onSelectRowInspectorTitle: sinon.spy(),
+    onSelectMapsFlyoutTitle: sinon.spy(),
     metadata: { domain: 'example.com', datasetUid: 'four-four', data: { columns: [] } }
   }), props);
 
@@ -45,7 +46,7 @@ describe('LegendsAndFlyoutsPane', () => {
       setTimeout(() => {
         sinon.assert.calledOnce(props[eventName]);
         done();
-      }, INPUT_DEBOUNCE_MILLISECONDS);
+      }, getInputDebounceMs());
     });
   }
 
@@ -272,7 +273,7 @@ describe('LegendsAndFlyoutsPane', () => {
 
     describe('events', () => {
       emitsEventsForUnits();
-      emitsEvent('#flyout-title-column .picklist-option', 'onSelectRowInspectorTitle', 'click');
+      emitsEvent('#flyout-title-column .picklist-option', 'onSelectMapsFlyoutTitle', 'click');
     });
   });
 

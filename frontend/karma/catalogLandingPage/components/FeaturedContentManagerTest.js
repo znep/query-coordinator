@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { FeaturedContentManager } from 'components/FeaturedContentManager';
+import { FeaturedContentManager } from 'catalogLandingPage/components/FeaturedContentManager';
 import ceteraUtils from 'common/cetera/utils';
 import _ from 'lodash';
 

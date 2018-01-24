@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Fieldset from 'components/Fieldset/Fieldset';
-import WithFlash from 'containers/WithFlashContainer';
+import Fieldset from 'datasetManagementUI/components/Fieldset/Fieldset';
+import WithFlash from 'datasetManagementUI/containers/WithFlashContainer';
 import _ from 'lodash';
-import ColumnField from 'containers/ColumnFieldContainer';
+import ColumnField from 'datasetManagementUI/containers/ColumnFieldContainer';
 import styles from './ColumnForm.module.scss';
 
 

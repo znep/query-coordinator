@@ -2,14 +2,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { EditBar } from 'common/components';
 import SocrataIcon from 'common/components/SocrataIcon';
-import PublishButton from 'containers/PublishButtonContainer';
-import styles from './AppBar.module.scss';
+import PublishButton from 'datasetManagementUI/containers/PublishButtonContainer';
 
 const PreviewLink = () =>
-  <div className={styles.primerPreview}>
+  <div className="dsmp-primer-preview">
     <a href={`/d/${window.initialState.view.id}`} target="_blank">
       Preview Primer
-      <SocrataIcon name="preview" className={styles.previewIcon} />
+      <SocrataIcon name="preview" className="dsmp-preview-icon" />
     </a>
   </div>;
 
@@ -20,7 +19,7 @@ export const AppBar = ({ name, showPreviewLink, revision }) =>
       &gt; Revision #{revision.revision_seq} <Link to={Links.home(params)}>(Back)</Link>
     </div>
   */}
-    <div className={styles.buttonContainer}>
+    <div className="dsmp-button-container">
       {showPreviewLink && <PreviewLink />}
       {revision && <PublishButton />}
     </div>

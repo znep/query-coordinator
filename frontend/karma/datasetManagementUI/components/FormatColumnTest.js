@@ -2,9 +2,9 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
-import FormatColumn from 'components/FormatColumn/FormatColumn';
+import FormatColumn from 'datasetManagementUI/components/FormatColumn/FormatColumn';
 import entities from 'data/entities';
-import * as Selectors from 'selectors';
+import * as Selectors from 'datasetManagementUI/selectors';
 
 describe('components/FormatColumn', () => {
   const os = entities.output_schemas['138'];

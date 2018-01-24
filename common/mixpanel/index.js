@@ -149,38 +149,27 @@ const staticPageProperties = {
   'View Id': _.get(sessionData, 'viewId'),
   'View Type': 'DSLP'
 };
-// Event name validation (return value should be ignored)
-function validateEventName(eventName) {
-  const valid = _.includes(MIXPANEL_EVENTS, eventName);
 
-  if (!valid) {
+// Event name validation
+function validateEventName(eventName) {
+  if (!_.includes(MIXPANEL_EVENTS, eventName)) {
     console.warn(`Mixpanel payload validation failed: Unknown event name: "${eventName}"`);
   }
-
-  return valid;
 }
 
-// Payload property validation (return value should be ignored)
+// Payload property validation
 function validateProperties(properties) {
-  let valid = true;
-
   if (_.isObject(properties) && !_.isArray(properties)) {
     _.forEach(properties, (value, key) => {
       if (_.isObject(value)) {
         validateProperties(value);
       } else {
-        valid = _.includes(MIXPANEL_PROPERTIES, key);
-
-        if (!valid) {
+        if (!_.includes(MIXPANEL_PROPERTIES, key)) {
           console.warn(`Mixpanel payload validation failed: Unknown property: "${key}"`);
         }
-
-        return valid;
       }
     });
   }
-
-  return valid;
 }
 
 // Note this is duplicated from util/mixpanel-analytics.js
@@ -192,7 +181,9 @@ function registerUserProperties() {
     'User Role Name',
     'Domain'
   );
-  validateProperties(properties);
+
+  // Uncomment the line below if you're troubleshooting Mixpanel events
+  // validateProperties(properties);
 
   if (!_.isUndefined(mixpanelBrowser)) {
     mixpanelBrowser.register(properties);
@@ -234,9 +225,9 @@ function sendPayload(eventName, properties) {
     // Merge custom properties with properties we always want to track
     const mergedProperties = _.extend(genericPagePayload(), properties);
 
-    // Track!
-    validateEventName(eventName);
-    validateProperties(mergedProperties);
+    // Uncomment the lines below if you're troubleshooting Mixpanel events
+    // validateEventName(eventName);
+    // validateProperties(mergedProperties);
 
     mixpanelBrowser.track(eventName, mergedProperties);
   }

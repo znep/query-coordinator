@@ -3,12 +3,12 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
-import { genNewExpression, mapStateToProps, sortOutputColumns } from 'containers/GeocodeShortcutContainer';
+import { genNewExpression, mapStateToProps, sortOutputColumns } from 'datasetManagementUI/containers/GeocodeShortcutContainer';
 import entities from 'data/entities';
-import * as Selectors from 'selectors';
+import * as Selectors from 'datasetManagementUI/selectors';
 import { mount } from 'enzyme';
 import { createStore, applyMiddleware } from 'redux';
-import reducer from 'reduxStuff/reducers/rootReducer';
+import reducer from 'datasetManagementUI/reduxStuff/reducers/rootReducer';
 import initialState from '../data/initialState';
 import thunk from 'redux-thunk';
 

@@ -1,6 +1,4 @@
 @import "variables/colors";
-@import "activity-feed/action_dropdown";
-@import "activity-feed/action_modal";
 
 $result_list_row_bg_color: $white;
 $result_list_row_bg_hover_color: $primary-light;
@@ -109,6 +107,10 @@ $result_list_row_bg_hover_color: $primary-light;
         &.actions {
           overflow: visible; // Prevent action flyout from being cut off
         }
+
+        .restored-dataset {
+          font-style: italic;
+        }
       }
 
     }
@@ -127,6 +129,10 @@ $result_list_row_bg_hover_color: $primary-light;
 
           .label {
             font-weight: 600;
+          }
+
+          .json-pretty {
+            white-space: pre-wrap;
           }
         }
       }

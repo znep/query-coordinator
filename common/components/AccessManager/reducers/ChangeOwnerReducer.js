@@ -1,4 +1,5 @@
-import * as changeOwnerActions from '../actions/ChangeOwnerActions';
+import * as changeOwnerActions from 'common/components/AccessManager/actions/ChangeOwnerActions';
+import * as uiActions from 'common/components/AccessManager/actions/UiActions';
 
 /*
  * NOTE for this reducer:
@@ -55,6 +56,10 @@ export default (state = {}, action) => {
     case changeOwnerActions.CONFIRM_SELECTED_OWNER:
       // see the AccessManagerReducer for where the owner is actually changed
       // here we're basically "resetting" the change owner component
+      return removeSelectedOwner(state, action);
+
+    case uiActions.CANCEL_BUTTON_CLICKED:
+      // cancel closes the modal; we should clear out the selected user if there is one
       return removeSelectedOwner(state, action);
     default:
       return state;

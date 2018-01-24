@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
-import SchemaPreviewTable from 'components/SchemaPreviewTable/SchemaPreviewTable';
+import SchemaPreviewTable from 'datasetManagementUI/components/SchemaPreviewTable/SchemaPreviewTable';
 
 describe('components/SchemaPreviewTable', () => {
   const props = {

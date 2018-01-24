@@ -107,6 +107,7 @@ export default function MoveComponentStore() {
       'socrata.visualization.histogram',
       'socrata.visualization.table',
       'socrata.visualization.featureMap',
+      'socrata.visualization.map',
       'embeddedHtml'
     ], componentType);
   }

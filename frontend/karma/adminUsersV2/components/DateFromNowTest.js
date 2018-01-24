@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 import React from 'react';
 import moment from 'moment';
 
-import DateFromNow from 'components/DateFromNow';
+import DateFromNow from 'adminUsersV2/components/DateFromNow';
 
 describe('components/DateFromNow', () => {
   const testProps = {
@@ -33,5 +33,4 @@ describe('components/DateFromNow', () => {
     const component = shallow(<DateFromNow {...props} />);
     expect(component.text()).to.eq('7 days ago');
   });
-
-})
+});

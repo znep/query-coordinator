@@ -1,13 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import _ from 'lodash';
-import Fieldset from 'components/Fieldset/Fieldset';
-import TextInput from 'components/TextInput/TextInput';
-import TextArea from 'components/TextArea/TextArea';
-import Select from 'components/Select/Select';
-import SoqlTypePillBox from 'components/SoqlTypePillBox/SoqlTypePillBox';
-import styles from './AddColForm.module.scss';
-import { soqlProperties } from 'lib/soqlTypes';
+import Fieldset from 'datasetManagementUI/components/Fieldset/Fieldset';
+import TextInput from 'datasetManagementUI/components/TextInput/TextInput';
+import TextArea from 'datasetManagementUI/components/TextArea/TextArea';
+import Select from 'datasetManagementUI/components/Select/Select';
+import SoqlTypePillBox from 'datasetManagementUI/components/SoqlTypePillBox/SoqlTypePillBox';
+import { soqlProperties } from 'datasetManagementUI/lib/soqlTypes';
 
 export function makeFieldName(displayName = '') {
   // First 'replace' swaps all whitespace for '_'
@@ -25,7 +24,7 @@ export function makeFieldName(displayName = '') {
 
 export function makeTransformExpr(fieldName, transform, entities) {
   if (fieldName === 'null') {
-    return transform(null);
+    return transform(null, entities);
   } else {
     return transform({ field_name: fieldName }, entities);
   }
@@ -33,9 +32,9 @@ export function makeTransformExpr(fieldName, transform, entities) {
 
 const ErrorList = ({ errors = [] }) => {
   return (
-    <ul className={styles.errorList}>
+    <ul className="error-list">
       {errors.map(error => (
-        <li key={btoa(error)} className={styles.errorMessage}>
+        <li key={btoa(error)} className="error-message">
           {error}
         </li>
       ))}
@@ -133,7 +132,7 @@ class AddColForm extends Component {
     const transforms = ic ? soqlProperties[ic.soql_type].conversions : soqlProperties.text.conversions;
 
     return (
-      <form className={styles.form}>
+      <form className="dsmp-form">
         <Fieldset title={I18n.add_col.fieldset_title} subtitle={I18n.add_col.fieldset_subtitle}>
           <label htmlFor="displayName">{I18n.add_col.display_name}</label>
           <TextInput

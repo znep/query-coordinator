@@ -31,7 +31,7 @@ describe Browse2Helper do
     let(:disable_authority_badge) { 'none' }
 
     before do
-      rspec_stub_feature_flags_with(:disable_authority_badge => disable_authority_badge)
+      stub_feature_flags_with(:disable_authority_badge => disable_authority_badge)
     end
 
     context 'disable authority badge is "none"' do
@@ -88,7 +88,7 @@ describe Browse2Helper do
     let(:data_lens) { false }
 
     before do
-      rspec_stub_feature_flags_with(:enable_data_lens_provenance => enable_data_lens_provenance)
+      stub_feature_flags_with(:enable_data_lens_provenance => enable_data_lens_provenance)
       allow_any_instance_of(View).to receive(:data_lens?).and_return(data_lens)
     end
 
@@ -107,10 +107,10 @@ describe Browse2Helper do
       let(:data_lens) { true }
 
       it 'should defer to the enable_data_lens_provenance feature flag' do
-        rspec_stub_feature_flags_with(:enable_data_lens_provenance => true)
+        stub_feature_flags_with(:enable_data_lens_provenance => true)
         expect(helper).to receive(:disable_authority_badge?).never
         expect(helper.show_provenance_badge_in_old_catalog?(View.new)).to be_truthy
-        rspec_stub_feature_flags_with(:enable_data_lens_provenance => false)
+        stub_feature_flags_with(:enable_data_lens_provenance => false)
         expect(helper.show_provenance_badge_in_old_catalog?(View.new)).to be_falsey
       end
 
@@ -122,7 +122,7 @@ describe Browse2Helper do
     let(:show_provenance_badge_in_catalog) { true }
 
     before do
-      rspec_stub_feature_flags_with(:show_provenance_badge_in_catalog => show_provenance_badge_in_catalog)
+      stub_feature_flags_with(:show_provenance_badge_in_catalog => show_provenance_badge_in_catalog)
     end
 
     context 'when show_provenance_badge_in_catalog feature flag is true' do
@@ -160,7 +160,7 @@ describe Browse2Helper do
     let(:show_provenance_badge_in_catalog) { true }
 
     before do
-      rspec_stub_feature_flags_with(:show_provenance_badge_in_catalog => show_provenance_badge_in_catalog)
+      stub_feature_flags_with(:show_provenance_badge_in_catalog => show_provenance_badge_in_catalog)
     end
 
     context 'when show_provenance_badge_in_catalog feature flag is true' do

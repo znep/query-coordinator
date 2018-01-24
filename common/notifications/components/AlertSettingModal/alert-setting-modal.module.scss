@@ -30,6 +30,10 @@ $divider-color: #e8eaeb;
     table {
       width: 100%;
 
+      & :global(.column-name) {
+        text-align: left;
+      }
+
       & :global(.column-description) {
         text-align: center;
       }
@@ -123,6 +127,8 @@ $divider-color: #e8eaeb;
   .button-groups {
     margin-left: 12px;
     margin-top: -4px !important;
+    padding-top: 0;
+
     &:after {
       content: "";
       clear: both;
@@ -157,12 +163,17 @@ $divider-color: #e8eaeb;
   }
 
   .settings-table {
-    thead{
-      tr th{
+    thead {
+      tr th {
         font-size: 14px;
         font-weight: bold;
+
+        &.column-name {
+          text-align: left;
+        }
       }
     }
+
     .option-column {
       width: 54%;
     }

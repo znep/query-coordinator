@@ -45,6 +45,14 @@ $dark-grey-1: #5e5e5e;
       min-height: 59px;
     }
 
+    .filter-switches {
+      margin: 1rem 0 1.5rem 0;
+
+      .checkbox-filter input {
+        height: 0;
+      }
+    }
+
     .filter-section {
       margin: 0 $horizontal_margin;
 
@@ -145,10 +153,6 @@ $dark-grey-1: #5e5e5e;
         label {
           font-size: 13px;
         }
-      }
-
-      &.recently-viewed {
-        margin-bottom: 1.5rem;
       }
 
       .searchbox-filter {

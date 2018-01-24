@@ -36,21 +36,11 @@ export const getDisplayableColumns = createSelector(
 );
 
 export const getNumericalColumns = createSelector(
+  getDisplayableColumns,
   getDatasetMetadata,
-  (datasetMetadata) => {
-    return _.chain(datasetMetadata.columns).
+  (displayableColumns, datasetMetadata) => {
+    return _.chain(displayableColumns).
     filter(isNumericColumn).
-    map(toDatasetMetadata(datasetMetadata)).
-    sortBy('name').
-    value();
-  }
-);
-
-export const getNumericalAndTextColumns = createSelector(
-  getDatasetMetadata,
-  (datasetMetadata) => {
-    return _.chain(datasetMetadata.columns).
-    filter(isTextOrNumericColumn).
     map(toDatasetMetadata(datasetMetadata)).
     sortBy('name').
     value();

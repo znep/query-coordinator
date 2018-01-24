@@ -72,11 +72,12 @@ describe('MapFactory', () => {
     beforeEach(() => {
       geospaceDataProvider = new GeospaceDataProvider({ domain, datasetUid }, true);
 
-      extent = sinon.stub(geospaceDataProvider, 'getFeatureExtent').callsFake((columnName) => {
-
-        assert.isNotNull(columnName);
-        return { southwest: [37.707, -122.513], northeast: [37.829, -122.361] };
-      });
+      extent = sinon.stub(geospaceDataProvider, 'getFeatureExtent').
+        callsFake((columnName, ignoreInvalidLatLng) => {
+          assert.isTrue(ignoreInvalidLatLng);
+          assert.isNotNull(columnName);
+          return { southwest: [37.707, -122.513], northeast: [37.829, -122.361] };
+        });
     });
 
     afterEach(() => {

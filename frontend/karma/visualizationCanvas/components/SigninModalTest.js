@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 
-import { SigninModal } from 'components/SigninModal';
+import { SigninModal } from 'visualizationCanvas/components/SigninModal';
 
 describe('SigninModal', () => {
 

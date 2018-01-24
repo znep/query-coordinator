@@ -1,13 +1,14 @@
 class RemotePartialsController < ApplicationController
   skip_before_filter :require_user
 
+  # NOTE: It is not safe to pass request parameters directly into the partial as locals, as of
+  # 2018/01/15 rails versions prior to 5.1.0 have a security hole that allows code injection if you
+  # allow arbitrary keys.
   def templates
-    local_args = params.reject {|k, v| k == 'controller' || k == 'action' || k == 'id'}
-    render :partial => 'templates/' + params[:id], :locals => local_args rescue render :nothing => true, :status => :not_found
+    render :partial => 'templates/' + params[:id] rescue render :nothing => true, :status => :not_found
   end
 
   def modals
-    local_args = params.reject {|k, v| k == 'controller' || k == 'action' || k == 'id'}
-    render :partial => 'modals/' + params[:id], :locals => local_args rescue render :nothing => true, :status => :not_found
+    render :partial => 'modals/' + params[:id] rescue render :nothing => true, :status => :not_found
   end
 end

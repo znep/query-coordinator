@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import uuid from 'uuid';
-import * as dsmapiLinks from 'links/dsmapiLinks';
-import * as Links from 'links/links';
+import * as dsmapiLinks from 'datasetManagementUI/links/dsmapiLinks';
+import * as Links from 'datasetManagementUI/links/links';
 import { browserHistory } from 'react-router';
-import { socrataFetch, checkStatus, getJson, getError } from 'lib/http';
+import { socrataFetch, checkStatus, getJson, getError } from 'datasetManagementUI/lib/http';
 import {
   apiCallStarted,
   apiCallSucceeded,
@@ -15,16 +15,19 @@ import {
   NEW_OUTPUT_SCHEMA,
   VALIDATE_ROW_IDENTIFIER,
   SAVE_CURRENT_OUTPUT_SCHEMA
-} from 'reduxStuff/actions/apiCalls';
-import { editRevision } from 'reduxStuff/actions/revisions';
-import { soqlProperties } from 'lib/soqlTypes';
-import * as Selectors from 'selectors';
-import { showModal } from 'reduxStuff/actions/modal';
-import * as FormActions from 'reduxStuff/actions/forms';
-import * as FlashActions from 'reduxStuff/actions/flashMessage';
-import { subscribeToOutputSchema, subscribeToTransforms } from 'reduxStuff/actions/subscriptions';
-import { makeNormalizedCreateOutputSchemaResponse } from 'lib/jsonDecoders';
-import { validateFieldName, validateDisplayName } from 'containers/AddColFormContainer';
+} from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import { editRevision } from 'datasetManagementUI/reduxStuff/actions/revisions';
+import { soqlProperties } from 'datasetManagementUI/lib/soqlTypes';
+import * as Selectors from 'datasetManagementUI/selectors';
+import { showModal } from 'datasetManagementUI/reduxStuff/actions/modal';
+import * as FormActions from 'datasetManagementUI/reduxStuff/actions/forms';
+import * as FlashActions from 'datasetManagementUI/reduxStuff/actions/flashMessage';
+import {
+  subscribeToOutputSchema,
+  subscribeToTransforms
+} from 'datasetManagementUI/reduxStuff/actions/subscriptions';
+import { makeNormalizedCreateOutputSchemaResponse } from 'datasetManagementUI/lib/jsonDecoders';
+import { validateFieldName, validateDisplayName } from 'datasetManagementUI/containers/AddColFormContainer';
 
 export const CREATE_NEW_OUTPUT_SCHEMA_SUCCESS = 'CREATE_NEW_OUTPUT_SCHEMA_SUCCESS';
 
@@ -59,6 +62,10 @@ export function createNewOutputSchema(inputSchemaId, desiredColumns, call) {
         dispatch(subscribeToTransforms(os));
 
         return resp;
+      })
+      .catch(error => {
+        dispatch(apiCallFailed(callId, error));
+        throw error;
       });
   };
 }

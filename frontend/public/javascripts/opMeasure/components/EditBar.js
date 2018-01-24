@@ -84,8 +84,10 @@ function mapStateToProps(state) {
     saving,
     showSaveToastMessage
   } = state.view;
-  const editBusy = _.get(measure, 'dataSourceLensUid') && !_.get(state.editor, 'dataSourceView');
 
+  const editBusy = _.get(measure, 'dataSourceLensUid') &&
+                   _.get(state.editor, 'measure.dataSourceLensUid') &&
+                   !_.get(state.editor, 'dataSourceView');
   return {
     coreView,
     editBusy,

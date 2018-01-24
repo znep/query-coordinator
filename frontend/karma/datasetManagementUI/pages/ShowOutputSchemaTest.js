@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
-import { ShowOutputSchema, mapStateToProps } from 'pages/ShowOutputSchema/ShowOutputSchema';
+import { ShowOutputSchema, mapStateToProps } from 'datasetManagementUI/pages/ShowOutputSchema/ShowOutputSchema';
 import dotProp from 'dot-prop-immutable';
 import {
   ShowOutputSchemaProps

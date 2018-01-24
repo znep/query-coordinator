@@ -1,13 +1,13 @@
-import { assert, expect } from 'chai';
+import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
 import sinon from 'sinon';
 
-import { UsersTable } from 'users/components/UsersTable';
+import { UsersTable } from 'adminUsersV2/users/components/UsersTable';
 import I18nJS from 'i18n-js';
 
 import { initialState } from '../../helpers/stateFixtures';
-import ResultsTable from 'components/ResultsTable';
+import ResultsTable from 'adminUsersV2/components/ResultsTable';
 
 describe('components/UsersTable', () => {
   const defaultProps = {

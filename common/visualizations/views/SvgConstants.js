@@ -38,6 +38,7 @@ export const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
 export const LABEL_PADDING_WIDTH = 15;
 export const LEGEND_BAR_HEIGHT = 35;
 export const LEGEND_RECT_SIZE = 16;
+export const LINE_DASH_ARRAY = '10, 10';
 export const MEASURE_LABELS_FONT_COLOR = '#5e5e5e';
 export const MEASURE_LABELS_FONT_SIZE = 14;
 export const MINIMUM_LABEL_WIDTH = 35;

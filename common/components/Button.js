@@ -61,7 +61,8 @@ class Button extends Component {
       onClick,
       size,
       transparent,
-      variant
+      variant,
+      ...props
     } = this.props;
 
     const onClickFiltered = function() {
@@ -81,19 +82,19 @@ class Button extends Component {
       'btn-busy': busy === true
     });
 
-    let childrenElements;
-    if (busy) {
-      const classes = classNames('spinner-default', `spinner-btn-${variant}`, {
-        'spinner-dark': dark === true
-      });
-      childrenElements = <span className={classes}></span>;
-    } else {
-      childrenElements = children;
-    }
+    const spinnerClasses = classNames('spinner-default', `spinner-btn-${variant}`, {
+      'spinner-dark': dark === true
+    });
+
 
     return (
-      <button type="button" disabled={disabled} className={classes} onClick={onClickFiltered}>
-        {childrenElements}
+      <button type="button" disabled={disabled} className={classes} onClick={onClickFiltered} {...props}>
+        <div className="btn-content" style={{ visibility: busy ? 'hidden' : 'visible' }}>{children}</div>
+        {busy && (
+          <div className="spinner-container">
+            <span className={spinnerClasses} />
+          </div>
+        )}
       </button>
     );
   }

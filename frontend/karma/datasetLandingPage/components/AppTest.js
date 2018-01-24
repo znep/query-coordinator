@@ -1,14 +1,14 @@
 import { shallow } from 'enzyme';
 import { assert } from 'chai';
-import mockView from 'data/mockView';
+import mockView from '../data/mockView';
 import { FeatureFlags } from 'common/feature_flags';
 
-import App from 'App';
-import RowDetails from 'components/RowDetails';
-import SchemaPreview from 'components/SchemaPreview';
-import DatasetPreview from 'components/DatasetPreview';
-import BlobPreview from 'components/BlobPreview';
-import BlobDownload from 'components/BlobDownload';
+import { App } from 'datasetLandingPage/App';
+import RowDetails from 'datasetLandingPage/components/RowDetails';
+import SchemaPreview from 'datasetLandingPage/components/SchemaPreview';
+import DatasetPreview from 'datasetLandingPage/components/DatasetPreview';
+import BlobPreview from 'datasetLandingPage/components/BlobPreview';
+import BlobDownload from 'datasetLandingPage/components/BlobDownload';
 
 describe('App', function() {
   before(function() {
@@ -27,10 +27,7 @@ describe('App', function() {
     let element;
 
     beforeEach(function() {
-      // App is exported wrapped in Connect. It's much easier
-      // to test the unconnected component, which is exposed at
-      // App.WrappedComponent.
-      element = shallow(<App.WrappedComponent {...getProps()} />);
+      element = shallow(<App {...getProps()} />);
     });
 
     it('does not render BlobPreview', function() {
@@ -63,10 +60,7 @@ describe('App', function() {
         }
       };
 
-      // App is exported wrapped in Connect. It's much easier
-      // to test the unconnected component, which is exposed at
-      // App.WrappedComponent.
-      element = shallow(<App.WrappedComponent {...getProps(props)} />);
+      element = shallow(<App {...getProps(props)} />);
     });
 
     it('renders BlobPreview', function() {

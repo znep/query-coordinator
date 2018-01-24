@@ -3,6 +3,7 @@ import mapboxgl from 'mapbox-gl';
 
 import VifMapControls from 'common/visualizations/views/map/VifMapControls';
 import { mapMockVif } from './../../mapMockVif';
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 
 describe('VifMapControls', () => {
   let vifMapControls;
@@ -23,10 +24,10 @@ describe('VifMapControls', () => {
   });
 
   describe('geo location', () => {
-    it('should show geo locate control if locateUser true', () => {
+    it('should show geo locate control if geoLocateControl is true', () => {
       const initialVif = mapMockVif({
         configuration: {
-          'locateUser': false
+          'geoLocateControl': false
         }
       });
       vifMapControls.initialize(initialVif);
@@ -34,7 +35,7 @@ describe('VifMapControls', () => {
 
       const vif = mapMockVif({
         configuration: {
-          'locateUser': true
+          'geoLocateControl': true
         }
       });
 
@@ -42,10 +43,10 @@ describe('VifMapControls', () => {
       sinon.assert.calledWith(mockMap.addControl, sinon.match.instanceOf(mapboxgl.GeolocateControl));
     });
 
-    it('should hide geo locate control if locateUser false', () => {
+    it('should hide geo locate control if geoLocateControl is false', () => {
       const initialVif = mapMockVif({
         configuration: {
-          'locateUser': true
+          'geoLocateControl': true
         }
       });
       vifMapControls.initialize(initialVif);
@@ -53,12 +54,52 @@ describe('VifMapControls', () => {
 
       const vif = mapMockVif({
         configuration: {
-          'locateUser': false
+          'geoLocateControl': false
         }
       });
 
       vifMapControls.update(vif);
       sinon.assert.calledWith(mockMap.removeControl, sinon.match.instanceOf(mapboxgl.GeolocateControl));
+    });
+  });
+
+  describe('geo coder', () => {
+    it('should show geo coder control if geoCoderControl is true', () => {
+      const initialVif = mapMockVif({
+        configuration: {
+          'geoCoderControl': false
+        }
+      });
+      vifMapControls.initialize(initialVif);
+      sinon.assert.neverCalledWith(mockMap.addControl, sinon.match.instanceOf(MapboxGeocoder));
+
+      const vif = mapMockVif({
+        configuration: {
+          'geoCoderControl': true
+        }
+      });
+
+      vifMapControls.update(vif);
+      sinon.assert.calledWith(mockMap.addControl, sinon.match.instanceOf(MapboxGeocoder));
+    });
+
+    it('should hide geo coder control if geoCoderControl is false', () => {
+      const initialVif = mapMockVif({
+        configuration: {
+          'geoCoderControl': true
+        }
+      });
+      vifMapControls.initialize(initialVif);
+      sinon.assert.calledWith(mockMap.addControl, sinon.match.instanceOf(MapboxGeocoder));
+
+      const vif = mapMockVif({
+        configuration: {
+          'geoCoderControl': false
+        }
+      });
+
+      vifMapControls.update(vif);
+      sinon.assert.calledWith(mockMap.removeControl, sinon.match.instanceOf(MapboxGeocoder));
     });
   });
 

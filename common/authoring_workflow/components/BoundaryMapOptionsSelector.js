@@ -7,7 +7,7 @@ import I18n from 'common/i18n';
 
 import { COLUMN_TYPES } from '../constants';
 import { getBoundaryColorByColumn, getMapType } from '../selectors/vifAuthoring';
-import { getNumericalAndTextColumns } from '../selectors/metadata';
+import { getDisplayableColumns } from '../selectors/metadata';
 import { setBoundaryColorByColumn } from '../actions';
 
 export class BoundaryMapOptionsSelector extends Component {
@@ -17,7 +17,7 @@ export class BoundaryMapOptionsSelector extends Component {
       onSelectBoundaryColorByColumn,
       vifAuthoring
     } = this.props;
-    const columnOptions = _.map(getNumericalAndTextColumns(metadata), column => ({
+    const columnOptions = _.map(getDisplayableColumns(metadata), column => ({
       title: column.name,
       value: column.fieldName,
       type: column.renderTypeName,

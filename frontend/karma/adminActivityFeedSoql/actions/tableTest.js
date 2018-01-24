@@ -4,8 +4,8 @@ import thunk from 'redux-thunk';
 import { assert } from 'chai';
 import sinon from 'sinon';
 import { mockResponse } from 'httpHelpers';
-import * as tableActions from 'actions/table';
-import * as mockData from '../data/mockFetchTable';
+import * as tableActions from 'adminActivityFeedSoql/actions/table';
+import mockData from '../data/mockFetchTable';
 
 const initialState = {
   pagination: {
@@ -23,12 +23,11 @@ const mockStore = configureStore([
 ]);
 
 describe('table actions', () => {
-  const responseData = mockData.data1;
   let store;
   let fetchRowCountStub;
 
   beforeEach(() => {
-    const response = _.constant(Promise.resolve(mockResponse(responseData, 200)));
+    const response = _.constant(Promise.resolve(mockResponse(mockData, 200)));
 
     fetchRowCountStub = sinon.
       stub(window, 'fetch').
@@ -49,7 +48,7 @@ describe('table actions', () => {
 
         const storeDataAction = actions.find((act) => act.type === tableActions.types.STORE_DATA);
         assert.isNotNull(storeDataAction);
-        assert.deepEqual(storeDataAction.data, mockData.data1);
+        assert.deepEqual(storeDataAction.data, mockData);
 
         const fetchingTableAction = actions.find((act) => act.type === tableActions.types.FETCHING_TABLE);
         assert.isNotNull(fetchingTableAction);

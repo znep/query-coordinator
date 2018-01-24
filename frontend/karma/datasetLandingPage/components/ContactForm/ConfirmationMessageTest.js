@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import ConfirmationMessage from 'components/ContactForm/ConfirmationMessage';
+import ConfirmationMessage from 'datasetLandingPage/components/ContactForm/ConfirmationMessage';
 
 describe('components/ContactForm/ConfirmationMessage', function() {
   it('renders an element', function() {

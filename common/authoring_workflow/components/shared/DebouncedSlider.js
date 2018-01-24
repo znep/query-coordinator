@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Slider } from 'common/components';
-import { INPUT_DEBOUNCE_MILLISECONDS } from '../../constants';
+import { getInputDebounceMs } from '../../constants';
 import { setUserActive, setUserIdle } from '../../actions';
 import { isUserCurrentlyActive } from '../../selectors/vifAuthoring';
 
@@ -34,7 +34,7 @@ export class DebouncedSlider extends React.Component {
         this.timeoutId = setTimeout(() => {
           this.props.onDebouncedInputStop();
           return this.props.onChange(this.state.value);
-        }, INPUT_DEBOUNCE_MILLISECONDS);
+        }, getInputDebounceMs());
       }
     );
   }
@@ -46,7 +46,12 @@ export class DebouncedSlider extends React.Component {
 }
 
 DebouncedSlider.propTypes = {
+  disabled: PropTypes.bool,
   onChange: PropTypes.func.isRequired
+};
+
+DebouncedSlider.defaultProps = {
+  disabled: false
 };
 
 function mapStateToProps(state) {

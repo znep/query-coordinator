@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ModalContent, ModalFooter } from 'common/components';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import ApiCallButton from 'containers/ApiCallButtonContainer';
-import { APPLY_REVISION } from 'reduxStuff/actions/apiCalls';
+import ApiCallButton from 'datasetManagementUI/containers/ApiCallButtonContainer';
+import { APPLY_REVISION } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
 import styles from './PublishConfirmation.module.scss';
 
 class PublishConfirmation extends Component {

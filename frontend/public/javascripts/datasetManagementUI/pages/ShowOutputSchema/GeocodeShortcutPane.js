@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import GeocodeShortcut from 'containers/GeocodeShortcutContainer';
+import GeocodeShortcut from 'datasetManagementUI/containers/GeocodeShortcutContainer';
 import classNames from 'classnames';
 import styles from './ShowOutputSchema.module.scss';
 import { map } from 'lodash';
-import * as FormActions from 'reduxStuff/actions/forms';
+import * as FormActions from 'datasetManagementUI/reduxStuff/actions/forms';
 
 class GeocodeShortcutPane extends Component {
   componentWillMount() {

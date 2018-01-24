@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe ProfileHelper, type: :helper do
+describe ProfileHelper, type: :helper do
+  include TestHelperMethods
 
   describe '#view_url' do
     let(:is_story) { true }
@@ -87,7 +88,7 @@ RSpec.describe ProfileHelper, type: :helper do
 
     describe 'when encountering a draft view' do
       before(:each) do
-        rspec_stub_feature_flags_with(:dsmp_level => "preview")
+        stub_feature_flags_with(:dsmp_level => "preview")
       end
 
       let(:is_story) { false }

@@ -5,6 +5,7 @@
 @import "activity-feed/clear_filters";
 @import "activity-feed/search_box";
 @import "common/styleguide/partials/pager";
+@import "common/feedback-panel";
 
 .siteContentWrapper {
   padding: 0;
@@ -171,5 +172,9 @@
     .spinner-large {
       margin-top: 100px;
     }
+  }
+
+  .dismiss-button {
+    margin-right: 5px;
   }
 }

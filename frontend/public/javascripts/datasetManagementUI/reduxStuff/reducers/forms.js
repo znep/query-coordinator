@@ -9,7 +9,7 @@ import {
   APPEND_FORM_ERROR,
   CLEAR_INTERNAL_STATE,
   SET_SHOULD_EXIT
-} from 'reduxStuff/actions/forms';
+} from 'datasetManagementUI/reduxStuff/actions/forms';
 
 const initialState = {
   datasetForm: {

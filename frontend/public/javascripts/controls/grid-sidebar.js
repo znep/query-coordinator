@@ -327,6 +327,20 @@
       var sidebarObj = this;
       if (!force && !$.isBlank(sidebarObj._defaultPane) && sidebarObj.hasPane(sidebarObj._defaultPane)) {
         var np = getConfigNames(sidebarObj._defaultPane);
+        // EN-21539 - Save button does not go away after saving
+        //
+        // Because events are gettting triggered differently (and sometimes more often) now than they
+        // were beforem, a lot of these functions that expect everything to work in lock-step rather
+        // than just handling various cases as best as they can have started to get flaky.
+        //
+        // In this case, presumably great lengths had been gone to to ensure that the hide method
+        // doesn't get called multiple times in a row, which used to cause it to fail when it would
+        // try to read the 'name' property of null, rather than just having a sane default if it
+        // wasn't able to read the property. The three lines directly below this comment hopefully
+        // address this scenario.
+        if (_.isNull(sidebarObj._currentOuterPane) || _.isNull(sidebarObj._currentPane)) {
+          return;
+        }
         if (sidebarObj._currentOuterPane.name != np.primary ||
           sidebarObj._currentPane.name != np.secondary) {
           sidebarObj.show(sidebarObj._defaultPane);

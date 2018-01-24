@@ -2,8 +2,8 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import _ from 'lodash';
 
-import reducer from 'reducers/SignUpReducer';
-import * as actions from 'actions';
+import reducer from 'authentication/reducers/SignUpReducer';
+import * as actions from 'authentication/actions';
 import I18n from 'common/i18n';
 
 /**

@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
 
 import I18n from 'common/i18n';
 import { formatNumber } from 'common/js_utils';
+import AssetSelector from 'common/components/AssetSelector';
 
 import { changeDataSource, resetDataSource } from '../../actions/editor';
 
@@ -15,27 +15,6 @@ const i18nOptions = { scope: 'open_performance.measure.edit_modal.data_source' }
 // Configuration panel for connecting a measure to a data source.
 export class DataPanel extends Component {
   state = { loaded: false }
-
-
-  componentDidMount() {
-    // onDatasetSelected is the old asset selector's contract. Its argument is
-    // a Dataset model from legacy JS, from which we extract the relevant info
-    // before passing it on; in other words, this function is a boundary between
-    // modern code and legacy code.
-    this.iframe.onDatasetSelected = (dataset) => {
-      const { measure, onChangeDataSource } = this.props;
-      const { dataSourceLensUid } = measure || {};
-
-      if (dataset.id !== dataSourceLensUid) {
-        onChangeDataSource(dataset.id);
-      }
-    };
-  }
-
-  componentWillUnmount() {
-    delete this.iframe.onDatasetSelected;
-  }
-
 
   handleReset = (event) => {
     event.preventDefault();
@@ -139,24 +118,25 @@ export class DataPanel extends Component {
     );
   }
 
-  renderIframe() {
-    const iframePath = '/browse/select_dataset?suppressed_facets[]=type&limitTo=tables';
+  renderAssetSelector() {
+    const assetSelectorProps = {
+      baseFilters: {
+        assetTypes: 'datasets',
+        published: true
+      },
+      onAssetSelected: (assetData) => {
+        const { measure, onChangeDataSource } = this.props;
+        const { dataSourceLensUid } = measure || {};
 
-    const containerClasses = classNames('dataset-picker', {
-      loaded: this.state.loaded
-    });
+        if (assetData.id !== dataSourceLensUid) {
+          onChangeDataSource(assetData.id);
+        }
+      },
+      resultsPerPage: 6,
+      renderInModal: false
+    };
 
-    return (
-      <div className={containerClasses}>
-        <div className="spinner-default spinner-large" />
-        <iframe
-          src={iframePath}
-          width="100%"
-          height="600px"
-          onLoad={() => this.setState({ loaded: true })}
-          ref={(el) => this.iframe = el} />
-      </div>
-    );
+    return <AssetSelector {...assetSelectorProps} />;
   }
 
   render() {
@@ -166,29 +146,27 @@ export class DataPanel extends Component {
     return (
       <div>
         <h3>{I18n.t('title', i18nOptions)}</h3>
-        <form onSubmit={(event) => event.preventDefault()}>
-          {
-            (!hasError && _.isUndefined(rowCount)) &&
-            this.renderSelectionDefaultState()
-          }
-          {
-            (!hasError && _.isNull(rowCount)) &&
-            this.renderSelectionFetchingState()
-          }
-          {
-            (!hasError && rowCount > 0) &&
-            this.renderSelectionValidState()
-          }
-          {
-            (!hasError && rowCount === 0) &&
-            this.renderSelectionEmptyState()
-          }
-          {
-            (hasError) &&
-            this.renderSelectionInvalidState()
-          }
-          {this.renderIframe()}
-        </form>
+        {
+          (!hasError && _.isUndefined(rowCount)) &&
+          this.renderSelectionDefaultState()
+        }
+        {
+          (!hasError && _.isNull(rowCount)) &&
+          this.renderSelectionFetchingState()
+        }
+        {
+          (!hasError && rowCount > 0) &&
+          this.renderSelectionValidState()
+        }
+        {
+          (!hasError && rowCount === 0) &&
+          this.renderSelectionEmptyState()
+        }
+        {
+          (hasError) &&
+          this.renderSelectionInvalidState()
+        }
+        {this.renderAssetSelector()}
       </div>
     );
   }

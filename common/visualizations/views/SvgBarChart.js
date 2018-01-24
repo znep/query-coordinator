@@ -1741,10 +1741,10 @@ function SvgBarChart($element, vif, options) {
       data.errorBars.map(
         (row) => d3.min(
           row.slice(dimensionIndex + 1).map(
-            (errorBarValues) => d3.min(
-              errorBarValues.map(
-                (errorBarValue) => errorBarValue || 0)
-            )
+            (errorBarValues) =>
+              errorBarValues ?
+                d3.min(errorBarValues.map((errorBarValue) => errorBarValue || 0)) :
+                0
           )
         )
       )
@@ -1776,10 +1776,10 @@ function SvgBarChart($element, vif, options) {
       data.errorBars.map(
         (row) => d3.max(
           row.slice(dimensionIndex + 1).map(
-            (errorBarValues) => d3.max(
-              errorBarValues.map(
-                (errorBarValue) => errorBarValue || 0)
-            )
+            (errorBarValues) =>
+              errorBarValues ?
+                d3.max(errorBarValues.map((errorBarValue) => errorBarValue || 0)) :
+                0
           )
         )
       )

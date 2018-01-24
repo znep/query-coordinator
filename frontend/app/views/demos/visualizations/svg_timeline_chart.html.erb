@@ -17,11 +17,16 @@
 <% content_for :scripts do %>
   <%= render_demos_javascript_environment %>
 
-  <%= include_webpack_bundle 'visualization_example_pages/main.js' %>
+  <%= include_webpack_bundle 'shared/visualizationExamplePages' %>
 
   <script type="text/javascript">
 
     $(document).ready(function() {
+      function drawChart(vif) {
+        $('<div>', {
+          id: _.uniqueId('timeline-chart-')
+        }).appendTo($('#content')).socrataSvgTimelineChart(vif);
+      }
 
       /**
        * Set up VIFs
@@ -80,7 +85,7 @@
           type: 'visualization_interchange_format',
           version: 2
         },
-        title: 'Sample Title'
+        title: 'With \'precision\' set to \'DAY\''
       };
 
       var timelineChart2Vif = {
@@ -132,7 +137,7 @@
           type: 'visualization_interchange_format',
           version: 2
         },
-        title: 'Sample Title'
+        title: 'Identical to the above except with \'precision\' set to \'MONTH\''
       };
 
       var timelineChart3Vif = {
@@ -184,110 +189,25 @@
           type: 'visualization_interchange_format',
           version: 2
         },
-        title: 'Sample Title'
+        title: 'Identical to the above except with \'precision\' set to \'YEAR\''
       };
 
       var timelineChart4Vif = _.cloneDeep(timelineChart1Vif);
+      timelineChart4Vif.title = 'Chart with null values';
       _.set(timelineChart4Vif, 'series[0].dataSource.datasetUid', 'r6t9-rak2');
       _.set(timelineChart4Vif, 'series[0].dataSource.dimension.columnName', 'opened');
       _.set(timelineChart4Vif, 'series[0].dataSource.filters', []);
       _.unset(timelineChart4Vif, 'series[0].dataSource.precision');
 
       var timelineChart5Vif = _.cloneDeep(timelineChart1Vif);
+      timelineChart5Vif.title = 'Chart with null values and \'treatNullValuesAsZero\' set to true';
       _.set(timelineChart5Vif, 'series[0].dataSource.datasetUid', 'r6t9-rak2');
       _.set(timelineChart5Vif, 'series[0].dataSource.dimension.columnName', 'opened');
       _.set(timelineChart5Vif, 'series[0].dataSource.filters', []);
       _.set(timelineChart5Vif, 'configuration.treatNullValuesAsZero', true);
       _.unset(timelineChart5Vif, 'series[0].dataSource.precision');
 
-      var timelineChart6Vif = {
-        configuration: {
-          axisLabels: {
-            top: null,
-            right: null,
-            bottom: 'School District',
-            left: '% Proficient'
-          }
-        },
-        description: 'Math proficiency by school district for 3rd graders in 2014',
-        series: [
-          {
-            color: {
-              primary: 'green'
-            },
-            dataSource: {
-              datasetUid: 'qu5r-r47b',
-              dimension: {
-                columnName: 'reportweekending',
-                aggregationFunction: null
-              },
-              domain: 'data.iowa.gov',
-              measure: {
-                columnName: 'initialclaims_ui',
-                aggregationFunction: null
-              },
-              type: 'socrata.soql',
-              filters: [
-                {
-                  arguments: {
-                    start: '2003-01-01T00:00:00.000',
-                    end: '2004-01-01T00:00:00.000'
-                  },
-                  columnName: 'reportweekending',
-                  function: 'timeRange'
-                }
-              ]
-            },
-            label: 'Initial claims',
-            type: 'timelineChart.line',
-            unit: {
-              one: 'claim',
-              other: 'claims'
-            }
-          },
-          {
-            color: {
-              primary: 'yellow'
-            },
-            dataSource: {
-              datasetUid: 'qu5r-r47b',
-              dimension: {
-                columnName: 'reportweekending',
-                aggregationFunction: null
-              },
-              domain: 'data.iowa.gov',
-              measure: {
-                columnName: 'continuedweeks_ui',
-                aggregationFunction: null
-              },
-              type: 'socrata.soql',
-              filters: [
-                {
-                  arguments: {
-                    start: '2003-01-01T00:00:00.000',
-                    end: '2004-01-01T00:00:00.000'
-                  },
-                  columnName: 'reportweekending',
-                  function: 'timeRange'
-                }
-              ]
-            },
-            label: 'Continued weeks',
-            type: 'timelineChart.line',
-            unit: {
-              one: 'claim',
-              other: 'claims'
-            }
-          }
-        ],
-        createdAt: '2014-01-01T00:00:00',
-        format: {
-          type: 'visualization_interchange_format',
-          version: 2
-        },
-        title: 'Claims'
-      };
-
+      // Vif V1, visually identical to first chart on page
       var timelineChart7Vif = {
         aggregation: {
           field: null,
@@ -330,13 +250,14 @@
         unit: {
           one: 'case',
           other: 'cases'
-        }
+        },
       };
 
       var timelineChart8Vif = _.cloneDeep(timelineChart1Vif);
-      _.set(timelineChart8Vif, 'series[0].dataSource.datasetUid', 'mkvz-3tmj');
+      timelineChart8Vif.title = 'OBE percent column as measure';
+      _.set(timelineChart8Vif, 'series[0].dataSource.datasetUid', 'bknp-frgi');
       _.set(timelineChart8Vif, 'series[0].dataSource.dimension.columnName', 'year');
-      _.set(timelineChart8Vif, 'series[0].dataSource.domain', 'ori-performance.demo.socrata.com');
+      _.set(timelineChart8Vif, 'series[0].dataSource.domain', 'dataspace.demo.socrata.com');
       _.set(timelineChart8Vif, 'series[0].dataSource.measure.columnName', 'breakfast_enrollment');
       _.set(timelineChart8Vif, 'series[0].dataSource.measure.aggregationFunction', null);
       _.set(timelineChart8Vif, 'configuration.treatNullValuesAsZero', false);
@@ -354,10 +275,12 @@
 
 
       var timelineChart9Vif = _.cloneDeep(timelineChart2Vif);
+      timelineChart9Vif.title = 'Measure axis limited between 35000 and 44000';
       _.set(timelineChart9Vif, 'configuration.measureAxisMinValue', 35000);
       _.set(timelineChart9Vif, 'configuration.measureAxisMaxValue', 44000);
 
       var timelineChart10Vif = _.cloneDeep(timelineChart1Vif);
+      timelineChart10Vif.title = 'dimension grouping';
       _.unset(
         timelineChart10Vif,
         'series[0].dataSource.precision'
@@ -433,7 +356,7 @@
           type: 'visualization_interchange_format',
           version: 2
         },
-        title: 'Sample Title'
+        title: 'precision=month, dimension grouping, custom measure min/max, treating nulls as zero'
       };
 
       /**
@@ -442,38 +365,22 @@
 
       var flyoutRenderer = new socrata.visualizations.views.FlyoutRenderer();
 
-      var $timelineChart1Element = $('#timeline-chart-1');
-      $timelineChart1Element.socrataSvgTimelineChart(timelineChart1Vif);
-
-      var $timelineChart2Element = $('#timeline-chart-2');
-      $timelineChart2Element.socrataSvgTimelineChart(timelineChart2Vif);
-
-      var $timelineChart3Element = $('#timeline-chart-3');
-      $timelineChart3Element.socrataSvgTimelineChart(timelineChart3Vif);
-
-      var $timelineChart4Element = $('#timeline-chart-4');
-      $timelineChart4Element.socrataSvgTimelineChart(timelineChart4Vif);
-
-      var $timelineChart5Element = $('#timeline-chart-5');
-      $timelineChart5Element.socrataSvgTimelineChart(timelineChart5Vif);
-
-      var $timelineChart6Element = $('#timeline-chart-6');
-      $timelineChart6Element.socrataSvgTimelineChart(timelineChart6Vif);
-
-      var $timelineChart7Element = $('#timeline-chart-7');
-      $timelineChart7Element.socrataSvgTimelineChart(timelineChart7Vif);
-
-      var $timelineChart8Element = $('#timeline-chart-8');
-      $timelineChart8Element.socrataSvgTimelineChart(timelineChart8Vif);
-
-      var $timelineChart9Element = $('#timeline-chart-9');
-      $timelineChart9Element.socrataSvgTimelineChart(timelineChart9Vif);
-
-      var $timelineChart10Element = $('#timeline-chart-10');
-      $timelineChart10Element.socrataSvgTimelineChart(timelineChart10Vif);
-
-      var $timelineChart11Element = $('#timeline-chart-11');
-      $timelineChart11Element.socrataSvgTimelineChart(timelineChart11Vif);
+      [
+        timelineChart1Vif,
+        timelineChart2Vif,
+        timelineChart3Vif,
+        timelineChart4Vif,
+        timelineChart5Vif,
+        window.socrata.sampleVifsByChartType.timelineChartMultipleSeries,
+        timelineChart7Vif,
+        timelineChart8Vif,
+        timelineChart9Vif,
+        timelineChart10Vif,
+        timelineChart11Vif,
+        window.socrata.sampleVifsByChartType.timelineChartWithCategoricalData,
+        window.socrata.sampleVifsByChartType.timelineChartWithDashedLine,
+        window.socrata.sampleVifsByChartType.timelineChartWithOpenDot
+      ].forEach(drawChart);
 
       $('[id^="timeline-chart-"]').on(
         'SOCRATA_VISUALIZATION_FLYOUT',
@@ -526,25 +433,3 @@
 
 <a href="/internal">Internal Panel Home</a><br>
 <a href="/internal/demos/visualizations">Back to demo list</a>
-<p>With 'precision' set to 'DAY'</p>
-<div id="timeline-chart-1"></div>
-<p>Identical to the above except with 'precision' set to 'MONTH'</p>
-<div id="timeline-chart-2"></div>
-<p>Identical to the above except with 'precision' set to 'YEAR'</p>
-<div id="timeline-chart-3"></div>
-<p>Chart with null values</p>
-<div id="timeline-chart-4"></div>
-<p>Chart with null values and 'treatNullValuesAsZero' set to true</p>
-<div id="timeline-chart-5"></div>
-<p>Line variant with multiple series.
-<div id="timeline-chart-6"></div>
-<p>Version 1 vif, migrated at runtime to version 2. The data should be identical to the first chart on this page.</p>
-<div id="timeline-chart-7"></div>
-<p>Chart with OBE percent column as measure</p>
-<div id="timeline-chart-8"></div>
-<p>Measure axis limited between 35000 and 44000</p>
-<div id="timeline-chart-9"></div>
-<p>With dimension grouping enabled</p>
-<div id="timeline-chart-10"></div>
-<p>With precision set to 'month' as well as dimension grouping, measureAxisMinValue, measureAxisMaxValue and treatNullValuesAsZero enabled</p>
-<div id="timeline-chart-11"></div>

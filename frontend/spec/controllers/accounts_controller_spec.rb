@@ -23,13 +23,13 @@ describe AccountsController do
 
   describe 'POST /signup' do
     before do
-      SocrataRecaptcha.stub(:valid => true)
+      allow(SocrataRecaptcha).to receive(:valid).and_return(true)
       allow(User).to receive(:create).and_return(user)
     end
 
     describe 'with email verifications' do
       before do
-        rspec_stub_feature_flags_with(:enable_new_account_verification_email => true)
+        stub_feature_flags_with(:enable_new_account_verification_email => true)
       end
 
       # TODO: For JSON/data, the confirmation prompt displays in the output.

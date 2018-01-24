@@ -1,22 +1,26 @@
 import _ from 'lodash';
 import { browserHistory } from 'react-router';
 import uuid from 'uuid';
-import { socrataFetch, checkStatus, checkStatusForPoll, getJson } from 'lib/http';
+import { socrataFetch, checkStatus, checkStatusForPoll, getJson } from 'datasetManagementUI/lib/http';
 import {
   apiCallStarted,
   apiCallSucceeded,
   apiCallFailed,
   APPLY_REVISION,
   ADD_EMAIL_INTEREST
-} from 'reduxStuff/actions/apiCalls';
-import { showModal } from 'reduxStuff/actions/modal';
-import { addTaskSet } from 'reduxStuff/actions/taskSets';
-import { editRevision, updateRevision, shapeRevision } from 'reduxStuff/actions/revisions';
-import { getView } from 'reduxStuff/actions/views';
-import * as dsmapiLinks from 'links/dsmapiLinks';
-import * as Links from 'links/links';
-import { parseDate } from 'lib/parseDate';
-import { addNotification } from 'reduxStuff/actions/notifications';
+} from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import { showModal } from 'datasetManagementUI/reduxStuff/actions/modal';
+import { addTaskSet } from 'datasetManagementUI/reduxStuff/actions/taskSets';
+import {
+  editRevision,
+  updateRevision,
+  shapeRevision
+} from 'datasetManagementUI/reduxStuff/actions/revisions';
+import { getView } from 'datasetManagementUI/reduxStuff/actions/views';
+import * as dsmapiLinks from 'datasetManagementUI/links/dsmapiLinks';
+import * as Links from 'datasetManagementUI/links/links';
+import { parseDate } from 'datasetManagementUI/lib/parseDate';
+import { addNotification } from 'datasetManagementUI/reduxStuff/actions/notifications';
 
 // match DSMAPI: https://github.com/socrata/dsmapi/blob/e4eb96e24e0734b33d5ab6ffb26351a07b1c61d1/web/models/task_set.ex#L30-L35
 export const TASK_SET_INITIALIZING = 'initializing';
@@ -141,6 +145,7 @@ export function pollForTaskSetProgress(taskSetId, params) {
       })
       .catch(err => {
         console.error('polling for task set progress failed', err);
+        dispatch(apiCallFailed(taskSetId, err));
       });
   };
 }

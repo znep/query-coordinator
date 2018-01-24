@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import React from 'react';
 import { Link } from 'react-router';
-import * as Links from 'links/links';
+import * as Links from 'datasetManagementUI/links/links';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import styles from './SourceBreadcrumbs.module.scss';
 

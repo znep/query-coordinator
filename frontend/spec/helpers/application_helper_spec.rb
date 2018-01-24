@@ -772,7 +772,7 @@ window.socrata.featureFlags =
 
       before do
         allow(Signaller).to receive(:healthy?).and_return(true)
-        rspec_stub_feature_flags_with(stories_enabled: stories_enabled)
+        stub_feature_flags_with(stories_enabled: stories_enabled)
         allow(helper).to receive(:current_user).and_return(current_user)
       end
 

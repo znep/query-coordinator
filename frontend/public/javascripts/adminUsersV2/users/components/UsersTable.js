@@ -1,25 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import { connect as fullConnect } from '../../utils';
 import ResultsTable from '../../components/ResultsTable';
 import DateFromNow from '../../components/DateFromNow';
-import { SocrataIcon } from 'common/components';
+import SocrataIcon from 'common/components/SocrataIcon';
 import RolePicker from '../../roles/components/RolePicker';
 import DropdownButton, { DropdownItem } from '../../components/DropdownButton';
 import Pager from 'common/components/Pager';
-import connectLocalization from 'common/i18n/components/connectLocalization';
-import { changeUserRole, removeUserRole } from '../../roles/actions';
-import { gotoPage, resetPassword, sortColumn } from '../actions';
+import * as RolesActions from '../../roles/actions';
+import * as Actions from '../actions';
+import * as Selectors from '../../selectors';
 import isUndefined from 'lodash/isUndefined';
-import {
-  getUsers,
-  getUsersCurrentPage,
-  getUsersLoadingData,
-  getUsersOrderBy,
-  getUsersResultCount,
-  getUsersResultsLimit,
-  getUsersSortDirection
-} from '../../reducers';
+
 import CSVExportButton from './CSVExportButton';
 import { SORT_KEYS } from 'common/users-api';
 
@@ -75,11 +67,19 @@ export class UsersTable extends Component {
     );
   };
 
-  renderEditControl = (userId, { roleId }) => {
-    const { I18n, onRemoveUserRole, onResetPassword } = this.props;
+  handleRemoveUserRole = (userId, roleId, screenName) => {
+    const { I18n, onRemoveUserRole } = this.props;
+
+    if (window.confirm(I18n.t('users.actions.confirm_remove_user', { screenName }))) {
+      onRemoveUserRole(userId, roleId);
+    }
+  };
+
+  renderEditControl = (userId, { roleId, screenName }) => {
+    const { I18n, onResetPassword } = this.props;
     return (
       <DropdownButton isDisabled={roleId === 'none'}>
-        <DropdownItem onClick={() => onRemoveUserRole(userId, roleId)}>
+        <DropdownItem onClick={() => this.handleRemoveUserRole(userId, roleId, screenName)}>
           {I18n.t('users.actions.remove_role')}
         </DropdownItem>
         <DropdownItem onClick={() => onResetPassword(userId)}>
@@ -164,22 +164,26 @@ export class UsersTable extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  currentPage: getUsersCurrentPage(state),
-  loadingData: getUsersLoadingData(state),
-  orderBy: getUsersOrderBy(state),
-  resultCount: getUsersResultCount(state),
-  resultsPerPage: getUsersResultsLimit(state),
-  sortDirection: getUsersSortDirection(state),
-  users: getUsers(state)
-});
+const mapStateToProps = state => {
+  const searchResultCount = Selectors.getUserSearchResultCount(state);
 
-const mapDispatchToProps = {
-  onChangePage: gotoPage,
-  onRemoveUserRole: removeUserRole,
-  onResetPassword: resetPassword,
-  onRoleChange: changeUserRole,
-  onSort: sortColumn
+  return ({
+    currentPage: Selectors.getUsersCurrentPage(state),
+    loadingData: Selectors.getUsersLoadingData(state),
+    orderBy: Selectors.getUsersOrderBy(state),
+    resultCount: isUndefined(searchResultCount) ? Selectors.getUsersResultCount(state) : searchResultCount,
+    resultsPerPage: Selectors.getUsersResultsLimit(state),
+    sortDirection: Selectors.getUsersSortDirection(state),
+    users: Selectors.getUsers(state)
+  });
 };
 
-export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(UsersTable));
+const mapDispatchToProps = {
+  onChangePage: Actions.gotoUserPage,
+  onRemoveUserRole: RolesActions.removeUserRole,
+  onResetPassword: Actions.resetPassword,
+  onRoleChange: RolesActions.changeUserRole,
+  onSort: Actions.sortUserColumn
+};
+
+export default fullConnect(mapStateToProps, mapDispatchToProps)(UsersTable);

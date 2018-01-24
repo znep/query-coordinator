@@ -12,6 +12,8 @@ class DateRangeFilter extends PureComponent {
   render() {
     const { date, changeDateRange } = this.props;
 
+    const title = I18nJS.t('screens.admin.activity_feed.filters.data_range.tooltip');
+
     const pickerProps = {
       value: date,
       onChange: changeDateRange,
@@ -23,7 +25,8 @@ class DateRangeFilter extends PureComponent {
             escapeWithReference: false,
             boundariesElement: 'viewport'
           }
-        }
+        },
+        title
       }
     };
 

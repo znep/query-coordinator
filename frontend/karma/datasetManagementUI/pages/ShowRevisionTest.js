@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import React from 'react';
 import { shallow } from 'enzyme';
-import { ShowRevision } from 'pages/ShowRevision/ShowRevision';
+import { ShowRevision } from 'datasetManagementUI/pages/ShowRevision/ShowRevision';
 import { ShowRevisionProps } from '../data/defaultProps';
 
 describe('ShowRevision page', () => {
@@ -11,7 +11,8 @@ describe('ShowRevision page', () => {
       revisionSeq: '0'
     },
     isPublishedDataset: false,
-    readFromCore: false
+    readFromCore: false,
+    hasOutputSchema: true
   };
 
   const component = shallow(<ShowRevision {...defaultProps} />);
@@ -28,6 +29,7 @@ describe('ShowRevision page', () => {
   });
 
   it('renders the HomePaneSidebar', () => {
+    component.setState({ recentActionsOpened: true });
     assert.isTrue(component.find('HomePaneSidebar').exists());
   });
 });

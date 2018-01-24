@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import FlashMessage from 'containers/FlashMessageContainer';
+import FlashMessage from 'datasetManagementUI/containers/FlashMessageContainer';
 import styles from './WithFlash.module.scss';
 
 class WithFlash extends Component {

@@ -19,10 +19,26 @@ class StoryPublisher
 
     raise ArgumentError.new('User is not valid') unless creating_user_id.present?
 
-    @draft_story = DraftStory.find_by_uid_and_digest(@story_uid, params[:digest])
+    @draft_story = DraftStory.find_by_uid(@story_uid)
 
+    # Publishing a non-existent draft should fail.
     if @draft_story.nil?
       raise 'Could not find a draft story with matching uid and digest.'
+    end
+
+    # Linear history enforcement: only the latest draft should be publishable.
+    if @draft_story.digest != params[:digest]
+      raise 'Rejected specified draft story for publication due to staleness.'
+    end
+
+    # Linear history enforcement: a draft should only be publishable once.
+    # This can additionally be confirmed by comparing the digests of the draft
+    # and the next published version, since this draft is the latest one (per
+    # previous check) and therefore the only publishable one.
+    @next_published_story = PublishedStory.find_next(@draft_story.uid, @draft_story.created_at)
+    if @next_published_story.present?
+      # at this point, @next_published_story.digest == @draft_story.digest
+      raise 'Rejected specified draft story for publication because it has already been published.'
     end
 
     @story = PublishedStory.from_draft_story(@draft_story)

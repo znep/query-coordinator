@@ -439,7 +439,7 @@ function SvgColumnChart($element, vif, options) {
       const errorBarWidth = Math.min(columnWidth, ERROR_BARS_MAX_END_BAR_LENGTH);
       const color = _.get(self.getVif(), 'series[0].errorBars.barColor', ERROR_BARS_DEFAULT_BAR_COLOR);
 
-      const getMinErrorBarPosition = (d, measureIndex, dimensionIndex) => {
+      const getMinErrorBarYPosition = (d, measureIndex, dimensionIndex) => {
         const errorBarValues = columnDataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
         const minValue = _.clamp(d3.min(errorBarValues), minYValue, maxYValue);
         return d3YScale(minValue);
@@ -478,9 +478,9 @@ function SvgColumnChart($element, vif, options) {
         attr('stroke', color).
         attr('stroke-width', getMinErrorBarWidth).
         attr('x1', getErrorBarXPosition).
-        attr('y1', getMinErrorBarPosition).
+        attr('y1', getMinErrorBarYPosition).
         attr('x2', (d, measureIndex) => getErrorBarXPosition(d, measureIndex) + errorBarWidth).
-        attr('y2', getMinErrorBarPosition);
+        attr('y2', getMinErrorBarYPosition);
 
       dimensionGroupSvgs.selectAll('.error-bar-top').
         attr('shape-rendering', 'crispEdges').
@@ -496,7 +496,7 @@ function SvgColumnChart($element, vif, options) {
         attr('stroke', color).
         attr('stroke-width', ERROR_BARS_STROKE_WIDTH).
         attr('x1', (d, measureIndex) => getErrorBarXPosition(d, measureIndex) + (errorBarWidth / 2)).
-        attr('y1', getMinErrorBarPosition).
+        attr('y1', getMinErrorBarYPosition).
         attr('x2', (d, measureIndex) => getErrorBarXPosition(d, measureIndex) + (errorBarWidth / 2)).
         attr('y2', getMaxErrorBarYPosition);
     }
@@ -1415,10 +1415,10 @@ function SvgColumnChart($element, vif, options) {
       data.errorBars.map(
         (row) => d3.min(
           row.slice(dimensionIndex + 1).map(
-            (errorBarValues) => d3.min(
-              errorBarValues.map(
-                (errorBarValue) => errorBarValue || 0)
-            )
+            (errorBarValues) =>
+              errorBarValues ?
+                d3.min(errorBarValues.map((errorBarValue) => errorBarValue || 0)) :
+                0
           )
         )
       )
@@ -1450,10 +1450,10 @@ function SvgColumnChart($element, vif, options) {
       data.errorBars.map(
         (row) => d3.max(
           row.slice(dimensionIndex + 1).map(
-            (errorBarValues) => d3.max(
-              errorBarValues.map(
-                (errorBarValue) => errorBarValue || 0)
-            )
+            (errorBarValues) =>
+              errorBarValues ?
+                d3.max(errorBarValues.map((errorBarValue) => errorBarValue || 0)) :
+                0
           )
         )
       )

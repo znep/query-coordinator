@@ -1,0 +1,30 @@
+@import 'common/components/AccessManager/common.module.scss';
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 12px;
+  text-align: center;
+  padding-top: 15px;
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  padding-top: 5px;
+  margin-left: auto;
+  margin-right: auto;
+
+  & svg use, & svg path {
+    fill: $primary-dark !important;
+  }
+}

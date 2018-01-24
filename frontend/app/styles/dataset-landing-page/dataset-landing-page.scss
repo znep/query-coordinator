@@ -9,6 +9,7 @@ $link-color: #2c97de;
 $twitter-blue: #55acee;
 
 @import "variables/breakpoints";
+@import "common/export-flannel";
 @import "common/feedback-panel";
 @import "common/schema-preview";
 @import "common/row-details";
@@ -19,7 +20,6 @@ $twitter-blue: #55acee;
 @import "dataset-landing-page/featured-content-modal";
 @import "dataset-landing-page/view-widget";
 @import "dataset-landing-page/api-flannel";
-@import "dataset-landing-page/export-flannel";
 @import "dataset-landing-page/share-flannel";
 @import "common/visualizations/views/styles/socrata-visualizations";
 

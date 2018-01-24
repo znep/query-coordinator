@@ -5,8 +5,7 @@ describe Cetera::Results do
 
   describe 'Row' do
     let(:sample_result_row) do
-      hash = JSON.parse(File.read("#{Rails.root}/test/fixtures/cetera_row_results.json"))
-      Cetera::Results::ResultRow.new(hash)
+      Cetera::Results::ResultRow.new(json_fixture('cetera_row_results.json'))
     end
 
     it 'should test_cetera_result_row_delegators' do
@@ -81,7 +80,7 @@ describe Cetera::Results do
       end
 
       it 'returns nil if the previewImageUrl is not present in the result' do
-        result = JSON.parse(File.read("#{Rails.root}/test/fixtures/cetera_row_results.json"))
+        result = json_fixture("cetera_row_results.json")
         result.delete("preview_image_url")
         sample_result_row = Cetera::Results::ResultRow.new(result)
 

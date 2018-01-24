@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
+import { SocrataIcon } from 'common/components';
 
-import * as filters from '../../actions/filters';
+import * as filters from 'common/components/AssetBrowser/actions/filters';
 
 export class RecentlyViewedFilter extends Component {
   render() {
@@ -17,7 +18,9 @@ export class RecentlyViewedFilter extends Component {
         <div className="checkbox checkbox-filter">
           <input id={inputId} type="checkbox" onChange={toggleRecentlyViewed} checked={onlyRecentlyViewed} />
           <label htmlFor={inputId}>
-            <span className="fake-checkbox"><span className="socrata-icon-checkmark3"></span></span>
+            <span className="fake-checkbox">
+              <SocrataIcon name="checkmark3" />
+            </span>
             {I18n.t('shared.asset_browser.filters.recently_viewed.label')}
           </label>
         </div>

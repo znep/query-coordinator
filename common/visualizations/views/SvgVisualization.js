@@ -388,6 +388,10 @@ function SvgVisualization($element, vif, options) {
 
     $innerContainer.append($ul);
 
+    if (this.getShowLegendOpened()) {
+      this.toggleShowLegend($button, $ul);
+    }
+
     // Set menu max height so it may scroll
     //
     const containerHeight = self.$container.find('.socrata-visualization-container').height();
@@ -396,30 +400,27 @@ function SvgVisualization($element, vif, options) {
 
   this.attachLegendBarEventHandlers = function() {
 
+    const toggle = this.toggleShowLegend;
     self.$container.find('.socrata-legend-button').off('click').on('click', function(event) { // note: using function because we are using $(this)
 
       event.stopPropagation();
 
-      const menu = self.$container.find('.socrata-legend-menu').
-        toggle().
-        scrollTop(0);
-
-      const isVisible = menu.is(':visible');
-
-      const labelText = isVisible ?
-        I18n.t('shared.visualizations.charts.common.hide_legend') :
-        I18n.t('shared.visualizations.charts.common.show_legend');
-
-      $(this).find('label').text(labelText);
-      $(this).find('.socrata-icon-arrow-up').toggleClass('legend-button-display-none');
-      $(this).find('.socrata-icon-close-2').toggleClass('legend-button-display-none');
-
-      if (isVisible) {
-        $('body').on('click', self.hideLegendMenu);
-      }
+      const $menu = self.$container.find('.socrata-legend-menu');
+      toggle($(this), $menu);
     });
+  };
 
-    self.$container.find('.socrata-legend-menu').click((event) => event.stopPropagation);
+  this.toggleShowLegend = ($button, $menu) => {
+    $menu.toggle().scrollTop(0);
+
+    const isVisible = $menu.is(':visible');
+    const labelText = isVisible ?
+      I18n.t('shared.visualizations.charts.common.hide_legend') :
+      I18n.t('shared.visualizations.charts.common.show_legend');
+
+    $button.find('label').text(labelText);
+    $button.find('.socrata-icon-arrow-up').toggleClass('legend-button-display-none');
+    $button.find('.socrata-icon-close-2').toggleClass('legend-button-display-none');
   };
 
   this.getLegendItems = function({ measures, referenceLines }) {
@@ -447,16 +448,6 @@ function SvgVisualization($element, vif, options) {
     }
 
     return [...referenceLineItems, ...measureItems];
-  };
-
-  this.hideLegendMenu = function() {
-
-    self.$container.find('.socrata-legend-button label').text(I18n.t('shared.visualizations.charts.common.show_legend'));
-    self.$container.find('.socrata-legend-button .socrata-icon-arrow-up').toggleClass('legend-button-display-none');
-    self.$container.find('.socrata-legend-button .socrata-icon-close-2').toggleClass('legend-button-display-none');
-    self.$container.find('.socrata-legend-menu').hide();
-
-    $('body').off('click', self.hideLegendMenu);
   };
 
   this.clearError = function() {
@@ -701,6 +692,20 @@ function SvgVisualization($element, vif, options) {
     );
   };
 
+  this.getLineStyleBySeriesIndex = function(seriesIndex) {
+    const actualSeriesIndex = defaultToSeriesIndexZeroIfGroupingIsEnabled(
+      self.getVif(),
+      seriesIndex
+    );
+    return _.merge(
+      {
+        points: 'none',
+        pattern: 'solid'
+      },
+      _.get(self.getVif(), ['series', actualSeriesIndex, 'lineStyle'])
+    );
+  };
+
   /**
    * Valid options: 'fit', 'pan', 'showZero'
    */
@@ -721,6 +726,18 @@ function SvgVisualization($element, vif, options) {
   this.getMeasureAxisMaxValue = () => {
     const value = _.get(self.getVif(), 'configuration.measureAxisMaxValue', null);
     return validateAxisValue(value, 'measure_axis_max_value_should_be_numeric');
+  };
+
+  this.getDimensionAxisMinValue = () => {
+    // TODO: When more than just time-series Timeline Charts are supported,
+    // add validation relative to expected dimension axis data type.
+    return _.get(self.getVif(), 'configuration.dimensionAxisMinValue', null);
+  };
+
+  this.getDimensionAxisMaxValue = () => {
+    // TODO: When more than just time-series Timeline Charts are supported,
+    // add validation relative to expected dimension axis data type.
+    return _.get(self.getVif(), 'configuration.dimensionAxisMaxValue', null);
   };
 
   this.getSecondaryMeasureAxisMinValue = () => {
@@ -776,6 +793,10 @@ function SvgVisualization($element, vif, options) {
       'configuration.showLegend',
       defaultValue
     );
+  };
+
+  this.getShowLegendOpened = () => {
+    return _.get(self.getVif(), 'configuration.showLegendOpened', false);
   };
 
   this.getAxisLabels = () => {

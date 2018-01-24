@@ -149,6 +149,10 @@ $(document).on('ready', function() {
           $element.componentSocrataVisualizationFeatureMap(props);
           break;
 
+        case 'socrata.visualization.map':
+          $element.componentSocrataVisualizationMap(props);
+          break;
+
         case 'socrata.visualization.timelineChart':
           $element.componentSocrataVisualizationTimelineChart(props);
           break;

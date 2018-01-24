@@ -69,6 +69,9 @@ http://www.socrata.com
   <% end %>
 
   <%= jquery_include %>
+  <script type="text/javascript">
+    window.jquery = window.jQuery;
+  </script>
   <%= javascript_error_helper_tag %>
   <%= render_global_socrata_state %>
 
@@ -93,6 +96,9 @@ http://www.socrata.com
   <%- end -%>
 
   <%= get_favicon_tag %>
+
+  <%# Adding shared/common bundle higher up, since all webpack bundles in the shared.config depends on this being loaded first %>
+  <%= include_webpack_bundle 'shared/common' %>
 </head>
 
 <body class="<%= body_classes %> <%= data_grid_body_class -%>" data-locale="<%= I18n.locale %>" data-defaultlocale="<%= CurrentDomain.default_locale %>">
@@ -118,6 +124,7 @@ http://www.socrata.com
 
         <%- if enable_2017_grid_view_refresh_for_current_request? && render_asset_action_bar? %>
           <div id="asset-action-bar-container"></div>
+          <div id="asset-action-bar-modal-target"></div>
         <%- end %>
 
         <div id="noticeContainer">
@@ -364,6 +371,6 @@ http://www.socrata.com
   <% unless CurrentDomain.custom_tracking_code.blank? %>
     <%= raw CurrentDomain.custom_tracking_code %>
   <% end %>
-  <%= include_webpack_bundle 'site_wide/site_wide.js' %>
+  <%= include_webpack_bundle 'shared/siteWide' %>
 </body>
 </html>

@@ -2,7 +2,6 @@ import _ from 'lodash';
 
 import vifs from '../../vifs';
 import baseVifReducer from './base';
-
 import * as actions from '../../actions';
 
 export default function map(state, action) {
@@ -31,7 +30,7 @@ export default function map(state, action) {
       break;
 
     case actions.SET_POINT_OPACITY:
-      var opacity = parseFloat(action.pointOpacity);
+      const opacity = parseFloat(action.pointOpacity);
       _.set(state, 'configuration.pointOpacity', _.isFinite(opacity) ? opacity : null);
       break;
 
@@ -42,7 +41,7 @@ export default function map(state, action) {
 
     case actions.SET_POINT_MAP_POINT_SIZE:
       const pointSize = parseFloat(action.pointMapPointSize);
-      _.set(state, 'series[0].mapOptions.pointMapPointSize', _.isFinite(pointSize) ? _.clamp(pointSize, 1, 10) : null);
+      _.set(state, 'series[0].mapOptions.pointMapPointSize', _.isFinite(pointSize) ? _.clamp(pointSize, 4, 40) : null);
       break;
 
     case actions.SET_LINE_WEIGHT:
@@ -62,16 +61,16 @@ export default function map(state, action) {
 
     case actions.SET_MINIMUM_POINT_SIZE:
       const minimumPointSize = parseFloat(action.minimumPointSize);
-      _.set(state, 'series[0].mapOptions.minimumPointSize', _.isFinite(minimumPointSize) ? _.clamp(minimumPointSize, 1, 10) : null);
+      _.set(state, 'series[0].mapOptions.minimumPointSize', _.isFinite(minimumPointSize) ? _.clamp(minimumPointSize, 4, 40) : null);
       break;
 
     case actions.SET_MAXIMUM_POINT_SIZE:
       const maximumPointSize = parseFloat(action.maximumPointSize);
-      _.set(state, 'series[0].mapOptions.maximumPointSize', _.isFinite(maximumPointSize) ? _.clamp(maximumPointSize, 1, 10) : null);
+      _.set(state, 'series[0].mapOptions.maximumPointSize', _.isFinite(maximumPointSize) ? _.clamp(maximumPointSize, 4, 40) : null);
       break;
 
     case actions.SET_NUMBER_OF_DATA_CLASSES:
-      var numberOfDataClasses = parseInt(action.numberOfDataClasses);
+      const numberOfDataClasses = parseInt(action.numberOfDataClasses);
       _.set(state, 'series[0].mapOptions.numberOfDataClasses', _.isFinite(numberOfDataClasses) ? _.clamp(numberOfDataClasses, 2, 7) : null);
       break;
 
@@ -87,17 +86,17 @@ export default function map(state, action) {
 
     case actions.SET_CLUSTER_RADIUS:
       const clusterRadius = parseInt(action.clusterRadius);
-      _.set(state, 'series[0].mapOptions.clusterRadius', _.isFinite(clusterRadius) ? _.clamp(clusterRadius, 20, 80) : null);
+      _.set(state, 'series[0].mapOptions.clusterRadius', _.isFinite(clusterRadius) ? _.clamp(clusterRadius, 20, 120) : null);
       break;
 
     case actions.SET_MAX_CLUSTER_SIZE:
       const maxClusterSize = parseInt(action.maxClusterSize);
-      _.set(state, 'series[0].mapOptions.maxClusterSize', _.isFinite(maxClusterSize) ? _.clamp(maxClusterSize, 20, 80) : null);
+      _.set(state, 'series[0].mapOptions.maxClusterSize', _.isFinite(maxClusterSize) ? _.clamp(maxClusterSize, 24, 50) : null);
       break;
 
     case actions.SET_STACK_RADIUS:
       const stackRadius = parseInt(action.stackRadius);
-      _.set(state, 'series[0].mapOptions.stackRadius', _.isFinite(stackRadius) ? _.clamp(stackRadius, 1, 80) : null);
+      _.set(state, 'series[0].mapOptions.stackRadius', _.isFinite(stackRadius) ? _.clamp(stackRadius, 10, 80) : null);
       break;
 
     case actions.SET_BASE_LAYER:
@@ -120,15 +119,6 @@ export default function map(state, action) {
       _.set(state, 'series[0].mapOptions.colorLinesBy', action.colorLinesBy);
       break;
 
-    case actions.SET_BASE_LAYER_OPACITY:
-      var baseLayerOpacity = parseFloat(action.baseLayerOpacity);
-      _.set(state, 'configuration.baseLayerOpacity', _.isFinite(baseLayerOpacity) ? baseLayerOpacity : null);
-      break;
-
-    case actions.SET_ROW_INSPECTOR_TITLE_COLUMN_NAME:
-      _.set(state, 'configuration.rowInspectorTitleColumnName', action.rowInspectorTitleColumnName);
-      break;
-
     case actions.SET_CENTER_AND_ZOOM:
       _.set(state, 'configuration.mapCenterAndZoom', action.centerAndZoom);
       break;
@@ -147,6 +137,100 @@ export default function map(state, action) {
 
     case actions.SET_POINT_AGGREGATION:
       _.set(state, 'series[0].mapOptions.pointAggregation', action.pointAggregation);
+      break;
+
+    case actions.SET_COMPUTED_COLUMN:
+      _.set(state, 'configuration.computedColumnName', action.computedColumn);
+      break;
+
+    case actions.SET_SHAPEFILE:
+      _.set(state, 'configuration.shapefile.uid', action.shapefileUid);
+      _.set(state, 'configuration.shapefile.primaryKey', action.shapefilePrimaryKey);
+      _.set(state, 'configuration.shapefile.geometryLabel', action.shapefileGeometryLabel);
+      break;
+
+    case actions.SET_SHAPEFILE_UID:
+      _.set(state, 'configuration.shapefile.uid', action.shapefileUid);
+      break;
+
+    case actions.SET_SHAPEFILE_PRIMARY_KEY:
+      _.set(state, 'configuration.shapefile.primaryKey', action.shapefilePrimaryKey);
+      break;
+
+    case actions.SET_SHAPEFILE_GEOMETRY_LABEL:
+      _.set(state, 'configuration.shapefile.geometryLabel', action.shapefileGeometryLabel);
+      break;
+
+    case actions.SET_MEASURE_AGGREGATION:
+    case actions.SET_MEASURE_COLUMN:
+      if (!action.isFlyoutSeries && (action.relativeIndex == 0)) {
+        return baseVifReducer(state, action);
+      }
+      break;
+
+    case actions.SET_BASE_MAP_STYLE:
+      _.set(state, 'configuration.baseMapStyle', action.baseMapStyle);
+      break;
+
+    case actions.SET_BASE_MAP_OPACITY:
+      const baseMapOpacity = parseFloat(action.baseMapOpacity);
+      _.set(state, 'configuration.baseMapOpacity', _.isNaN(baseMapOpacity) ? 1 : _.clamp(baseMapOpacity, 0, 1));
+      break;
+
+    case actions.SET_NAVIGATION_CONTROL:
+      _.set(state, 'configuration.navigationControl', action.navigationControl);
+      break;
+
+    case actions.SET_GEO_CODER_CONTROL:
+      _.set(state, 'configuration.geoCoderControl', action.geoCoderControl);
+      break;
+
+    case actions.SET_GEO_LOCATE_CONTROL:
+      _.set(state, 'configuration.geoLocateControl', action.geoLocateControl);
+      break;
+
+    case actions.SET_MAP_FLYOUT_TITLE_COLUMN_NAME:
+      _.set(state, 'series[0].mapOptions.mapFlyoutTitleColumnName', action.mapFlyoutTitleColumnName);
+      break;
+
+    case actions.ADD_BASEMAP_FLYOUT_COLUMN:
+      const flyoutColumns = _.get(state, 'series[0].mapOptions.additionalFlyoutColumns', []);
+      flyoutColumns.push(action.columnName);
+      _.set(state, 'series[0].mapOptions.additionalFlyoutColumns', flyoutColumns);
+      break;
+
+    case actions.REMOVE_BASEMAP_FLYOUT_COLUMN:
+      let additionalFlyoutColumns = _.get(state, 'series[0].mapOptions.additionalFlyoutColumns', []);
+      additionalFlyoutColumns.splice(action.relativeIndex, 1);
+
+      _.set(state, 'series[0].mapOptions.additionalFlyoutColumns', additionalFlyoutColumns);
+      break;
+
+    case actions.SET_ADDITIONAL_FLYOUT_COLUMNS:
+      const columns = _.get(state, 'series[0].mapOptions.additionalFlyoutColumns', []);
+      columns[action.relativeIndex] = action.columnName;
+
+      _.set(state, 'series[0].mapOptions.additionalFlyoutColumns', columns);
+      break;
+
+    case actions.SET_SEARCH_BOUNDARY_UPPER_LEFT_LATITUDE:
+      const upperLeftLatitude = parseFloat(action.searchBoundaryUpperLeftLatitude);
+      _.set(state, 'series[0].mapOptions.searchBoundaryUpperLeftLatitude', upperLeftLatitude);
+      break;
+
+    case actions.SET_SEARCH_BOUNDARY_UPPER_LEFT_LONGITUDE:
+      const upperLeftLongitude = parseFloat(action.searchBoundaryUpperLeftLongitude);
+      _.set(state, 'series[0].mapOptions.searchBoundaryUpperLeftLongitude', upperLeftLongitude);
+      break;
+
+    case actions.SET_SEARCH_BOUNDARY_LOWER_RIGHT_LATITUDE:
+      const lowerRightLatitude = parseFloat(action.searchBoundaryLowerRightLatitude);
+      _.set(state, 'series[0].mapOptions.searchBoundaryLowerRightLatitude', lowerRightLatitude);
+      break;
+
+    case actions.SET_SEARCH_BOUNDARY_LOWER_RIGHT_LONGITUDE:
+      const lowerRightLongitude = parseFloat(action.searchBoundaryLowerRightLongitude);
+      _.set(state, 'series[0].mapOptions.searchBoundaryLowerRightLongitude', lowerRightLongitude);
       break;
 
     case actions.RECEIVE_METADATA:

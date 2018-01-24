@@ -32,7 +32,7 @@
 </div>
 
 <%- content_for :js_footer do -%>
-  <%= include_webpack_bundle 'grid_view_socrata_visualizations/main.js' %>
+  <%= include_webpack_bundle 'shared-with-jquery/gridViewSocrataVisualizations' %>
   <%- @script_packages.each do |pkg| -%>
     <%= include_webpack_bundle "open-data/#{pkg}.js" %>
   <%- end -%>

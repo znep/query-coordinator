@@ -30,17 +30,17 @@ export default class SearchBox extends PureComponent {
   }
 
   handleSubmit = (event) => {
-    this.props.searchCallback(this.state.value);
-
+    const { value } = this.state;
+    this.props.searchCallback(value !== '' ? value : null);
     event.preventDefault();
   }
 
   render() {
     const { focused, value } = this.state;
-    const { placeholder, className } = this.props;
+    const { placeholder, className, id } = this.props;
 
     const inputProps = {
-      id: 'search-box',
+      id,
       className: classNames('search-box-input', { focused }),
       onBlur: () => this.handleFocusChanged(false),
       onChange: this.handleChange,
@@ -61,7 +61,7 @@ export default class SearchBox extends PureComponent {
           <div {...iconWrapperProps}>
             <SocrataIcon name="search" />
           </div>
-          <label htmlFor="search-box" className="aria-not-displayed">
+          <label htmlFor={inputProps.id} className="aria-not-displayed">
             {placeholder}
           </label>
           <input {...inputProps} />
@@ -71,9 +71,14 @@ export default class SearchBox extends PureComponent {
   }
 }
 
+SearchBox.defaultProps = {
+  id: 'search-box'
+};
+
 SearchBox.propTypes = {
   searchValue: PropTypes.string,
   searchCallback: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
-  className: PropTypes.string
+  className: PropTypes.string,
+  id: PropTypes.string
 };

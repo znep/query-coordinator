@@ -1,106 +1,84 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { Simulate } from 'react-dom/test-utils';
+import { shallow } from 'enzyme';
 
 import { ESCAPE } from 'common/dom_helpers/keycodes_deprecated';
-import { cancelEditModal, acceptEditModalChanges } from 'actions/editor';
-import EditModal from 'components/EditModal/EditModal';
+import { Modal, ModalHeader, ModalFooter } from 'common/components';
 
-import { getStore } from '../../testStore';
+import { cancelEditModal, acceptEditModalChanges } from 'opMeasure/actions/editor';
+import EditModalTab from 'opMeasure/components/EditModal/EditModalTab';
+import EditModalPanel from 'opMeasure/components/EditModal/EditModalPanel';
+import { EditModal } from 'opMeasure/components/EditModal/EditModal';
 
 describe('EditModal', () => {
-  const getAcceptButton = (element) => element.querySelector('.modal-footer-actions .done');
-  const getCancelButton = (element) => element.querySelector('.modal-footer-actions .cancel');
-  const getCancelX = (element) => element.querySelector('.modal-header-dismiss');
+  const getAcceptButton = (element) => element.
+    find(Modal).dive().find(ModalFooter).dive().find('.modal-footer-actions .done');
+  const getCancelButton = (element) => element.
+    find(Modal).dive().find(ModalFooter).dive().find('.modal-footer-actions .cancel');
 
   it('does not render when not in editing mode', () => {
-    const element = renderComponentWithStore(EditModal, {}, getStore({
-      editor: {
-        isEditing: false
-      }
-    }));
-    assert.isNull(element);
+    const element = shallow(<EditModal isEditing={false} />);
+    assert.isTrue(element.isEmptyRender());
   });
 
   it('renders', () => {
-    const element = renderComponentWithStore(EditModal, {}, getStore());
-    assert.ok(element);
-    assert.ok(element.querySelector('.measure-edit-modal-tabs'));
-    assert.ok(element.querySelector('.measure-edit-modal-panels'));
+    const element = shallow(<EditModal isEditing />);
+    assert.lengthOf(element.find('.measure-edit-modal-tabs'), 1);
+    assert.lengthOf(element.find('.measure-edit-modal-panels'), 1);
   });
 
-  it('updates the selected tab on tab click', () => {
-    const element = renderComponentWithStore(EditModal, {}, getStore());
-    const getCurrentness = (tabLinkSelector) => (
-      element.querySelector(tabLinkSelector).parentElement.classList.contains('current')
-    );
-    const getVisibility = (panelSelector) => (
-      element.querySelector(panelSelector).getAttribute('aria-hidden') !== 'true'
-    );
+  it('calls back on onTabClick when a tab is clicked', () => {
+    const onTabClick = sinon.stub();
+    const element = shallow(<EditModal isEditing activePanel="general-info" onTabClick={onTabClick} />);
+    const getCurrentness = (tabId) => element.find({ id: tabId }).filter(EditModalTab).prop('isSelected');
+    const getVisibility = (tabId) =>
+      element.find({ id: tabId }).filter(EditModalPanel).prop('isSelected');
 
-    assert.isTrue(getCurrentness('#general-info-link'));
-    assert.isFalse(getCurrentness('#methods-and-analysis-link'));
-    assert.isTrue(getVisibility('#general-info-panel'));
-    assert.isFalse(getVisibility('#methods-and-analysis-panel'));
+    assert.isTrue(getCurrentness('general-info'));
+    assert.isFalse(getCurrentness('methods-and-analysis'));
+    assert.isTrue(getVisibility('general-info'));
+    assert.isFalse(getVisibility('methods-and-analysis'));
 
-    Simulate.click(element.querySelector('#methods-and-analysis-link'));
-
-    assert.isFalse(getCurrentness('#general-info-link'));
-    assert.isTrue(getCurrentness('#methods-and-analysis-link'));
-    assert.isFalse(getVisibility('#general-info-panel'));
-    assert.isTrue(getVisibility('#methods-and-analysis-panel'));
+    element.find({ id: 'methods-and-analysis' }).filter(EditModalTab).prop('onTabNavigation')();
+    sinon.assert.calledOnce(onTabClick);
   });
 
   describe('accept button', () => {
     it('is disabled if the measure has not been changed', () => {
-      const element = renderComponentWithStore(EditModal, {}, getStore());
+      const measure = {};
+      const element = shallow(<EditModal isEditing measure={measure} pristineMeasure={measure} />);
       const button = getAcceptButton(element);
-      assert.isTrue(button.classList.contains('btn-disabled'));
-      assert.isTrue(button.disabled);
+      assert.isTrue(button.is('.btn-disabled'));
+      assert.isTrue(button.prop('disabled'));
     });
 
     it('is enabled if the measure has been changed ', () => {
-      const element = renderComponentWithStore(EditModal, {}, getStore({
-        editor: {
-          pristineMeasure: null // cheap way to create dirty state
-        }
-      }));
+      const pristineMeasure = {};
+      const measure = { dataSourceLensUid: 'test-test' };
+      const element = shallow(<EditModal isEditing measure={measure} pristineMeasure={pristineMeasure} />);
       const button = getAcceptButton(element);
-      assert.isFalse(button.classList.contains('btn-disabled'));
-      assert.isFalse(button.disabled);
+      assert.isFalse(button.is('.btn-disabled'));
+      assert.isFalse(button.prop('disabled'));
     });
   });
 
   describe('actions', () => {
     it('invokes the cancel callback on all affordances for closing', () => {
-      const store = getStore();
-      const dispatchStub = sinon.stub(store, 'dispatch');
-      const element = renderComponentWithStore(EditModal, {}, store);
+      const cancelStub = sinon.stub();
+      const element = shallow(<EditModal isEditing onCancel={cancelStub} />);
 
-      store.dispatch.reset();
-
-      Simulate.click(getCancelX(element));
-      Simulate.click(getCancelButton(element));
-      Simulate.keyUp(element, { keyCode: ESCAPE });
-      sinon.assert.calledThrice(dispatchStub);
-      sinon.assert.alwaysCalledWithMatch(dispatchStub, cancelEditModal());
+      element.find(Modal).prop('onDismiss')();
+      element.find(Modal).dive().find(ModalHeader).prop('onDismiss')();
+      getCancelButton(element).simulate('click');
+      sinon.assert.calledThrice(cancelStub);
     });
 
     it('invokes the complete callback on the accept button', () => {
-      const store = getStore({
-        editor: {
-          pristineMeasure: null // cheap way to create dirty state
-        }
-      });
-      const dispatchStub = sinon.stub(store, 'dispatch');
-      const element = renderComponentWithStore(EditModal, {}, store);
+      const completeStub = sinon.stub();
+      const element = shallow(<EditModal isEditing onComplete={completeStub} />);
 
-      store.dispatch.reset();
-
-      Simulate.click(getAcceptButton(element));
-      sinon.assert.calledOnce(dispatchStub);
-      // NOTE: can't use sinon.assert.calledWithMatch for function arguments!
-      sinon.assert.match(dispatchStub.firstCall.args[0].toString(), acceptEditModalChanges().toString());
+      getAcceptButton(element).simulate('click');
+      sinon.assert.calledOnce(completeStub);
     });
   });
 });

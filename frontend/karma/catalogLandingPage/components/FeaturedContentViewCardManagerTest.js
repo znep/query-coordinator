@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { FeaturedContentViewCardManager } from 'components/FeaturedContentViewCardManager';
+import { FeaturedContentViewCardManager } from 'catalogLandingPage/components/FeaturedContentViewCardManager';
 import _ from 'lodash';
 
 describe('components/FeaturedContentViewCardManager', () => {

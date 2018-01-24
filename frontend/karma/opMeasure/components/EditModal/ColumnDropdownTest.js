@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
 import { Dropdown } from 'common/components';
-import ColumnDropdown from 'components/EditModal/ColumnDropdown';
+import ColumnDropdown from 'opMeasure/components/EditModal/ColumnDropdown';
 
 describe('ColumnDropdown', () => {
   const measure = { };

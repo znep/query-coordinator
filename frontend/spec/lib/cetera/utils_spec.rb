@@ -146,7 +146,7 @@ describe Cetera::Utils do
     let(:cookie) { '_cookie=nomNom' }
 
     let(:cetera_results) do
-      cetera_payload = JSON.parse(File.read("#{Rails.root}/test/fixtures/cetera_search_results.json"))
+      cetera_payload = json_fixture('cetera_search_results.json')
       Cetera::Results::CatalogSearchResult.new(cetera_payload)
     end
 
@@ -212,7 +212,7 @@ describe Cetera::Utils do
 
     it 'returns a TagCountResult with expected properties' do
       VCR.use_cassette('cetera/get_tags') do
-        CurrentDomain.stub(:cname) { 'localhost' }
+        allow(CurrentDomain).to receive(:cname).and_return('localhost')
 
         results = Cetera::Utils.get_tags(request_id, cookie)
 
@@ -226,7 +226,7 @@ describe Cetera::Utils do
 
     it 'returns empty result set when Cetera returns a bad response' do
       VCR.use_cassette('cetera/failed_get_tags') do
-        CurrentDomain.stub(:cname) { 'opendata.rc-socrata.com' }
+        allow(CurrentDomain).to receive(:cname).and_return('opendata.rc-socrata.com')
 
         # fails because opendata.rc-socrata.com is not indexed on localhost
         results = Cetera::Utils.get_tags(request_id, cookie)

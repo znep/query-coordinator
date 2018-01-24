@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import PublishButton from 'components/PublishButton/PublishButton';
-import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
-import * as Selectors from 'selectors';
-import { showModal } from 'reduxStuff/actions/modal';
-import { hasDatasetErrors } from 'containers/ManageMetadataContainer';
+import PublishButton from 'datasetManagementUI/components/PublishButton/PublishButton';
+import * as ApplyRevision from 'datasetManagementUI/reduxStuff/actions/applyRevision';
+import * as Selectors from 'datasetManagementUI/selectors';
+import { showModal } from 'datasetManagementUI/reduxStuff/actions/modal';
+import { hasDatasetErrors } from 'datasetManagementUI/containers/ManageMetadataContainer';
 import { withRouter } from 'react-router';
 
 function isDataSatisfied({ entities, ui }, params) {

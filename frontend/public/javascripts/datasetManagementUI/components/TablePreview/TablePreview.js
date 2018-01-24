@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import * as Selectors from 'selectors';
-import * as ApplyRevision from 'reduxStuff/actions/applyRevision';
+import * as Selectors from 'datasetManagementUI/selectors';
+import * as ApplyRevision from 'datasetManagementUI/reduxStuff/actions/applyRevision';
 import * as TableViews from './TableViews';
 
 function generateTableView({ tasksExist, allTasksSucceeded, outputSchema, blob, hrefExists }) {

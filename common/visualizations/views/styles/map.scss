@@ -1,8 +1,46 @@
 @import 'mapbox-gl';
+@import '@mapbox/mapbox-gl-geocoder/lib/mapbox-gl-geocoder';
 
 .unified-map-instance {
   position:absolute;
   top:0;
   bottom:0;
   width:100%;
+}
+
+.region-map-legend-container {
+  bottom: 0;
+  box-sizing: content-box;
+  height: 100%;
+  max-height: 15rem;
+  padding: 5px 0;
+  position: absolute;
+  right: 10px;
+  width: 5rem;
+
+  .bucket-end-value {
+    font-size: 12px;
+    position: relative;
+    text-align: right;
+    top: 15px;
+    width: 3rem;
+  }
+
+  .region-map-bucket {
+    height: 50px;
+    .bucket-color {
+      display: inline-block;
+      height: 50px;
+      width: 15px;
+    }
+
+    .bucket-value {
+      display: inline-block;
+      font-size: 12px;
+      height: 1.5rem;
+      padding-right: 5px;
+      text-align: right;
+      width: 3rem;
+    }
+  }
 }

@@ -1,15 +1,15 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { browserHistory } from 'react-router';
-import * as Selectors from 'selectors';
-import * as Links from 'links/links';
-import ManageMetadata from 'components/ManageMetadata/ManageMetadata';
-import { updateRevision, editRevision } from 'reduxStuff/actions/revisions';
-import { createNewOutputSchema } from 'reduxStuff/actions/showOutputSchema';
-import { FormValidationError } from 'containers/HrefFormContainer';
-import * as FormActions from 'reduxStuff/actions/forms';
-import * as FlashActions from 'reduxStuff/actions/flashMessage';
-import * as MetadataActions from 'reduxStuff/actions/manageMetadata';
+import * as Selectors from 'datasetManagementUI/selectors';
+import * as Links from 'datasetManagementUI/links/links';
+import ManageMetadata from 'datasetManagementUI/components/ManageMetadata/ManageMetadata';
+import { updateRevision, editRevision } from 'datasetManagementUI/reduxStuff/actions/revisions';
+import { createNewOutputSchema } from 'datasetManagementUI/reduxStuff/actions/showOutputSchema';
+import { FormValidationError } from 'datasetManagementUI/containers/HrefFormContainer';
+import * as FormActions from 'datasetManagementUI/reduxStuff/actions/forms';
+import * as FlashActions from 'datasetManagementUI/reduxStuff/actions/flashMessage';
+import * as MetadataActions from 'datasetManagementUI/reduxStuff/actions/manageMetadata';
 import isEmailHelper from 'validator/lib/isEmail';
 import isURLHelper from 'validator/lib/isURL';
 

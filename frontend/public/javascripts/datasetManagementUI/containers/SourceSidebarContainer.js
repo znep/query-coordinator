@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import * as Selectors from 'selectors';
-import SourceSidebar from 'components/SourceSidebar/SourceSidebar';
+import * as Selectors from 'datasetManagementUI/selectors';
+import SourceSidebar from 'datasetManagementUI/components/SourceSidebar/SourceSidebar';
 
 export const mapStateToProps = ({ entities }, { params }) => {
   // let currentSource;

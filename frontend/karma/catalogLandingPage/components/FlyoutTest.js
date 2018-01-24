@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import Flyout from 'components/Flyout';
+import Flyout from 'catalogLandingPage/components/Flyout';
 
 describe('Flyout', () => {
   const defaultProps = {

@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import { FeaturedContentViewCard } from 'components/FeaturedContentViewCard';
+import { FeaturedContentViewCard } from 'catalogLandingPage/components/FeaturedContentViewCard';
 
 describe('components/FeaturedContentViewCard', () => {
   const getProps = (props = {}) => {

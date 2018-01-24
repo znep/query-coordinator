@@ -9,8 +9,8 @@ import propGoals, { goalsWithPublicationState } from '../../../data/goalTableAct
 import mockedTranslations from '../../../mockTranslations';
 import { FeatureFlags } from 'common/feature_flags';
 
-import * as Actions from 'sections/goals/actions';
-import { EventNames } from 'sections/shared/analytics';
+import * as Actions from 'adminGoals/sections/goals/actions';
+import { EventNames } from 'adminGoals/sections/shared/analytics';
 
 const mockGoals = Immutable.fromJS(mockGoalsById).valueSeq().toList().toJS();
 

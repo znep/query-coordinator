@@ -1,37 +1,34 @@
 require 'rails_helper'
 
 describe ImportActivity do
-
   include TestHelperMethods
-
-  let(:fixture_prefix) { "#{Rails.root}/test/fixtures/import_status_service" }
 
   before(:each) do
     init_current_domain
 
     allow(ImportStatusService).to receive(:get).with('/activity/c02d8b44-269a-4891-a872-6020d39e887c').and_return(
-      JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json"))
+      json_fixture("import_status_service/activity_show_response.json")
     )
 
     allow(ImportStatusService).to receive(:get).with('/activity/74aeaf9e-8e9b-496f-b186-3f542500f1f5').and_return(
-      JSON::parse(File.read("#{fixture_prefix}/activity_no_wc_response.json"))
+      json_fixture("import_status_service/activity_no_wc_response.json")
     )
 
     allow(ImportStatusService).to receive(:get).with('/activity/c02d8b44-269a-4891-a872-6020d39e887c/events').and_return(
-      JSON::parse(File.read("#{fixture_prefix}/activity_events_response.json"))
+      json_fixture("import_status_service/activity_events_response.json")
     )
 
     stub_request(:get, 'http://localhost:8080/users/tugg-ikce.json?method=getProfile').
      with(:headers => request_headers).
-     to_return(:status => 200, :body => File.read("#{fixture_prefix}/user_response.json"), :headers => {})
+     to_return(:status => 200, :body => fixture("import_status_service/user_response.json"), :headers => {})
 
     stub_request(:get, 'http://localhost:8080/views/dzuq-scr8.json').
       with(:headers => request_headers).
-      to_return(:status => 200, :body => File.read("#{fixture_prefix}/view_response.json"), :headers => {})
+      to_return(:status => 200, :body => fixture("import_status_service/view_response.json"), :headers => {})
 
     stub_request(:get, 'http://localhost:8080/views/copy-four.json').
       with(:headers => request_headers).
-      to_return(:status => 200, :body => File.read("#{fixture_prefix}/wc_view_response.json"), :headers => {})
+      to_return(:status => 200, :body => fixture("import_status_service/wc_view_response.json"), :headers => {})
   end
 
   let(:activity) { ImportActivity.find('c02d8b44-269a-4891-a872-6020d39e887c') }
@@ -39,23 +36,22 @@ describe ImportActivity do
   describe 'self.find_all_by_finished_at_descending' do
     before(:each) do
       allow(ImportStatusService).to receive(:get).with('/v2/activity?limit=30&offset=0').and_return(
-        JSON::parse(File.read("#{fixture_prefix}/activity_index_response.json"))
+        json_fixture("import_status_service/activity_index_response.json")
       )
 
       # batched request for views
       stub_request(:get, 'http://localhost:8080/views.json?ids%5B%5D=cop2-four&ids%5B%5D=copy-four&ids%5B%5D=d9fh-q64b&ids%5B%5D=dzuq-scr8').
        with(:headers => request_headers).
-       to_return(:status => 200, :body => File.read("#{fixture_prefix}/views_batch_response.json"), :headers => {})
+       to_return(:status => 200, :body => fixture("import_status_service/views_batch_response.json"), :headers => {})
 
       # batched request for users
       stub_request(:get, 'http://localhost:8080/users.json?ids%5B%5D=tugg-ikce&ids%5B%5D=tugg-ikcu').
        with(:headers => request_headers).
-       to_return(:status => 200, :body => File.read("#{fixture_prefix}/users_batch_response.json"), :headers => {})
+       to_return(:status => 200, :body => fixture("import_status_service/users_batch_response.json"), :headers => {})
     end
 
     it 'returns a list of activities, each with a user and view' do
-      activities_fixtures = JSON::parse(
-        File.read("#{fixture_prefix}/activity_index_response.json"))['activities'].
+      activities_fixtures = json_fixture("import_status_service/activity_index_response.json")['activities'].
         map(&:with_indifferent_access)
       views = View.find_multiple(%w(dzuq-scr8 d9fh-q64b copy-four cop2-four))
       users = User.find_multiple(%w(tugg-ikce tugg-ikcu))
@@ -70,7 +66,7 @@ describe ImportActivity do
 
   describe 'self.find' do
     it 'equals what comes back from the activity show response' do
-      from_fixture = JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json"))
+      from_fixture = json_fixture("import_status_service/activity_show_response.json")
       initiated_by = User.find_profile('tugg-ikce')
       dataset = View.find('dzuq-scr8')
       working_copy = View.find('copy-four')
@@ -78,7 +74,7 @@ describe ImportActivity do
       expect(activity).to eq(expected)
     end
 
-    let(:activity_data) { JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json")) }
+    let(:activity_data) { json_fixture("import_status_service/activity_show_response.json") }
 
     it 'passes through the ResourceNotFound exception raised by ISS for a nonexistent activity id' do
       allow(ImportStatusService).to receive(:get).
@@ -91,7 +87,7 @@ describe ImportActivity do
     it "sets initiated_by, dataset, and working_copy to nil if they aren't found" do
       allow(ImportStatusService).to receive(:get).
         with('/activity/c02d8b44-269a-4891-a872-6020d39e887d').
-        and_return(JSON::parse(File.read("#{fixture_prefix}/activity_show_response_nonexistent_view_user.json")))
+        and_return(json_fixture("import_status_service/activity_show_response_nonexistent_view_user.json"))
 
       allow(View).to receive(:find).and_raise(CoreServer::ResourceNotFound.new(nil))
       allow(User).to receive(:find_profile).and_raise(CoreServer::ResourceNotFound.new(nil))
@@ -153,7 +149,7 @@ describe ImportActivity do
   describe '#events' do
     it 'returns events returned from the events endpoint' do
       expect(activity.events[0]).to eq(
-        JSON::parse(File.read("#{fixture_prefix}/activity_events_response.json")).
+        json_fixture("import_status_service/activity_events_response.json").
           map { |data| ImportActivityEvent.new(data.with_indifferent_access) }[0]
       )
     end
@@ -180,7 +176,7 @@ describe ImportActivity do
 
     context 'the working_copy attribute is nil and the working_copy data field is present' do
       it 'returns true' do
-        from_fixture = JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json")).with_indifferent_access
+        from_fixture = json_fixture("import_status_service/activity_show_response.json").with_indifferent_access
         initiated_by = User.find_profile('tugg-ikce')
         dataset = View.find('dzuq-scr8')
         # simulate View not returning activity (deleted)
@@ -209,7 +205,7 @@ describe ImportActivity do
   describe '#working_copy_display' do
     context 'there working_copy attribute on the activity is nil' do
       it "returns the string '<uid> (deleted)'" do
-        from_fixture = JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json")).with_indifferent_access
+        from_fixture = json_fixture("import_status_service/activity_show_response.json").with_indifferent_access
         initiated_by = User.find_profile('tugg-ikce')
         dataset = View.find('dzuq-scr8')
         # simulate View not returning activity (deleted)
@@ -220,7 +216,7 @@ describe ImportActivity do
 
     context 'requesting the wc view has a publicationStage published' do
       it 'returns the string <uid> (published)' do
-        from_fixture = JSON::parse(File.read("#{fixture_prefix}/activity_show_response.json")).with_indifferent_access
+        from_fixture = json_fixture("import_status_service/activity_show_response.json").with_indifferent_access
         initiated_by = User.find_profile('tugg-ikce').with_indifferent_access
         dataset = View.find('dzuq-scr8')
         working_copy = View.find('copy-four')

@@ -150,6 +150,7 @@ export default function comboChart(state, action) {
     case actions.SET_REFERENCE_LINE_VALUE:
     case actions.SET_SECONDARY_COLOR:
     case actions.SET_SHOW_LEGEND:
+    case actions.SET_SHOW_LEGEND_OPENED:
     case actions.SET_TITLE:
     case actions.SET_UNIT_ONE:
     case actions.SET_UNIT_OTHER:

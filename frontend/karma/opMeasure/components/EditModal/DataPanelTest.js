@@ -3,7 +3,8 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import { shallow, mount } from 'enzyme';
 
-import { DataPanel, mapStateToProps } from 'components/EditModal/DataPanel';
+import AssetSelector from 'common/components/AssetSelector';
+import { DataPanel, mapStateToProps } from 'opMeasure/components/EditModal/DataPanel';
 
 describe('DataPanel', () => {
   describe('mapStateToProps', () => {
@@ -148,36 +149,26 @@ describe('DataPanel', () => {
     });
 
     describe('asset selector', () => {
-      const getIframe = (element) => element.find('iframe');
-
-      describe('when selecting a different dataset', () => {
-        it('calls onChangeDataSource when the "Choose" button is clicked', () => {
-          props = getProps({
-            onChangeDataSource: sinon.spy(),
-            measure: {
-              dataSourceLensUid: 'test-dtaa'
-            }
-          });
-          element = mount(<DataPanel {...props} />);
-
-          getIframe(element).node.onDatasetSelected({ id: 'sthg-neww' });
-          sinon.assert.calledWithExactly(props.onChangeDataSource, 'sthg-neww');
+      const fireOnAssetSelected = (asset) => element.find(AssetSelector).prop('onAssetSelected')(asset);
+      beforeEach(() =>  {
+        props = getProps({
+          measure: {
+            dataSourceLensUid: 'test-test'
+          },
+          onChangeDataSource: sinon.stub()
         });
+        element = shallow(<DataPanel {...props} />);
       });
 
-      describe('when selecting an already-selected dataset', () => {
-        it('does not call onChangeDataSource when the "Choose" button is clicked', () => {
-          props = getProps({
-            onChangeDataSource: sinon.spy(),
-            measure: {
-              dataSourceLensUid: 'test-dtaa'
-            }
-          });
-          element = mount(<DataPanel {...props} />);
+      it('onChangeDataSource called when different dataset is selected', () => {
+        fireOnAssetSelected({ id: 'next-test' });
+        sinon.assert.calledOnce(props.onChangeDataSource);
+        sinon.assert.calledWith(props.onChangeDataSource, 'next-test');
+      });
 
-          getIframe(element).node.onDatasetSelected({ id: 'test-dtaa' });
-          sinon.assert.notCalled(props.onChangeDataSource);
-        });
+      it('onChangeDataSource NOT called when same dataset is selected', () => {
+        fireOnAssetSelected({ id: 'test-test' });
+        sinon.assert.notCalled(props.onChangeDataSource);
       });
     });
   });

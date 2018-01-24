@@ -101,13 +101,12 @@ class EmailSettings extends Component {
           <table className="table table-borderless table-condensed table-discrete">
             <thead>
               <tr>
-                <th colSpan="3">
+                <th colSpan="3" styleName="column-name">
                   <span>
                     {I18n.t('email_settings',
                       { scope:'shared_site_chrome_notifications.alert_setting_modal.table_header' })}
                   </span>
                 </th>
-
               </tr>
             </thead>
             <tbody>

@@ -71,6 +71,8 @@ http://www.socrata.com
   <%= render 'templates/mixpanel_tracking' %>
   <%= render_pendo_tracker %>
 
+  <%# Adding shared/common bundle higher up, since all webpack bundles in the shared.config depends on this being loaded first %>
+  <%= include_webpack_bundle 'shared/common' %>
 </head>
 
 <body>
@@ -94,6 +96,8 @@ http://www.socrata.com
   <![endif]-->
 
   <%= include_webpack_bundle 'open-data/base.js' %>
+
+  <%= include_webpack_bundle 'shared/siteWide' %>
 
   <%- if !Rails.env.end_with?('production') -%>
     <%= include_webpack_bundle 'open-data/debug.js' %>

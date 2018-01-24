@@ -8,17 +8,38 @@ html {
   font-size: 16px;
 }
 
+#app {
+  display: flex;
+  flex-grow: 1;
+  flex-basis: auto;
+  flex-direction: column;
+
+  .modal-header {
+    z-index: 1;
+  }
+}
+
+#initial-spinner-container {
+  text-align: center;
+  padding-top: 10em;
+  padding-bottom: 10em;
+}
+
 #app .dataset-management-ui {
+  @import 'frontend/public/javascripts/datasetManagementUI/styles/style.global.scss';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/Notification/Notification';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/UploadNotification/UploadNotification';
   @import 'frontend/public/javascripts/datasetManagementUI/components/TablePreview/_TablePreview';
   @import 'frontend/public/javascripts/datasetManagementUI/components/HomePaneSidebar/HomePaneSidebar';
   @import 'frontend/public/javascripts/datasetManagementUI/components/URLSource/URLSource';
   @import 'frontend/public/javascripts/datasetManagementUI/components/ColumnHeader/ColumnHeader';
   @import 'frontend/public/javascripts/datasetManagementUI/pages/ShowOutputSchema/_ShowOutputSchema';
-}
-
-// this is in the erb, so can't move to within react app
-#initial-spinner-container {
-  text-align: center;
-  padding-top: 10em;
-  padding-bottom: 10em;
+  @import 'frontend/public/javascripts/datasetManagementUI/pages/ShowRevision/ShowRevision';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/AddColForm/AddColForm.scss';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/ApiCallButton/ApiCallButton.scss';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/AppBar/AppBar.scss';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/Attachment/Attachment.scss';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/AttachmentsInput/AttachmentsInput.scss';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/DatasetFieldset/DatasetFieldset.scss';
+  @import 'frontend/app/styles/leaflet.scss';
 }

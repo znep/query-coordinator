@@ -1,10 +1,12 @@
 import _ from 'lodash';
 import { fetchResults } from 'common/components/AssetBrowser/lib/helpers/cetera';
-import { clearPage } from './pager';
-import { clearSortOrder } from './sort_order';
 import { updateQueryString } from 'common/components/AssetBrowser/lib/query_string';
 import { getCurrentQuery, getUnfilteredState } from 'common/components/AssetBrowser/reducers/filters';
 import * as autocompleteActions from 'common/autocomplete/actions';
+import * as constants from 'common/components/AssetBrowser/lib/constants';
+
+import { clearPage } from './pager';
+import { clearSortOrder } from './sort_order';
 
 export const CHANGE_ASSET_TYPE = 'CHANGE_ASSET_TYPE';
 export const CHANGE_AUTHORITY = 'CHANGE_AUTHORITY';
@@ -17,6 +19,30 @@ export const CHANGE_VISIBILITY = 'CHANGE_VISIBILITY';
 export const CLEAR_ALL_FILTERS = 'CLEAR_ALL_FILTERS';
 export const CLEAR_SEARCH = 'CLEAR_SEARCH';
 export const TOGGLE_RECENTLY_VIEWED = 'TOGGLE_RECENTLY_VIEWED';
+export const TOGGLE_AWAITING_APPROVAL = 'TOGGLE_AWAITING_APPROVAL';
+
+export const toggleAwaitingApproval = (value) => (dispatch, getState) => {
+  const onSuccess = () => {
+    dispatch({ type: TOGGLE_AWAITING_APPROVAL });
+    clearPage(dispatch);
+    updateQueryString({ getState });
+  };
+
+  const approvalStatus = getState().filters.approvalStatus === constants.APPROVAL_STATUS_PENDING ?
+    null : constants.APPROVAL_STATUS_PENDING;
+
+  return fetchResults(
+    dispatch,
+    getState,
+    {
+      action: TOGGLE_AWAITING_APPROVAL,
+      approvalStatus,
+      pageNumber: 1,
+      q: getCurrentQuery()
+    },
+    onSuccess
+  );
+};
 
 export const toggleRecentlyViewed = () => (dispatch, getState) => {
   const onSuccess = () => {

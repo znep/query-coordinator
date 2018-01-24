@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { expect, assert } from 'chai';
-import { ExternalResourceEditor } from 'components/ExternalResourceEditor';
+import { ExternalResourceEditor } from 'common/components/ExternalResourceEditor';
 
 describe('ExternalResourceEditor', () => {
   function defaultProps() {

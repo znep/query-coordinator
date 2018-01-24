@@ -64,6 +64,15 @@ class DatasetsController < ApplicationController
     render 'colocate', :layout => 'styleguide'
   end
 
+  def is_dsmp?
+    (action_name == 'new' && params[:beta]) ||
+    action_name == 'show_revision'
+  end
+
+  def disable_site_chrome?
+    is_dsmp?
+  end
+
   def show
     if params['$$store']
       @view = View.find_in_store(params[:id], params['$$store'])
@@ -81,6 +90,10 @@ class DatasetsController < ApplicationController
 
     if enable_2017_grid_view_refresh_for_current_request?
       @render_styleguide_on_legacy_pages = true
+    end
+
+    if @view.draft?
+      return show_revision
     end
 
     # NBE/OBE redirect & flash messages
@@ -298,16 +311,23 @@ class DatasetsController < ApplicationController
   end
 
   def current_revision
+    revision_seq = current_revision_seq
+    unless revision_seq.nil?
+      return redirect_to :action => 'show_revision', :revision_seq => revision_seq, :rest_of_path => params[:rest_of_path]
+    end
+
+    return render_404
+  end
+
+  def current_revision_seq
     if FeatureFlags.derive(nil, request).dsmp_level != "off"
       # ask dsmapi for the list of revisions
       open_revisions = DatasetManagementAPI.get_open_revisions(params[:id], cookies)
       if open_revisions.length > 0
         # get the first one and redirect to that path
-        revision_seq = open_revisions.first['revision_seq']
-        return redirect_to :action => 'show_revision', :revision_seq => revision_seq, :rest_of_path => params[:rest_of_path]
+        open_revisions.first['revision_seq']
       end
     end
-    return render_404
   end
 
   def blob
@@ -1136,17 +1156,29 @@ class DatasetsController < ApplicationController
       composite_params.merge!(row_id: @row[':id'] || @row['sid']) unless @row.nil?
       composite_params.merge!(options || {})
 
-      if @row
-        view_row_path(composite_params)
-      elsif request.path =~ /\/alt$/
-        alt_view_path(composite_params)
-      elsif request.path =~ /\/data$/
-        data_grid_path(composite_params)
-      elsif request.path =~ /\/revisions/
-        show_revision_path(composite_params)
+      if @view.draft?
+        revision_seq = current_revision_seq
+        if revision_seq.nil?
+          view_path(composite_params)
+        else
+          composite_params.merge!(revision_seq: current_revision_seq)
+          show_revision_path(composite_params)
+        end
       else
-        view_path(composite_params)
+        if @row
+          view_row_path(composite_params)
+        elsif request.path =~ /\/alt$/
+          alt_view_path(composite_params)
+        elsif request.path =~ /\/data$/
+          data_grid_path(composite_params)
+        elsif request.path =~ /\/revisions/
+          show_revision_path(composite_params)
+        else
+          view_path(composite_params)
+        end
       end
+
+
     end
   end
 
@@ -1325,10 +1357,11 @@ class DatasetsController < ApplicationController
   end
 
   def render_as_op_measure(as_edit = false)
-    # The page will momentarily render in view mode, even if as_edit is true, and
-    # setting the @site_chrome_admin_header_options @body_classes variables below is to make
-    # the transition look less jarring.
     return false unless @view.op_measure?
+
+    if as_edit
+      return render_forbidden unless @view.can_edit_measure?
+    end
 
     if op_standalone_measures_enabled?
       # See if the user is accessing the canonical URL; if not, redirect

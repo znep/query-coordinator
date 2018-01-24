@@ -659,16 +659,19 @@ function SvgPieChart($element, vif, options) {
     }) {
 
     // Slices
-    const measure = measures[measureIndex][0];
+    const measure = measures[measureIndex];
     const seriesIndex = self.getSeriesIndexByMeasureIndex(measureIndex);
     const titleHTML = element.getAttribute('data-label') || noValueLabel;
 
     const $titleRow = $('<tr>', { 'class': 'socrata-flyout-title' }).
       append($('<td>', { 'colspan': 2 }).html(titleHTML));
+
+    const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
+      html(measure.labelHtml);
+
     const $valueCell = $('<td>', { 'class': 'socrata-flyout-cell' });
     const $valueRow = $('<tr>', { 'class': 'socrata-flyout-row' });
-    const $table = $('<table>', { 'class': 'socrata-flyout-table' }).
-      append($titleRow);
+    const $table = $('<table>', { 'class': 'socrata-flyout-table' });
     const $tableContainer = $('<div>').
       append($table);
 
@@ -681,9 +684,15 @@ function SvgPieChart($element, vif, options) {
 
     $valueCell.html(valueHTML);
 
-    $valueRow.
-      append($valueCell).
-      appendTo($table);
+    $valueRow.append([
+      $labelCell,
+      $valueCell
+    ]);
+
+    $table.append([
+      $titleRow,
+      $valueRow
+    ]);
 
     // Flyout measures
     const $flyoutTable = self.getFlyoutMeasuresTable({

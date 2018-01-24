@@ -42,6 +42,9 @@ http://www.socrata.com
     <%= render_angular_translations %>
     <%= render_user %>
     <%= render_metadata %>
+
+    <%# Adding shared/common bundle higher up, since all webpack bundles in the shared.config depends on this being loaded first %>
+    <%= include_webpack_bundle 'shared/common' %>
   </head>
 
   <body ng-app="<%= angular_app %>">
@@ -72,7 +75,7 @@ http://www.socrata.com
   <%= render 'templates/mixpanel_tracking' %>
   <%= render_pendo_tracker %>
 
-  <%= include_webpack_bundle 'site_wide/site_wide.js' %>
+  <%= include_webpack_bundle 'shared/siteWide' %>
   <% if @dataset_id %>
     <script type="text/javascript">
       if (window.lastAccessed) { window.lastAccessed.add('<%= @dataset_id %>'); }

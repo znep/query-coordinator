@@ -12,7 +12,7 @@ import {
   getMapType,
   getPointAggregation
 } from '../selectors/vifAuthoring';
-import { getNumericalAndTextColumns, getNumericalColumns } from '../selectors/metadata';
+import { getDisplayableColumns, getNumericalColumns } from '../selectors/metadata';
 import { setPointColorByColumn, setPointSizeByColumn } from '../actions';
 
 export class PointMapOptionsSelector extends Component {
@@ -90,7 +90,7 @@ export class PointMapOptionsSelector extends Component {
     } = this.props;
     const allColumnAttributes = this.renderPointMapOptionsDropdown(
       'color-by-value-dropdown',
-      getNumericalAndTextColumns(metadata),
+      getDisplayableColumns(metadata),
       onColorPointsByValueSelection,
       getPointColorByColumn(vifAuthoring)
     );

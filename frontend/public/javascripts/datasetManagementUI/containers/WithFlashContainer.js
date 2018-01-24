@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import WithFlash from 'components/WithFlash/WithFlash';
+import WithFlash from 'datasetManagementUI/components/WithFlash/WithFlash';
 
 const mapStateToProps = ({ ui }) => ({
   flashVisible: ui.flashMessage.visible

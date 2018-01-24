@@ -27,17 +27,7 @@ export function mergeRecords(existing = {}, updates = {}) {
   );
 }
 
-export const removeWhitespace = (str, char = '_') => str.replace(/\s/g, char);
-
-// Compresses multiple spaces into a single space
-//
-// example:
-//   var str = "   hello    world ";
-//   compressWhitespace(str); // => " hello world"
-export function compressWhitespace(string, shouldTrim = false) {
-  const str = (string || '').replace(/\s+/g, ' ');
-  return shouldTrim ? str.trim() : str;
-}
+export const removeWhitespace = str => str.replace(/\s/g, '_');
 
 export const getUniqueFieldName = _.flowRight(removeWhitespace, getUniqueName);
 

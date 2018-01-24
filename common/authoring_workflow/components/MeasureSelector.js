@@ -22,17 +22,19 @@ import {
   getDimensionGroupingColumnName,
   getSeries,
   hasErrorBars,
-  isBarChart,
-  isColumnChart,
   isComboChart,
   isFeatureMap,
-  isTimelineChart
+  getPointAggregation,
+  getDimension
 } from '../selectors/vifAuthoring';
 
 import {
   hasData,
-  getValidMeasures
+  getValidMeasures,
+  isPointMapColumn
 } from '../selectors/metadata';
+
+import { FeatureFlags } from 'common/feature_flags';
 
 export class MeasureSelector extends Component {
   constructor(props) {
@@ -96,6 +98,16 @@ export class MeasureSelector extends Component {
     this.setState({ isSeriesPending: false });
   }
 
+  shouldRenderMeasureForNewGLMap() {
+    const { vifAuthoring, metadata } = this.props;
+    const dimension = getDimension(vifAuthoring);
+    const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
+
+    return isNewGLMapEnabled &&
+      isPointMapColumn(metadata, dimension) &&
+      getPointAggregation(vifAuthoring) !== 'region_map';
+  }
+
   renderMeasureSelectors() {
     const { metadata, series, vifAuthoring } = this.props;
     const { isSeriesPending } = this.state;
@@ -127,7 +139,7 @@ export class MeasureSelector extends Component {
 
     return (
       <div>
-        <ul className="measure-list">
+        <ul className="dropdowns-list">
           {measureSelectors}
           {pendingMeasureSelector}
         </ul>
@@ -139,26 +151,25 @@ export class MeasureSelector extends Component {
   renderPendingMeasureSelector(options, measureIndex) {
     const { vifAuthoring } = this.props;
     const seriesIndex = getSeries(vifAuthoring).length;
-
     const measureListItemAttributes = {
-      className: 'measure-list-item',
+      className: 'list-item',
       key: this.getListItemKey(seriesIndex)
     };
-
-    const hasOnlyDefaultValue = options.length <= 1;
+    const disabled = options.length <= 1 ||
+      isFeatureMap(vifAuthoring) ||
+      this.shouldRenderMeasureForNewGLMap();
     const measureAttributes = {
-      disabled: isFeatureMap(vifAuthoring) || hasOnlyDefaultValue,
+      disabled,
       id: `measure-selection-${seriesIndex}`,
       onSelection: (option) => this.handleOnSelectionPendingMeasureColumn(seriesIndex, measureIndex, option),
       options,
       placeholder: I18n.translate('shared.visualizations.panes.data.fields.measure.select_column')
     };
-
     const deleteMeasureLink = this.renderDeletePendingMeasureLink();
 
     return (
       <li {...measureListItemAttributes}>
-        <div className="measure-column-selector-dropdown-container">
+        <div className="primary-dropdown-container">
           <Dropdown {...measureAttributes} />
         </div>
         {deleteMeasureLink}
@@ -168,15 +179,15 @@ export class MeasureSelector extends Component {
 
   renderMeasureSelector(seriesItem, measureIndex, options) {
     const { shouldRenderDeleteMeasureLink, vifAuthoring } = this.props;
-
     const measureListItemAttributes = {
-      className: 'measure-list-item',
+      className: 'list-item',
       key: this.getListItemKey(seriesItem.seriesIndex)
     };
-
-    const hasOnlyDefaultValue = options.length <= 1;
+    const disabled = options.length <= 1 ||
+      isFeatureMap(vifAuthoring) ||
+      this.shouldRenderMeasureForNewGLMap();
     const measureAttributes = {
-      disabled: isFeatureMap(vifAuthoring) || hasOnlyDefaultValue,
+      disabled,
       id: `measure-selection-${seriesItem.seriesIndex}`,
       onSelection: (option) => {
         this.handleOnSelectionMeasureColumn(seriesItem.seriesIndex, measureIndex, option);
@@ -184,15 +195,15 @@ export class MeasureSelector extends Component {
       options,
       value: seriesItem.dataSource.measure.columnName
     };
-
     const measureAggregationSelector = this.renderMeasureAggregationSelector(seriesItem, measureIndex);
+    const allSeries = getSeries(vifAuthoring);
     const deleteMeasureLink = shouldRenderDeleteMeasureLink ?
       this.renderDeleteMeasureLink(seriesItem.seriesIndex, measureIndex) :
       null;
 
     return (
       <li {...measureListItemAttributes}>
-        <div className="measure-column-selector-dropdown-container">
+        <div className="primary-dropdown-container">
           <Dropdown {...measureAttributes} />
         </div>
         {measureAggregationSelector}
@@ -209,12 +220,14 @@ export class MeasureSelector extends Component {
     }
 
     const options = [
-      { title: I18n.translate('shared.visualizations.aggregations.none'), value: null },
-      ...aggregationTypes.map(aggregationType => ({ title: aggregationType.title, value: aggregationType.type }))
+      ...aggregationTypes.map(aggregationType => ({ title: aggregationType.title, value: aggregationType.type })),
+      { title: I18n.translate('shared.visualizations.aggregations.none'), value: null }
     ];
-
+    const disabled = options.length <= 1 ||
+      isFeatureMap(vifAuthoring) ||
+      this.shouldRenderMeasureForNewGLMap();
     const measureAggregationAttributes = {
-      disabled: isFeatureMap(vifAuthoring),
+      disabled,
       id: `measure-aggregation-selection-${seriesItem.seriesIndex}`,
       onSelection: (option) => {
         this.handleOnSelectionMeasureAggregation(seriesItem.seriesIndex, measureIndex, option);
@@ -224,7 +237,7 @@ export class MeasureSelector extends Component {
     };
 
     return (
-      <div className="measure-aggregation-selector-dropdown-container">
+      <div className="secondary-dropdown-container">
         <Dropdown {...measureAggregationAttributes} />
       </div>
     );
@@ -243,13 +256,13 @@ export class MeasureSelector extends Component {
 
   renderDeleteMeasureLink(seriesIndex, measureIndex) {
     const attributes = {
-      className: 'measure-delete-link',
+      className: 'delete-link',
       id: `measure-delete-link-${seriesIndex}`,
       onClick: () => this.handleOnClickDeleteMeasure(seriesIndex, measureIndex)
     };
 
     return (
-      <div className="measure-delete-link-container">
+      <div className="delete-link-container">
         <a {...attributes}>
           <span className="socrata-icon-close" />
         </a>
@@ -259,12 +272,12 @@ export class MeasureSelector extends Component {
 
   renderDeletePendingMeasureLink() {
     const attributes = {
-      className: 'measure-delete-link',
+      className: 'delete-link',
       onClick: () => this.handleOnClickDeletePendingMeasure()
     };
 
     return (
-      <div className="measure-delete-link-container">
+      <div className="delete-link-container">
         <a {...attributes}>
           <span className="socrata-icon-close" />
         </a>
@@ -291,7 +304,7 @@ export class MeasureSelector extends Component {
 
     const isDisabled = isSeriesPending ||
       !_.isEmpty(getDimensionGroupingColumnName(vifAuthoring)) ||
-      hasErrorBars(vifAuthoring);
+      (hasErrorBars(vifAuthoring) && !isFlyoutSeries);
 
     const addMeasureLinkAttributes = {
       id: 'measure-add-measure-link',
@@ -304,7 +317,7 @@ export class MeasureSelector extends Component {
       I18n.translate('shared.visualizations.panes.data.fields.measure.add_measure');
 
     return shouldRender ? (
-      <div className="measure-add-measure-link-container">
+      <div className="add-link-container">
         <a {...addMeasureLinkAttributes}>
           <span className="socrata-icon-add" />
           {title}

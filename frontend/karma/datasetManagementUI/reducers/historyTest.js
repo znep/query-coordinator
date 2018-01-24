@@ -1,6 +1,6 @@
 import { assert } from 'chai';
-import historyReducer from 'reduxStuff/reducers/history';
-import { addLocation } from 'reduxStuff/actions/history';
+import historyReducer from 'datasetManagementUI/reduxStuff/reducers/history';
+import { addLocation } from 'datasetManagementUI/reduxStuff/actions/history';
 
 describe('history reducer', () => {
   it('returns an empty array as its default state', () => {

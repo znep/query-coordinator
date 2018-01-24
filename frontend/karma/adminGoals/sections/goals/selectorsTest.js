@@ -1,7 +1,7 @@
 import { expect, assert } from 'chai';
 import _ from 'lodash';
 import Immutable from 'immutable';
-import * as Selectors from 'sections/goals/selectors';
+import * as Selectors from 'adminGoals/sections/goals/selectors';
 import propGoals, { goalsWithPublicationState } from '../../data/goalTableActions/propGoals';
 
 const EQUAL_STATE = Immutable.fromJS({

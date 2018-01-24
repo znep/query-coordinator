@@ -251,7 +251,12 @@ describe('SvgPieChart', () => {
         let $content = $(payload.content);
 
         assert.equal($content.find('.socrata-flyout-title').text(), testData.rows[0][0]);
-        assert.include($content.find('.socrata-flyout-cell').text(), `(${percent}%)`);
+
+        let cells = $content.find('.socrata-flyout-cell');
+        assert.equal($(cells[0]).text(), 'measure_number_column');
+        assert.equal($(cells[1]).text(), '10 percent of students (1%)');
+        assert.equal($(cells[2]).text(), 'measure_number_column_2');
+        assert.equal($(cells[3]).text(), '100 percent of students');
         done();
       });
 

@@ -1,4 +1,4 @@
-import { BATCH_ACTION } from 'reduxStuff/actions/batching';
+import { BATCH_ACTION } from 'datasetManagementUI/reduxStuff/actions/batching';
 
 const withBatching = (reducer) => {
   return (state, action) => {

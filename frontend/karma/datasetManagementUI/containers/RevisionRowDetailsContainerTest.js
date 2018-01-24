@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import state from '../data/initialState';
-import { mapStateToProps } from 'containers/RevisionRowDetailsContainer';
+import { mapStateToProps } from 'datasetManagementUI/containers/RevisionRowDetailsContainer';
 import dotProp from 'dot-prop-immutable';
 
 describe('containers/RevisionRowDetailsContainerTest', () => {

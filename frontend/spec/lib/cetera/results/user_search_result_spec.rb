@@ -4,8 +4,7 @@ describe Cetera::Results do
   include TestHelperMethods
   describe 'UserSearchResult' do
     let(:user_results) do
-      cetera_payload = JSON.parse(File.read("#{Rails.root}/test/fixtures/cetera_two_user_results.json"))
-      Cetera::Results::UserSearchResult.new(cetera_payload)
+      Cetera::Results::UserSearchResult.new(json_fixture('cetera_two_user_results.json'))
     end
 
     it 'returns a UserSearchResult object' do

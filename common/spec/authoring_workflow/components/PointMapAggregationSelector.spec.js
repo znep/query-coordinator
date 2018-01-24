@@ -72,6 +72,10 @@ describe('PointMapAggregationSelector', function() {
       it('renders heat map point aggregation radio button', function() {
         expect(component.find('#heat_map_point_aggregation')).to.have.length(1);
       });
+
+      it('renders region map point aggregation radio button', function() {
+        expect(component.find('#region_map_point_aggregation')).to.have.length(1);
+      });
     });
   });
 });

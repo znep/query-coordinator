@@ -2,6 +2,7 @@
 import 'babel-polyfill-safe';
 import { Provider } from 'react-redux';
 import mockView from 'data/mockView';
+import mockVif from 'data/mockVif';
 import mockParentView from 'data/mockParentView';
 import { FeatureFlags } from 'common/feature_flags';
 
@@ -10,13 +11,14 @@ window._ = require('lodash');
 window.React = require('react');
 window.ReactDOM = require('react-dom');
 window.TestUtils = require('react-dom/test-utils');
+window.I18n = require('../common/mock_translations');
 window.redux = require('redux');
 window.translations = { visualization_canvas: require('mockTranslations').default };
 window.serverConfig = require('./data/mockServerConfig').default;
 window.initialState = {
   view: mockView,
   parentView: mockParentView,
-  vifs: [],
+  vifs: [mockVif],
   filters: []
 };
 
@@ -39,6 +41,7 @@ function requireAll(context) {
 
 // Setup mock feature flags
 FeatureFlags.useTestFixture({
+  hide_csv_for_excel_download: false,
   visualization_canvas_embed_button: 'embed-only'
 });
 

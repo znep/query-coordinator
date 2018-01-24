@@ -4,8 +4,7 @@ describe Cetera::Results do
   include TestHelperMethods
   describe 'TagCountResult' do
     let(:cetera_results) do
-      cetera_payload = JSON.parse(File.read("#{Rails.root}/test/fixtures/cetera_domain_tag_results.json"))
-      Cetera::Results::TagCountResult.new(cetera_payload)
+      Cetera::Results::TagCountResult.new(json_fixture('cetera_domain_tag_results.json'))
     end
 
     it 'returns a TagCountResult object' do

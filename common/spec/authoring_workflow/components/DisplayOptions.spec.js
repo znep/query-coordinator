@@ -4,7 +4,7 @@ import TestUtils from 'react-dom/test-utils';
 import defaultProps from '../defaultProps';
 import renderComponent from '../renderComponent';
 import { DisplayOptions } from 'common/authoring_workflow/components/DisplayOptions';
-import { INPUT_DEBOUNCE_MILLISECONDS } from 'common/authoring_workflow/constants';
+import { getInputDebounceMs } from 'common/authoring_workflow/constants';
 
 function render(type) {
   var props = defaultProps({
@@ -41,7 +41,7 @@ describe('DisplayOptions', function() {
       setTimeout(() => {
         sinon.assert.calledOnce(props[eventName]);
         done();
-      }, INPUT_DEBOUNCE_MILLISECONDS);
+      }, getInputDebounceMs());
     });
   }
 

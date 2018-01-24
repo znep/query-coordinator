@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Fieldset from 'components/Fieldset/Fieldset';
-import TextInput from 'components/TextInput/TextInput';
-import TextArea from 'components/TextArea/TextArea';
-import URLField from 'components/URLField/URLField';
-import styles from './DatasetFieldset.module.scss';
-import { compressWhitespace } from 'lib/util';
+import Fieldset from 'datasetManagementUI/components/Fieldset/Fieldset';
+import TextInput from 'datasetManagementUI/components/TextInput/TextInput';
+import TextArea from 'datasetManagementUI/components/TextArea/TextArea';
+import URLField from 'datasetManagementUI/components/URLField/URLField';
 
 const DatasetFieldset = ({
   href,
@@ -21,9 +19,9 @@ const DatasetFieldset = ({
     title={href.title}
     closable
     closeCallback={handleXClick}
-    containerClass={styles.fieldset}
-    legendClass={styles.legend}>
-    <div className={styles.fieldWrapper} data-cheetah-hook="dataset-fieldset">
+    containerClass="dsmp-fieldset"
+    legendClass="dsmp-legend">
+    <div className="dsmp-field-wrapper" data-cheetah-hook="dataset-fieldset">
       <div>
         <label>{I18n.show_sources.label_name}</label>
         <TextInput
@@ -33,8 +31,7 @@ const DatasetFieldset = ({
             label: I18n.show_sources.label_name
           }}
           inErrorState={false}
-          handleChange={e => handleChangeHref(href.id, 'title', compressWhitespace(e.target.value))}
-          handleBlur={e => handleChangeHref(href.id, 'title', compressWhitespace(e.target.value, true))} />
+          handleChange={e => handleChangeHref(href.id, 'title', e.target.value)} />
       </div>
       <div>
         <label>{I18n.show_sources.label_description}</label>
@@ -64,7 +61,7 @@ const DatasetFieldset = ({
               handleChangeUrl={handleChangeUrl(key)} />
           );
         })}
-        <a className={styles.addURLBtn} onClick={handleAddURL}>
+        <a className="dsmp-add-URL-btn" onClick={handleAddURL}>
           {I18n.show_sources.add_url}
         </a>
       </div>
@@ -77,10 +74,7 @@ const DatasetFieldset = ({
             label: I18n.show_sources.label_data_dictionary
           }}
           inErrorState={false}
-          handleChange={e => handleChangeHref(href.id, 'data_dictionary', compressWhitespace(e.target.value))}
-          handleBlur={e =>
-            handleChangeHref(href.id, 'data_dictionary', compressWhitespace(e.target.value, true))
-          } />
+          handleChange={e => handleChangeHref(href.id, 'data_dictionary', e.target.value)} />
       </div>
     </div>
   </Fieldset>

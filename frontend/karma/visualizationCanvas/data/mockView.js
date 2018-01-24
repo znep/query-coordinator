@@ -87,6 +87,7 @@ export default {
       dataTypeName: 'text'
     }
   ],
+  exportFormats: ['csv'],
   lastUpdatedAt: '2016-11-15T12:37:28.000-08:00',
   viewCount: 10
 };

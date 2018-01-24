@@ -1,16 +1,14 @@
 var karmaConfig = require('../helpers/karma_config');
 var _ = require('lodash');
-var common = require('../../config/webpack/common');
 
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
   'data-cards.config.js',
-  [ 'karma/dataCards', '.', 'public/javascripts' ]
+  [ 'karma/dataCards', '.' ]
 );
 
 // The style paths don't quite match up with what the runtime
 // webpack config expects (not 100% sure why).
 webpackConfig.sassLoader.includePaths.push('app/styles');
-// webpackConfig.resolve.alias.angular_templates = common.resolvePath('public/angular_templates');
 
 webpackConfig.module.loaders.push({
   test: /angular\-mocks/,
@@ -63,8 +61,6 @@ module.exports = function (karma) {
       '/javascripts/plugins/': `http://localhost:${karma.port}/base/public/javascripts/plugins/`,
       '/stylesheets/images/common/': `http://localhost:${karma.port}/base/public/stylesheets/images/common/`
     },
-
-    frameworks: ['mocha'],
 
     webpack: webpackConfig
   }));

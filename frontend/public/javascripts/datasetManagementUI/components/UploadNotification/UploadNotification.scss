@@ -1,0 +1,39 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+.notification {
+  .message-container {
+    margin-top: 0.7rem;
+    max-width: 310px;
+    color: $dark-grey-1;
+
+    &::before {
+      display: block;
+      background: $light-grey-4;
+      color: $light-grey-4;
+      height: 1px;
+      width: calc(100% + 20px);
+      margin: 0 -10px 0.3rem;
+      content: '.';
+      overflow: hidden;
+    }
+
+    h6 {
+      color: $dark-grey-2;
+      font-size: 13px;
+    }
+
+    p:first-child {
+      margin: 0;
+    }
+
+    p {
+      margin: 0.5em 0 0;
+      font-size: 12px;
+    }
+
+    .filename {
+      font-style: italic;
+    }
+  }
+}

@@ -10,6 +10,53 @@
       margin-left: 10px;
       margin-right: 10px;
     }
+
+    .search-box-input {
+      border: 1px solid $light-grey-1;
+      border-radius: 1px;
+      box-shadow: inset 1px 1px 3px rgba(0,0,17,.1);
+      font-size: 15px;
+      padding: 10px 10px 10px 35px;
+    }
+
+    .search-icon-wrapper {
+      width: 20px;
+      height: 20px;
+      margin-top: 11px;
+
+      .socrata-icon-search {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}
+
+.initiated-by-searchbox {
+  width: 100%;
+
+  .search-box-input {
+    font-size: 13px;
+    padding: 10px 10px 10px 30px;
+    border: 1px solid $primary-light;
+    outline-color: $primary;
+  }
+
+  .search-icon-wrapper {
+    width: 16px;
+    height: 16px;
+    margin-top: 9px;
+
+    .socrata-icon-search {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &.mobile {
+    .search-box-input {
+      border: 1px solid $light-grey-0;
+    }
   }
 }
 
@@ -20,15 +67,10 @@
 
   .search-icon-wrapper {
     position: absolute;
-    margin-top: 11px;
     margin-left: 9px;
-    width: 20px;
-    height: 20px;
 
     .socrata-icon-search {
       display: inline-block;
-      width: 20px;
-      height: 20px;
       position: relative;
       line-height: 1;
       color: $light-grey-1;
@@ -40,14 +82,8 @@
   }
 
   .search-box-input {
-    border: 1px solid $light-grey-1;
-    border-radius: 1px;
-    box-shadow: inset 1px 1px 3px rgba(0,0,17,.1);
-    font-size: 15px;
-    padding: 10px;
     line-height: normal;
     width: 100%;
-    padding-left: 35px;
 
     &.focused {
       padding-left: 5px;

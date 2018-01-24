@@ -6,7 +6,7 @@ import {
   columnMatchingAst,
   fieldPropTypes
 } from './Fields';
-import { stripToNumberAst } from 'lib/ast';
+import { stripToNumberAst } from 'datasetManagementUI/lib/ast';
 
 const LatLngFields = ({ outputColumns, setMapping, mappings }) => {
   return (

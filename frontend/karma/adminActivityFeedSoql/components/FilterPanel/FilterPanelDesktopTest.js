@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-import FilterPanelDesktop from 'components/FilterPanel/FilterPanelDesktop';
+import FilterPanelDesktop from 'adminActivityFeedSoql/components/FilterPanel/FilterPanelDesktop';
 
 describe('FilterPanelDesktop', () => {
   const element = renderComponentWithLocalization(FilterPanelDesktop, {});
@@ -24,5 +24,9 @@ describe('FilterPanelDesktop', () => {
 
   it('render event filter', () => {
     assert.isNotNull(element.querySelector('.filter-section.event-filter'));
+  });
+
+  it('render initiated by filter', () => {
+    assert.isNotNull(element.querySelector('.initiated-by-filter'));
   });
 });

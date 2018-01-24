@@ -1,7 +1,8 @@
 import _ from 'lodash';
-import { socrataFetch, getJson, checkStatus } from 'lib/http';
-import * as sodaLinks from 'links/sodaLinks';
-import * as coreLinks from 'links/coreLinks';
+import { socrataFetch, getJson, checkStatus } from 'datasetManagementUI/lib/http';
+import * as sodaLinks from 'datasetManagementUI/links/sodaLinks';
+import * as coreLinks from 'datasetManagementUI/links/coreLinks';
+import { apiCallFailed } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
 
 export const EDIT_VIEW = 'EDIT_VIEW';
 export const editView = (id, payload) => ({
@@ -25,6 +26,10 @@ export function getRowCount(fourfour) {
         rowCount = _.isNumber(rowCount) ? rowCount : 0;
 
         dispatch(editView(fourfour, { rowCount }));
+      })
+      .catch(error => {
+        dispatch(apiCallFailed(null, error));
+        throw error;
       });
 }
 
@@ -40,5 +45,9 @@ export function getView(fourfour) {
             displayType: resp.displayType
           })
         );
+      })
+      .catch(error => {
+        dispatch(apiCallFailed(null, error));
+        throw error;
       });
 }

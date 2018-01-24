@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import Footer from 'components/Footer';
+import Footer from 'adminActivityFeedSoql/components/Footer';
 import testStore from '../testStore';
 import mockTranslations from '../mockTranslations';
 

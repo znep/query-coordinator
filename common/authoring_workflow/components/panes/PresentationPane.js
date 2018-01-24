@@ -13,7 +13,7 @@ import {
   COLOR_PALETTES,
   COLOR_PALETTE_VALUES,
   COLORS,
-  MAP_SLIDER_DEBOUNCE_MILLISECONDS,
+  getMapSliderDebounceMs,
   SERIES_TYPE_FLYOUT
 } from '../../constants';
 
@@ -554,7 +554,7 @@ export class PresentationPane extends Component {
         step: 5,
         value: pointOpacity,
         onChange: onChangePointOpacity,
-        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+        delay: getMapSliderDebounceMs()
       };
 
       return (
@@ -599,8 +599,9 @@ export class PresentationPane extends Component {
   renderDataClassesSelector = (disableDropdown = false) => {
     const { vifAuthoring, onNumberOfDataClassesChange } = this.props;
     const numberOfDataClasses = selectors.getNumberOfDataClasses(vifAuthoring);
+    const disabled = _.isUndefined(disableDropdown) ? false : disableDropdown;
     const dataClassesAttributes = {
-      disableDropdown,
+      disabled,
       id: 'data-classes',
       options: _.map(_.range(2, 8), i => ({ title: i.toString(), value: parseInt(i) })),
       value: numberOfDataClasses,
@@ -637,7 +638,7 @@ export class PresentationPane extends Component {
         step: 1,
         value: minimumLineWeight,
         onChange: onMinimumLineWeightChange,
-        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+        delay: getMapSliderDebounceMs()
       };
       const maximumLineWeightAttributes = {
         id: 'maximum-line-weight',
@@ -646,7 +647,7 @@ export class PresentationPane extends Component {
         step: 1,
         value: maximumLineWeight,
         onChange: onMaximumLineWeightChange,
-        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+        delay: getMapSliderDebounceMs()
       };
 
       LineMapWeightControls = (
@@ -688,7 +689,7 @@ export class PresentationPane extends Component {
         step: 1,
         value: lineWeight,
         onChange: onChangeLineWeight,
-        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+        delay: getMapSliderDebounceMs()
       };
 
       LineMapWeightControls = (
@@ -721,21 +722,21 @@ export class PresentationPane extends Component {
       const maximumPointSize = selectors.getMaximumPointSize(vifAuthoring);
       const minimumPointSizeAttributes = {
         id: 'minimum-point-size',
-        rangeMin: 1,
-        rangeMax: 10,
+        rangeMin: 4,
+        rangeMax: 40,
         step: 1,
         value: minimumPointSize,
         onChange: onMinimumPointSizeChange,
-        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+        delay: getMapSliderDebounceMs()
       };
       const maximumPointSizeAttributes = {
         id: 'maximum-point-size',
-        rangeMin: 1,
-        rangeMax: 10,
+        rangeMin: 4,
+        rangeMax: 40,
         step: 1,
         value: maximumPointSize,
         onChange: onMaximumPointSizeChange,
-        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+        delay: getMapSliderDebounceMs()
       };
 
       pointMapSizeControls = (
@@ -772,12 +773,12 @@ export class PresentationPane extends Component {
       const pointMapPointSize = selectors.getPointMapPointSize(vifAuthoring);
       const pointSizeAttributes = {
         id: 'point-size',
-        rangeMin: 1,
-        rangeMax: 10,
+        rangeMin: 4,
+        rangeMax: 40,
         step: 1,
         value: pointMapPointSize,
         onChange: onChangePointMapPointSize,
-        delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+        delay: getMapSliderDebounceMs()
       };
 
       pointMapSizeControls = (
@@ -801,7 +802,7 @@ export class PresentationPane extends Component {
 
   renderSliderControl = (name, rangeMin, rangeMax, step, value, onChange, description) => {
     const attributes = {
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS,
+      delay: getMapSliderDebounceMs(),
       id: name,
       rangeMin,
       rangeMax,
@@ -830,11 +831,10 @@ export class PresentationPane extends Component {
       onMaxClusterSizeChange,
       onStackRadiusChange
     } = this.props;
-
     const maxClusteringZoomLevelSlider = this.renderSliderControl(
       'max_clustering_zoom_level',
       1,
-      23,
+      22,
       1,
       selectors.getMaxClusteringZoomLevel(vifAuthoring),
       onMaxClusteringZoomLevelChange,
@@ -852,7 +852,7 @@ export class PresentationPane extends Component {
     const clusterRadiusSlider = this.renderSliderControl(
       'cluster_radius',
       20,
-      80,
+      120,
       1,
       selectors.getClusterRadius(vifAuthoring),
       onClusterRadiusChange,
@@ -860,8 +860,8 @@ export class PresentationPane extends Component {
     );
     const maxClusterSizeSlider = this.renderSliderControl(
       'max_cluster_size',
-      1,
-      10,
+      24,
+      50,
       1,
       selectors.getMaxClusterSize(vifAuthoring),
       onMaxClusterSizeChange,
@@ -869,7 +869,7 @@ export class PresentationPane extends Component {
     );
     const stackRadiusSlider = this.renderSliderControl(
       'stack_radius',
-      1,
+      10,
       80,
       1,
       selectors.getStackRadius(vifAuthoring),
@@ -880,7 +880,9 @@ export class PresentationPane extends Component {
     return (
       <AccordionPane key="clusterControls" title={I18n.t('subheaders.clusters', { scope: this.scope })}>
         {maxClusteringZoomLevelSlider}
-        {pointThresholdSlider}
+        {/* Defering implementation to spiderifcation story. */}
+        {/* Hiding the form field for now. */}
+        {/* pointThresholdSlider */}
         {clusterRadiusSlider}
         {maxClusterSizeSlider}
         {stackRadiusSlider}
@@ -949,20 +951,31 @@ export class PresentationPane extends Component {
 
   renderPointMapControls = () => {
     const { vifAuthoring } = this.props;
+    const selectedPointAggregation = selectors.getPointAggregation(vifAuthoring);
+
+    if (selectedPointAggregation === 'heat_map') {
+      return null;
+    }
+
+    const isRegionMap = selectedPointAggregation === 'region_map';
     const colorLabelText = I18n.t('fields.point_color.title', { scope: this.scope });
     const colorControls = (
       <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
-        {_.isNull(selectors.getPointColorByColumn(vifAuthoring)) ?
+        {_.isNull(selectors.getPointColorByColumn(vifAuthoring)) && !isRegionMap ?
           this.renderPrimaryColorForMaps(colorLabelText) :
           this.renderColorPaletteForMaps(colorLabelText)}
-        {this.renderPointOpacityControls()}
+        {!isRegionMap && this.renderPointOpacityControls()}
+        {isRegionMap && this.renderDataClassesSelector()}
       </AccordionPane>
     );
+
+    if (isRegionMap) {
+      return [colorControls];
+    }
 
     return [
       colorControls,
       this.renderPointMapSizeControls(),
-      this.renderMapLayerControls(),
       this.renderClusterControls()
     ];
   }
@@ -980,8 +993,7 @@ export class PresentationPane extends Component {
 
     return [
       colorControls,
-      this.renderLineMapWeightControls(),
-      this.renderMapLayerControls()
+      this.renderLineMapWeightControls()
     ];
   }
 
@@ -1008,10 +1020,7 @@ export class PresentationPane extends Component {
       </AccordionPane>
     );
 
-    return [
-      colorControls,
-      this.renderMapLayerControls()
-    ];
+    return [colorControls];
   }
 
   renderNewMapControls = () => {
@@ -1051,7 +1060,7 @@ export class PresentationPane extends Component {
       step: 0.1,
       value: pointOpacity / 100,
       onChange: onChangePointOpacity,
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+      delay: getMapSliderDebounceMs()
     };
 
     const pointSizeAttributes = {
@@ -1061,7 +1070,7 @@ export class PresentationPane extends Component {
       step: 0.1,
       value: pointSize,
       onChange: onChangePointSize,
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+      delay: getMapSliderDebounceMs()
     };
 
     const pointControls = (
@@ -1146,23 +1155,23 @@ export class PresentationPane extends Component {
       step: 0.1,
       value: defaultBaseLayerOpacity / 100,
       onChange: onChangeBaseLayerOpacity,
-      delay: MAP_SLIDER_DEBOUNCE_MILLISECONDS
+      delay: getMapSliderDebounceMs()
     };
 
     return (
       <AccordionPane key="mapLayerControls" title={I18n.t('subheaders.map', { scope: this.scope })}>
         <div className="authoring-field">
-          <label
-            className="block-label"
-            htmlFor="base-layer">{I18n.t('fields.base_layer.title', { scope: this.scope })}</label>
+          <label className="block-label" htmlFor="base-layer">
+            {I18n.t('fields.base_layer.title', { scope: this.scope })}>
+          </label>
           <div className="base-layer-dropdown-container">
             <Dropdown {...baseLayerAttributes} />
           </div>
         </div>
         <div className="authoring-field">
-          <label
-            className="block-label"
-            htmlFor="base-layer-opacity">{I18n.t('fields.base_layer_opacity.title', { scope: this.scope })}</label>
+          <label className="block-label" htmlFor="base-layer-opacity">
+            {I18n.t('fields.base_layer_opacity.title', { scope: this.scope })}
+          </label>
           <div id="base-layer-opacity">
             <DebouncedSlider {...baseLayerOpacityAttributes} />
           </div>

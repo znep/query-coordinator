@@ -3,7 +3,7 @@ import Immutable from 'immutable';
 import moment from 'moment';
 import translations from 'mockTranslations';
 import mockGoalsByIds from '../../../data/cachedGoals';
-import GoalDetails from 'sections/goals/components/QuickEditForm/GoalDetails';
+import GoalDetails from 'adminGoals/sections/goals/components/QuickEditForm/GoalDetails';
 import { shallow } from 'enzyme';
 
 describe('sections/goals/components/QuickEditForm/GoalDetails', () => {

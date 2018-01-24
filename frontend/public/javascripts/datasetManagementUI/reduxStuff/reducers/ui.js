@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
-import notifications from 'reduxStuff/reducers/notifications';
-import flashMessage from 'reduxStuff/reducers/flashMessage';
-import modal from 'reduxStuff/reducers/modal';
-import apiCalls from 'reduxStuff/reducers/apiCalls';
-import history from 'reduxStuff/reducers/history';
-import forms from 'reduxStuff/reducers/forms';
-import compiler from 'reduxStuff/reducers/compiler';
+import notifications from 'datasetManagementUI/reduxStuff/reducers/notifications';
+import flashMessage from 'datasetManagementUI/reduxStuff/reducers/flashMessage';
+import modal from 'datasetManagementUI/reduxStuff/reducers/modal';
+import apiCalls from 'datasetManagementUI/reduxStuff/reducers/apiCalls';
+import history from 'datasetManagementUI/reduxStuff/reducers/history';
+import forms from 'datasetManagementUI/reduxStuff/reducers/forms';
+import compiler from 'datasetManagementUI/reduxStuff/reducers/compiler';
 
 export default combineReducers({
   flashMessage,

@@ -1,7 +1,7 @@
 require 'rails_helper'
 require_relative '../../lib/constraints/data_lens_constraint'
 
-RSpec.describe 'routes for Data Lens' do
+describe 'routes for Data Lens' do
   include TestHelperMethods
 
   let(:datalens_matching_datalens_constraint_params) {
@@ -216,7 +216,7 @@ RSpec.describe 'routes for Data Lens' do
     before(:each) do
       init_current_domain
       init_feature_flag_signaller
-      rspec_stub_feature_flags_with(:enable_catalog_landing_page => true)
+      stub_feature_flags_with(:enable_catalog_landing_page => true)
       allow_any_instance_of(Constraints::CatalogLandingPageConstraint).
         to receive(:matches?).and_call_original
 

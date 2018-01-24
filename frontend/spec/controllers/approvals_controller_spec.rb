@@ -8,6 +8,15 @@ describe ApprovalsController do
     allow(subject).to receive(:user_can_review_approvals?).and_return(true)
   end
 
+  let(:some_user) do
+    {
+      accept_terms: true,
+      email: 'foo@bar.com',
+      id: '1234-abcd',
+      password: 'asdf',
+      passwordConfirm: 'asdf'
+    }
+  end
   let(:workflow) { Fontana::Approval::Workflow.new.tap { |workflow| workflow.id = 1 } }
   let(:approver) { User.new(some_user) }
 
@@ -51,7 +60,7 @@ describe ApprovalsController do
         expect(step_double).to receive(:community_task).and_return(community_task_double)
         expect(workflow).to receive(:steps).twice.and_return([step_double])
         post :settings, params
-        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(:action => 'settings', :id => params['id'])
       end
     end
   end

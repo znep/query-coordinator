@@ -1,13 +1,12 @@
-/* eslint-disable no-shadow */
 import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'react-redux';
-import _ from 'lodash';
-import connectLocalization from 'common/i18n/components/connectLocalization';
+import { connect as fullConnect } from '../../utils';
+import toString from 'lodash/toString';
 import ResultsTable from '../../components/ResultsTable';
-import DropdownButton, { DropdownItem } from '../../components/DropdownButton';
-import { removeInvitedUser, resendInvitedUserEmail } from '../actions';
 import DateFromNow from '../../components/DateFromNow';
+import DropdownButton, { DropdownItem } from '../../components/DropdownButton';
+import * as Actions from '../actions';
+import * as Selectors from '../../selectors';
 
 export class InvitedUsersTable extends React.Component {
   static propTypes = {
@@ -18,15 +17,22 @@ export class InvitedUsersTable extends React.Component {
 
   renderInvitedCell = createdAt => <DateFromNow timestamp={createdAt} />;
 
+  handleRemoveInvitedUser = (id, email) => {
+    const { I18n, removeInvitedUser } = this.props;
+    if (window.confirm(I18n.t('users.actions.confirm_remove_invited_user', { email }))) {
+      removeInvitedUser(id);
+    }
+  };
+
   renderActionsCell = (id, { email }) => {
-    const { I18n, removeInvitedUser, resendInvitedUserEmail } = this.props;
+    const { I18n, resendInvitedUserEmail } = this.props;
     return (
       <DropdownButton>
-        <DropdownItem onClick={() => removeInvitedUser(id)}>
-          {I18n.translate('users.actions.remove_invited_user')}
+        <DropdownItem onClick={() => this.handleRemoveInvitedUser(id, email)}>
+          {I18n.t('users.actions.remove_invited_user')}
         </DropdownItem>
         <DropdownItem onClick={() => resendInvitedUserEmail(email)}>
-          {I18n.translate('users.actions.resend_invited_user_email')}
+          {I18n.t('users.actions.resend_invited_user_email')}
         </DropdownItem>
       </DropdownButton>
     );
@@ -54,36 +60,27 @@ export class InvitedUsersTable extends React.Component {
   }
 }
 
-const mapStateToProps = (state, props) => {
-  const { I18n } = props;
-  const { roles } = state;
-  const invitedUsers = state.invitedUsers.map(invitedUser => {
-    const role = roles.find(r => _.toString(r.id) === _.toString(invitedUser.pendingRoleId));
-    if (role.isDefault) {
+const mapStateToProps = (state, { I18n }) => {
+  const roles = Selectors.getRoles(state);
+  const loadingData = Selectors.getInvitedUsersLoading(state) && Selectors.getRolesLoading(state);
+  const invitedUsers = (loadingData || roles.length === 0) ?
+    [] :
+    Selectors.getInvitedUsers(state).map(invitedUser => {
+      const role = roles.find(r => toString(r.id) === toString(invitedUser.pendingRoleId));
       return {
         ...invitedUser,
-        role: I18n.t(`roles.default_roles.${role.name}.name`)
+        role: role.isDefault ? I18n.t(`roles.default_roles.${role.name}.name`) : role.name
       };
-    } else {
-      return {
-        ...invitedUser,
-        role: role.name
-      };
-    }
-  });
+    });
   return {
     invitedUsers,
-    loadingData: state.ui.loadingData
+    loadingData
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    removeInvitedUser: id => removeInvitedUser(id)(dispatch),
-    resendInvitedUserEmail: email => resendInvitedUserEmail(email)(dispatch)
-  };
+const mapDispatchToProps = {
+  removeInvitedUser: Actions.removeInvitedUser,
+  resendInvitedUserEmail: Actions.resendInvitedUserEmail
 };
 
-export const ConnectedInvitedUsersTable = connectLocalization(
-  connect(mapStateToProps, mapDispatchToProps)(InvitedUsersTable)
-);
+export default fullConnect(mapStateToProps, mapDispatchToProps)(InvitedUsersTable);

@@ -9,9 +9,9 @@ import Body from './Body';
 class Table extends PureComponent {
 
   render() {
-    const { fetchingTable } = this.props;
+    const { apiCallInProgress } = this.props;
 
-    const spinner = fetchingTable ? (
+    const spinner = apiCallInProgress ? (
       <div className="catalog-results-spinner-container">
         <span className="spinner-default spinner-large"></span>
       </div>
@@ -32,15 +32,15 @@ class Table extends PureComponent {
 }
 
 Table.propTypes = {
-  fetchingTable: PropTypes.bool
+  apiCallInProgress: PropTypes.bool
 };
 
 Table.defaultProps = {
-  fetchingTable: false
+  apiCallInProgress: false
 };
 
 const mapStateToProps = state => ({
-  fetchingTable: state.table.fetchingTable
+  apiCallInProgress: state.common.apiCallInProgress
 });
 
 export default connect(mapStateToProps)(Table);

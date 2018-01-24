@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { ShareVisualizationModal } from 'components/ShareVisualizationModal';
+import { ShareVisualizationModal } from 'visualizationCanvas/components/ShareVisualizationModal';
 import mockVif from 'data/mockVif';
 
 describe('ShareVisualizationModal', () => {

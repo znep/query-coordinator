@@ -1,7 +1,17 @@
 import I18n from 'common/i18n';
 
-export const INPUT_DEBOUNCE_MILLISECONDS = 700;
-export const MAP_SLIDER_DEBOUNCE_MILLISECONDS = 1000;
+let inputDebounceMs = 700;
+let mapSliderDebounceMs = 1000;
+
+export const getInputDebounceMs = () => inputDebounceMs;
+export const getMapSliderDebounceMs = () => mapSliderDebounceMs;
+
+// Used to speed up tests.
+export const disableInputDebounce = () => {
+  inputDebounceMs = 1;
+  mapSliderDebounceMs = 1;
+};
+
 export const MAXIMUM_MEASURES = 12;
 export const MAXIMUM_COMBO_CHART_MEASURES = 6;
 export const NUMERIC_COLUMN_TYPES = ['number', 'money', 'percent'];
@@ -139,6 +149,22 @@ export const AGGREGATION_TYPES = [
   {
     type: 'sum',
     title: I18n.t('shared.visualizations.aggregations.sum')
+  },
+  {
+    type: 'avg',
+    title: I18n.t('shared.visualizations.aggregations.avg')
+  },
+  {
+    type: 'median',
+    title: I18n.t('shared.visualizations.aggregations.median')
+  },
+  {
+    type: 'max',
+    title: I18n.t('shared.visualizations.aggregations.max')
+  },
+  {
+    type: 'min',
+    title: I18n.t('shared.visualizations.aggregations.min')
   }
 ];
 
@@ -156,6 +182,42 @@ export const BASE_LAYERS = [
     value: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}'
   }
 ];
+
+export const VECTOR_BASE_MAP_STYLES = {
+  basic: {
+    title: I18n.t('shared.visualizations.base_map_styles.basic'),
+    value: 'mapbox://styles/mapbox/basic-v9'
+  },
+  streets: {
+    title: I18n.t('shared.visualizations.base_map_styles.streets'),
+    value: 'mapbox://styles/mapbox/streets-v9'
+  },
+  bright: {
+    title: I18n.t('shared.visualizations.base_map_styles.bright'),
+    value: 'mapbox://styles/mapbox/bright-v9'
+  },
+  light: {
+    title: I18n.t('shared.visualizations.base_map_styles.light'),
+    value: 'mapbox://styles/mapbox/light-v9'
+  },
+  dark: {
+    title: I18n.t('shared.visualizations.base_map_styles.dark'),
+    value: 'mapbox://styles/mapbox/dark-v9'
+  },
+  satellite: {
+    title: I18n.t('shared.visualizations.base_map_styles.satellite'),
+    value: 'mapbox://styles/mapbox/satellite-v9'
+  }
+};
+
+export const BASE_MAP_STYLES = BASE_LAYERS.concat([
+  VECTOR_BASE_MAP_STYLES.basic,
+  VECTOR_BASE_MAP_STYLES.streets,
+  VECTOR_BASE_MAP_STYLES.bright,
+  VECTOR_BASE_MAP_STYLES.light,
+  VECTOR_BASE_MAP_STYLES.dark,
+  VECTOR_BASE_MAP_STYLES.satellite
+]);
 
 export const COLOR_SCALES = [
   {

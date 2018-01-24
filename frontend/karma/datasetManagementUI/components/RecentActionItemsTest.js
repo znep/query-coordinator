@@ -8,7 +8,7 @@ import {
   TaskSetFinishedActivity,
   TaskSetFailedActivity,
   OutputSchemaActivity
-} from 'components/RecentActionItems/RecentActionItems';
+} from 'datasetManagementUI/components/RecentActionItems/RecentActionItems';
 
 describe('components/RecentActionItems', () => {
   let initialConfig;

@@ -2,7 +2,7 @@ import { assert } from 'chai';
 
 import { FeatureFlags } from 'common/feature_flags';
 
-import { mapStateToProps } from 'components/MetadataTable';
+import { mapStateToProps } from 'datasetLandingPage/components/MetadataTable';
 
 const coreView = {
   id: '5bcc-hb4q',

@@ -256,6 +256,55 @@ describe('SoqlHelpers', function() {
     });
   });
 
+  describe('measure', function() {
+
+    it('returns a count aggregation clause when the measure aggregation function is `count`', function() {
+      var vif = vifWithNoFilters();
+
+      assert.equal(SoqlHelpers.measure(vif, 0, 'measure'), 'COUNT(*)');
+    });
+
+    it('returns a sum aggregation clause when the measure aggregation function is `sum`', function() {
+      var vif = vifWithNoFilters();
+      vif.series[0].dataSource.measure.columnName = 'aggregation_column';
+      vif.series[0].dataSource.measure.aggregationFunction = 'sum';
+
+      assert.equal(SoqlHelpers.measure(vif, 0, 'measure'), 'SUM(`aggregation_column`)');
+    });
+
+    it('returns an avg aggregation clause when the measure aggregation function is `avg`', function() {
+      var vif = vifWithNoFilters();
+      vif.series[0].dataSource.measure.columnName = 'aggregation_column';
+      vif.series[0].dataSource.measure.aggregationFunction = 'avg';
+
+      assert.equal(SoqlHelpers.measure(vif, 0, 'measure'), 'AVG(`aggregation_column`)');
+    });
+
+    it('returns a max aggregation clause when the measure aggregation function is `max`', function() {
+      var vif = vifWithNoFilters();
+      vif.series[0].dataSource.measure.columnName = 'aggregation_column';
+      vif.series[0].dataSource.measure.aggregationFunction = 'max';
+
+      assert.equal(SoqlHelpers.measure(vif, 0, 'measure'), 'MAX(`aggregation_column`)');
+    });
+
+    it('returns a median aggregation clause when the measure aggregation function is `median`', function() {
+      var vif = vifWithNoFilters();
+      vif.series[0].dataSource.measure.columnName = 'aggregation_column';
+      vif.series[0].dataSource.measure.aggregationFunction = 'median';
+
+      assert.equal(SoqlHelpers.measure(vif, 0, 'measure'), 'MEDIAN(`aggregation_column`)');
+    });
+
+    it('returns a min aggregation clause when the measure aggregation function is `min`', function() {
+      var vif = vifWithNoFilters();
+      vif.series[0].dataSource.measure.columnName = 'aggregation_column';
+      vif.series[0].dataSource.measure.aggregationFunction = 'min';
+
+      assert.equal(SoqlHelpers.measure(vif, 0, 'measure'), 'MIN(`aggregation_column`)');
+    });
+  });
+
   describe('whereClauseNotFilteringOwnColumn', function() {
 
     it('returns an empty string when the only filter is on its own column', function() {

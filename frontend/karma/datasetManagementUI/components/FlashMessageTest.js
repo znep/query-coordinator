@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import { expect, assert } from 'chai';
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import FlashMessage from 'components/FlashMessage/FlashMessage';
+import FlashMessage from 'datasetManagementUI/components/FlashMessage/FlashMessage';
 import _ from 'lodash';
 
 describe('components/FlashMessage', () => {

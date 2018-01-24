@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import ApiCallButton from 'components/ApiCallButton/ApiCallButton';
+import ApiCallButton from 'datasetManagementUI/components/ApiCallButton/ApiCallButton';
 
 const SHOW_RESULT_STATE_FOR_MS = 1000;
 

@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import React from 'react';
 import _ from 'lodash';
-import FatalError from 'components/FatalError/FatalError';
+import FatalError from 'datasetManagementUI/components/FatalError/FatalError';
 
 describe('components/FatalError', () => {
   const defaultProps = {

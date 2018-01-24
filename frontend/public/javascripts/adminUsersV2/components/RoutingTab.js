@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 import cx from 'classnames';
+import eq from 'lodash/eq';
 
 class RoutingTab extends Component {
   static contextTypes = {
@@ -9,18 +10,23 @@ class RoutingTab extends Component {
   };
 
   static propTypes = {
-    to: PropTypes.string.isRequired
+    to: PropTypes.string.isRequired,
+    computeIsCurrent: PropTypes.func
+  };
+
+  static defaultProps = {
+    computeIsCurrent: eq
   };
 
   render() {
-    const { to } = this.props;
+    const { computeIsCurrent, to, ...props } = this.props;
     const { router: { location: { pathname } } } = this.context;
     const className = cx('tab-link', {
-      current: to === pathname
+      current: computeIsCurrent(pathname, to)
     });
     return (
       <li className={className}>
-        <Link {...this.props} />
+        <Link to={to} {...props} />
       </li>
     );
   }

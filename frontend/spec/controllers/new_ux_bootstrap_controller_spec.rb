@@ -18,7 +18,7 @@ describe NewUxBootstrapController do
       }
     end
     let(:dataset_view) { double(View, dataset_mocks).as_null_object }
-    let(:dataset_metadata) { json_fixture('v1-bootstrap-dataset-metadata.migrated-from-minitest.json') }
+    let(:dataset_metadata) { json_fixture('v1-bootstrap-dataset-metadata.json') }
     let(:dataset_name) { dataset_metadata['name'] }
     let(:dataset_description) { dataset_metadata['description'] }
     let(:view_is_public) { false }
@@ -219,7 +219,7 @@ describe NewUxBootstrapController do
         context 'with point columns' do
           let(:is_point_column) { lambda { |fieldName| fieldName =~ /location/i } }
           let(:dataset_metadata) do
-            json_fixture('v1-bootstrap-dataset-metadata.migrated-from-minitest.json').
+            json_fixture('v1-bootstrap-dataset-metadata.json').
               tap do |metadata|
                 metadata['columns']['location']['cardinality'] = cardinality
                 metadata['columns']['location']['physicalDatatype'] = 'point'

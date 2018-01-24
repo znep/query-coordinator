@@ -1,15 +1,28 @@
-import _ from 'lodash';
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from 'react';
+import { connect as fullConnect } from '../utils';
 import { spring } from 'react-motion';
+import ToastNotification from 'common/components/ToastNotification';
+import * as Selectors from '../selectors';
+import has from 'lodash/has';
 
-import { ToastNotification } from 'common/components';
+export class Notification extends Component {
+  static propTypes = {
+    ...ToastNotification.propTypes
+  };
+  static defaultProps = {
+    onDismiss: () => {}
+  };
+  render() {
+    return (
+      <ToastNotification {...this.props} />
+    );
+  }
+}
 
-import connectLocalization from 'common/i18n/components/connectLocalization';
-
-const mapStateToProps = ({ ui: { notificationContent, notificationType, showNotification } }, { I18n }) => {
-  const content = _.has(notificationContent, 'translationKey')
-    ? I18n.translate(notificationContent.translationKey, notificationContent)
+const mapStateToProps = (state, { I18n }) => {
+  const notificationContent = Selectors.getNotificationContent(state);
+  const children = has(notificationContent, 'translationKey')
+    ? I18n.t(notificationContent.translationKey, notificationContent)
     : notificationContent;
 
   const customTransition = {
@@ -19,11 +32,12 @@ const mapStateToProps = ({ ui: { notificationContent, notificationType, showNoti
   };
 
   return {
-    children: <span dangerouslySetInnerHTML={{ __html: content }} />,
+    children,
     customTransition,
-    showNotification,
-    type: notificationType
+    showNotification: Selectors.getShowNotification(state),
+    type: Selectors.getNotificationType(state)
   };
 };
 
-export const LocalizedNotification = connectLocalization(connect(mapStateToProps)(ToastNotification));
+export { types } from 'common/components/ToastNotification';
+export default fullConnect(mapStateToProps)(Notification);

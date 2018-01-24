@@ -7,6 +7,10 @@ class Query < Model
     data['orderBys']
   end
 
+  def filterCondition
+    data['filterCondition']
+  end
+
   def cleaned
     d = data.dup
     if d.has_key?('namedFilters')

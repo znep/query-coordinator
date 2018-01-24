@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { assert } from 'chai';
-import FilterBar from 'components/FilterBar/FilterBar';
+import FilterBar from 'adminActivityFeed/components/FilterBar/FilterBar';
 import mockTranslations from '../mockTranslations';
 const getDefaultStore = require('../testStore').default;
 

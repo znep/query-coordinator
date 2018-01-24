@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import * as Selectors from 'selectors';
+import * as Selectors from 'datasetManagementUI/selectors';
 import _ from 'lodash';
-import SchemaPreviewTable from 'components/SchemaPreviewTable/SchemaPreviewTable';
-import { snakeCase } from 'reduxStuff/actions/showOutputSchema';
-import { conversionsToCanonicalName, soqlProperties } from 'lib/soqlTypes';
+import SchemaPreviewTable from 'datasetManagementUI/components/SchemaPreviewTable/SchemaPreviewTable';
+import { snakeCase } from 'datasetManagementUI/reduxStuff/actions/showOutputSchema';
+import { conversionsToCanonicalName, soqlProperties } from 'datasetManagementUI/lib/soqlTypes';
 
 const mapStateToProps = ({ entities, ui }, { params }) => {
   const cols = Selectors.columnsForOutputSchema(entities, _.toNumber(params.outputSchemaId)).map(col => ({

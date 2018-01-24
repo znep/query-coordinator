@@ -5,15 +5,16 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import I18n from 'common/i18n';
-import { SocrataIcon } from 'common/components';
 
 import AboutThisMeasure from './AboutThisMeasure';
-import SavedMeasureResultCard from './SavedMeasureResultCard';
+import MeasureResultCard from './MeasureResultCard';
+import MeasureChart from './MeasureChart';
 
 // Pane containing the primary visual representations of the metric (value of
 // most recent reporting period + timeline), as well as prose information about
 // the methodological underpinnings of the measure.
 export class SummaryPane extends Component {
+
   renderScrollPane() {
     const { measure, coreView } = this.props;
     const { shortName } = measure.metadata || {};
@@ -25,25 +26,11 @@ export class SummaryPane extends Component {
 
         <div className="scroll-pane-content">
           <div id="latest-metric">
-            <SavedMeasureResultCard measure={this.props.measure} maxLength={6} />
-
-            <div className="scroll-pane-placeholder">
-              <SocrataIcon name="number" />
-              <div className="scroll-pane-placeholder-text">
-                {I18n.t('open_performance.no_dataset')}
-              </div>
-            </div>
+            <MeasureResultCard measure={measure} />
           </div>
 
           <div id="metric-visualization">
-            {/* TODO: timeline visualization here */}
-
-            <div className="scroll-pane-placeholder">
-              <SocrataIcon name="line-chart" />
-              <div className="scroll-pane-placeholder-text">
-                {I18n.t('open_performance.no_visualization')}
-              </div>
-            </div>
+            <MeasureChart measure={measure} />
           </div>
         </div>
       </div>
@@ -88,8 +75,6 @@ export class SummaryPane extends Component {
       </div>
     );
   }
-
-          // {this.renderLatestMetric()}
 
   render() {
     return (

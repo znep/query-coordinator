@@ -103,6 +103,7 @@
           font-size: 12px;
           left: 60px;
           padding: 8px;
+          pointer-events: none;
           position: relative;
           top: -45px;
           white-space: nowrap;
@@ -383,6 +384,15 @@
       &.disabled {
         color: $light-grey-2;
         cursor: not-allowed;
+
+        &.base-map-opacity-container {
+          opacity: 0.75;
+
+          .InputRange,
+          .input-range-slider .InputRange-slider {
+            cursor: not-allowed;
+          }
+        }
       }
 
       .input-range-slider {
@@ -411,7 +421,8 @@
       }
     }
 
-    .units-description {
+    .units-description,
+    .search-boundary-description {
       margin: 0 0 24px
     }
 
@@ -638,19 +649,28 @@
       margin: 10px 0;
     }
 
+    .region-and-measure-list-container {
+      padding-left: 30px;
+
+      .region-selector-container,
+      .measure-list-container {
+        margin: 12px 0;
+      }
+    }
+
     .measure-list-container {
       .block-label {
         margin: 20px 0 10px;
       }
     }
 
-    .measure-list {
+    .dropdowns-list {
       list-style: none;
       margin: 0;
       padding: 0;
       width: 100%;
 
-      .measure-list-item {
+      .list-item {
         display: flex;
         margin: 0;
         padding: 0;
@@ -662,22 +682,22 @@
           }
         }
 
-        .measure-column-selector-dropdown-container {
+        .primary-dropdown-container {
           flex: 1 1 100%;
           overflow: hidden;
         }
 
-        .measure-aggregation-selector-dropdown-container {
+        .secondary-dropdown-container {
           flex: 0 0 80px;
           margin-left: -1px;
         }
 
-        .measure-delete-link-container {
+        .delete-link-container {
           display: table;
           flex: 0 0 25px;
           margin: 0 0 0 10px;
 
-          .measure-delete-link {
+          .delete-link {
             color: $dark-grey-1;
             cursor: pointer;
             display: table-cell;
@@ -689,7 +709,7 @@
       }
     }
 
-    .measure-add-measure-link-container {
+    .add-link-container {
       margin: 5px 0;
 
       a {

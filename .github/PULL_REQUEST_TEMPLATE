@@ -3,6 +3,7 @@
 All below boxes should be checked before merging:
 - [ ] Demo given.
 - [ ] JIRA ticket IDs present in ALL commit subject(s).
+- [ ] 'ux_change' label is applied to JIRA ticket if User Experience will be impacted when deployed
 - [ ] `Gemfile.lock` and `package.json` are up to date.
 - [ ] Changes in `common/` verified in all affected applications (Storyteller, DSLP, etc).
   Ask for help in [#frontend](https://socrata.slack.com/archives/C02KAPT7N) if you need help verifying a change.

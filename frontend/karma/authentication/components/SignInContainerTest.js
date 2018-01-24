@@ -5,10 +5,10 @@ import _ from 'lodash';
 
 import defaultOptions from '../DefaultOptions';
 
-import SignInContainer from 'components/SignInContainer';
-import SignIn from 'components/SignIn';
-import ChooseConnection from 'components/ChooseConnection/ChooseConnection';
-import SocialLinkMessage from 'components/SocialLinkMessage';
+import SignInContainer from 'authentication/components/SignInContainer';
+import SignIn from 'authentication/components/SignIn';
+import ChooseConnection from 'authentication/components/ChooseConnection/ChooseConnection';
+import SocialLinkMessage from 'authentication/components/SocialLinkMessage';
 
 describe('<SignInContainer />', () => {
   describe('choose connection', () => {

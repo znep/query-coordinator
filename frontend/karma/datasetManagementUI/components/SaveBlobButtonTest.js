@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import { shallow } from 'enzyme';
 import React from 'react';
-import SaveBlobButton from 'components/SaveBlobButton/SaveBlobButton';
+import SaveBlobButton from 'datasetManagementUI/components/SaveBlobButton/SaveBlobButton';
 import sinon from 'sinon';
 
 describe('SaveBlobButton', () => {

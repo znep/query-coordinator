@@ -4,6 +4,7 @@ import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 import I18nJS from 'common/i18n';
 import LocalizedDate from 'common/i18n/components/LocalizedDate';
+import LocalizedText from 'common/i18n/components/LocalizedText';
 import LocalizedLink from 'common/i18n/components/LocalizedLink';
 import AssetTypeIcon from 'common/components/AssetTypeIcon';
 import ActionsCell from './ActionsCell';
@@ -17,41 +18,72 @@ class Body extends Component {
   }
 
   renderTypeCell(data) {
-    const assetTypeTooltip = I18nJS.t(`screens.admin.activity_feed.asset_types.${data.asset_type}`);
+    let tooltip = I18nJS.lookup(`screens.admin.activity_feed.asset_types.${data.asset_type}`);
+    let displayType = data.asset_type;
+
+    if (!tooltip) {
+      tooltip = I18nJS.lookup('screens.admin.activity_feed.asset_types.dataset');
+      displayType = 'dataset';
+    }
 
     return (
       <td scope="row" className="type">
-        <AssetTypeIcon
-          displayType={data.asset_type || 'dataset'}
-          tooltip={assetTypeTooltip} />
+        <AssetTypeIcon {...{ tooltip, displayType }} />
       </td>
     );
   }
 
   renderInitiatedByCell(data) {
-    const profilePath = `/profile/${data.acting_user_id}`;
+    let profileLink;
 
-    return (
-      <td scope="row" className="initiated-by">
+    if (!_.isUndefined(data.acting_user_id)) {
+      const profilePath = `/profile/${data.acting_user_id}`;
+
+      profileLink = (
         <LocalizedLink className="unstyled-link" path={profilePath}>
           {data.acting_user_name}
         </LocalizedLink>
+      );
+    }
+
+    return (
+      <td scope="row" className="initiated-by">
+        {profileLink}
       </td>
     );
   }
 
   renderEventCell(data) {
+    const localeKey = `screens.admin.activity_feed.filters.events.options.${_.snakeCase(data.activity_type)}`;
+
     return (
       <td scope="row" className="event">
-        {data.activity_type}
+        <LocalizedText localeKey={localeKey} />
       </td>
     );
   }
 
   renderItemAffectedCell(data) {
+    let path;
+
+    const datasetTypes = ['calendar', 'data_lens', 'map', 'blob', 'visualization', 'href', 'chart',
+      'draft', 'dataset'];
+
+    if (datasetTypes.includes(data.asset_type) && data.dataset_uid) {
+      path = `/dataset/${data.dataset_uid}`;
+    } else if (data.asset_type === 'user' && data.target_user_id_1) {
+      path = `/profile/${data.target_user_id_1}`;
+    } else if (data.asset_type === 'story' && data.dataset_uid) {
+      path = `/stories/s/${data.dataset_uid}`;
+    }
+
+    let link = _.isNull(path) ?
+      data.affected_item :
+      <LocalizedLink className="unstyled-link" path={path}>{data.affected_item}</LocalizedLink>;
+
     return (
       <td scope="row" className="item-affected">
-        {data.affected_item}
+        {link}
       </td>
     );
   }

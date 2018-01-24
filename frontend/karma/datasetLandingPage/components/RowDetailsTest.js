@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import RowDetails from 'components/RowDetails';
+import RowDetails from 'datasetLandingPage/components/RowDetails';
 import { getDefaultStore } from '../testStore';
 
 describe('components/RowDetails', () => {

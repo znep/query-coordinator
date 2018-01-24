@@ -5,9 +5,9 @@ import { bootstrapChannels } from '../data/socketChannels';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import fetchMock from 'fetch-mock';
-import { loadRevision } from 'reduxStuff/actions/loadRevision';
-import * as dsmapiLinks from 'links/dsmapiLinks';
-import * as coreLinks from 'links/coreLinks';
+import { loadRevision } from 'datasetManagementUI/reduxStuff/actions/loadRevision';
+import * as dsmapiLinks from 'datasetManagementUI/links/dsmapiLinks';
+import * as coreLinks from 'datasetManagementUI/links/coreLinks';
 
 const API_RESPONSES = {
   getCurrentRevision: {

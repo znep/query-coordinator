@@ -1,11 +1,11 @@
 import sinon from 'sinon';
 import { assert } from 'chai';
 import _ from 'lodash';
-import { mapStateToProps, mapDispatchToProps } from 'components/FilterBar';
+import { mapStateToProps, mapDispatchToProps } from 'visualizationCanvas/components/FilterBar';
 import parentView from 'data/mockParentView';
 import view from 'data/mockView';
 import filter from 'data/mockFilter';
-import { setFilters } from 'actions';
+import { setFilters } from 'visualizationCanvas/actions';
 
 describe('FilterBar', () => {
   const filters = [filter, filter];

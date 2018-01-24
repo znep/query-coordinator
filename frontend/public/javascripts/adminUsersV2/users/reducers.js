@@ -1,39 +1,111 @@
-import { COMPLETE_FAIL, COMPLETE_SUCCESS, LOAD_DATA, START } from '../actions';
-import { ROLE_FILTER_CHANGED, USER_ROLE_CHANGE } from '../roles/actions';
-import { SORT_COLUMN, GOTO_PAGE, USER_SEARCH } from './actions';
-import { SORT_KEYS } from 'common/users-api';
+import * as RolesActions from '../roles/actions';
+import * as Actions from './actions';
+import { SORT_KEYS, SORT_DIRECTION } from 'common/users-api';
 
-import get from 'lodash/get';
-import { SORT_DIRECTION } from 'common/users-api';
+import get from 'lodash/fp/get';
+import flow from 'lodash/fp/flow';
+import add from 'lodash/fp/add';
 
-const userRoleChange = (state, action) => {
-  return state.map(user => {
-    if (user.id !== action.userId) return user;
-    switch (action.stage) {
-      case START:
-        return {
-          ...user,
-          pendingRole: action.newRole
-        };
-      case COMPLETE_FAIL:
-        return {
-          ...user,
-          pendingRole: undefined
-        };
-      case COMPLETE_SUCCESS:
-        return {
-          ...user,
-          pendingRole: undefined,
-          roleId: action.newRole
-        };
-      default:
-        console.warn(`Invalid stage ${action.stage} for action`, action);
-        return user;
-    }
-  });
+export const initialState = {
+  addUsersForm: { emails: '', roleId: null, errors: [] },
+  filterRoleId: null,
+  loadingData: true,
+  orderBy: SORT_KEYS.SCREEN_NAME,
+  resultCount: 0,
+  searchQuery: null,
+  searchResultCount: undefined,
+  sortDirection: SORT_DIRECTION.ASC,
+  users: [],
+  zeroBasedPage: 0
 };
 
-const updateColumnSort = (columnKey, state) => {
+const handleLoadUsers = state => ({
+  ...state,
+  loadingData: true
+});
+
+const handleLoadUsersSuccess = (state, { users, resultCount }) => ({
+  ...state,
+  loadingData: false,
+  users,
+  resultCount
+});
+
+const handleLoadUsersFailure = (state) => ({
+  ...state,
+  loadingData: false
+});
+
+const handleChangeUserRole = (state, { userId, newRole }) => ({
+  ...state,
+  users: state.users.map(user => user.id === userId ?
+    { ...user, pendingRole: newRole } :
+    user
+  )
+});
+
+const handleChangeUserRoleSuccess = (state, { userId, newRole, newRoleName }) => ({
+  ...state,
+  users: state.users.map(user => user.id === userId ?
+    { ...user, pendingRole: undefined, roleId: newRole, roleName: newRoleName } :
+    user
+  )
+});
+
+const handleChangeUserRoleFailure = (state, { userId }) => ({
+  ...state,
+  users: state.users.map(user => user.id === userId ?
+    { ...user, pendingRole: undefined } :
+    user
+  )
+});
+
+const handleRemoveUserRole = (state, { userId }) => ({
+  ...state,
+  users: state.users.map(user => user.id === userId ?
+    { ...user, removingRole: true } :
+    user
+  )
+});
+
+const handleRemoveUserRoleSuccess = (state, { userId }) => ({
+  ...state,
+  users: state.users.filter(user => user.id !== userId)
+});
+
+const handleRemoveUserRoleFailure = (state, { userId }) => ({
+  ...state,
+  users: state.users.map(user => user.id === userId ?
+    { ...user, removingRole: undefined } :
+    user
+  )
+});
+
+const handleUserSearch = state => ({
+  ...state,
+  loadingData: true
+});
+
+const handleUserSearchSuccess = (state, { users, resultCount }) => ({
+  ...state,
+  loadingData: false,
+  searchResultCount: resultCount,
+  users
+});
+
+const handleUserSearchFailure = state => ({
+  ...state,
+  loadingData: false,
+  searchResultCount: undefined,
+  users: []
+});
+
+const handleGotoPage = (state, { page }) => ({
+  ...state,
+  zeroBasedPage: makeZeroBasedPageFromPager(page)
+});
+
+const handleColumnSort = (state, { columnKey }) => {
   const orderBy = getOrderBy(state);
   const sortDirection = getSortDirection(state);
   if (orderBy !== columnKey) {
@@ -43,59 +115,87 @@ const updateColumnSort = (columnKey, state) => {
   }
 };
 
-const initialState = {
-  loadingData: true,
-  zeroBasedPage: 0,
-  orderBy: SORT_KEYS.SCREEN_NAME,
-  sortDirection: SORT_DIRECTION.ASC,
-  resultCount: 0,
-  users: []
-};
+const handleChangeAddUsersForm = (state, { emails, roleId }) => ({
+  ...state,
+  addUsersForm: { emails, roleId, errors: [] }
+});
 
-const usersReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case USER_ROLE_CHANGE:
-      return { ...state, users: userRoleChange(state.users, action) };
+const handleSetAddUsersFormErrors = (state, { errors }) => ({
+  ...state,
+  addUsersForm: { ...state.addUsersForm, errors }
+});
 
-    case LOAD_DATA:
-      if (action.stage === COMPLETE_SUCCESS) {
-        const { resultCount, users } = action.users;
-        return { ...state, loadingData: false, resultCount, users };
-      }
-      return { ...state, loadingData: action.stage === START };
+const handleClearAddUsersForm = state => ({
+  ...state,
+  addUsersForm: { ...initialState.addUsersForm }
+});
 
-    case USER_SEARCH:
-      if (action.stage === COMPLETE_SUCCESS) {
-        const { resultCount, users } = action.payload;
-        return { ...state, loadingData: false, resultCount, users };
-      }
-      return { ...state, loadingData: action.stage === START };
+const reducer = (state = initialState, { type, payload }) => {
+  switch (type) {
+    case RolesActions.CHANGE_USER_ROLE:
+      return handleChangeUserRole(state, payload);
+    case RolesActions.CHANGE_USER_ROLE_SUCCESS:
+      return handleChangeUserRoleSuccess(state, payload);
+    case RolesActions.CHANGE_USER_ROLE_FAILURE:
+      return handleChangeUserRoleFailure(state, payload);
 
-    case ROLE_FILTER_CHANGED:
-      if (action.stage === COMPLETE_SUCCESS) {
-        const { resultCount, users } = action.users;
-        return { ...state, loadingData: false, resultCount, users };
-      }
-      return { ...state, loadingData: action.stage === START };
+    case RolesActions.REMOVE_USER_ROLE:
+      return handleRemoveUserRole(state, payload);
+    case RolesActions.REMOVE_USER_ROLE_SUCCESS:
+      return handleRemoveUserRoleSuccess(state, payload);
+    case RolesActions.REMOVE_USER_ROLE_FAILURE:
+      return handleRemoveUserRoleFailure(state, payload);
 
-    case GOTO_PAGE:
-      return {...state, zeroBasedPage: makeZeroBasedPageFromPager(action.payload.page) };
+    case Actions.LOAD_USERS:
+      return handleLoadUsers(state, payload);
+    case Actions.LOAD_USERS_SUCCESS:
+      return handleLoadUsersSuccess(state, payload);
+    case Actions.LOAD_USERS_FAILURE:
+      return handleLoadUsersFailure(state, payload);
 
-    case SORT_COLUMN:
-      return updateColumnSort(action.payload.columnKey, state);
+    case Actions.USER_SEARCH:
+      return handleUserSearch(state, payload);
+    case Actions.USER_SEARCH_SUCCESS:
+      return handleUserSearchSuccess(state, payload);
+    case Actions.USER_SEARCH_FAILURE:
+      return handleUserSearchFailure(state, payload);
+
+    case Actions.CHANGE_ADD_USERS_FORM:
+      return handleChangeAddUsersForm(state, payload);
+
+    case Actions.SET_ADD_USERS_FORM_ERRORS:
+      return handleSetAddUsersFormErrors(state, payload);
+
+    case Actions.GOTO_USER_PAGE:
+      return handleGotoPage(state, payload);
+
+    case Actions.SORT_USER_COLUMN:
+      return handleColumnSort(state, payload);
+
+    case Actions.CLEAR_ADD_USERS_FORM:
+      return handleClearAddUsersForm(state);
 
     default:
       return state;
   }
 };
 
-export default usersReducer;
+export default reducer;
 
 export const makeZeroBasedPageFromPager = page => Math.max(0, page - 1);
-export const getZeroBasedPage = state => get(state, 'zeroBasedPage');
-export const getCurrentPage = state => getZeroBasedPage(state) + 1;
-export const getResultCount = state => get(state, 'resultCount');
-export const getUsers = state => get(state, 'users');
-export const getOrderBy = state => get(state, 'orderBy');
-export const getSortDirection = state => get(state, 'sortDirection');
-export const getLoadingData = state => get(state, 'loadingData');
+export const getZeroBasedPage = get('zeroBasedPage');
+export const getCurrentPage = flow(getZeroBasedPage, add(1));
+export const getResultCount = get('resultCount');
+export const getUsers = get('users');
+export const getOrderBy = get('orderBy');
+export const getSortDirection = get('sortDirection');
+export const getLoadingData = get('loadingData');
+export const getScreenNameFromUser = get('screen_name');
+export const getEmailFromUser = get('email');
+export const getIdFromUser = get('id');
+export const getSearchResultCount = get('searchResultCount');
+
+export const getAddUsersForm = get('addUsersForm');
+export const getAddUsersFormEmails = flow(getAddUsersForm, get('emails'));
+export const getAddUsersFormRoleId = flow(getAddUsersForm, get('roleId'));
+export const getAddUsersFormErrors = flow(getAddUsersForm, get('errors'));

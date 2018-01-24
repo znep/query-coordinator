@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { localizeLink } from 'common/locale';
 import { FeatureFlags } from 'common/feature_flags';
 
-import ExportFlannel from './ExportFlannel';
+import ExportFlannel from 'common/components/ExportFlannel';
 import ApiFlannel from './ApiFlannel';
 import ShareFlannel from './ShareFlannel';
 import ODataModal from './ODataModal';

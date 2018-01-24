@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
-import { hideModal } from 'reduxStuff/actions/modal';
-import FormatColumn from 'components/FormatColumn/FormatColumn';
-import * as Selectors from 'selectors';
-import * as ShowActions from 'reduxStuff/actions/showOutputSchema';
+import { hideModal } from 'datasetManagementUI/reduxStuff/actions/modal';
+import FormatColumn from 'datasetManagementUI/components/FormatColumn/FormatColumn';
+import * as Selectors from 'datasetManagementUI/selectors';
+import * as ShowActions from 'datasetManagementUI/reduxStuff/actions/showOutputSchema';
 
 function mapStateToProps({ entities }, props) {
   const inputSchema = entities.input_schemas[props.outputSchema.input_schema_id];

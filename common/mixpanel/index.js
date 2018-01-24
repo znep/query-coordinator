@@ -241,4 +241,4 @@ if (!_.get(config, 'disable') && !_.isUndefined(mixpanelBrowser)) {
   console.warn('Mixpanel has not been loaded or has been disabled.');
 }
 
-export default { sendPayload: _.get(config, 'disable') ? _.noop : sendPayload };
+export default { sendPayload: (_.isUndefined(config) || _.get(config, 'disable')) ? _.noop : sendPayload };

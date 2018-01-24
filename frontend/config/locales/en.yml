@@ -732,13 +732,6 @@ en:
       clear: Clear search query
       placeholder: Search
     updated: Updated
-    view_widget:
-      external_content: External Content
-      view: View
-      views: Views
-    result_count_label:
-      one: Result
-      other: Results
   controls:
     grid_view_column_editor:
       close_without_saving: All unsaved changes will be lost. Are you sure you want to close the Column Editor?

@@ -252,6 +252,7 @@ export const ceteraUtils = (() => {
             ceteraResultResource, 'id', 'uid', 'name', 'description', 'provenance', 'createdAt', 'updatedAt'
           ),
           categories: ceteraResult.classification.categories,
+          domain: ceteraResult.metadata.domain,
           isFederated: resultIsFederated(ceteraResult.metadata.domain),
           isPublic: ceteraResult.metadata.is_public,
           link: ceteraResult.link,

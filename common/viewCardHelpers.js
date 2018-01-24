@@ -10,17 +10,17 @@ export function getDateLabel(updatedAt) {
 
 export const getViewCountLabel = (viewCount) => {
   const viewLabelTranslation = viewCount === 1 ?
-    I18n.t('common.view_widget.view') : I18n.t('common.view_widget.views');
+    I18n.t('shared.view_widget.view') : I18n.t('shared.view_widget.views');
   return _.isNumber(viewCount) ? `${utils.formatNumber(viewCount)} ${viewLabelTranslation}` : '';
 };
 
 export const getResultCountLabel = (resultCount) => {
   const resultLabelTranslation = resultCount === 1 ?
-    I18n.t('common.result_count_label.one') : I18n.t('common.result_count_label.other');
+    I18n.t('shared.result_count_label.one') : I18n.t('shared.result_count_label.other');
   return _.isNumber(resultCount) ? `${utils.formatNumber(resultCount)} ${resultLabelTranslation}` : '';
 };
 
-export const getAriaLabel = (view) => `${I18n.t('related_views.view')} ${view.name}`;
+export const getAriaLabel = (view) => `${I18n.t('shared.related_views.view')} ${view.name}`;
 
 export function getViewCardPropsForView(view) {
   return {

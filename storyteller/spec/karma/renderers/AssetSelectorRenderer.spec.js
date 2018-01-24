@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import React, { Component } from 'react';
 
 import { FeatureFlags } from 'common/feature_flags';
 
@@ -20,15 +21,37 @@ import I18nMocker from '../I18nMocker';
 
 describe('AssetSelectorRenderer', function() {
 
+  var assetSelectorStoreMock;
+  var fileUploaderStoreMock;
   var container;
+  var dispatcher;
   var options;
   var testBlockId = 'testBlock1';
   var testComponentIndex = 1;
-  var assetSelectorStoreMock;
-  var fileUploaderStoreMock;
   var storyStoreMock;
   var server;
-  var dispatcher;
+  var nbeView = {
+    'id': StandardMocks.validStoryUid,
+    'name': 'nbe',
+    'displayType': 'table',
+    'domain': 'example.com',
+    'domainCName': 'example.com',
+    'newBackend': true,
+    'viewType': 'tabular',
+    'query': {},
+    'columns': [{
+      'fieldName': 'foo'
+    }]
+  };
+
+  class CommonAssetSelectorMock extends Component {
+    static lastProps;
+
+    render() {
+      CommonAssetSelectorMock.lastProps = this.props;
+      return <div className="mock-common-asset-selector" />;
+    }
+  }
 
   beforeEach(function() {
     FeatureFlags.useTestFixture({
@@ -71,6 +94,10 @@ describe('AssetSelectorRenderer', function() {
     AssetSelectorRendererAPI.__Rewire__('assetSelectorStore', assetSelectorStoreMock);
     AssetSelectorRendererAPI.__Rewire__('I18n', I18nMocker);
 
+    // This is mocking the common asset selector component found in common/components/AssetSelector,
+    // not to be confused with AssetSelectorRenderer or AssetSelectorStore in storyteller.
+    AssetSelectorRendererAPI.__Rewire__('AssetSelector', CommonAssetSelectorMock);
+
     dispatcher.dispatch({
       action: Actions.STORY_CREATE,
       data: story()
@@ -85,6 +112,9 @@ describe('AssetSelectorRenderer', function() {
     AssetSelectorStoreAPI.__ResetDependency__('storeStore');
     AssetSelectorRendererAPI.__ResetDependency__('dispatcher');
     AssetSelectorRendererAPI.__ResetDependency__('assetSelectorStore');
+    AssetSelectorRendererAPI.__ResetDependency__('AssetSelector');
+
+    CommonAssetSelectorMock.lastProps = null;
   });
 
   describe('constructor', function() {
@@ -306,42 +336,6 @@ describe('AssetSelectorRenderer', function() {
 
         altFieldInput.val('Hey alt');
         altFieldInput.trigger(event);
-      });
-    });
-
-    it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` on a viewSelected event for a federated dataset', function(done) {
-      dispatcher.register(function(payload) {
-        var action = payload.action;
-        assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
-        // the values will be empty, but assert that the event adds the keys
-        assert.propertyVal(payload, 'datasetUid', 'the-id');
-        assert.propertyVal(payload, 'domain', 'federate.me');
-        assert.propertyVal(payload, 'isNewBackend', true);
-        done();
-      });
-
-      container.find('.modal-dialog').trigger('viewSelected', {
-        id: 'the-id',
-        domainCName: 'federate.me',
-        newBackend: true
-      });
-    });
-
-    it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` on a viewSelected event for a non-federated dataset', function(done) {
-      dispatcher.register(function(payload) {
-        var action = payload.action;
-        assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
-        // the values will be empty, but assert that the event adds the keys
-        assert.propertyVal(payload, 'datasetUid', 'the-id');
-        assert.propertyVal(payload, 'domain', window.location.hostname);
-        assert.propertyVal(payload, 'isNewBackend', true);
-        done();
-      });
-
-      container.find('.modal-dialog').trigger('viewSelected', {
-        id: 'the-id',
-        domainCName: undefined, // yes, it comes back as undefined from the dataset picker.
-        newBackend: true
       });
     });
 
@@ -698,49 +692,39 @@ describe('AssetSelectorRenderer', function() {
 
     describe('an `ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN` action with visualizationOption = AUTHOR_VISUALIZATION is fired', function() {
       beforeEach(function() {
+        $(document.body).append($('<div>', {id: 'common-asset-selector'}));
+
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN,
           visualizationOption: 'AUTHOR_VISUALIZATION'
         });
       });
 
-      it('renders an iframe', function() {
-        assert.lengthOf(container.find('.asset-selector-dataset-chooser-iframe'), 1);
+      afterEach(function() {
+        $('#common-asset-selector').remove();
       });
 
-      // NOTE: Because of the way these tests are set up, this does NOT cover
-      // the path where ENABLE_FILTERED_TABLES_IN_AX is true! Introducing a
-      // variant behavior is not straightforward.
-      //
-      // The only thing that should change is that `limitTo=datasets` would
-      // become `limitTo=tables`.
-      describe('the iframe', function() {
-        it('has the correct source', function() {
-          var iframeSrc = decodeURI(container.find('iframe').attr('src'));
-          assert.include(iframeSrc, 'browse/select_dataset');
-          assert.include(iframeSrc, 'suppressed_facets[]=type');
-          assert.include(iframeSrc, 'limitTo=datasets');
-        });
-      });
-
-      describe('the modal', function() {
-        it('has the wide class to display the iframe', function() {
-          assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
+      describe('AssetSelector props', function() {
+        // NOTE: Because of the way these tests are set up, this does NOT cover
+        // the path where ENABLE_FILTERED_TABLES_IN_AX is true! Introducing a
+        // variant behavior is not straightforward.
+        //
+        // The only thing that should change is that `datasets` would
+        // become `datasets,filters`.
+        it('sets baseFilters.assetTypes', function() {
+          assert.equal(CommonAssetSelectorMock.lastProps.baseFilters.assetTypes, 'datasets');
         });
 
-        it('has a modal title loading spinner', function() {
-          assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
+        it('sets closeOnSelect', function() {
+          assert.isFalse(CommonAssetSelectorMock.lastProps.closeOnSelect);
         });
 
-        it('has a close button', function() {
-          assert.equal(container.find('.modal-close-btn').length, 1);
+        it('sets modalFooterChildren', function() {
+          assert.equal(CommonAssetSelectorMock.lastProps.modalFooterChildren.props.className, 'common-asset-selector-modal-footer-button-group');
         });
 
-        it('has a button that goes back to the provider list', function() {
-          assert.lengthOf(
-            container.find('[data-resume-from-step="SELECT_VISUALIZATION_OPTION"]'),
-            1
-          );
+        it('sets showBackButton', function() {
+          assert.isFalse(CommonAssetSelectorMock.lastProps.showBackButton);
         });
       });
     });
@@ -748,6 +732,7 @@ describe('AssetSelectorRenderer', function() {
     describe('when within the Authoring Workflow', function() {
       beforeEach(function() {
         $(document.body).append($('<div>', {id: 'authoring-workflow'}));
+        $(document.body).append($('<div>', {id: 'common-asset-selector'}));
 
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN,
@@ -757,36 +742,18 @@ describe('AssetSelectorRenderer', function() {
 
       afterEach(function() {
         $('#authoring-workflow').remove();
+        $('#common-asset-selector').remove();
       });
 
       describe('an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
         var confirmStub;
 
-        beforeEach(function(done) {
+        beforeEach(function() {
           confirmStub = sinon.stub(window, 'confirm').returns(true);
 
           dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-            datasetUid: StandardMocks.validStoryUid,
-            domain: 'example.com',
-            newBackend: true
-          });
-
-          server.respond([
-            200,
-            { 'Content-Type': 'application/json' },
-            JSON.stringify({
-              id: 'fooo-baar',
-              domain: 'foo',
-              columns: [{
-                'fieldName': 'foo'
-              }],
-              newBackend: true
-            })
-          ]);
-
-          setTimeout(function() {
-            done();
+            viewData: nbeView
           });
         });
 
@@ -809,11 +776,11 @@ describe('AssetSelectorRenderer', function() {
         });
 
         describe('when jumping back a step', function() {
-          it('should render dataset selection', function(done) {
+          it('should render AssetSelector', function(done) {
             $('#authoring-workflow .authoring-back-button').click();
             setTimeout(function() {
               assert.equal($('#authoring-workflow *').length, 0);
-              assert.isAbove($('.asset-selector-dataset-chooser-iframe').length, 0);
+              assert.lengthOf($('#common-asset-selector .mock-common-asset-selector'), 1);
               done();
             }, 1);
           });
@@ -823,73 +790,54 @@ describe('AssetSelectorRenderer', function() {
 
     describe('an `ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN` action with visualizationOption = INSERT_TABLE is fired', function() {
       beforeEach(function() {
+        $(document.body).append($('<div>', {id: 'common-asset-selector'}));
+
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN,
           visualizationOption: 'INSERT_TABLE'
         });
       });
 
-      it('renders an iframe', function() {
-        assert.equal(container.find('.asset-selector-dataset-chooser-iframe').length, 1);
+      afterEach(function() {
+        $('#common-asset-selector').remove();
       });
 
-      describe('the iframe', function() {
-        it('has the correct source', function() {
-          var iframeSrc = decodeURI(container.find('iframe').attr('src'));
-          assert.include(iframeSrc, 'browse/select_dataset');
-          assert.include(iframeSrc, 'suppressed_facets[]=type');
-          assert.include(iframeSrc, 'limitTo=tables');
+      describe('AssetSelector props', function() {
+        // NOTE: Because of the way these tests are set up, this does NOT cover
+        // the path where ENABLE_FILTERED_TABLES_IN_AX is true! Introducing a
+        // variant behavior is not straightforward.
+        //
+        // The only thing that should change is that `datasets` would
+        // become `datasets,filters`.
+        it('sets baseFilters.assetTypes', function() {
+          assert.equal(CommonAssetSelectorMock.lastProps.baseFilters.assetTypes, 'datasets');
+        });
+
+        it('sets closeOnSelect', function() {
+          assert.isFalse(CommonAssetSelectorMock.lastProps.closeOnSelect);
+        });
+
+        it('sets modalFooterChildren', function() {
+          assert.equal(CommonAssetSelectorMock.lastProps.modalFooterChildren.props.className, 'common-asset-selector-modal-footer-button-group');
+        });
+
+        it('sets showBackButton', function() {
+          assert.isFalse(CommonAssetSelectorMock.lastProps.showBackButton);
         });
       });
 
-      describe('the modal', function() {
-        it('has the wide class to display the iframe', function() {
-          assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
-        });
-
-        it('has a modal title loading spinner', function() {
-          assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
-        });
-
-        it('has a close button', function() {
-          assert.equal(container.find('.modal-close-btn').length, 1);
-        });
-
-        it('has a button that goes back to the provider list', function() {
-          assert.lengthOf(
-            container.find('[data-resume-from-step="SELECT_VISUALIZATION_OPTION"]'),
-            1
-          );
-        });
-      });
+      // TODO test mocking asset selected
+      // TODO test closing assetselector without selecting
 
       describe('an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
         var tableStub;
-        beforeEach(function(done) {
+        beforeEach(function() {
           tableStub = sinon.stub($.fn, 'componentSocrataVisualizationTable', _.noop);
 
           dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-            datasetUid: StandardMocks.validStoryUid,
-            domain: 'example.com',
-            isNewBackend: true
+            viewData: nbeView
           });
-
-          server.respond([
-            200,
-            { 'Content-Type': 'application/json' },
-            JSON.stringify({
-              id: 'fooo-baar',
-              newBackend: true,
-              domain: 'foo',
-              columns: [{
-                'fieldName': 'foo'
-              }]
-            })
-          ]);
-
-          //Wait for promises in AssetSelectorStore
-          setTimeout(function() { done(); }, 10);
         });
 
         afterEach(function() {
@@ -901,8 +849,8 @@ describe('AssetSelectorRenderer', function() {
           var componentData = _.get(tableStub, 'args[0][0].componentData', {});
           assert.propertyVal(componentData, 'type', 'socrata.visualization.table');
           assert.propertyVal(componentData.value.vif, 'type', 'table');
-          assert.propertyVal(componentData.value.vif, 'domain', 'example.com');
-          assert.propertyVal(componentData.value.vif, 'datasetUid', 'fooo-baar');
+          assert.propertyVal(componentData.value.vif, 'domain', nbeView.domain);
+          assert.propertyVal(componentData.value.vif, 'datasetUid', nbeView.id);
         });
 
         it('has an enabled insert button', function() {

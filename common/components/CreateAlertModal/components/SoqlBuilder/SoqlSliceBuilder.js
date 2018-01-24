@@ -15,9 +15,68 @@ import {
   STRING_COLUMN_TYPES
 } from 'common/components/CreateAlertModal/constants';
 import { aggregateOptions } from './helpers';
+import DatasetColumnValueTypeahead from '../DatasetColumnValueTypeahead';
+import InputDropDown from '../InputDropDown';
+import GeocoderTypeahead from '../GeocoderTypeahead';
+import RadiusSlider from '../RadiusSlider';
 import styles from '../components.module.scss';
 
+/**
+ <description>
+ @prop slice - object represnt slice values
+ @prop sliceIndex - slice index number
+ @prop datasetColumns - dataset column values
+ @prop haveNbeView - boolean value to represnt dataset has NBE view
+ @prop removeSliceEntry - trigger when slice delete button clciked
+ @prop onSliceValueChange - trigger when slice values change
+*/
 
+/**
+ Used in conjuction with SoqlBuilder. Shows form field(one row of SoqlBuilder) for creating
+ one slice of a soql query. Different fields are as below
+ - Logical operator: AND|OR
+ - Statement: Group by
+ - Count(*): count in each group or in the entire dataset.
+ - Column: Columns in the dataset.
+ - Aggregate: SUM|AVG|MIN|MAX|MEDIAN
+ - Operator: +|-|>|<|<=|>=|NEAR(location)|WIHTIN(date)|NOT WITHIN(date)
+ - Value: DateRangePicker|GeoCodeTypeahead|ColumnValueTypeahead|SimpleTextBox
+
+ The second dropdown lists groupBy|count(*) and columns. Based on which option is selected,
+ the remaining applicable form fields show up.
+
+ On selecting GroupBy  : It shows only one more form field for selecting the column.
+ On selecting Count(*) : It shows form fields: 'operator' and 'value'
+ On selecting Column   :
+ - It shows 'aggregate/operator' 'value'
+ - It shows 'aggregate' 'operator' 'value'
+
+ For Value selection:
+ - DateRangePicker   : is shown when the selected column is of type date or simillar.
+ - GeocoderTypeahead : is shown when the selected column is of type location or point.
+ - DatasetColumnValueTypeahead   : is shown when the sected column is text or simillar.
+
+ Sample Soql slices:
+ [
+   {column: 'rowcount', operator: '>', 'value': 10},
+   {column: 'number', operator: '>', value: '10', logical_operator: 'and'},
+   {column: 'number', aggregation: 'sum', operator: '>', start_date: '1/29/2017'},
+   {column: 'text', '=', value: 'abc', logical_operator: 'no'},
+   {column: 'loaction', 'with in', location: 'abc' lat: '10.344', lat: '23.2323', radius: 5},
+   {column: 'group', operator: 'department'},
+ ]
+
+ -------------------------------------
+ Sample rendering of the above slices:
+ -------------------------------------
+ | Logical Operator | StatementOrCountOrColumn | Column    | Aggregate | Operator/FunctionalOperator | Value | location | lat | lng | start_date | end_date|
+ |                  |   rowcount               |           |           |          >                  | 10    |          |     |     |            |         |
+ |   and            |    numberc               |           |   sum     |          >                  |  20   |          |     |     |            |         |
+ |    or            |    text                  |           |           |          =                  | abc   |          |     |     |            |         |
+ |   and            |    location              |           |           |         near                |       |    USA   |10.33|43.23|            |         |
+ |   and            |    group                 | deartment |           |                             |       |
+ |   and            |    date                  |           |           |        with in              |       |          |     |      |24/3/2016  |20/9/2017|
+*/
 class SoqlSliceBuilder extends Component {
   state = {
     selectedDatasetColumn: {},
@@ -51,7 +110,10 @@ class SoqlSliceBuilder extends Component {
     onSliceValueChange(newSlice, sliceIndex);
   };
 
-
+  onDatePickerChange = (dateRange) => {
+    this.onSliceParamChange('start_date', dateRange.start);
+    this.onSliceParamChange('end_date', dateRange.end);
+  };
 
   onAggregateSelect = (option) => {
     const { slice } = this.props;
@@ -65,7 +127,13 @@ class SoqlSliceBuilder extends Component {
     } else {
       this.onSliceParamChange('aggregation', null);
       this.onSliceParamChange('operator', option.value);
-
+      if (_.includes(DATE_COLUMN_TYPES, columnType)) {
+        // added default value for slice date
+        let startDate = (slice.start_date || moment().format('YYYY-MM-DD'));
+        let endDate = (slice.end_date || moment().format('YYYY-MM-DD'));
+        this.onSliceParamChange('start_date', startDate);
+        this.onSliceParamChange('end_date', endDate);
+      }
     }
 
   };
@@ -89,6 +157,19 @@ class SoqlSliceBuilder extends Component {
     }
   };
 
+  onLocationValueChange = (geocodeResult) => {
+    let { slice } = this.props;
+    let coordinates = _.get(geocodeResult, 'geometry.coordinates', []);
+
+    // Todo: called multiple times. Need to fix this.
+    // location columns lat, lng values
+    this.onSliceParamChange('lng', coordinates[0]);
+    this.onSliceParamChange('lat', coordinates[1]);
+    this.onSliceParamChange('location', _.get(geocodeResult, 'value'));
+
+    // adding default value for radius slider
+    this.onSliceParamChange('radius', _.get(slice, 'radius', 1));
+  };
 
   getSelectedOption = (props) => {
     const { slice, datasetColumns } = props;
@@ -127,8 +208,8 @@ class SoqlSliceBuilder extends Component {
 
   renderOtherValueInput() {
     const { slice } = this.props;
-          const { selectedDatasetColumn } = this.state;
-          const columnType = _.get(selectedDatasetColumn, 'column_type');
+    const { selectedDatasetColumn } = this.state;
+    const columnType = _.get(selectedDatasetColumn, 'column_type');
     const showAggregationInput = _.includes(AGGREGATION_TYPES, slice.aggregation);
     const placeHolder = I18n.t('placeholder.value', { scope: this.translationScope });
     let showValueInput = (showAggregationInput && !_.isEmpty(slice.function_operator)) ||
@@ -149,7 +230,34 @@ class SoqlSliceBuilder extends Component {
   }
 
   renderDateValueInput() {
-    return (<div>TODO: Date Picker</div>)
+    const { slice } = this.props;
+    const { selectedDatasetColumn } = this.state;
+    const columnType = _.get(selectedDatasetColumn, 'column_type');
+    let startDate = (slice.start_date || moment().format('YYYY-MM-DD'));
+    let endDate = (slice.end_date || moment().format('YYYY-MM-DD'));
+    let dateFieldSelected = _.includes(DATE_COLUMN_TYPES, columnType);
+    let dateRangeOptions = {
+      value: { start: startDate, end: endDate },
+      onChange: this.onDatePickerChange,
+      datePickerOverrides: {
+        popperPlacement: 'left-start',
+        popperModifiers: {
+          preventOverflow: {
+            enabled: true,
+            escapeWithReference: false,
+            boundariesElement: 'viewport'
+          }
+        }
+      }
+    };
+
+    if (dateFieldSelected && !_.isEmpty(slice.operator)) {
+      return (
+        <div className="range-filter-container date-range" styleName="field-selector">
+          <DateRangePicker {...dateRangeOptions} />
+        </div>
+      );
+    }
   }
 
   renderAggregateTypeField() {
@@ -238,7 +346,38 @@ class SoqlSliceBuilder extends Component {
   }
 
   renderLocationValueInput() {
-    return (<div> TODO: Location Fields/ Slider </div>)
+    const { slice, mapboxAccessToken } = this.props;
+    const { selectedDatasetColumn } = this.state;
+    const columnType = _.get(selectedDatasetColumn, 'column_type');
+    let radiusInputField;
+    let geocoderInputField;
+
+    if (!_.includes(LOCATION_COLUMN_TYPES, columnType)) {
+      return;
+    }
+
+    if (!_.isEmpty(slice.operator)) {
+      geocoderInputField = (
+        <GeocoderTypeahead
+          mapboxAccessToken={mapboxAccessToken}
+          onSelect={this.onLocationValueChange}
+          value={slice.location} />
+      );
+    }
+    if (!_.isEmpty(slice.location)) {
+      radiusInputField = (
+        <RadiusSlider
+          value={Number(slice.radius || 5)}
+          onValueChange={(value) => this.onSliceParamChange('radius', value)} />
+      );
+    }
+
+    return (
+      <div styleName="field-selector">
+        {geocoderInputField}
+        {radiusInputField}
+      </div>
+    );
   }
 
   renderTextValueInput() {
@@ -248,12 +387,12 @@ class SoqlSliceBuilder extends Component {
     if (!_.isEmpty(slice.operator)) {
       return (
         <div styleName="field-selector" className="column-value-field">
-          <input
-            styleName="value-input"
-            type="text"
-            placeholder={placeHolder}
-            value={slice.value}
-            onChange={(event) => this.onSliceParamChange('value', event.target.value)}
+          <DatasetColumnValueTypeahead
+            column={selectedDatasetColumn.value}
+            haveNbeView={haveNbeView}
+            value={slice.value || ''}
+            viewId={viewId}
+            onSelect={(option) => { this.onSliceParamChange('value', option.value); }} />
         </div>
       );
     }

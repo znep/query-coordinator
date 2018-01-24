@@ -17,7 +17,12 @@ const formatColumnData = (response) => {
   });
 };
 
-
+// Converts soql response fetching top x columns into picklist options format.
+const formatColumnValues = (data, column) => {
+  return data.map((datum) => {
+    return { title: datum[column], value: datum[column] };
+  });
+};
 
 // Converts mapbox geocode response to picklist options format.
 // Mapbox Geocode Sample Response:
@@ -64,7 +69,20 @@ export const datasetApi = (() => {
       }).
       then((response) => formatColumnData(response));
     },
+    // Get top x values in a column. Used against obe datasets, which do not
+    // support 'like' operator, so can not do a complete typeahead option.
+    getTopValuesByColumn: (params) => {
+      const column = params.column;
+      const limit = (_.get(params, 'limit', 20));
+      const conditionText = `$select=${column}&$group=${column}&$limit=${limit}`;
 
+      return fetchJson(`/resource/${params.viewId}.json?${conditionText}`, {
+        method: 'GET',
+        headers: defaultHeaders,
+        credentials: 'same-origin'
+      }).
+        then((response) => formatColumnValues(response, column));
+    },
     // Get migration information for a given view.
     getMigration: (params) => {
       return fetchJson(`/api/migrations/${params.viewId}.json`, {
@@ -77,7 +95,36 @@ export const datasetApi = (() => {
         return {}; // returns empty hash if migration fails
       });
     },
+    // Get top x values in the params.column in params.viewId matching
+    // the given params.search using like operator.
+    // Will work only against NBE datasets.
+    // Params:
+    //    column      : column in the dataset to search for matching values
+    //    searchText  : search term
+    //    viewId      : view id to search for matching values.
+    getMatchingColumnValues: (params) => {
+      const column = params.column;
+      const searchText = encodeURIComponent((params.searchText || '').toUpperCase());
+      const conditionText = `$select=${column}&$group=${column}&$$read_from_nbe=true` +
+        `&$where=UPPER(${column}) like '%25${searchText}%25'`;
 
+      return fetchJson(`/resource/${params.viewId}.json?${conditionText}`, {
+        method: 'GET',
+        headers: defaultHeaders,
+        credentials: 'same-origin'
+      }).
+        then((response) => formatColumnValues(response, column));
+    },
+    // Given a search string, it geocodes using mapbox API and returns back matching
+    // results in pick list options format.
+    geoSearch : (searchString, accessToken) => {
+      const geoQueryUrl = 'https://a.tiles.mapbox.com/geocoding/v5/mapbox.places/';
+      const queryEndpoint = geoQueryUrl + encodeURIComponent(searchString) + '.json' +
+        `?access_token=${accessToken}`;
+
+      return fetchJson(queryEndpoint, { method: 'GET' }).
+        then((response) => formatMapboxGeocodeResponse(response));
+    }
   };
 })();
 

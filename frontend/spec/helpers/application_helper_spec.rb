@@ -42,6 +42,44 @@ window.socrata.featureFlags =
     end
   end
 
+  describe '#approvals_settings' do
+    context 'when fontana approvals are disabled' do
+      before do
+        stub_feature_flags_with(use_fontana_approvals: false)
+        allow(Fontana::Approval::Workflow).to receive(:find).and_return(nil)
+      end
+
+      it 'should return an empty hash' do
+        result = helper.approvals_settings
+        expect(result).to eq({})
+      end
+    end
+
+    context 'when fontana approvals are enabled' do
+      let(:mock_workflow) do
+        OpenStruct.new(:steps => [
+          OpenStruct.new(
+            :official_task => OpenStruct.new(:manual? => false),
+            :community_task => OpenStruct.new(:manual? => true)
+          )
+        ])
+      end
+
+      before do
+        stub_feature_flags_with(use_fontana_approvals: true)
+        allow(Fontana::Approval::Workflow).to receive(:find).and_return(mock_workflow)
+      end
+
+      it 'should return a hash of the approvals settings' do
+        result = helper.approvals_settings
+        expect(result).to eq({
+          :official => 'automatic',
+          :community => 'manual'
+        })
+      end
+    end
+  end
+
   describe '#suppress_govstat?', :verify_stubs => false do
 
     let(:current_user) { double('current_user') }

@@ -75,7 +75,7 @@ export const fetchJson = (apiPath, options) =>
   then(checkStatus).
   then(response => response.json());
 
-export const fetchJsonWithDefaulHeaders = (apiPath, options) =>
+export const fetchJsonWithDefaultHeaders = (apiPath, options) =>
   fetchJson(
     apiPath,
     {

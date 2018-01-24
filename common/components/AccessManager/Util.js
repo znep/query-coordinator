@@ -2,6 +2,7 @@ import isEmail from 'validator/lib/isEmail';
 import { fetchJsonWithDefaulHeaders } from 'common/http';
 
 import { DOMAIN_RIGHTS, MODES } from './Constants';
+import { fetchJsonWithDefaultHeaders } from '../../http';
 
 /**
  * Returns true is the "userList" already contains a user that has the
@@ -150,7 +151,7 @@ export const confirmButtonDisabledByDefault = (mode) => mode === MODES.CHANGE_OW
  * @param {string} url URL to fetch
  * @param {object} options Options to pass to fetch (Optional)
  */
-export const fetchJsonWithDefaults = (url, options = {}) => fetchJsonWithDefaulHeaders(
+export const fetchJsonWithDefaults = (url, options = {}) => fetchJsonWithDefaultHeaders(
   url,
   {
     credentials: 'same-origin',

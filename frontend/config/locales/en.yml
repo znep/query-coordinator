@@ -2210,6 +2210,7 @@ en:
       preview: Preview
       process_data: Process Data
       publish_confirmation:
+        approval_note: Publishing to the public requires approval.
         body: It will be accessible to anyone through your data catalog.
         button: Done
         private: Private

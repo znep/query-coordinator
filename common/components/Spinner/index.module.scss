@@ -1,0 +1,14 @@
+@import '~bourbon/app/assets/stylesheets/_bourbon.scss';
+@import '~common/styleguide/variables/_colors.scss';
+@import '~common/styleguide/partials/_loader.scss';
+
+
+$spinner-width: 64px;
+.spinner {
+  @extend .spinner-default;
+  @extend .spinner-large;
+
+  left: calc(50% - (#{$spinner-width} / 2));
+  position: absolute;
+  top: calc(50% - (#{$spinner-width} / 2));
+}

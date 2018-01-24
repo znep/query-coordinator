@@ -447,6 +447,31 @@ en:
           threshold_title: Threshold Alert
           threshold_description: Triggers when a threshold is reached in the dataset
           trigger_page_description: Select how you want to be alerted.
+          aggregation:
+            and: AND
+            avg: Avg
+            is: IS
+            is_not: IS NOT
+            is_within: IS WITHIN
+            min: Min
+            max: Max
+            not_within: NOT WITHIN
+            near: NEAR
+            or: OR
+            sum: Sum
+          breadcrumb:
+            alert_type: Choose Alert Type
+            parameters: Set Parameters
+            trigger: Select Trigger Method
+          column:
+            group_by: Group By
+            row_count: Row Count
+          placeholder:
+            aggregation: Select
+            column: Select Column
+            location: Select Location
+            operator: Select Condition
+            value: Select Value
     pager:
       of: of
       invalid_page_error: Invalid page number. Please enter a value between {first} and {last}.

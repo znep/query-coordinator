@@ -31,6 +31,8 @@ html {
   @import 'frontend/public/javascripts/datasetManagementUI/components/UploadNotification/UploadNotification';
   @import 'frontend/public/javascripts/datasetManagementUI/components/TablePreview/_TablePreview';
   @import 'frontend/public/javascripts/datasetManagementUI/components/HomePaneSidebar/HomePaneSidebar';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/SourceSidebar/SourceSidebar';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/ManageMetadataSidebar/ManageMetadataSidebar';
   @import 'frontend/public/javascripts/datasetManagementUI/components/URLSource/URLSource';
   @import 'frontend/public/javascripts/datasetManagementUI/components/ColumnHeader/ColumnHeader';
   @import 'frontend/public/javascripts/datasetManagementUI/pages/ShowOutputSchema/_ShowOutputSchema';
@@ -41,6 +43,8 @@ html {
   @import 'frontend/public/javascripts/datasetManagementUI/components/Attachment/Attachment.scss';
   @import 'frontend/public/javascripts/datasetManagementUI/components/AttachmentsInput/AttachmentsInput.scss';
   @import 'frontend/public/javascripts/datasetManagementUI/components/DatasetFieldset/DatasetFieldset.scss';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/ErrorFlyout/ErrorFlyout.scss';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/MapFlyout/MapFlyout.scss';
   @import 'frontend/public/javascripts/datasetManagementUI/components/ColumnForm/ColumnForm.scss';
   @import 'frontend/public/javascripts/datasetManagementUI/components/FieldSet/FieldSet.scss';
   @import 'frontend/public/javascripts/datasetManagementUI/components/WithFlash/WithFlash.scss';

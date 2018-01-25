@@ -6,7 +6,6 @@ import moment from 'moment';
 import { Link, IndexLink } from 'react-router';
 import * as Links from 'datasetManagementUI/links/links';
 import * as Selectors from 'datasetManagementUI/selectors';
-import styles from './SourceSidebar.module.scss';
 
 function titleOf(source) {
   if (!source || !source.source_type) {
@@ -46,9 +45,9 @@ export const MultiSourceItem = ({ entities, source, params }) => {
 
   return (
     <div>
-        <Link to={linkTarget} className={source.isCurrent ? styles.bold : ''}>
+        <Link to={linkTarget} className={source.isCurrent ? 'bold' : ''}>
           {rows}{' '}
-          <div className={styles.timestamp}>
+          <div className="timestamp">
             {moment.utc(source.finished_at).fromNow()}
           </div>
         </Link>
@@ -105,11 +104,11 @@ export const SingleSourceItem = ({ entities, source, params }) => {
 
   return (
     <li>
-      <Link to={linkTarget} className={source.isCurrent ? styles.bold : ''}>
+      <Link to={linkTarget} className={source.isCurrent ? 'bold' : ''}>
         {titleOf(source)}
       </Link>
       <p>{descriptionOf(source)}</p>
-      <div className={styles.timestamp}>{moment.utc(source.finished_at).fromNow()}</div>
+      <div className="timestamp">{moment.utc(source.finished_at).fromNow()}</div>
     </li>
   );
 };
@@ -125,7 +124,7 @@ export const SourceList = ({ entities, params, sources }) => {
     return _.sortBy(group, (source) => -source.id);
   });
   return (
-    <ul className={styles.sourceList}>
+    <ul className="source-list">
       <h2>{I18n.show_uploads.sources}</h2>
       {groups.map((group, idx) => {
         if (group.length === 1) {
@@ -151,15 +150,15 @@ SourceList.propTypes = {
 
 const SourceSidebar = ({ entities, sources, params, hideHrefLink }) => {
   return (
-    <section className={styles.sidebar}>
-      <IndexLink to={Links.sources(params)} className={styles.tab} activeClassName={styles.selected}>
+    <section className="dsmp-sidebar source-sidebar">
+      <IndexLink to={Links.sources(params)} className="dsmp-tab" activeClassName="selected">
         {I18n.show_uploads.upload_link}
       </IndexLink>
-      <Link to={Links.urlSource(params)} className={styles.tab} activeClassName={styles.selected}>
+      <Link to={Links.urlSource(params)} className="dsmp-tab" activeClassName="selected">
         {I18n.show_uploads.url_link}
       </Link>
       {hideHrefLink || (
-        <Link to={Links.hrefSource(params)} className={styles.tab} activeClassName={styles.selected}>
+        <Link to={Links.hrefSource(params)} className="dsmp-tab" activeClassName="selected">
           {I18n.show_uploads.external_source}
         </Link>
       )}

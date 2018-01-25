@@ -60,13 +60,6 @@ describe('components/ResultCard', () => {
     sinon.assert.calledOnce(onSelectSpy);
   });
 
-  it('does not call onClose when closeOnSelect is false', () => {
-    const onCloseSpy = sinon.spy();
-    const wrapper = mount(<ResultCard {...resultCardProps({ closeOnSelect: false, onClose: onCloseSpy })} />);
-    wrapper.find('.hover-target').simulate('click');
-    sinon.assert.notCalled(onCloseSpy);
-  });
-
   it('calls onSelect with the mapped props', () => {
     const onSelectSpy = sinon.spy();
     const wrapper = mount(<ResultCard {...resultCardProps({ onSelect: onSelectSpy })} />);

@@ -378,32 +378,19 @@ ul.quick-action-menu {
   }
 }
 
-#authoring-workflow, #common-asset-selector {
+#authoring-workflow {
   line-height: 1.618; // Styleguide expects this.
+
+  .nav-tabs {
+    margin-bottom: 24.27px;
+  }
 
   // FIXME Styleguide - expected for AX controls
   button, keygen, select, textarea {
     line-height: 1.25;
   }
-}
-
-#authoring-workflow {
-  .nav-tabs {
-    margin-bottom: 24.27px;
-  }
 
   @include filter-bar-corrections;
-}
-
-#common-asset-selector {
-  .modal-footer {
-    padding: 5px;
-  }
-
-  .common-asset-selector-modal-footer-button-group {
-    align-items: center;
-    display: flex;
-  }
 }
 
 #site-chrome-admin-header {

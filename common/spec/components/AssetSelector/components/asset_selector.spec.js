@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import { shallow } from 'enzyme';
 
 import { AssetSelector } from 'common/components/AssetSelector/index';
-import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
+import { Modal, ModalHeader, ModalContent } from 'common/components/Modal';
 
 const getProps = (props = {}) => ({
   additionalTopbarComponents: [],
@@ -35,16 +35,5 @@ describe('components/AssetSelector', () => {
       assert.isFalse(wrapper.find(ModalHeader).exists());
       assert.isFalse(wrapper.find(ModalContent).exists());
     });
-
-    it('does not render modal footer when no children specified', () => {
-      const wrapper = shallow(<AssetSelector {...getProps()} />);
-      assert.isFalse(wrapper.find(ModalFooter).exists());
-    });
-
-    it('renders modal footer when children specified', () => {
-      const wrapper = shallow(<AssetSelector {...getProps({ modalFooterChildren: <div /> })} />);
-      assert.isTrue(wrapper.find(ModalFooter).exists());
-    });
-
   });
 });

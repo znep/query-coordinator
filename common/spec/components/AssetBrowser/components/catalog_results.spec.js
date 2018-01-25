@@ -5,7 +5,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 
-import { BackButton } from 'common/components/AssetBrowser/components/back_button';
 import { CatalogResults } from 'common/components/AssetBrowser/components/catalog_results';
 import ResultListTable from 'common/components/AssetBrowser/components/result_list_table';
 import * as constants from 'common/components/AssetBrowser/lib/constants.js';
@@ -105,20 +104,6 @@ describe('components/CatalogResults', () => {
       const props = catalogResultsProps({ enableAssetInventoryLink: false });
       const element = shallow(<CatalogResults {...props} />);
       assert.lengthOf(element.find('.asset-inventory-link-wrapper'), 0);
-    });
-  });
-
-  describe('back button', () => {
-    it('shows back button by default', () => {
-      const props = catalogResultsProps({ selectMode: true });
-      const element = shallow(<CatalogResults {...props} />);
-      assert.lengthOf(element.find(BackButton), 1);
-    });
-
-    it('does not show back button if requested', () => {
-      const props = catalogResultsProps({ selectMode: true, showBackButton: false });
-      const element = shallow(<CatalogResults {...props} />);
-      assert.lengthOf(element.find(BackButton), 0);
     });
   });
 });

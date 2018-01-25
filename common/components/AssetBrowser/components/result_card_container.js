@@ -10,10 +10,10 @@ import ResultCard from './result_card';
 
 export class ResultCardContainer extends Component {
   render() {
-    const { closeOnSelect, onAssetSelected, onClose, order, results, selectMode } = this.props;
+    const { onAssetSelected, onClose, order, results, selectMode } = this.props;
 
     const resultCards = ceteraUtils.mapToAssetSelectorResult(results).map((result, i) => (
-      <ResultCard key={i} {...result} closeOnSelect={closeOnSelect} onClose={onClose} onSelect={onAssetSelected} selectMode={selectMode} />
+      <ResultCard key={i} {...result} onClose={onClose} onSelect={onAssetSelected} selectMode={selectMode} />
     ));
 
     return (
@@ -26,7 +26,6 @@ export class ResultCardContainer extends Component {
 
 ResultCardContainer.propTypes = {
   changeSortOrder: PropTypes.func.isRequired,
-  closeOnSelect: PropTypes.bool,
   onAssetSelected: PropTypes.func,
   onClose: PropTypes.func.isRequired,
   order: PropTypes.object,
@@ -35,7 +34,6 @@ ResultCardContainer.propTypes = {
 };
 
 ResultCardContainer.defaultProps = {
-  closeOnSelect: true,
   onAssetSelected: _.noop,
   order: undefined
 };

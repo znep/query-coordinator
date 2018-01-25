@@ -440,13 +440,6 @@ en:
       next_page: Next page
       page: Page
       previous_page: Previous page
-    related_views:
-      load_more_error: There was a problem loading additional content.
-      title: Related Content Using this Data
-      view: View
-    result_count_label:
-      one: Result
-      other: Results
     site_chrome:
       access_manager:
         accept: OK
@@ -750,10 +743,6 @@ en:
       preview:
         disable: Disable Preview Mode
         warning: This is a PREVIEW version of your site.
-    view_widget:
-      external_content: External Content
-      view: View
-      views: Views
     visualizations:
       aggregations:
         avg: Avg

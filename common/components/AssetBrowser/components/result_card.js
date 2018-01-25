@@ -22,9 +22,7 @@ export class ResultCard extends Component {
 
   onSelect(cardProps) {
     this.props.onSelect(cardProps);
-    if (this.props.closeOnSelect) {
-      this.props.onClose();
-    }
+    this.props.onClose();
   }
 
   setHovering(hoveringState) {
@@ -34,7 +32,7 @@ export class ResultCard extends Component {
   // This is what will be returned (onSelect) when a user selects a Card.
   ceteraResultProps() {
     return _.merge(
-      _.pick(this.props, 'name', 'description', 'domain', 'id', 'updatedAt', 'viewCount'),
+      _.pick(this.props, 'name', 'description', 'id', 'updatedAt', 'viewCount'),
       {
         displayType: this.props.type,
         imageUrl: this.props.previewImageUrl,
@@ -105,10 +103,8 @@ export class ResultCard extends Component {
 
 ResultCard.propTypes = {
   categories: PropTypes.array,
-  closeOnSelect: PropTypes.bool,
   createdAt: PropTypes.string,
   description: PropTypes.string,
-  domain: PropTypes.string,
   id: PropTypes.string,
   isFederated: PropTypes.bool,
   isPublic: PropTypes.bool,
@@ -126,7 +122,6 @@ ResultCard.propTypes = {
 };
 
 ResultCard.defaultProps = {
-  closeOnSelect: true,
   id: '',
   link: '',
   name: '',

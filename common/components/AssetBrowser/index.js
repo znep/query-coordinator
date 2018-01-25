@@ -53,7 +53,7 @@ export class AssetBrowser extends Component {
 
   render() {
     return (
-      <Localization locale={_.get(window, 'serverConfig.locale', 'en')}>
+      <Localization locale={window.serverConfig.locale || 'en'}>
         <Provider store={this.store}>
           <AssetBrowserWrapper {...this.props} />
         </Provider>
@@ -64,7 +64,6 @@ export class AssetBrowser extends Component {
 
 AssetBrowser.propTypes = {
   additionalTopbarComponents: PropTypes.array,
-  closeOnSelect: PropTypes.bool,
   columns: PropTypes.array,
   enableAssetInventoryLink: PropTypes.bool,
   initialTab: PropTypes.string,
@@ -88,7 +87,6 @@ AssetBrowser.propTypes = {
 
 AssetBrowser.defaultProps = {
   additionalTopbarComponents: [],
-  closeOnSelect: true,
   enableAssetInventoryLink: true,
   onAssetSelected: _.noop,
   onClose: _.noop,

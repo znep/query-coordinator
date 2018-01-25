@@ -11,23 +11,44 @@ import {STATUS} from 'editor/stores/FileUploaderStore';
 import FileUploaderStoreMocker from '../mocks/FileUploaderStoreMocker.js';
 import I18nMocker from '../I18nMocker';
 
-const nbeView = {
+var nbeView = {
   'id' : StandardMocks.validStoryUid,
   'name' : 'nbe',
   'displayType' : 'table',
-  'domain' : 'example.com',
   'newBackend' : true,
   'viewType' : 'tabular',
   'query' : {}
 };
-const obeViewWithNoQuery = {
+var obeViewWithNoQuery = {
   'id' : StandardMocks.validStoryUid,
   'name' : 'obe plain',
   'displayType' : 'table',
-  'domain' : 'example.com',
   'newBackend' : false,
   'viewType' : 'tabular',
   'query' : {}
+};
+var obeViewWithFilter = {
+  'id' : StandardMocks.validStoryUid,
+  'name' : 'obe filtered',
+  'displayType' : 'table',
+  'newBackend' : false,
+  'viewType' : 'tabular',
+  'query' : {
+    'filterCondition' : {
+      'type' : 'operator',
+      'value' : 'EQUALS',
+      'children' : [ {
+        'columnId' : 3156549,
+        'type' : 'column'
+      }, {
+        'type' : 'literal',
+        'value' : 'bunnies'
+      } ]
+    },
+    'metadata' : {
+      'unifiedVersion' : 2
+    }
+  }
 };
 
 describe('AssetSelectorStore static functions', function() {
@@ -62,6 +83,18 @@ describe('AssetSelectorStore', function() {
   var assetSelectorStore;
   var fileUploaderStoreMock;
   var blockComponentAtIndex;
+
+  function respondToMetadataRequestWith(viewData) {
+    var viewDataUrl;
+
+    viewDataUrl = StorytellerUtils.format('/api/views/{0}.json', viewData.id);
+
+    assert.lengthOf(server.requests, 1);
+    var metadataRequest = server.requests[0];
+    assert.equal(metadataRequest.method, 'GET');
+    assert.include(metadataRequest.url, viewDataUrl);
+    server.respond([200, { 'Content-Type': 'application/json' }, JSON.stringify(viewData) ]);
+  }
 
   function bootstrap() {
     dispatcher = new Dispatcher();
@@ -497,70 +530,104 @@ describe('AssetSelectorStore', function() {
     });
 
     describe('after an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action', function() {
+      var migrationUrl;
+
+      beforeEach(function() {
+        migrationUrl = StorytellerUtils.format('/api/migrations/{0}.json', StandardMocks.validStoryUid);
+      });
+
       it('should throw if domain is not set to a string', function() {
         // nbe
         assert.throws(function() {
           dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-            viewData: _.omit(nbeView, 'domain')
+            datasetUid: StandardMocks.validStoryUid,
+            isNewBackend: true
+          });
+        });
+        assert.throws(function() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+            domain: undefined,
+            datasetUid: StandardMocks.validStoryUid,
+            isNewBackend: true
+          });
+        });
+
+        // obe
+        assert.throws(function() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+            datasetUid: StandardMocks.validStoryUid,
+            isNewBackend: false
+          });
+        });
+        assert.throws(function() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+            domain: undefined,
+            datasetUid: StandardMocks.validStoryUid,
+            isNewBackend: false
           });
         });
       });
 
+      it('should attempt to fetch the NBE datasetUid if view is not directly visualizable', function(done) {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+          domain: window.location.hostname,
+          datasetUid: StandardMocks.validStoryUid,
+          isNewBackend: false
+        });
 
-      // TODO MOVE TO AssetSelectorRenderer spec
-      // it('should attempt to fetch the NBE datasetUid if view is not directly visualizable', function(done) {
-      //   dispatcher.dispatch({
-      //     action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-      //     domain: window.location.hostname,
-      //     datasetUid: StandardMocks.validStoryUid,
-      //     isNewBackend: false
-      //   });
-      //
-      //   respondToMetadataRequestWith(obeViewWithFilter);
-      //
-      //   // Wait for promises...
-      //   setTimeout(function() {
-      //     assert.lengthOf(server.requests, 2);
-      //     var migrationsRequest = server.requests[1];
-      //     assert.include(migrationsRequest.url, migrationUrl);
-      //     done();
-      //   }, 1);
-      // });
-      //
-      // it('should not request API migrations if dataset is directly visualizable', function(done) {
-      //   dispatcher.dispatch({
-      //     action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-      //     datasetUid: StandardMocks.validStoryUid,
-      //     domain: 'example.com',
-      //     isNewBackend: true
-      //   });
-      //
-      //   respondToMetadataRequestWith(nbeView);
-      //
-      //   // Wait for promises...
-      //   setTimeout(function() {
-      //     assert.lengthOf(server.requests, 1);
-      //     assert.isFalse(_.some(server.requests, function(request) {
-      //       return request.url === migrationUrl;
-      //     }));
-      //     done();
-      //   }, 1);
-      // });
+        respondToMetadataRequestWith(obeViewWithFilter);
+
+        // Wait for promises...
+        setTimeout(function() {
+          assert.lengthOf(server.requests, 2);
+          var migrationsRequest = server.requests[1];
+          assert.include(migrationsRequest.url, migrationUrl);
+          done();
+        }, 1);
+      });
+
+      it('should not request API migrations if dataset is directly visualizable', function(done) {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+          datasetUid: StandardMocks.validStoryUid,
+          domain: 'example.com',
+          isNewBackend: true
+        });
+
+        respondToMetadataRequestWith(nbeView);
+
+        // Wait for promises...
+        setTimeout(function() {
+          assert.lengthOf(server.requests, 1);
+          assert.isFalse(_.some(server.requests, function(request) {
+            return request.url === migrationUrl;
+          }));
+          done();
+        }, 1);
+      });
 
       it('should add datasetUid to _currentComponentProperities', function(done) {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+          datasetUid: StandardMocks.validStoryUid,
+          domain: 'example.com',
+          isNewBackend: true
+        });
+
         assetSelectorStore.addChangeListener(function() {
           assert.equal(
             assetSelectorStore.getComponentValue().dataset.datasetUid,
-            nbeView.id
+            StandardMocks.validStoryUid
           );
           done();
         });
 
-        dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-          viewData: nbeView
-        });
+        respondToMetadataRequestWith(nbeView);
       });
 
       describe('when in the Authoring Workflow', function() {
@@ -574,6 +641,13 @@ describe('AssetSelectorStore', function() {
             visualizationOption: 'AUTHOR_VISUALIZATION'
           });
 
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+            datasetUid: StandardMocks.validStoryUid,
+            domain: 'example.com',
+            isNewBackend: true
+          });
+
           assetSelectorStore.addChangeListener(function() {
             assert.equal(
               assetSelectorStore.getStep(),
@@ -583,21 +657,24 @@ describe('AssetSelectorStore', function() {
             done();
           });
 
-          dispatcher.dispatch({
-            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-            viewData: nbeView
-          });
+          respondToMetadataRequestWith(nbeView);
         });
       });
     });
 
     describe('after an `ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION` action', function() {
-      beforeEach(function() {
+      beforeEach(function(done) {
+
         // Send in dataset uid so ComponentValues.value.settings exists
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-          viewData: nbeView
+          domain: window.location.hostname,
+          datasetUid: StandardMocks.validStoryUid,
+          isNewBackend: true
         });
+
+        assetSelectorStore.addChangeListener(_.once(done));
+        respondToMetadataRequestWith(nbeView);
       });
 
       it('clears the componentType and sets componentProperties to an object containing only the dataset when there is a null visualization', function() {
@@ -622,7 +699,7 @@ describe('AssetSelectorStore', function() {
           {
             dataset: {
               datasetUid: 'what-what',
-              domain: nbeView.domain
+              domain: window.location.hostname
             }
           }
         );
@@ -653,7 +730,7 @@ describe('AssetSelectorStore', function() {
             vif: payload.data,
             dataset: {
               datasetUid: 'what-what',
-              domain: nbeView.domain
+              domain: window.location.hostname
             },
             originalUid: 'orig-inal'
           }
@@ -685,7 +762,7 @@ describe('AssetSelectorStore', function() {
             vif: payload.data,
             dataset: {
               datasetUid: 'what-what',
-              domain: nbeView.domain
+              domain: window.location.hostname
             },
             originalUid: undefined
           }
@@ -844,7 +921,7 @@ describe('AssetSelectorStore', function() {
             visualization: payload.data,
             dataset: {
               datasetUid: 'what-what',
-              domain: nbeView.domain
+              domain: window.location.hostname
             },
             originalUid: 'orig-inal'
           }

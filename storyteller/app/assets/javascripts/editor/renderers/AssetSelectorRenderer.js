@@ -4,9 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactCrop from 'react-image-crop';
 import AuthoringWorkflow from 'common/authoring_workflow';
-import AssetSelector from 'common/components/AssetSelector';
 import { FeatureFlags } from 'common/feature_flags';
-import { MetadataProvider } from 'common/visualizations/dataProviders';
 
 import '../components/Modal';
 import I18n from '../I18n';
@@ -259,6 +257,18 @@ export default function AssetSelectorRenderer(options) {
     );
 
     _container.on(
+      'viewSelected',
+      function(event, datasetObj) {
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+          domain: datasetObj.domainCName || window.location.hostname,
+          datasetUid: datasetObj.id,
+          isNewBackend: datasetObj.newBackend
+        });
+      }
+    );
+
+    _container.on(
       'mapOrChartSelected',
       function(event, mapOrChartObj) {
         dispatcher.dispatch({
@@ -423,7 +433,7 @@ export default function AssetSelectorRenderer(options) {
 
         case WIZARD_STEP.SELECT_DATASET_FOR_VISUALIZATION:
           selectorTitle = I18n.t('editor.asset_selector.visualization.choose_dataset_heading');
-          selectorContent = _renderChooseDatasetForVisualizationTemplate();
+          selectorContent = _renderChooseDatasetTemplate();
           selectorWideDisplay = true;
           break;
 
@@ -2197,151 +2207,58 @@ export default function AssetSelectorRenderer(options) {
     }
   }
 
-  function _renderAssetSelectorTemplate(assetTypes) {
-    const element = document.getElementById('common-asset-selector');
+  // Renders a view chooser (/browse/choose_dataset)
+  // with the given params. When a view is picked,
+  // a 'viewSelected' browser event is triggered with
+  //
+  function _renderViewChooserTemplate(paramString) {
+    const backButton = _renderModalBackButton(WIZARD_STEP.SELECT_VISUALIZATION_OPTION);
 
-    function closeModal() {
-      _.defer(() => ReactDOM.unmountComponentAtNode(element));
-    }
-
-    function handleClose() {
-      dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_CLOSE
-      });
-
-      closeModal();
-    }
-
-    function handleBackButtonClick() {
-      dispatcher.dispatch({
-        action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
-        step: WIZARD_STEP.SELECT_VISUALIZATION_OPTION
-      });
-
-      closeModal();
-    }
-
-    function handleAssetSelected(assetData) {
-      const datasetConfig = {
-        domain: assetData.domain,
-        datasetUid: assetData.id
-      };
-
-      // Check for the NBE version of the dataset we're choosing
-      const metadataProvider = new MetadataProvider(datasetConfig);
-      metadataProvider.getDatasetMetadata().
-        then((datasetView) => {
-          if (_.get(datasetView, 'newBackend', false)) {
-            return datasetView;
-          } else {
-            return metadataProvider.getDatasetMigrationMetadata().
-              then((migrationMetadata) => {
-                // get the nbe dataset view
-                return new MetadataProvider({
-                  domain: datasetConfig.domain,
-                  datasetUid: migrationMetadata.nbeId
-                }).getDatasetMetadata();
-              });
-          }
-        }).
-        then((nbeViewData) => {
-          // EN-7322 - No response on choosing some datasets
-          //
-          // Do not assume that we have view data. If the request for
-          // /api/migrations/four-four.json returned 404 it means that there
-          // is no corresponding NBE version of this dataset.
-          if (_.isPlainObject(nbeViewData)) {
-            // We should be able to handle all NBE datasets.
-            assert(
-              _.get(nbeViewData, 'newBackend'),
-              'All versions of this dataset deemed unfit for visualization!'
-            );
-
-            // Retcon the domain into the view data.
-            // We'd have to pass it around like 5 methods otherwise. (still true?)
-            nbeViewData.domain = datasetConfig.domain;
-
-            // This dataset view is fit for visualization!
-            dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-              viewData: nbeViewData
-            });
-
-            closeModal();
-          } else {
-            // No migration. Give up.
-            return Promise.reject(null);
-          }
-        }).
-        catch((error) => {
-          // EN-7322 - No response on choosing some datasets
-          //
-          // If the user attempts to add a chart using an OBE dataset that has
-          // no corresponding migrated NBE dataset, this promise chain is
-          // expected to fail. As such, we probably don't want to notify
-          // Airbrake.
-          //
-          // TODO: Consider consolidating the user messaging for different
-          // expected error cases here and not in their upstream functions.
-          if (!_.isNull(error)) {
-            alert(I18n.t('editor.asset_selector.visualization.choose_dataset_unsupported_error')); // eslint-disable-line no-alert
-
-            if (window.console && console.error) {
-              console.error('Error selecting dataset: ', error);
-            }
-
-            // TODO do we want to skip airbraking for this, mixpanel/pendo instead?
-            exceptionNotifier.notify(error);
-          }
-        });
-    }
-
-    const modalFooterChildren = (
-      <div className="common-asset-selector-modal-footer-button-group">
-        <div className="authoring-footer-buttons">
-          <button className="authoring-back-button" onClick={handleBackButtonClick}>
-            <span className="icon-arrow-left" />
-            {I18n.t('editor.asset_selector.back_button_text')}
-          </button>
-        </div>
-        <div className="authoring-actions">
-          <button className="btn btn-sm btn-default cancel" onClick={handleClose}>{I18n.t('shared.visualizations.modal.close')}</button>
-          <button className="btn btn-sm btn-primary done" disabled>{I18n.t('shared.visualizations.modal.insert')}</button>
-        </div>
-      </div>
+    const viewChooserIframe = $(
+      '<iframe>',
+      {
+        'class': 'asset-selector-dataset-chooser-iframe asset-selector-full-width-iframe',
+        'src': _viewChooserUrl(paramString)
+      }
     );
 
-    // TODO there's a problem when you go from table back to create new viz... the ax no longer works
+    const loadingButton = $('<button>', {
+      'class': 'btn btn-transparent btn-busy visualization-busy',
+      'disabled': true
+    }).append($('<span>'));
 
-    const assetSelectorProps = {
-      baseFilters: {
-        assetTypes,
-        published: true
-      },
-      closeOnSelect: false,
-      modalFooterChildren,
-      onAssetSelected: handleAssetSelected,
-      onClose: handleClose,
-      resultsPerPage: 6,
-      title: I18n.t('editor.asset_selector.visualization.choose_dataset_heading'),
-      showBackButton: false
+    const buttonGroup = $('<div>', {
+      'class': 'modal-button-group r-to-l'
+    }).append([ backButton ]);
+
+    viewChooserIframe[0].onDatasetSelected = function(datasetObj) {
+      $(this).trigger('viewSelected', datasetObj);
     };
 
-    return ReactDOM.render(<AssetSelector {...assetSelectorProps} />, element);
+    viewChooserIframe.one('load', function() {
+      loadingButton.addClass('hidden');
+    });
+
+    return [ loadingButton, viewChooserIframe, buttonGroup ];
+
   }
 
-  function _renderChooseDatasetForVisualizationTemplate() {
-    // We currently only support plain-old datasets for visualizations.
-    return _renderAssetSelectorTemplate('datasets');
+  function _renderChooseDatasetTemplate() {
+    if (FeatureFlags.value('enable_filtered_tables_in_ax')) {
+      return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=tables');
+    } else {
+      return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=datasets');
+    }
   }
 
   function _renderChooseTableTemplate() {
-    const assetTypes =  ['datasets'];
-    if (FeatureFlags.value('enable_filtered_tables_in_ax')) {
-      assetTypes.push('filters');
-    }
-
-    return _renderAssetSelectorTemplate(assetTypes.join(','));
+    // Due to bugs in frontend we cannot limitTo datasets plus filtered views.
+    // We can limitTo one or the other, but not both. Without refactoring
+    // the frontend dataset picker, our only recourse is to limitTo tables, which
+    // includes datasets, filtered views, and grouped views. We don't support
+    // grouped views, but for now we're OK just notifying the user if they
+    // select a grouped view.
+    return _renderViewChooserTemplate('suppressed_facets[]=type&limitTo=tables');
   }
 
   function _renderChooseMapOrChartTemplate() {
@@ -2619,6 +2536,16 @@ export default function AssetSelectorRenderer(options) {
   /**
    * Small helper functions
    */
+
+  function _viewChooserUrl(paramString) {
+    return encodeURI(
+      StorytellerUtils.format(
+        '{0}/browse/select_dataset?{1}',
+        window.location.protocol + '//' + window.location.hostname,
+        paramString
+      )
+    );
+  }
 
   function _mapOrChartChooserUrl() {
     // remove suppressed_facets param upon frontend release to show 'view types' menu

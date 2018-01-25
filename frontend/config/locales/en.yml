@@ -3420,6 +3420,8 @@ en:
         name: Publisher
       publisher_stories:
         name: Publisher (Perspectives)
+      site_member:
+        name: Site Member
       viewer:
         name: Viewer
     right_categories:

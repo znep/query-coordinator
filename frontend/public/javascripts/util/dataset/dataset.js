@@ -128,7 +128,7 @@
         }
       }
 
-      this.bucketSize = parseInt(_.get(window, 'socrata.featureFlags.nbe_bucket_size', 1000), 10);
+      this.bucketSize = parseInt(_.get(window, 'socrata.featureFlags.nbe_bucket_size', 1000), 10) || 1000;
     },
 
     usingBuckets: function() {

@@ -285,6 +285,7 @@ en:
           change_audience: Change Audience
           delete_dataset: Delete this Dataset
           delete_dataset_confirm: Are you sure you want to delete this dataset?
+          delete_success: '%{name} has been deleted.'
           discard_draft: Delete this Draft
           discard_draft_confirm: Are you sure you want to delete this draft?
           draft:
@@ -298,6 +299,7 @@ en:
           transfer_ownership: Transfer Ownership
           view_published: View published version
           withdraw_approval_request: Withdraw Approval Request
+          withdraw_approval_request_success: The request to publish %{name} to the public has been withdrawn.
         publication_state:
           draft: Draft
           pending: Pending

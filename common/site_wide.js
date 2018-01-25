@@ -6,6 +6,7 @@ import StatefulAutocomplete from 'common/autocomplete/components/StatefulAutocom
 import AccessManagerModalToggle from 'common/components/AccessManagerModalToggle';
 import 'common/notifications/main';
 import AssetActionBar from 'common/components/AssetActionBar';
+import { Toastmaster } from 'common/components/ToastNotification/cross_session_support';
 import { sift } from 'common/js_utils';
 
 /** ***************************************************************************************************/
@@ -101,5 +102,13 @@ if (assetActionBarNode) {
   ReactDOM.render(
     <AssetActionBar />,
     assetActionBarNode
+  );
+}
+
+const toastmasterNode = document.querySelector('#toastmaster');
+if (toastmasterNode) {
+  ReactDOM.render(
+    <Toastmaster />,
+    toastmasterNode
   );
 }

@@ -12,6 +12,7 @@ import I18n from 'common/i18n';
 import { SocrataUid } from '../../lib/socrata_proptypes';
 import EditButton from '../edit_button';
 import confirmation from '../confirmation_dialog/index';
+import { serializeToast } from 'common/components/ToastNotification/cross_session_support';
 
 const fetchOptions = {
   credentials: 'same-origin',
@@ -31,8 +32,9 @@ const makePrivateByUid = (uid) => {
 class PublicationAction extends Component {
   static propTypes = {
     allowedTo: PropTypes.object.isRequired,
-    currentViewUid: SocrataUid.isRequired,
+    currentViewName: PropTypes.string,
     currentViewType: PropTypes.string,
+    currentViewUid: SocrataUid.isRequired,
     publicationState: PropTypes.oneOf(['draft', 'pending', 'published']).isRequired,
     publishedViewUid: SocrataUid
   };
@@ -65,9 +67,17 @@ class PublicationAction extends Component {
     return this.props.allowedTo.manage && _.some(this.moreActionsAllowed());
   }
 
+  toastLater(toastType, translationKey, translationOptions) {
+    serializeToast({
+      type: toastType,
+      content: I18n.t(translationKey,
+        _.assign({ scope: PublicationAction.i18nScope }, translationOptions))
+    });
+  }
+
   handleMoreActions = (option) => {
     const { value } = option;
-    const { currentViewUid, publishedViewUid } = this.props;
+    const { currentViewName, currentViewUid, publishedViewUid } = this.props;
     const redirectAfterDeletion = () => {
       window.location.assign('/profile'); // Eventually /admin/assets
     };
@@ -96,6 +106,7 @@ class PublicationAction extends Component {
             }).
           then((confirmed) => {
             if (confirmed) {
+              this.toastLater('success', 'delete_success', { name: currentViewName });
               deleteViewByUid(currentViewUid).
                 then(redirectAfterDeletion);
             }
@@ -109,12 +120,14 @@ class PublicationAction extends Component {
             }).
           then((confirmed) => {
             if (confirmed) {
+              this.toastLater('success', 'delete_success', { name: currentViewName });
               deleteViewByUid(currentViewUid).
                 then(redirectAfterDeletion);
             }
           });
         break;
       case 'withdraw-approval-request':
+        this.toastLater('success', 'withdraw_approval_request_success', { name: currentViewName });
         makePrivateByUid(currentViewUid).
           then(() => { window.location.reload(); });
         break;

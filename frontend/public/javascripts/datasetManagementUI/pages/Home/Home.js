@@ -48,7 +48,7 @@ class Home extends Component {
 
       // The only time we show the A2B on DSMUI is if both flags are true.
       // If either flag is false, then we show the DSMUI header.
-      const showHeaderBar = !(FeatureFlags.value('enable_asset_action_bar') &&
+      const showHeaderBar = !(FeatureFlags.value('enable_new_dataset_sharing_ux') &&
         FeatureFlags.value('enable_asset_action_bar_on_dsmui'));
 
       return (

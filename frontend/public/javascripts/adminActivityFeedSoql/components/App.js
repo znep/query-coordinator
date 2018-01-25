@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import { spring } from 'react-motion';
 
 import LocalizedText from 'common/i18n/components/LocalizedText';
 import FeedbackPanel from '../../common/components/FeedbackPanel';
@@ -12,22 +13,47 @@ import Tabs from './Tabs';
 import Topbar from './Topbar';
 import FilterPanel from './FilterPanel';
 import RestoreModal from './RestoreModal';
+import ToastNotification, { types } from 'common/components/ToastNotification';
 
 export class App extends Component {
+  showToast(message, type) {
+    const initialRightValue = -16;
+    const finalRightValue = 16;
+    const initialOpacity = 0;
+    const finalOpacity = 1;
+
+    const customTransition = {
+      willEnter: () => ({ opacity: initialOpacity, right: initialRightValue }),
+      willLeave: () => ({ opacity: spring(initialOpacity), right: spring(initialRightValue) }),
+      style: { opacity: spring(finalOpacity), right: spring(finalRightValue) }
+    };
+
+    const toastProps = {
+      children: message,
+      customTransition,
+      showNotification: true,
+      type
+    };
+
+    return (
+      <ToastNotification {...toastProps} />
+    );
+  }
+
   renderError() {
     const { apiError } = this.props;
 
-    if (apiError) {
-      if (_.isString(apiError) || _.isObject(apiError)) {
-        console.error('activityLog:renderError: ', apiError);
-      }
-
-      return (
-        <div className="alert error">
-          <LocalizedText localeKey="screens.admin.activity_feed.api_error" />
-        </div>
-      );
+    if (!apiError) {
+      return null;
     }
+
+    if (_.isString(apiError) || _.isObject(apiError)) {
+      console.error('activityLog:renderError: ', apiError);
+    }
+
+    const errorMessage = <LocalizedText localeKey="screens.admin.activity_feed.api_error" />;
+
+    return this.showToast(errorMessage, types.ERROR);
   }
 
   renderSuccess() {
@@ -37,13 +63,7 @@ export class App extends Component {
       return null;
     }
 
-    return (
-      <div className="alert success">
-        <span>
-          {successMessage}
-        </span>
-      </div>
-    );
+    return this.showToast(successMessage, types.SUCCESS);
   }
 
   render() {
@@ -57,14 +77,16 @@ export class App extends Component {
 
     return (
       <div>
+        <div className="toast-notifications">
+          {this.renderError()}
+          {this.renderSuccess()}
+        </div>
         <div className={headerClassnames}>
           <Tabs />
         </div>
         <div className="results-and-filters">
           <div className={resultsClassnames}>
             <Topbar />
-            {this.renderError()}
-            {this.renderSuccess()}
             <Table />
             <Footer />
           </div>

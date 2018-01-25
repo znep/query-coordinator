@@ -7,7 +7,8 @@ const GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
 const TileserverDataProvider = require('./dataProviders/TileserverDataProvider');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
-const MetadataProvider = require('./dataProviders/MetadataProvider');
+import MetadataProvider, { getDisplayableColumns }
+  from 'common/visualizations/dataProviders/MetadataProvider';
 const VifHelpers = require('./helpers/VifHelpers');
 const DataTypeFormatter = require('./views/DataTypeFormatter');
 const I18n = require('common/i18n').default;
@@ -257,7 +258,7 @@ $.fn.socrataSvgFeatureMap = function(originalVif, options) {
         whereClause ? ' AND ' + encodeURIComponent(whereClause) : ''
       );
 
-    var displayableColumns = metadataProvider.getDisplayableColumns(datasetMetadata);
+    var displayableColumns = getDisplayableColumns(datasetMetadata);
 
     function generateWithinBoxClause(columnName, bounds) {
 

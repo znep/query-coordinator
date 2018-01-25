@@ -6,7 +6,7 @@
 // worded to make sense to a user.
 const _ = require('lodash');
 const I18n = require('common/i18n').default;
-const MetadataProvider = require('./MetadataProvider');
+import { MetadataProvider } from 'common/visualizations/dataProviders';
 
 // Obtains a soqlVifValidator (see below).
 // Returns a Promise<soqlVifValidator>.
@@ -74,6 +74,9 @@ export function getSoqlVifValidator(vif) {
 //   Requires all dimension columns to be location.
 // .requireNumericDimension()
 //   Requires all dimension columns to be numeric.
+// .requireUniformDataSourceType()
+//   Requires that all data sources have the same type. I.e.,
+//   mixing an inline and a soql data source is *not* valid.
 // .validate()
 //   If the VIF conforms to the requirements, { ok: true } is returned.
 //   If the VIF does not conform, an object is returned:
@@ -126,6 +129,7 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
     switch (dataSourceType) {
 
       case 'socrata.soql':
+      case 'socrata.inline':
       case 'socrata.sample':
         break;
 
@@ -170,6 +174,15 @@ export function soqlVifValidator(vif, datasetMetadataPerSeries) {
       const uniqDomains = _.uniq(allDomains);
       if (uniqDomains.length > 1) {
         addError(I18n.t('shared.visualizations.charts.common.validation.errors.need_all_series_from_same_domain'));
+      }
+      return validator;
+    },
+
+    requireUniformDataSourceType() {
+      const allTypes = _.map(allSeries, 'dataSource.type');
+      const uniqTypes = _.uniq(allTypes);
+      if (uniqTypes.length > 1) {
+        addError(I18n.t('shared.visualizations.charts.common.validation.errors.need_all_series_from_same_data_source_type'));
       }
       return validator;
     },

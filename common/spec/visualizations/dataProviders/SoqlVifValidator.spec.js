@@ -107,6 +107,7 @@ describe('SoqlVifValidator', function() {
       validatePasses('requireCalendarDateDimension', vif, []);
       validatePasses('requirePointDimension', vif, []);
       validatePasses('requireNumericDimension', vif, []);
+      validatePasses('requireUniformDataSourceType', vif, []);
     });
 
     describe('VIF with a numeric, a date, and point dimensioned series', function() {
@@ -164,6 +165,7 @@ describe('SoqlVifValidator', function() {
       validateFails('requireCalendarDateDimension', vif, datasetMetadatas);
       validateFails('requirePointDimension', vif, datasetMetadatas);
       validateFails('requireNumericDimension', vif, datasetMetadatas);
+      validatePasses('requireUniformDataSourceType', vif, datasetMetadatas);
     });
 
     describe('VIF with a numeric dimensioned series', function() {
@@ -194,6 +196,7 @@ describe('SoqlVifValidator', function() {
       validateFails('requireCalendarDateDimension', vif, [datasetMetadata]);
       validateFails('requirePointDimension', vif, [datasetMetadata]);
       validatePasses('requireNumericDimension', vif, [datasetMetadata]);
+      validatePasses('requireUniformDataSourceType', vif, [datasetMetadata]);
     });
 
     describe('VIF with a money dimensioned series', function() {
@@ -223,6 +226,7 @@ describe('SoqlVifValidator', function() {
       validateFails('requireCalendarDateDimension', vif, [datasetMetadata]);
       validateFails('requirePointDimension', vif, [datasetMetadata]);
       validatePasses('requireNumericDimension', vif, [datasetMetadata]);
+      validatePasses('requireUniformDataSourceType', vif, [datasetMetadata]);
     });
 
     describe('VIF with a point dimensioned series', function() {
@@ -253,6 +257,7 @@ describe('SoqlVifValidator', function() {
       validateFails('requireCalendarDateDimension', vif, [datasetMetadata]);
       validatePasses('requirePointDimension', vif, [datasetMetadata]);
       validateFails('requireNumericDimension', vif, [datasetMetadata]);
+      validatePasses('requireUniformDataSourceType', vif, [datasetMetadata]);
     });
 
     describe('VIF with a date dimensioned series', function() {
@@ -283,6 +288,7 @@ describe('SoqlVifValidator', function() {
       validatePasses('requireCalendarDateDimension', vif, [datasetMetadata]);
       validateFails('requirePointDimension', vif, [datasetMetadata]);
       validateFails('requireNumericDimension', vif, [datasetMetadata]);
+      validatePasses('requireUniformDataSourceType', vif, [datasetMetadata]);
     });
 
     describe('VIF with an aggregated measure and an unaggregated dimension', function() {
@@ -461,6 +467,53 @@ describe('SoqlVifValidator', function() {
       validateFails('requireCalendarDateDimension', vif, datasetMetadatas);
       validateFails('requirePointDimension', vif, datasetMetadatas);
       validateFails('requireNumericDimension', vif, datasetMetadatas);
+      validatePasses('requireUniformDataSourceType', vif, datasetMetadatas);
+    });
+
+    describe('VIF with series with different data providers', function() {
+      const vif = {
+        format: { type: 'visualization_interchange_format', version: 2 },
+        series: [
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              domain: 'example.com',
+              dimension: { columnName: 'number', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.soql',
+              filters: []
+            }
+          },
+          {
+            dataSource: {
+              datasetUid: 'test-test',
+              dimension: { columnName: 'point', aggregationFunction: null },
+              measure: { columnName: null, aggregationFunction: 'count' },
+              type: 'socrata.inline',
+              rows: []
+            }
+          }
+        ]
+      };
+      const datasetMetadata = {
+        columns: [
+          { fieldName: 'number', renderTypeName: 'number' },
+          { fieldName: 'point', renderTypeName: 'point' }
+        ]
+      };
+
+      // all series use same dataset.
+      const datasetMetadatas = [datasetMetadata, datasetMetadata];
+
+      validatePasses('requireAtLeastOneSeries', vif, datasetMetadatas);
+      validateFails('requireExactlyOneSeries', vif, datasetMetadatas);
+      validateFails('requireAllSeriesFromSameDomain', vif, datasetMetadatas);
+      validateFails('requireNoMeasureAggregation', vif, datasetMetadatas);
+      validatePasses('requireMeasureAggregation', vif, datasetMetadatas);
+      validateFails('requireCalendarDateDimension', vif, datasetMetadatas);
+      validateFails('requirePointDimension', vif, datasetMetadatas);
+      validateFails('requireNumericDimension', vif, datasetMetadatas);
+      validateFails('requireUniformDataSourceType', vif, datasetMetadatas);
     });
   });
 });

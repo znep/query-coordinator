@@ -4,7 +4,8 @@ import I18n from 'common/i18n';
 import VifHelpers from './helpers/VifHelpers';
 import { getColumnFormats } from './helpers/ColumnFormattingHelpers';
 import SvgComboChart from './views/SvgComboChart';
-import MetadataProvider from './dataProviders/MetadataProvider';
+import MetadataProvider, { getDisplayableColumns }
+  from 'common/visualizations/dataProviders/MetadataProvider';
 import CategoricalDataManager from './dataProviders/CategoricalDataManager';
 import TimeDataManager from './dataProviders/TimeDataManager';
 import { getSoqlVifValidator } from './dataProviders/SoqlVifValidator.js';
@@ -151,7 +152,7 @@ $.fn.socrataSvgComboChart = function(originalVif, options) {
       then((resolutions) => {
         const [newColumns, newData, datasetMetadata] = resolutions;
 
-        const displayableColumns = datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
+        const displayableColumns = getDisplayableColumns(datasetMetadata);
         newData.columnFormats = getColumnFormats(displayableColumns);
 
         renderVisualization(newVif, newData, newColumns);

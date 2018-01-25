@@ -908,5 +908,414 @@ socrata.sampleVifsByChartType = {
     title: 'Open final dot, custom x axis scale'
   },
 
+  // This is trying to emulate what KPIs will provide.
+  timelineChartInlinePlain: {
+    configuration: {
+      dimensionAxisMinValue: '2000-12-01T00:00:00.000',
+      dimensionAxisMaxValue: '2003-12-01T00:00:00.000'
+    },
+    series: [
+      {
+        lineStyle: {
+          points: 'last-open',
+          pointRadius: 4
+        },
+        // Main data from measure calculation.
+        dataSource: {
+          precision: 'MONTH',
+          dimension: {
+            columnName: 'date',
+            aggregationFunction: null
+          },
+          measure: {
+            // KPIs should set each measure columnName to something unique.
+            columnName: 'kpi_calculation',
+            // KPIs should adjust this between 'count' and 'sum'. It affects the granularity of
+            // the Y axis (integers vs. decimals).
+            aggregationFunction: 'count'
+          },
+          type: 'socrata.inline',
+          rows: [
+            [
+              '2001-01-01T00:00:00.000',
+              38063 // These can be strings.
+            ],
+            [
+              '2001-02-01T00:00:00.000',
+              33772
+            ],
+            [
+              '2001-03-01T00:00:00.000',
+              40549
+            ],
+            [
+              '2001-04-01T00:00:00.000',
+              40075
+            ],
+            [
+              '2001-05-01T00:00:00.000',
+              41809
+            ],
+            [
+              '2001-06-01T00:00:00.000',
+              41713
+            ],
+            [
+              '2001-07-01T00:00:00.000',
+              44687
+            ],
+            [
+              '2001-08-01T00:00:00.000',
+              44022
+            ],
+            [
+              '2001-09-01T00:00:00.000',
+              41496
+            ],
+            [
+              '2001-10-01T00:00:00.000',
+              43020
+            ],
+            [
+              '2001-11-01T00:00:00.000',
+              39593
+            ],
+            [
+              '2001-12-01T00:00:00.000',
+              36839
+            ],
+            [
+              '2002-01-01T00:00:00.000',
+              38376
+            ],
+            [
+              '2002-02-01T00:00:00.000',
+              33902
+            ],
+            [
+              '2002-03-01T00:00:00.000',
+              38572
+            ],
+            [
+              '2002-04-01T00:00:00.000',
+              40016
+            ],
+            [
+              '2002-05-01T00:00:00.000',
+              42909
+            ],
+            [
+              '2002-06-01T00:00:00.000',
+              42825
+            ],
+            [
+              '2002-07-01T00:00:00.000',
+              46007
+            ],
+            [
+              '2002-08-01T00:00:00.000',
+              44211
+            ],
+            [
+              '2002-09-01T00:00:00.000',
+              42377
+            ],
+            [
+              '2002-10-01T00:00:00.000',
+              43141
+            ],
+            [
+              '2002-11-01T00:00:00.000',
+              37148
+            ],
+            [
+              '2002-12-01T00:00:00.000',
+              37166
+            ],
+            [
+              '2003-01-01T00:00:00.000',
+              36688
+            ],
+            [
+              '2003-02-01T00:00:00.000',
+              32500
+            ],
+            [
+              '2003-03-01T00:00:00.000',
+              38644
+            ],
+            [
+              '2003-04-01T00:00:00.000',
+              39785
+            ],
+            [
+              '2003-05-01T00:00:00.000',
+              41186
+            ]
+          ]
+        },
+        label: 'Fake KPI data',
+        type: 'timelineChart',
+        unit: {
+          one: 'incident',
+          other: 'incidents'
+        }
+      }
+    ],
+    createdAt: '2014-01-01T00:00:00',
+    format: {
+      type: 'visualization_interchange_format',
+      version: 2
+    },
+    title: 'Inline data, open final dot, custom x axis scale',
+    subtitle: 'Usage similar to KPIs'
+  },
+
+  // This is trying to emulate what KPIs will provide.
+  timelineChartInlineWithTargets: {
+    configuration: {
+      dimensionAxisMinValue: '2000-12-01T00:00:00.000',
+      dimensionAxisMaxValue: '2003-12-01T00:00:00.000'
+    },
+    series: [
+      {
+        lineStyle: {
+          points: 'last-open',
+          pointRadius: 4
+        },
+        // Main data from measure calculation.
+        dataSource: {
+          precision: 'MONTH',
+          dimension: {
+            columnName: 'date',
+            aggregationFunction: null
+          },
+          measure: {
+            // KPIs should set each measure columnName to something unique.
+            columnName: 'kpi_calculation',
+            // KPIs should adjust this between 'count' and 'sum'. It affects the granularity of
+            // the Y axis (integers vs. decimals).
+            aggregationFunction: 'count'
+          },
+          type: 'socrata.inline',
+          rows: [
+            [
+              '2001-01-01T00:00:00.000',
+              38063, // These can be strings.
+              // Target line data. See big comment in next series data source to learn why it's here.
+              null
+            ],
+            [
+              '2001-02-01T00:00:00.000',
+              33772,
+              40000
+            ],
+            [
+              '2001-03-01T00:00:00.000',
+              40549,
+              40000
+            ],
+            [
+              '2001-04-01T00:00:00.000',
+              40075,
+              // TODO: We want a sharp discontinuity here. We'll deal with that when we do KPI targets.
+              // Probably, this will be done by having a whole series per target. That way we don't have
+              // to worry about sloped lines.
+              null
+            ],
+            [
+              '2001-05-01T00:00:00.000',
+              41809,
+              45000
+            ],
+            [
+              '2001-06-01T00:00:00.000',
+              41713,
+              45000
+            ],
+            [
+              '2001-07-01T00:00:00.000',
+              44687,
+              null
+            ],
+            [
+              '2001-08-01T00:00:00.000',
+              44022,
+              33333
+            ],
+            [
+              '2001-09-01T00:00:00.000',
+              41496,
+              33333
+            ],
+            [
+              '2001-10-01T00:00:00.000',
+              43020,
+              33333
+            ],
+            [
+              '2001-11-01T00:00:00.000',
+              39593,
+              33333
+            ],
+            [
+              '2001-12-01T00:00:00.000',
+              36839,
+              33333
+            ],
+            [
+              '2002-01-01T00:00:00.000',
+              38376,
+              33333
+            ],
+            [
+              '2002-02-01T00:00:00.000',
+              33902,
+              null
+            ],
+            [
+              '2002-03-01T00:00:00.000',
+              38572,
+              null
+            ],
+            [
+              '2002-04-01T00:00:00.000',
+              40016,
+              null
+            ],
+            [
+              '2002-05-01T00:00:00.000',
+              42909,
+              null
+            ],
+            [
+              '2002-06-01T00:00:00.000',
+              42825,
+              null
+            ],
+            [
+              '2002-07-01T00:00:00.000',
+              46007,
+              null
+            ],
+            [
+              '2002-08-01T00:00:00.000',
+              44211,
+              null
+            ],
+            [
+              '2002-09-01T00:00:00.000',
+              42377,
+              null
+            ],
+            [
+              '2002-10-01T00:00:00.000',
+              43141,
+              null
+            ],
+            [
+              '2002-11-01T00:00:00.000',
+              37148,
+              null
+            ],
+            [
+              '2002-12-01T00:00:00.000',
+              37166,
+              null
+            ],
+            [
+              '2003-01-01T00:00:00.000',
+              36688,
+              null
+            ],
+            [
+              '2003-02-01T00:00:00.000',
+              32500,
+              null
+            ],
+            [
+              '2003-03-01T00:00:00.000',
+              38644,
+              null
+            ],
+            [
+              '2003-04-01T00:00:00.000',
+              39785,
+              null
+            ],
+            [
+              '2003-05-01T00:00:00.000',
+              41186,
+              null
+            ]
+          ]
+        },
+        label: 'Fake KPI data',
+        type: 'timelineChart',
+        unit: {
+          one: 'incident',
+          other: 'incidents'
+        }
+      },
+      {
+        lineStyle: {
+          pattern: 'dashed'
+        },
+        color: {
+          primary: '#ff1010',
+          highlight: 'orange' // Or something - confirm with design.
+        },
+        // Main data from measure calculation.
+        // !IMPORTANT! A timeline with multiple series must merge its series data
+        // together into a single array of chronologically-ordered rows. We could
+        // do this automatically, but there's no need to go through this rigamarole
+        // yet.  KPIs is the only user of inline-sourced timeline charts, and even
+        // then it will only use multi-series to render piecewise target markers.
+        // We're not quite sure what form these target markers will take, so we should
+        // wait to see before investing a lot of effort in an automatic bucket-merging
+        // solution.
+        //
+        // So, all this to say: All inline data comes from the first series. See the
+        // previous series for the data corresponding to this dashed line.
+        dataSource: {
+          precision: 'MONTH',
+          dimension: {
+            columnName: 'date',
+            aggregationFunction: null
+          },
+          measure: {
+            // KPIs should set each measure columnName to something unique.
+            columnName: 'target_2',
+            // KPIs should adjust this between 'count' and 'sum'. It affects the granularity of
+            // the Y axis (integers vs. decimals).
+            aggregationFunction: 'count'
+          },
+          type: 'socrata.inline'
+        },
+        label: 'Target 2',
+        type: 'timelineChart',
+        unit: {
+          one: 'incident',
+          other: 'incidents'
+        }
+      }
+    ],
+    createdAt: '2014-01-01T00:00:00',
+    format: {
+      type: 'visualization_interchange_format',
+      version: 2
+    },
+    title: 'Inline data, open final dot, custom x axis scale, with targets',
+    subtitle: 'Usage similar to KPIs',
+    referenceLines: [
+      {
+        color: '#ff1010',
+        label: 'Target 1',
+        uId: 'reference-line-9',
+        value: 40000
+      }
+    ]
+  },
+
   invalidChart: {}
 };

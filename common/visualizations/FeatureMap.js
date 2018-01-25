@@ -7,7 +7,8 @@ var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
 var TileserverDataProvider = require('./dataProviders/TileserverDataProvider');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');
-var MetadataProvider = require('./dataProviders/MetadataProvider');
+import MetadataProvider, { getDisplayableColumns }
+  from 'common/visualizations/dataProviders/MetadataProvider';
 var DataTypeFormatter = require('./views/DataTypeFormatter');
 
 var DEFAULT_FEATURES_PER_TILE = 256 * 256;
@@ -385,7 +386,7 @@ $.fn.socrataFeatureMap = function(vif) {
         whereClause ? ' AND ' + whereClause : ''
       );
 
-    var displayableColumns = metadataProvider.getDisplayableColumns(datasetMetadata);
+    var displayableColumns = getDisplayableColumns(datasetMetadata);
 
     function generateWithinBoxClause(columnName, bounds) {
 

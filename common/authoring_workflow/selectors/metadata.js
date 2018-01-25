@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
 import { dataProviders } from 'common/visualizations';
+import { getDisplayableColumns as baseGetDisplayableColumns, isSubcolumn }
+  from 'common/visualizations/dataProviders/MetadataProvider';
 
 import { VISUALIZATION_TYPES, COLUMN_TYPES, NUMERIC_COLUMN_TYPES, GEO_LOCATION_COLUMN_TYPES } from '../constants';
 
@@ -28,7 +30,7 @@ export const getDisplayableColumns = createSelector(
   (domain, datasetUid, datasetMetadata) => {
 
     if (datasetMetadata) {
-      return new dataProviders.MetadataProvider({ domain, datasetUid }, true).getDisplayableColumns(datasetMetadata);
+      return baseGetDisplayableColumns(datasetMetadata);
     } else {
       return []; // No data yet.
     }
@@ -81,8 +83,7 @@ export const getValidDimensions = createSelector(
       filter(isNotComputedColumn).
       filter(
         column =>
-          !datasetMetadataProvider.
-            isSubcolumn(column.fieldName, datasetMetadata)
+          !isSubcolumn(column.fieldName, datasetMetadata)
       ).
       map(toDatasetMetadata(datasetMetadata)).
       sortBy('name').

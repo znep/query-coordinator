@@ -5,7 +5,9 @@ const moment = require('moment');
 // Project Imports
 const VifHelpers = require('./helpers/VifHelpers');
 const SvgTimelineChart = require('./views/SvgTimelineChart');
-const MetadataProvider = require('./dataProviders/MetadataProvider');
+import { InlineDataProvider } from 'common/visualizations/dataProviders';
+import MetadataProvider, { getDisplayableColumns }
+  from 'common/visualizations/dataProviders/MetadataProvider';
 const ColumnFormattingHelpers = require('./helpers/ColumnFormattingHelpers');
 const SoqlHelpers = require('./dataProviders/SoqlHelpers');
 const TimeDataManager = require('./dataProviders/TimeDataManager');
@@ -122,40 +124,53 @@ $.fn.socrataSvgTimelineChart = function(originalVif, options) {
     visualization.renderError(messages);
   }
 
-  function updateData(newVif) {
-    const skipPromise = _.constant(Promise.resolve(null));
-    const domain = _.get(newVif, 'series[0].dataSource.domain');
-    const datasetUid = _.get(newVif, 'series[0].dataSource.datasetUid');
-    const precision = _.get(newVif, 'series[0].dataSource.precision');
-    const dimensionColumnName = _.get(newVif, 'series[0].dataSource.dimension.columnName');
-    const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid });
-
+  async function updateData(newVif) {
     $element.trigger('SOCRATA_VISUALIZATION_DATA_LOAD_START');
     visualization.showBusyIndicator();
     detachInteractionEvents();
 
-    $.fn.socrataSvgTimelineChart.validateVif(newVif).
-      then(visualization.shouldDisplayFilterBar() ? datasetMetadataProvider.getDisplayableFilterableColumns : skipPromise).
-      then((columns) => Promise.all([columns, datasetMetadataProvider.getDatasetMetadata()])).
-      then((resolutions) => {
-        const [columns, datasetMetadata] = resolutions;
-        const displayableColumns = datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
+    const dataSourceType = _.get(newVif, 'series[0].dataSource.type'); // Validator ensures uniform type.
+    const inline = dataSourceType === 'socrata.inline';
+
+    try {
+      await $.fn.socrataSvgTimelineChart.validateVif(newVif);
+
+      let columns = null;
+      let newData;
+
+      const dimensionColumnName = _.get(newVif, 'series[0].dataSource.dimension.columnName');
+
+      if (inline) {
+        newData = inlineDataQuery(visualization, newVif);
+      } else {
+        const domain = _.get(newVif, 'series[0].dataSource.domain');
+        const datasetUid = _.get(newVif, 'series[0].dataSource.datasetUid');
+        const precision = _.get(newVif, 'series[0].dataSource.precision');
+        const datasetMetadataProvider = new MetadataProvider({ domain, datasetUid });
+
+        const datasetMetadata = await datasetMetadataProvider.getDatasetMetadata();
+
+        if (visualization.shouldDisplayFilterBar()) {
+          columns = await datasetMetadataProvider.getDisplayableFilterableColumns(datasetMetadata);
+        }
+
+        const displayableColumns = getDisplayableColumns(datasetMetadata);
         const columnFormats = ColumnFormattingHelpers.getColumnFormats(displayableColumns);
         const isCalendarDate = isDimensionCalendarDate(dimensionColumnName, columnFormats);
 
-        const getData = isCalendarDate && (precision !== 'none') ?
-          TimeDataManager.getData(newVif) :
-          CategoricalDataManager.getData(newVif);
-
-        return Promise.all([columns, getData, columnFormats]);
-      }).
-      then((resolutions) => {
-        const [newColumns, newData, columnFormats] = resolutions;
+        newData = await(
+          isCalendarDate && (precision !== 'none') ?
+            TimeDataManager.getData(newVif) :
+            CategoricalDataManager.getData(newVif)
+        );
 
         newData.columnFormats = columnFormats;
-        renderVisualization(newVif, newData, newColumns);
-      }).
-      catch(handleError);
+      }
+
+      renderVisualization(newVif, newData, columns);
+    } catch (error) {
+      handleError(error);
+    }
   }
 
   function isDimensionCalendarDate(dimensionColumnName, columnFormats) {
@@ -216,6 +231,61 @@ $.fn.socrataSvgTimelineChart = function(originalVif, options) {
   return this;
 };
 
+export function inlineDataQuery(visualization, vif) {
+  if (visualization.shouldDisplayFilterBar()) {
+    // We don't do client-side filtering, and we also can't fulfill the
+    // queries getDisplayableFilterableColumns wants to do (specifically,
+    // the columnStats query) to power the filtering UI.
+    throw new Error('Filter bar not supported for visualizations using an inline data source.');
+  }
+
+  // Generate default columnFormats for each dimension column.
+  const columnFormats = _(vif.series).map(
+    (series) => _.get(series, 'dataSource.dimension.columnName')
+  ).compact().map((fieldName) => [
+    fieldName,
+    {
+      fieldName,
+      dataTypeName: 'calendar_date',
+      renderTypeName: 'calendar_date'
+    }
+  ]).fromPairs().value();
+
+  const columns = ['dimension'];
+
+  _.each(vif.series, (series) => {
+    const { dataSource } = series;
+    const fieldName = dataSource.measure.columnName;
+    columnFormats[fieldName] = {
+      fieldName,
+      name: series.label, // This is important - it sets the flyout label.
+      dataTypeName: 'number',
+      renderTypeName: 'number'
+    };
+    columns.push(fieldName);
+  });
+
+
+  const inlineDataProvider = new InlineDataProvider(vif);
+  // We bypass the TimeDataManager/CategoricalDataManager machinery
+  // for the inline data provider case because:
+  // a) InlineDataProvider would have to be taught how to do complex SoQL queries, and
+  // b) the only user of inline data providers for SvgTimelineChart is KPIs, and it actively
+  //    does not need the features TimeDataManager provides (it does its own aggregation).
+  // To get away with this, we make a couple assumptions:
+  // 1) Each series has exactly one numerical measure.
+  // 2) Each series is time-dimensioned (no categorical data).
+  // 3) There are no custom column formats.
+  // 4) Precision is the same everywhere.
+  return {
+    columns,
+    rows: inlineDataProvider.getRows(),
+    columnFormats,
+    precision: _.toLower(_.get(vif, 'series[0].dataSource.precision'))
+  };
+}
+
+
 /**
  * Checks a VIF for compatibility with this visualization. The intent of this
  * function is to provide feedback while authoring a visualization, not to
@@ -238,4 +308,4 @@ $.fn.socrataSvgTimelineChart.validateVif = (vif) =>
       toPromise()
   );
 
-module.exports = $.fn.socrataSvgTimelineChart;
+export default $.fn.socrataSvgTimelineChart;

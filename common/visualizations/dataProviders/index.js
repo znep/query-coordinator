@@ -1,9 +1,9 @@
 import RegionCodingProvider from './RegionCodingProvider';
+import MetadataProvider from './MetadataProvider';
 
 var CustomColorPaletteManager = require('./CustomColorPaletteManager');
 var GeospaceDataProvider = require('./GeospaceDataProvider');
 var InlineDataProvider = require('./InlineDataProvider');
-var MetadataProvider = require('./MetadataProvider');
 var SampleDataProvider = require('./SampleDataProvider');
 var SoqlDataProvider = require('./SoqlDataProvider');
 var SoqlHelpers = require('./SoqlHelpers');

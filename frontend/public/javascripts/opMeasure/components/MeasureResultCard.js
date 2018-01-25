@@ -41,6 +41,11 @@ export class MeasureResultCard extends Component {
   }
 
   renderResult(result) {
+    if (!isFinite(result)) {
+      // TODO: Decide if we want to use 'warning' for the icon, instead of the default 'number'
+      return this.renderPlaceholder();
+    }
+
     const { maxLength, measure } = this.props;
     const asPercent = _.get(measure, 'metricConfig.display.asPercent', false);
     // Default value of -1 for decimalPlaces indicates that no precision was set.
@@ -80,10 +85,10 @@ export class MeasureResultCard extends Component {
     );
   }
 
-  renderPlaceholder() {
+  renderPlaceholder(icon = 'number') {
     return (
       <div className="measure-result-placeholder">
-        <SocrataIcon name="number" />
+        <SocrataIcon name={icon} />
         <div className="measure-result-placeholder-text">
           {this.getSubtitle()}
         </div>

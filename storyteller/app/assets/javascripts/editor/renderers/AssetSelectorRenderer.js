@@ -2241,6 +2241,19 @@ export default function AssetSelectorRenderer(options) {
                   domain: datasetConfig.domain,
                   datasetUid: migrationMetadata.nbeId
                 }).getDatasetMetadata();
+              }).
+              catch((error) => {
+                // if we don't have migration data for filtered or grouped views AND we're using this asset
+                // to render a table, we can still try to render the obe dataset
+                if (
+                  assetSelectorStore.getComponentType() === 'socrata.visualization.table' &&
+                  assetData.displayType === 'filter'
+                ) {
+                  return datasetView;
+                } else {
+                  console.error(`Error getting migrated view for ${JSON.stringify(assetData)}`, error);
+                  return Promise.reject(error);
+                }
               });
           }
         }).
@@ -2250,12 +2263,18 @@ export default function AssetSelectorRenderer(options) {
           // Do not assume that we have view data. If the request for
           // /api/migrations/four-four.json returned 404 it means that there
           // is no corresponding NBE version of this dataset.
+          //
+          // We do some additional handling of missing migration data for filtered
+          // and grouped views above so we can safely ignore the missing `newBackend`
+          // value below
           if (_.isPlainObject(nbeViewData)) {
-            // We should be able to handle all NBE datasets.
-            assert(
-              _.get(nbeViewData, 'newBackend'),
-              'All versions of this dataset deemed unfit for visualization!'
-            );
+            if (assetData.displayType !== 'filter') {
+              // We should be able to handle all NBE datasets.
+              assert(
+                _.get(nbeViewData, 'newBackend'),
+                'All versions of this dataset deemed unfit for visualization!'
+              );
+            }
 
             // Retcon the domain into the view data.
             // We'd have to pass it around like 5 methods otherwise. (still true?)

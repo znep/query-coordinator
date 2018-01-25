@@ -212,7 +212,7 @@ en:
         preview_label: 'Preview'
         choose_dataset_heading: 'Choose a Dataset to Visualize'
         choose_dataset_error: 'There was an error retrieving information about this dataset.'
-        choose_dataset_unsupported_error: 'This asset utilizes platform features that are not yet supported by Perspectives.'
+        choose_dataset_unsupported_error: "We're still preparing this dataset for use in Perspectives. If this message persists, please contact our support team."
         choose_map_or_chart_heading: 'Choose a Chart or Map'
         choose_map_or_chart_error: 'Sorry, only charts or maps can be chosen at this time.'
         choose_visualization_mode: 'How would you like to visualize this data?'

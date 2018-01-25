@@ -16,12 +16,12 @@ import VifRegionOverlay from './map/vifOverlays/VifRegionOverlay';
 import VifHeatOverlay from './map/vifOverlays/VifHeatOverlay';
 
 export default class UnifiedMap extends SvgVisualization {
-  constructor(element, vif, options) {
-    super(element, vif, options);
-    this._element = element;
+  constructor(visualizationElement, vif, options) {
+    super(visualizationElement, vif, options);
+    this._element = visualizationElement;
 
     vif = vifDecorator.getDecoratedVif(vif);
-    MapFactory.build(element, vif).then((map) => {
+    MapFactory.build(visualizationElement, vif).then((map) => {
       this._map = map;
       this._vifBaseMap = new VifBaseMap(this._map);
       this._vifBaseMap.initialize(vif);
@@ -34,6 +34,9 @@ export default class UnifiedMap extends SvgVisualization {
 
       this._currentOverlay = this._getOverlay(vif);
       this._currentOverlay.loadVif(vif);
+      // Adding Map object to visualization DOM element,
+      // to get mapbox gl map for manual and automated testing
+      visualizationElement[0].map = map;
     });
 
     this.onUpdateEvent = (event) => {

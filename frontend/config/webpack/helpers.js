@@ -64,7 +64,11 @@ function getOutput(identifier) {
     path: isProduction ? path.resolve(build, identifier) : build,
     filename: isProduction ? '[name].js' : identifier + '/[name].js',
     chunkFilename: isProduction ? '[name].js?[chunkhash]' : identifier + '/[name].js?[chunkhash]',
-    publicPath: isProduction ? '/javascripts/build/' + identifier + '/' : '/javascripts/webpack/'
+    publicPath: isProduction ? '/javascripts/build/' + identifier + '/' : '/javascripts/webpack/',
+    // jsonpFunction namespace is needed in conjunction with use of CommonsChunkPlugin since the plugin
+    // registers and uses a global function window.webpackJsonp. The namespace here will ensure that
+    // multiple instances of webpack can play happily together on the same page
+    jsonpFunction: 'socrataFrontendWebpackJsonp'
   };
 }
 

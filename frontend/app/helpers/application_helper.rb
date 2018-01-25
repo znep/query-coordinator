@@ -1257,7 +1257,7 @@ module ApplicationHelper
   # - If UI elements replaced by the A2B are hidden
   def render_asset_action_bar?
     _req = defined?(request) ? request : nil
-    return false unless FeatureFlags.value_for(:enable_asset_action_bar,
+    return false unless FeatureFlags.value_for(:enable_new_dataset_sharing_ux,
                                                view: @view, request: _req)
 
     return false unless current_user_can_see_asset_action_bar?

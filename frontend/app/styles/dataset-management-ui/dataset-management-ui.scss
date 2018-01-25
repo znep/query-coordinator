@@ -41,5 +41,8 @@ html {
   @import 'frontend/public/javascripts/datasetManagementUI/components/Attachment/Attachment.scss';
   @import 'frontend/public/javascripts/datasetManagementUI/components/AttachmentsInput/AttachmentsInput.scss';
   @import 'frontend/public/javascripts/datasetManagementUI/components/DatasetFieldset/DatasetFieldset.scss';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/ColumnForm/ColumnForm.scss';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/FieldSet/FieldSet.scss';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/WithFlash/WithFlash.scss';
   @import 'frontend/app/styles/leaflet.scss';
 }

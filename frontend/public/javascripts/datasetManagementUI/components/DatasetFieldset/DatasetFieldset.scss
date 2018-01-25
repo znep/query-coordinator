@@ -1,46 +1,48 @@
 @import 'common/styleguide/variables/color_helpers';
 @import 'common/styleguide/variables/colors';
 
-.dsmp-fieldset {
-  border: 1px solid $light-grey-4;
-  padding: 0;
-  margin: 0;
-  margin-bottom: 2em;
-}
+#dataset-fieldset {
+  .dsmp-fieldset {
+    border: 1px solid $light-grey-4;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 2em;
+  }
 
-.dsmp-legend {
-  border-bottom: 1px solid $light-grey-4;
-  background-color: $light-grey-5;
-  border: 1px solid $light-grey-4;
-  display: block;
-  width: calc(100% - 0.6rem);
-  padding: 0.6rem;
-  padding-right: 0;
-  box-sizing: content-box;
-  margin-left: -1px;
-}
+  .dsmp-legend {
+    border-bottom: 1px solid $light-grey-4;
+    background-color: $light-grey-5;
+    border: 1px solid $light-grey-4;
+    display: block;
+    width: calc(100% - 0.6rem);
+    padding: 0.6rem;
+    padding-right: 0;
+    box-sizing: content-box;
+    margin-left: -1px;
+  }
 
-.dsmp-field-wrapper {
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
+  .dsmp-field-wrapper {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 
-.dsmp-field-wrapper label {
-  font-size: 1rem;
-  margin-bottom: 0.4em;
-  display: block;
-}
+  .dsmp-field-wrapper label {
+    font-size: 1rem;
+    margin-bottom: 0.4em;
+    display: block;
+  }
 
-.dsmp-add-URL-btn {
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  margin-bottom: 0.8em;
-  border: 0;
-  padding: 0 0 1px 0;
-  border-bottom: 1px solid $primary-base;
-  color: $primary-base;
-  background-color: transparent;
-  font-size: 1rem;
-  font-family: 'Open Sans', 'Helvetica', Arial, sans-serif;
+  .dsmp-add-URL-btn {
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 0.8em;
+    border: 0;
+    padding: 0 0 1px 0;
+    border-bottom: 1px solid $primary-base;
+    color: $primary-base;
+    background-color: transparent;
+    font-size: 1rem;
+    font-family: 'Open Sans', 'Helvetica', Arial, sans-serif;
+  }
 }

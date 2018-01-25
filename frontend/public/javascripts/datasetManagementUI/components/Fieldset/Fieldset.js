@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
-import styles from './FieldSet.module.scss';
 
 const Fieldset = ({ children, title, subtitle, closable, closeCallback, containerClass, legendClass }) => {
-  let fsClasses = [styles.fieldset]; // eslint-disable-line prefer-const
-  let legendClasses = [styles.tabTitle]; // eslint-disable-line prefer-const
+  let fsClasses = ['dsmp-fieldset']; // eslint-disable-line prefer-const
+  let legendClasses = ['dsmp-tab-title']; // eslint-disable-line prefer-const
 
   if (containerClass) {
     fsClasses.push(containerClass);
@@ -16,16 +15,18 @@ const Fieldset = ({ children, title, subtitle, closable, closeCallback, containe
   }
 
   return (
-    <fieldset className={fsClasses.join(' ')}>
-      <legend className={legendClasses.join(' ')}>
-        {title}
-        {closable && (
-          <SocrataIcon name="close-2" className={styles.closeButton} onIconClick={closeCallback} />
-        )}
-      </legend>
-      <span className={styles.tabSubtitle}>{subtitle}</span>
-      {children}
-    </fieldset>
+    <div id="fieldset">
+      <fieldset className={fsClasses.join(' ')}>
+        <legend className={legendClasses.join(' ')}>
+          {title}
+          {closable && (
+            <SocrataIcon name="close-2" className="dsmp-close-button" onIconClick={closeCallback} />
+          )}
+        </legend>
+        <span className="dsmp-tab-subtitle">{subtitle}</span>
+        {children}
+      </fieldset>
+    </div>
   );
 };
 

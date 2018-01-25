@@ -53,18 +53,8 @@ export function getPointCircleRadius(resizeByRange, aggregateAndResizeBy) {
   const maxRadius = _.get(this, 'series[0].mapOptions.maximumPointSize', 18) / 2;
   const dataClasses = _.get(this, 'series[0].mapOptions.numberOfDataClasses', 5);
 
-  const radiusStep = (maxRadius - minRadius) / dataClasses;
-  const resizeStep = (resizeByRange.max - resizeByRange.min) / dataClasses;
-
-  const radiusStops = _.range(minRadius, maxRadius, radiusStep);
-  const resizeStops = _.range(resizeByRange.min, resizeByRange.max, resizeStep);
-
-  return {
-    type: 'exponential',
-    property: aggregateAndResizeBy,
-    stops: _.zip(resizeStops, radiusStops),
-    'default': minRadius
-  };
+  return this.getResizeByRangeBuckets(aggregateAndResizeBy, resizeByRange,
+    minRadius, maxRadius, dataClasses, 'exponential');
 }
 
 // If 'colorByColumn' not configured

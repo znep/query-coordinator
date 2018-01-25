@@ -36,25 +36,8 @@ export function getLineWidth(aggregateAndResizeBy, resizeByRange) {
 
   const minWidth = _.get(this, 'series[0].mapOptions.minimumLineWeight', 3);
   const maxWidth = _.get(this, 'series[0].mapOptions.maximumLineWeight', 7);
-  const numberOfDataClasses = _.get(this, 'series[0].mapOptions.numberOfDataClasses', 5);
+  const dataClasses = _.get(this, 'series[0].mapOptions.numberOfDataClasses', 5);
 
-  if (minWidth === maxWidth) {
-    return minWidth;
-  }
-  if (resizeByRange.min === resizeByRange.max) {
-    return (minWidth + maxWidth) / 2;
-  }
-
-  const widthStep = (maxWidth - minWidth) / numberOfDataClasses;
-  const resizeStep = (resizeByRange.max - resizeByRange.min) / numberOfDataClasses;
-
-  const widthStops = _.range(minWidth, maxWidth, widthStep);
-  const resizeStops = _.range(resizeByRange.min, resizeByRange.max, resizeStep);
-
-  return {
-    type: 'interval',
-    property: aggregateAndResizeBy,
-    stops: _.zip(resizeStops, widthStops),
-    'default': minWidth
-  };
+  return this.getResizeByRangeBuckets(aggregateAndResizeBy, resizeByRange,
+    minWidth, maxWidth, dataClasses, 'interval');
 }

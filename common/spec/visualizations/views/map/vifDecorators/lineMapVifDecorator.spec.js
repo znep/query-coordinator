@@ -56,8 +56,8 @@ describe('lineMapVifDecorator', () => {
           let expectedResult = {
             type: 'interval',
             property: '__count__',
-            'default': 10,
-            stops: [[20, 10], [60, 12], [100, 14], [140, 16]]
+            default: 10,
+            stops: [[20, 10], [60, 12], [100, 14], [140, 16], [180, 18]]
           };
           let resizeRangeBy = { min: 20, avg: 1, max: 180 };
           let decoratedVif = _.merge({}, lineMapVifDecorator, vif);

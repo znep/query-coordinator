@@ -2,7 +2,6 @@
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import * as styles from './MapFlyout.module.scss';
 import PagerBar from 'datasetManagementUI/containers/PagerBarContainer';
 import _ from 'lodash';
 import L from 'leaflet';
@@ -101,13 +100,13 @@ class Bbox {
 function renderAttr(column, outputColumn) {
   if (column.cell && !_.isUndefined(column.cell.ok)) {
     return (<tr key={outputColumn.id}>
-      <td className={styles.attributeName}>{outputColumn.display_name}</td>
-      <td className={styles.attributeValue}>{column.cell.ok}</td>
+      <td className="attribute-name">{outputColumn.display_name}</td>
+      <td className="attribute-value">{column.cell.ok}</td>
     </tr>);
   } else if (column.cell && !_.isUndefined(column.cell.error)) {
     return (<tr key={outputColumn.id}>
-      <td className={styles.attributeName}>{outputColumn.display_name}</td>
-      <td className={styles.attributeValue}>{column.cell.error.message.english}</td>
+      <td className="attribute-name">{outputColumn.display_name}</td>
+      <td className="attribute-value">{column.cell.error.message.english}</td>
     </tr>);
   }
   return null;
@@ -116,12 +115,12 @@ function renderAttr(column, outputColumn) {
 function renderPopupHtml(outputColumns, attributes) {
   return ReactDOM.render(
     <div className="socrata-flyout">
-      <table className={styles.flyoutContent}>
+      <table className="flyout-content">
         <tbody>
           {attributes.map(column => renderAttr(column, _.find(outputColumns, { id: column.id })))}
         </tbody>
       </table>
-      <div className={styles.arrowDown}></div>
+      <div className="arrow-down"></div>
     </div>,
     document.createElement('div')
   );
@@ -313,14 +312,19 @@ class MapFlyout extends React.Component {
 
 
   render() {
-    const { displayState, params, left } = this.props;
+    const { displayState, params, left, onClose } = this.props;
 
     return (
-      <div className={styles.mapFlyout} style={{ left }}>
-        <div className={styles.mapContainer}>
+      <div className="map-flyout" style={{ left }}>
+        <div className="map-container">
           <div className="map"></div>
+          {
+            onClose && (<button type="button" className="close-flyout-button" onClick={onClose}>
+              <span className="socrata-icon-close-2" />
+            </button>)
+          }
         </div>
-        <div className={styles.pagerWrapperStyleReset}>
+        <div className="pager-wrapper-style-reset">
           <PagerBar
             displayState={displayState}
             params={params} />
@@ -336,7 +340,8 @@ MapFlyout.propTypes = {
   transform: PropTypes.object.isRequired,
   left: PropTypes.number.isRequired,
   params: PropTypes.object.isRequired,
-  displayState: PropTypes.object.isRequired
+  displayState: PropTypes.object.isRequired,
+  onClose: PropTypes.func
 };
 
 export default MapFlyout;

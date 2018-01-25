@@ -212,7 +212,8 @@ export class TransformStatus extends Component {
             transform={transform}
             params={params}
             displayState={this.props.displayState}
-            left={this.state.mapPosition} />}
+            left={this.state.mapPosition}
+            onClose={this.toggleMap} />}
           {hasErrors ? (
             <Link
               className={classNames(styles.statusText, { [styles.transformStatusSelected]: inErrorMode })}

@@ -1,0 +1,153 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+$map-width: 500px;
+$map-height: 500px;
+$icon-width: 28px;
+$icon-size: 25px;
+$arrow-size: 8px;
+$attribute-min-width: 180px;
+$pager-height: 22px;
+
+
+.socrata-flyout .flyout-content {
+  .arrow-down {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #ffffff;;
+    position: relative;
+    top: 14px;
+    margin: 0px auto;
+  }
+  .attribute-name {
+    word-break: normal;
+    white-space: normal;
+    color: $dark-grey-2;
+    padding: 4px;
+    max-width: 60px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .attribute-value {
+    word-break: break-all;
+    white-space: normal;
+    min-width: $attribute-min-width;
+  }
+}
+
+.map-container {
+  .map {
+    position: absolute;
+    width: $map-width;
+    height: $map-height;
+  }
+}
+
+// This is required because there is a style in the pager css module
+// that can't be scoped down sufficiently due to modules, so we need to
+// manually reset a bunch of style attributes here - this hack should be
+// removed when css modules are removed.
+.pager-wrapper-style-reset {
+  position: absolute !important;
+  bottom: 14px !important;
+  right: 0px !important;
+  left: 0px !important;
+  text-align: left !important;
+  height: $pager-height !important;
+  line-height: $pager-height !important;
+  span {
+    height: $pager-height;
+  }
+  a {
+    display: inline-block !important;
+    width: auto !important;
+  }
+  a:hover {
+    background-color: $white !important;
+  }
+}
+
+.map-flyout {
+  position: absolute;
+  top: $icon-size + $arrow-size;
+  left: - ($map-width / 2) + ($icon-width / 2) + 5px; // argh where is the 5px coming from...icon padding
+  z-index: 10000;
+  width: $map-width + 4px;
+  height: $map-height + $pager-height + 4px;
+  background-color: #ffffff;
+  border: 1px solid $light-grey-3;
+  box-shadow: 0 2px 8px $dark-grey-2;
+  .close-flyout-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    outline: none;
+    border: 1px solid $light-grey-3;
+    height:26px;
+    width: 26px;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    cursor: default;
+  }
+  .leaflet-control-container {
+    .leaflet-left.leaflet-top .leaflet-control {
+      margin-top:45px;
+    }
+  }
+  .leaflet-popup-content-wrapper {
+    position: relative;
+    top: -25px;
+    border-radius: 0px;
+    margin: 0px;
+    text-align: left;
+    max-height: 300px;
+    overflow: auto;
+
+    table {
+      padding: 0px;
+      tbody {
+        background-color: $white;
+
+        tr:nth-child(odd) {
+          td {
+            background-color: $light-grey-6;
+          }
+        }
+        // This is because of a css rule that is too broad, but can't
+        // be made more specific due to css modules not allowing nesting
+        tr:nth-child(even) {
+          background-color: $white;
+          td {
+            background-color: $white;
+          }
+        }
+        td {
+          padding: 0px 4px;
+          border: none;
+        }
+
+      }
+
+    }
+  }
+
+  .leaflet-popup-content-wrapper .leaflet-popup-content {
+    border-radius: 0px;
+    margin: 0px;
+  }
+
+  .leaflet-popup-close-button {
+    display: none;
+  }
+
+  .leaflet-popup-content {
+    padding: 0.25em;
+  }
+
+  .leaflet-popup-tip-container {
+    display: none;
+  }
+}
+

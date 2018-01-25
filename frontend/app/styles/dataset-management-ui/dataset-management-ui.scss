@@ -41,5 +41,7 @@ html {
   @import 'frontend/public/javascripts/datasetManagementUI/components/Attachment/Attachment.scss';
   @import 'frontend/public/javascripts/datasetManagementUI/components/AttachmentsInput/AttachmentsInput.scss';
   @import 'frontend/public/javascripts/datasetManagementUI/components/DatasetFieldset/DatasetFieldset.scss';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/ErrorFlyout/ErrorFlyout.scss';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/MapFlyout/MapFlyout.scss';
   @import 'frontend/app/styles/leaflet.scss';
 }

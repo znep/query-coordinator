@@ -9,6 +9,8 @@ import SocrataIcon from 'common/components/SocrataIcon';
 import Picklist from 'common/components/Picklist';
 import { ESCAPE, DOWN, SPACE, isolateEventByKeys, isOneOfKeys } from 'common/dom_helpers/keycodes_deprecated';
 
+import { positionPicklist } from './helper';
+
 export class Dropdown extends Component {
   constructor(props) {
     super(props);
@@ -33,7 +35,6 @@ export class Dropdown extends Component {
       'onSelectOption',
       'getSelectedOption',
       'openPicklist',
-      'positionPicklist',
       'toggleIsolateScrolling',
       'toggleScrollEvents',
       'renderPlaceholder'
@@ -65,7 +66,7 @@ export class Dropdown extends Component {
       this.toggleIsolateScrolling(nextState.opened);
       this.toggleDocumentMouseDown(nextState.opened);
       // Do not position the picklist if it is not visible (getBoundingClientRect triggers a reflow)
-      this.positionPicklist();
+      positionPicklist(this.optionsRef, this.dropdownRef, this.props);
     }
   }
 
@@ -215,51 +216,6 @@ export class Dropdown extends Component {
         this.picklistRef.picklist.focus();
       }
     });
-  }
-
-  positionPicklist() {
-    const hasOptions = this.optionsRef &&
-      this.optionsRef.querySelectorAll('.picklist-option').length > 0;
-
-    if (hasOptions) {
-      const { displayTrueWidthOptions } = this.props;
-      const containerDimensions = this.dropdownRef.getBoundingClientRect();
-      const browserWindowHeight = window.document.documentElement.clientHeight - 10;
-      const browserWindowWidth = window.document.documentElement.clientWidth;
-
-      const dimensions = this.optionsRef.getBoundingClientRect();
-
-      // Calculate X Position
-      const optionWidth = this.optionsRef.querySelector('.picklist-option').clientWidth;
-      const exceedsBrowserWindowWidth = browserWindowWidth < (containerDimensions.left + optionWidth);
-
-      const optionsLeft = exceedsBrowserWindowWidth ?
-        (containerDimensions.left - optionWidth) : containerDimensions.left;
-      this.optionsRef.style.left = `${optionsLeft}px`;
-
-      // Calculate Y Position
-      let optionsTop = this.dropdownRef.clientHeight + containerDimensions.top - containerDimensions.height;
-      if (this.props.showOptionsBelowHandle) {
-        optionsTop += containerDimensions.height;
-      }
-      this.optionsRef.style.top = `${optionsTop}px`;
-
-      // Calculate Height
-      const scrollHeight = this.optionsRef.scrollHeight;
-      const exceedsBrowserWindowHeight = browserWindowHeight < dimensions.top + scrollHeight;
-      const optionHeight = this.optionsRef.querySelector('.picklist-option').clientHeight;
-      const determinedHeight = browserWindowHeight - dimensions.top;
-
-      if (exceedsBrowserWindowHeight) {
-        this.optionsRef.style.height = `${Math.max(determinedHeight, optionHeight)}px`;
-      } else if (this.optionsRef.style.height !== 'auto') {
-        this.optionsRef.style.height = 'auto';
-      }
-
-      if (!displayTrueWidthOptions) {
-        this.optionsRef.style.width = `${containerDimensions.width}px`;
-      }
-    }
   }
 
   /**

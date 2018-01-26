@@ -665,7 +665,7 @@ en:
       dataset_owner: Dataset Owner
       data_asset_owner: Data Asset Owner
       downloads: Downloads
-      edit_metadata: Edit Metadata
+      edit_metadata: Edit Dataset Metadata
       license: License
       licensing: Licensing and Attribution
       metadata_last_updated: Metadata Last Updated
@@ -2174,7 +2174,7 @@ en:
       apply_update: Apply Update
       being_processed: Your data is being processed!
       being_processed_detail: It'll show here as soon as it is done. No need to wait around, we can let you know when it's ready.
-      column_metadata_manage_button: Manage Column Metadata
+      column_metadata_edit_button: Edit Column Metadata
       data: Choose Data Source
       data_blurb: Add a data file and enable visualizations and mapping.
       data_manage_button: Manage Data

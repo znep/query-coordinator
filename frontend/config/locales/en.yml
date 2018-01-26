@@ -1837,6 +1837,7 @@ en:
       measure: Measures
     visibility:
       pending_approval_html: <strong>Private</strong> and <strong>pending approval</strong>
+      awaiting_approval_html: <strong>Private</strong> and <strong>awaiting approval</strong>
       private: private
       public: public
   data_lens:

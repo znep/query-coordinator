@@ -76,7 +76,7 @@
               var pendingApproval = _.get(blist, 'dataset.approvals.0.outcome') === 'publicize' && cpObj._view.isPublic();
 
               if (pendingApproval) {
-                $publicText.html($.t('core.visibility.pending_approval_html'));
+                $publicText.html($.t('core.visibility.awaiting_approval_html'));
                 var $sectionContent = $(cpObj.currentDom).find('.sectionContent.togglePermissionsForm');
                 var $withdrawApprovalRequestButton = $(
                   '<a href="#" class="button" id="withdraw_approval_request">' +

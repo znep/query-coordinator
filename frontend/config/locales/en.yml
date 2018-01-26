@@ -1836,6 +1836,8 @@ en:
       map: Maps
       measure: Measures
     visibility:
+      pending_approval_html: <strong>Private</strong> and <strong>pending approval</strong>
+      awaiting_approval_html: <strong>Private</strong> and <strong>awaiting approval</strong>
       private: private
       public: public
   data_lens:
@@ -6213,6 +6215,7 @@ en:
           title: Permissions
           validation:
             valid_saved: This view must be valid and saved
+          withdraw_approval_request: Withdraw approval request
         print:
           margins:
             bottom: 'Bottom:'

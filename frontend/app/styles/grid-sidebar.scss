@@ -751,16 +751,11 @@ body.grid-view-2017-refresh {
 
             label {
               position: relative !important;
-              display: inline-block !important;
-              margin: 0 0 0.5em 0 !important;
-              padding: 0 !important;
+              margin: 0;
               width: auto !important;
-              top: 0 !important;
-              right: 0 !important;
-              bottom: 0 !important;
+              top: 5px;
               left: 0 !important;
               line-height: normal !important;
-              background: none !important;
 
               &.required {
                 margin-left: 12px !important;
@@ -2213,7 +2208,7 @@ body.grid-view-2017-refresh {
         }
       }
 
-      /** 
+      /**
        * About pane overrides
        */
       &#gridSidebar_outer_about {
@@ -2454,4 +2449,10 @@ body.grid-view-2017-refresh {
       }
     }
   }
+}
+
+// Thanks CL...
+.grid-view-2017-refresh #gridSidebar .outerPane .button#withdraw_approval_request {
+  color: #fff !important;  // $btn-warning-color
+  background: #e6af00 !important; // $btn-warning-background-color
 }

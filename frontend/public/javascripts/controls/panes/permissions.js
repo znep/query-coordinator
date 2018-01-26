@@ -95,7 +95,7 @@
                 });
 
                 $sectionContent.find('.line').hide(); // Hide radio buttons
-                cpObj.$dom().find('.finishButtons li a.submit').hide() // Hide update/submit button
+                cpObj.$dom().find('.finishButtons li a.submit').hide(); // Hide update/submit button
                 $sectionContent.append($withdrawApprovalRequestButton);
               }
             } else {

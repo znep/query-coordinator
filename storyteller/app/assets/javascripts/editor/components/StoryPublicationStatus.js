@@ -4,6 +4,8 @@ import moment from 'moment-timezone';
 import React, { Component } from 'react';
 import classNames from 'classnames';
 
+import { Button } from 'common/components';
+
 import I18n from '../I18n';
 import Environment from '../../StorytellerEnvironment';
 import { assert } from 'common/js_utils';
@@ -136,20 +138,20 @@ class StoryPublicationStatus extends Component {
       'status.update_public_version' :
       'visibility.make_story_public';
 
-    const buttonAttributes = {
-      className: classNames('btn btn-block btn-publish', {
-        'btn-primary': isPublic,
-        'btn-alternate-2': !isPublic,
-        'btn-busy': isLoading
-      }),
+    const buttonProps = {
+      busy: isLoading,
+      className: classNames('btn btn-block btn-publish'),
+      dark: false,
+      disabled: !isDraftUnpublished,
       onClick: this.publicize,
-      disabled: !isDraftUnpublished
+      size: 'default',
+      variant: isPublic ? 'primary' : 'alternate-2'
     };
 
     return (
-      <button {...buttonAttributes}>
-        <span>{I18n.t(`editor.settings_panel.publishing_section.${buttonText}`)}</span>
-      </button>
+      <Button {...buttonProps}>
+        {I18n.t(`editor.settings_panel.publishing_section.${buttonText}`)}
+      </Button>
     );
   }
 

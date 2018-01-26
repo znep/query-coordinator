@@ -10,16 +10,16 @@ describe('components/Fieldset', () => {
     subtitle: 'Hey a subtitle!'
   };
 
-  const child = <span>Child</span>;
+  const child = <span id="child">Child</span>;
 
   const component = shallow(<Fieldset {...defaultProps} />);
 
   it('renders a title', () => {
-    assert.isAtLeast(component.find('.tabTitle').length, 1);
+    assert.isAtLeast(component.find('.dsmp-tab-title').length, 1);
   });
 
   it('renders a subtitle', () => {
-    assert.isAtLeast(component.find('.tabSubtitle').length, 1);
+    assert.isAtLeast(component.find('.dsmp-tab-subtitle').length, 1);
   });
 
   it('renders any elements it wraps (children)', () => {
@@ -28,6 +28,6 @@ describe('components/Fieldset', () => {
         {child}
       </Fieldset>
     );
-    assert.isTrue(component.childAt(2).equals(child));
+    assert.isTrue(component.find('#child').equals(child));
   });
 });

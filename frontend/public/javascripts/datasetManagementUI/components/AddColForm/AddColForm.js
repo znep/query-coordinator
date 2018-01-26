@@ -32,9 +32,9 @@ export function makeTransformExpr(fieldName, transform, entities) {
 
 const ErrorList = ({ errors = [] }) => {
   return (
-    <ul className="error-list">
+    <ul className="dsmp-error-list">
       {errors.map(error => (
-        <li key={btoa(error)} className="error-message">
+        <li key={btoa(error)} className="dsmp-error-message">
           {error}
         </li>
       ))}
@@ -132,50 +132,52 @@ class AddColForm extends Component {
     const transforms = ic ? soqlProperties[ic.soql_type].conversions : soqlProperties.text.conversions;
 
     return (
-      <form className="dsmp-form">
-        <Fieldset title={I18n.add_col.fieldset_title} subtitle={I18n.add_col.fieldset_subtitle}>
-          <label htmlFor="displayName">{I18n.add_col.display_name}</label>
-          <TextInput
-            field={{
-              name: 'displayName',
-              value: this.state.displayName
-            }}
-            inErrorState={this.props.errors.displayName ? !!this.props.errors.displayName.length : false}
-            handleChange={this.handleChange('displayName')} />
-          <ErrorList errors={this.props.errors.displayName} />
-          <label htmlFor="fieldName">{I18n.add_col.field_name}</label>
-          <TextInput
-            field={{
-              name: 'fieldName',
-              value: this.state.fieldName
-            }}
-            inErrorState={this.props.errors.fieldName ? !!this.props.errors.fieldName.length : false}
-            handleChange={this.handleChange('fieldName')} />
-          <ErrorList errors={this.props.errors.fieldName} />
-          <label htmlFor="description">{I18n.add_col.description}</label>
-          <TextArea
-            field={{
-              name: 'description',
-              value: this.state.description
-            }}
-            inErrorState={false}
-            handleChange={this.handleChange('description')} />
-          <label htmlFor="sourceColumnId">{I18n.add_col.source_column}</label>
-          <Select
-            field={{
-              name: 'sourceColumnId',
-              value: this.state.sourceColumnId,
-              options: this.props.selectOptions,
-              isRequired: false
-            }}
-            inErrorState={false}
-            handleChange={this.handleChange('sourceColumnId')} />
-          <SoqlTypePillBox
-            transforms={transforms}
-            currentTransform={this.state.transform}
-            handleClick={this.handlePillClick} />
-        </Fieldset>
-      </form>
+      <div id="add-col-form">
+        <form className="dsmp-form">
+          <Fieldset title={I18n.add_col.fieldset_title} subtitle={I18n.add_col.fieldset_subtitle}>
+            <label htmlFor="displayName">{I18n.add_col.display_name}</label>
+            <TextInput
+              field={{
+                name: 'displayName',
+                value: this.state.displayName
+              }}
+              inErrorState={this.props.errors.displayName ? !!this.props.errors.displayName.length : false}
+              handleChange={this.handleChange('displayName')} />
+            <ErrorList errors={this.props.errors.displayName} />
+            <label htmlFor="fieldName">{I18n.add_col.field_name}</label>
+            <TextInput
+              field={{
+                name: 'fieldName',
+                value: this.state.fieldName
+              }}
+              inErrorState={this.props.errors.fieldName ? !!this.props.errors.fieldName.length : false}
+              handleChange={this.handleChange('fieldName')} />
+            <ErrorList errors={this.props.errors.fieldName} />
+            <label htmlFor="description">{I18n.add_col.description}</label>
+            <TextArea
+              field={{
+                name: 'description',
+                value: this.state.description
+              }}
+              inErrorState={false}
+              handleChange={this.handleChange('description')} />
+            <label htmlFor="sourceColumnId">{I18n.add_col.source_column}</label>
+            <Select
+              field={{
+                name: 'sourceColumnId',
+                value: this.state.sourceColumnId,
+                options: this.props.selectOptions,
+                isRequired: false
+              }}
+              inErrorState={false}
+              handleChange={this.handleChange('sourceColumnId')} />
+            <SoqlTypePillBox
+              transforms={transforms}
+              currentTransform={this.state.transform}
+              handleClick={this.handlePillClick} />
+          </Fieldset>
+        </form>
+      </div>
     );
   }
 }

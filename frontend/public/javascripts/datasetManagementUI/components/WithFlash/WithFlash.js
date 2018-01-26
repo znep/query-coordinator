@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import FlashMessage from 'datasetManagementUI/containers/FlashMessageContainer';
-import styles from './WithFlash.module.scss';
 
 class WithFlash extends Component {
   constructor() {
@@ -33,9 +32,11 @@ class WithFlash extends Component {
       paddingTop: flashVisible ? this.state.flashHeight + 12 : 0
     };
 
+    const classes = `dsmp-container ${useFlexStyles ? 'dsmp-flex-container' : 'dsmp-nonflex-container'}`;
+
     return (
-      <div className={useFlexStyles ? styles.flexContainer : styles.container}>
-        <div className={styles.flashContainer} ref={flash => this.getHeight(flash)}>
+      <div className={classes}>
+        <div className="dsmp-flash-container" ref={flash => this.getHeight(flash)}>
           <FlashMessage />
         </div>
         <div style={formPadding}>{this.props.children}</div>

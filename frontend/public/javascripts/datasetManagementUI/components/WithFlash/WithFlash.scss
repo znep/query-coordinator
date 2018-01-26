@@ -1,9 +1,7 @@
-.container {
-  padding-bottom: 3.5em;
+.dsmp-container {
   width: auto;
   margin-left: 250px;
   min-width: 250px;
-  max-width: 1200px;
   min-height: 100%;
   height: auto;
 
@@ -14,8 +12,11 @@
   }
 }
 
-.flexContainer {
-  composes: container;
+.dsmp-nonflex-container {
+  padding-bottom: 3.5em;
+}
+
+.dsmp-flex-container {
   flex-grow: 1;
   padding-bottom: 0;
   max-width: none;
@@ -25,11 +26,11 @@
   }
 }
 
-.flexContainer > div:nth-child(2) {
+.dsmp-flex-container > div:nth-child(2) {
   height: 100%;
 }
 
-.flashContainer {
+.dsmp-flash-container {
   position: fixed;
   z-index: 1;
   width: calc(100% - 250px);

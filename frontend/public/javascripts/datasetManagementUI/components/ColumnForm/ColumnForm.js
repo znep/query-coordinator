@@ -4,8 +4,6 @@ import Fieldset from 'datasetManagementUI/components/Fieldset/Fieldset';
 import WithFlash from 'datasetManagementUI/containers/WithFlashContainer';
 import _ from 'lodash';
 import ColumnField from 'datasetManagementUI/containers/ColumnFieldContainer';
-import styles from './ColumnForm.module.scss';
-
 
 // makeFieldsFromColumn :: OutputColumn -> Array Field
 function makeFieldsFromColumn(outputColumn) {
@@ -44,24 +42,26 @@ class ColumnForm extends Component {
 
     return (
       <WithFlash>
-        <form className={styles.form} onSubmit={handleColumnFormSubmit}>
-          <Fieldset
-            title={I18n.metadata_manage.column_tab.title}
-            subtitle={I18n.metadata_manage.column_tab.subtitle}>
-            {sortedColumns.map((column, idx) => (
-              <div className={styles.row} key={idx}>
-                {makeFieldsFromColumn(column).map(field => (
-                  <ColumnField
-                    key={`${column.id}-${field.name}`}
-                    field={field}
-                    columnId={column.id}
-                    handleChange={e => handleColumnChange(column.id, field.id, e.target.value)} />
-                ))}
-              </div>
-            ))}
-          </Fieldset>
-          <input type="submit" id="submit-column-form" className={styles.hidden} value="submit" />
-        </form>
+        <div id="column-form">
+          <form className="dsmp-form" onSubmit={handleColumnFormSubmit}>
+            <Fieldset
+              title={I18n.metadata_manage.column_tab.title}
+              subtitle={I18n.metadata_manage.column_tab.subtitle}>
+              {sortedColumns.map((column, idx) => (
+                <div className="dsmp-row" key={idx}>
+                  {makeFieldsFromColumn(column).map(field => (
+                    <ColumnField
+                      key={`${column.id}-${field.name}`}
+                      field={field}
+                      columnId={column.id}
+                      handleChange={e => handleColumnChange(column.id, field.id, e.target.value)} />
+                  ))}
+                </div>
+              ))}
+            </Fieldset>
+            <input type="submit" id="submit-column-form" className="dsmp-hidden" value="submit" />
+          </form>
+        </div>
       </WithFlash>
     );
   }

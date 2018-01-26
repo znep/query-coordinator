@@ -15,69 +15,71 @@ const DatasetFieldset = ({
   handleXClick,
   errors
 }) => (
-  <Fieldset
-    title={href.title}
-    closable
-    closeCallback={handleXClick}
-    containerClass="dsmp-fieldset"
-    legendClass="dsmp-legend">
-    <div className="dsmp-field-wrapper" data-cheetah-hook="dataset-fieldset">
-      <div>
-        <label>{I18n.show_sources.label_name}</label>
-        <TextInput
-          field={{
-            name: 'title',
-            value: href.title,
-            label: I18n.show_sources.label_name
-          }}
-          inErrorState={false}
-          handleChange={e => handleChangeHref(href.id, 'title', e.target.value)} />
+  <div id="dataset-fieldset">
+    <Fieldset
+      title={href.title}
+      closable
+      closeCallback={handleXClick}
+      containerClass="dsmp-fieldset"
+      legendClass="dsmp-legend">
+      <div className="dsmp-field-wrapper" data-cheetah-hook="dataset-fieldset">
+        <div>
+          <label>{I18n.show_sources.label_name}</label>
+          <TextInput
+            field={{
+              name: 'title',
+              value: href.title,
+              label: I18n.show_sources.label_name
+            }}
+            inErrorState={false}
+            handleChange={e => handleChangeHref(href.id, 'title', e.target.value)} />
+        </div>
+        <div>
+          <label>{I18n.show_sources.label_description}</label>
+          <TextArea
+            field={{
+              name: 'description',
+              value: href.description,
+              label: I18n.show_sources.label_description
+            }}
+            inErrorState={false}
+            handleChange={e => handleChangeHref(href.id, 'description', e.target.value)} />
+        </div>
+        <div>
+          {Object.keys(href.urls).map((key, idx) => {
+            return (
+              <URLField
+                key={key}
+                uuid={key}
+                hrefId={href.id}
+                errors={errors}
+                value={href.urls[key]}
+                handleXClick={
+                  idx === 0
+                    ? () => handleRemoveFirstURL(href.id, key)
+                    : () => handleRemoveOtherURL(href.id, key)
+                }
+                handleChangeUrl={handleChangeUrl(key)} />
+            );
+          })}
+          <a className="dsmp-add-URL-btn" onClick={handleAddURL}>
+            {I18n.show_sources.add_url}
+          </a>
+        </div>
+        <div>
+          <label>{I18n.show_sources.label_data_dictionary}</label>
+          <TextInput
+            field={{
+              name: 'dictionary-url',
+              value: href.data_dictionary,
+              label: I18n.show_sources.label_data_dictionary
+            }}
+            inErrorState={false}
+            handleChange={e => handleChangeHref(href.id, 'data_dictionary', e.target.value)} />
+        </div>
       </div>
-      <div>
-        <label>{I18n.show_sources.label_description}</label>
-        <TextArea
-          field={{
-            name: 'description',
-            value: href.description,
-            label: I18n.show_sources.label_description
-          }}
-          inErrorState={false}
-          handleChange={e => handleChangeHref(href.id, 'description', e.target.value)} />
-      </div>
-      <div>
-        {Object.keys(href.urls).map((key, idx) => {
-          return (
-            <URLField
-              key={key}
-              uuid={key}
-              hrefId={href.id}
-              errors={errors}
-              value={href.urls[key]}
-              handleXClick={
-                idx === 0
-                  ? () => handleRemoveFirstURL(href.id, key)
-                  : () => handleRemoveOtherURL(href.id, key)
-              }
-              handleChangeUrl={handleChangeUrl(key)} />
-          );
-        })}
-        <a className="dsmp-add-URL-btn" onClick={handleAddURL}>
-          {I18n.show_sources.add_url}
-        </a>
-      </div>
-      <div>
-        <label>{I18n.show_sources.label_data_dictionary}</label>
-        <TextInput
-          field={{
-            name: 'dictionary-url',
-            value: href.data_dictionary,
-            label: I18n.show_sources.label_data_dictionary
-          }}
-          inErrorState={false}
-          handleChange={e => handleChangeHref(href.id, 'data_dictionary', e.target.value)} />
-      </div>
-    </div>
-  </Fieldset>
+    </Fieldset>
+  </div>
 );
 
 DatasetFieldset.propTypes = {

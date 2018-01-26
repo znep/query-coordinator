@@ -806,7 +806,15 @@ export class PresentationPane extends Component {
     );
   }
 
-  renderSliderControl = (name, rangeMin, rangeMax, step, value, onChange, description) => {
+  renderSliderControl = ({
+    name: name,
+    minValue: rangeMin,
+    maxValue: rangeMax,
+    step: step,
+    value: value,
+    onChange: onChange,
+    description: description
+  }) => {
     const attributes = {
       delay: getMapSliderDebounceMs(),
       id: name,
@@ -838,49 +846,59 @@ export class PresentationPane extends Component {
       onStackRadiusChange
     } = this.props;
     const maxClusteringZoomLevelSlider = this.renderSliderControl(
-      'max_clustering_zoom_level',
-      1,
-      22,
-      1,
-      selectors.getMaxClusteringZoomLevel(vifAuthoring),
-      onMaxClusteringZoomLevelChange,
-      I18n.t('fields.max_clustering_zoom_level.description', { scope })
+      {
+        name: 'max_clustering_zoom_level',
+        minValue: 1,
+        maxValue: 22,
+        step: 1,
+        value: selectors.getMaxClusteringZoomLevel(vifAuthoring),
+        onChange: onMaxClusteringZoomLevelChange,
+        description: I18n.t('fields.max_clustering_zoom_level.description', { scope })
+      }
     );
     const pointThresholdSlider = this.renderSliderControl(
-      'point_threshold',
-      100,
-      10000,
-      100,
-      selectors.getPointThreshold(vifAuthoring),
-      onPointThresholdChange,
-      I18n.t('fields.point_threshold.description', { scope })
+      {
+        name: 'point_threshold',
+        minValue: 100,
+        maxValue: 10000,
+        step: 100,
+        value: selectors.getPointThreshold(vifAuthoring),
+        onChange: onPointThresholdChange,
+        description: I18n.t('fields.point_threshold.description', { scope })
+      }
     );
     const clusterRadiusSlider = this.renderSliderControl(
-      'cluster_radius',
-      20,
-      120,
-      1,
-      selectors.getClusterRadius(vifAuthoring),
-      onClusterRadiusChange,
-      null
+      {
+        name: 'cluster_radius',
+        minValue: 20,
+        maxValue: 120,
+        step: 1,
+        value: selectors.getClusterRadius(vifAuthoring),
+        onChange: onClusterRadiusChange,
+        description: null
+      }
     );
     const maxClusterSizeSlider = this.renderSliderControl(
-      'max_cluster_size',
-      24,
-      50,
-      1,
-      selectors.getMaxClusterSize(vifAuthoring),
-      onMaxClusterSizeChange,
-      null
+      {
+        name: 'max_cluster_size',
+        minValue: 24,
+        maxValue: 50,
+        step: 1,
+        value: selectors.getMaxClusterSize(vifAuthoring),
+        onChange: onMaxClusterSizeChange,
+        description: null
+      }
     );
     const stackRadiusSlider = this.renderSliderControl(
-      'stack_radius',
-      10,
-      80,
-      1,
-      selectors.getStackRadius(vifAuthoring),
-      onStackRadiusChange,
-      null
+      {
+        name: 'stack_radius',
+        minValue: 1,
+        maxValue: 80,
+        step: 1,
+        value: selectors.getStackRadius(vifAuthoring),
+        onChange: onStackRadiusChange,
+        description: null
+      }
     );
 
     return (

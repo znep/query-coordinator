@@ -26,7 +26,9 @@ export function getPointResizeByColumn() {
 }
 
 export function getPointOpacity() {
-  return _.get(this, 'configuration.pointOpacity', 1);
+// Point opacity in vif has a range of 0 to 100.
+// Converting it to 0-1 for using in the paint property
+  return _.get(this, 'configuration.pointOpacity', 100) / 100;
 }
 
 export function getClusterCircleRadius(resizeByRange, aggregateAndResizeBy) {

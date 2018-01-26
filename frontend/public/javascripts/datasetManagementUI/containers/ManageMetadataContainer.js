@@ -697,7 +697,8 @@ export function handleServerErrors(errorDetails = {}, columns = []) {
 const mapDispatchToProps = (dispatch, ownProps) => ({
   showFlash: (type, msg) => dispatch(FlashActions.showFlashMessage(type, msg)),
   hideFlash: () => dispatch(FlashActions.hideFlashMessage()),
-  handleModalDismiss: path => dispatch(MetadataActions.dismissMetadataPane(path, ownProps.params)),
+  handleModalDismiss: (path, colFormStatus, datasetFormStatus) =>
+    dispatch(MetadataActions.dismissMetadataPane(path, ownProps.params, colFormStatus, datasetFormStatus)),
   setFormErrors: (formName, errors) => dispatch(FormActions.setFormErrors(formName, errors)),
   markFormDirty: formName => dispatch(FormActions.markFormDirty(formName)),
   markFormClean: formName => dispatch(FormActions.markFormClean(formName)),

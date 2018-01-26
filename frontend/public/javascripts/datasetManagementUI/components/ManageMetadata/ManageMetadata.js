@@ -7,8 +7,8 @@ import {
   validateFieldsets,
   validateColumns
 } from 'datasetManagementUI/containers/ManageMetadataContainer';
-import ManageMetadataSidebar from
-  'datasetManagementUI/components/ManageMetadataSidebar/ManageMetadataSidebar';
+import ManageMetadataSidebar
+  from 'datasetManagementUI/components/ManageMetadataSidebar/ManageMetadataSidebar';
 import SubmitButton from 'datasetManagementUI/containers/SubmitButtonContainer';
 import styles from './ManageMetadata.module.scss';
 
@@ -172,15 +172,30 @@ class ManageMetadata extends Component {
 
   render() {
     const { datasetFormDirty, colFormDirty, params } = this.props;
+    const { datasetForm, columnForm } = this.state;
     const formDirty = datasetFormDirty || colFormDirty;
     const onColumnTab = !!params.outputSchemaId;
 
     return (
       <div className={styles.manageMetadata}>
-        <Modal fullScreen onDismiss={() => this.props.handleModalDismiss(this.props.pathToNewOutputSchema)}>
+        <Modal
+          fullScreen
+          onDismiss={() =>
+            this.props.handleModalDismiss(
+              this.props.pathToNewOutputSchema,
+              columnForm.status,
+              datasetForm.status
+            )
+          }>
           <ModalHeader
             title={I18n.metadata_manage.title}
-            onDismiss={() => this.props.handleModalDismiss(this.props.pathToNewOutputSchema)} />
+            onDismiss={() =>
+              this.props.handleModalDismiss(
+                this.props.pathToNewOutputSchema,
+                columnForm.status,
+                datasetForm.status
+              )
+            } />
           <ModalContent>
             <ManageMetadataSidebar
               params={this.props.params}
@@ -202,7 +217,13 @@ class ManageMetadata extends Component {
           <ModalFooter>
             <button
               className={styles.button}
-              onClick={() => this.props.handleModalDismiss(this.props.pathToNewOutputSchema)}>
+              onClick={() =>
+                this.props.handleModalDismiss(
+                  this.props.pathToNewOutputSchema,
+                  columnForm.status,
+                  datasetForm.status
+                )
+              }>
               {formDirty ? I18n.common.cancel : I18n.common.done}
             </button>
             <SubmitButton

@@ -32,14 +32,14 @@ class WithFlash extends Component {
       paddingTop: flashVisible ? this.state.flashHeight + 12 : 0
     };
 
+    const classes = `dsmp-container ${useFlexStyles ? 'dsmp-flex-container' : 'dsmp-nonflex-container'}`;
+
     return (
-      <div id="with-flash">
-        <div className={useFlexStyles ? 'dsmp-flex-container' : 'dsmp-container'}>
-          <div className="dsmp-flash-container" ref={flash => this.getHeight(flash)}>
-            <FlashMessage />
-          </div>
-          <div style={formPadding}>{this.props.children}</div>
+      <div className={classes}>
+        <div className="dsmp-flash-container" ref={flash => this.getHeight(flash)}>
+          <FlashMessage />
         </div>
+        <div style={formPadding}>{this.props.children}</div>
       </div>
     );
   }

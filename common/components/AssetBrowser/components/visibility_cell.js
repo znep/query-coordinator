@@ -45,7 +45,7 @@ export class VisibilityCell extends Component {
 
     return moderationStatus === constants.APPROVAL_STATUS_REJECTED ||
       routingStatus === constants.APPROVAL_STATUS_REJECTED ||
-      _.some(approvals, (item) => item.state === constants.APPROVAL_STATUS_REJECTED);
+      approvals.some((item) => item.state === constants.APPROVAL_STATUS_REJECTED);
   }
 
   // "Awaiting approval" from either R&A or View Moderation
@@ -53,7 +53,7 @@ export class VisibilityCell extends Component {
     const { approvals, moderationStatus, routingStatus } = this.props;
 
     return moderationStatus === constants.APPROVAL_STATUS_PENDING ||
-      _.some(approvals, (item) => item.state === constants.APPROVAL_STATUS_PENDING) ||
+      approvals.some((item) => item.state === constants.APPROVAL_STATUS_PENDING) ||
       (
         routingStatus === constants.APPROVAL_STATUS_PENDING &&
         moderationStatus !== constants.APPROVAL_STATUS_REJECTED

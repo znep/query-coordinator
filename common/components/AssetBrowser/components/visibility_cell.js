@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import I18n from 'common/i18n';
 import SocrataIcon from 'common/components/SocrataIcon';
 
+import * as constants from 'common/components/AssetBrowser/lib/constants';
+
 export class VisibilityCell extends Component {
   constructor(props) {
     super(props);
@@ -39,16 +41,23 @@ export class VisibilityCell extends Component {
 
   // "Rejected" from either R&A or View Moderation
   isRejected() {
-    const { moderationStatus, routingStatus } = this.props;
+    const { approvals, moderationStatus, routingStatus } = this.props;
 
-    return moderationStatus === 'rejected' || routingStatus === 'rejected';
+    return moderationStatus === constants.APPROVAL_STATUS_REJECTED ||
+      routingStatus === constants.APPROVAL_STATUS_REJECTED ||
+      _.some(approvals, (item) => item.state === constants.APPROVAL_STATUS_REJECTED);
   }
 
   // "Awaiting approval" from either R&A or View Moderation
   isPending() {
-    const { moderationStatus, routingStatus } = this.props;
+    const { approvals, moderationStatus, routingStatus } = this.props;
 
-    return moderationStatus === 'pending' || (routingStatus === 'pending' && moderationStatus !== 'rejected');
+    return moderationStatus === constants.APPROVAL_STATUS_PENDING ||
+      _.some(approvals, (item) => item.state === constants.APPROVAL_STATUS_PENDING) ||
+      (
+        routingStatus === constants.APPROVAL_STATUS_PENDING &&
+        moderationStatus !== constants.APPROVAL_STATUS_REJECTED
+      );
   }
 
   // Note that order here is important.
@@ -56,7 +65,7 @@ export class VisibilityCell extends Component {
   // - Privacy takes next priority, because approving it has no effect
   // - then comes the various approvals
   render() {
-    let visibilityCellText = this.getTranslation('pending');
+    let visibilityCellText = this.getTranslation(constants.APPROVAL_STATUS_PENDING);
     let visibilityIconName = 'private';
     let descriptionText;
 
@@ -78,7 +87,7 @@ export class VisibilityCell extends Component {
     if (this.isRejected()) {
       visibilityIconName = 'eye-blocked';
       visibilityCellText = this.getTranslation('hidden');
-      descriptionText = this.getTranslation('rejected');
+      descriptionText = this.getTranslation(constants.APPROVAL_STATUS_REJECTED);
     }
 
     if (this.props.isExplicitlyHidden) {
@@ -94,7 +103,7 @@ export class VisibilityCell extends Component {
     if (this.isPending()) {
       visibilityIconName = 'eye-blocked';
       visibilityCellText = this.getTranslation('private');
-      descriptionText = this.getTranslation('awaiting_approval');
+      descriptionText = this.getTranslation('pending_approval');
     }
 
     const renderDescription = (descriptionText) => {

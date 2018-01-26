@@ -40,11 +40,16 @@ describe('PermissionsSagas', () => {
 
       assert.deepEqual(
         gen.next().value,
-        select(selectors.getAssetUid)
+        select(selectors.getCurrentView)
       );
 
       assert.deepEqual(
-        gen.next(fakeAssetId).value,
+        gen.next({ id: fakeAssetId }).value,
+        select(selectors.getUiMode)
+      );
+
+      assert.deepEqual(
+        gen.next(MODES.MANAGE_COLLABORATORS).value,
         call(
           fetchJsonWithDefaults,
           permissionsUrl(fakeAssetId)
@@ -67,11 +72,16 @@ describe('PermissionsSagas', () => {
 
       assert.deepEqual(
         gen.next().value,
-        select(selectors.getAssetUid)
+        select(selectors.getCurrentView)
       );
 
       assert.deepEqual(
-        gen.next(fakeAssetId).value,
+        gen.next({ id: fakeAssetId }).value,
+        select(selectors.getUiMode)
+      );
+
+      assert.deepEqual(
+        gen.next(MODES.MANAGE_COLLABORATORS).value,
         call(
           fetchJsonWithDefaults,
           permissionsUrl(fakeAssetId)
@@ -94,11 +104,16 @@ describe('PermissionsSagas', () => {
 
       assert.deepEqual(
         gen.next().value,
-        select(selectors.getAssetUid)
+        select(selectors.getCurrentView)
       );
 
       assert.deepEqual(
-        gen.next(fakeAssetId).value,
+        gen.next({ id: fakeAssetId }).value,
+        select(selectors.getUiMode)
+      );
+
+      assert.deepEqual(
+        gen.next(MODES.MANAGE_COLLABORATORS).value,
         call(
           fetchJsonWithDefaults,
           permissionsUrl(fakeAssetId)

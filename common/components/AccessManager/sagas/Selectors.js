@@ -13,3 +13,8 @@ export const getCurrentOwner =
 // userSearch selectors
 export const getCurrentUserSearchQuery = state => state.addUsers.query;
 export const getSelectedUsers = state => state.addUsers.selectedUsers;
+
+// permissions selectors
+export const getCurrentView = state => state.permissions.view;
+export const getCurrentScope =
+  state => (state.permissions.permissions ? state.permissions.permissions.scope : null);

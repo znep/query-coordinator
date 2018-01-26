@@ -27,7 +27,7 @@ import styles from './change-owner.module.scss';
  */
 class ChangeOwner extends Component {
   static propTypes = {
-    saveInProgress: PropTypes.bool,
+    confirmButtonBusy: PropTypes.bool,
     users: PropTypes.arrayOf(UserPropType),
     addSelectedOwner: PropTypes.func.isRequired,
     currentSearchQuery: PropTypes.string,
@@ -39,7 +39,7 @@ class ChangeOwner extends Component {
   }
 
   static defaultProps = {
-    saveInProgress: false
+    confirmButtonBusy: false
   }
 
   static updateConfirmButton = (props) => {
@@ -103,18 +103,18 @@ class ChangeOwner extends Component {
   }
 
   render() {
-    const { saveInProgress } = this.props;
+    const { confirmButtonBusy } = this.props;
     return (
       <div>
         {this.renderCurrentOwner()}
-        {!saveInProgress && this.renderChangeOwnerSearch()}
+        {!confirmButtonBusy && this.renderChangeOwnerSearch()}
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  saveInProgress: state.ui.saveInProgress,
+  confirmButtonBusy: state.ui.footer.confirmButtonBusy,
 
   // for UserSearch
   searchResults: state.changeOwner.results ? state.changeOwner.results.results : null,

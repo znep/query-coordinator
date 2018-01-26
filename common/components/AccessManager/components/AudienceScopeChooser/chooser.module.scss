@@ -2,9 +2,22 @@
 
 .chooser {
   margin-bottom: 15px;
-  display: flex;
-  justify-content: space-around;
   width: 75%;
   margin-left: auto;
   margin-right: auto;
+}
+
+.chooser-buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.approval-message {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.approval-message-placeholder {
+  padding-top: 26px;
+  visibility: hidden;
 }

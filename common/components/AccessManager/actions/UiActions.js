@@ -22,3 +22,7 @@ export const dismissToastMessage = () => ({ type: DISMISS_TOAST_MESSAGE });
 
 export const REDIRECT_TO = 'REDIRECT_TO';
 export const redirectTo = (url) => ({ type: REDIRECT_TO, url });
+
+export const SHOW_APPROVAL_MESSAGE_CHANGED = 'SHOW_APPROVAL_MESSAGE_CHANGED';
+export const showApprovalMessageChanged =
+  (showApprovalMessage) => ({ type: SHOW_APPROVAL_MESSAGE_CHANGED, showApprovalMessage });

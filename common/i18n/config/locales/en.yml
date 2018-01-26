@@ -463,6 +463,7 @@ en:
           owner: Can edit & manage
         add: Add
         audience:
+          approval_note: Publishing to the public requires approval.
           organization:
             subtitle: Everyone in my Organization can view
             title: Organization
@@ -500,6 +501,7 @@ en:
           title: Publish Asset
         publish_button: Publish
         save: Save
+        submit_for_approval: Submit for Approval
         summary:
           subtitle: Who can see this dataset?
           title: Manage Access

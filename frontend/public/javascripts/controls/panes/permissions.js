@@ -80,7 +80,6 @@
                 var $sectionContent = $(cpObj.currentDom).find('.sectionContent.togglePermissionsForm');
                 var $withdrawApprovalRequestButton = $(
                   '<a href="#" class="button" id="withdraw_approval_request">' +
-                    '<span class="icon"></span>' +
                     $.t('screens.ds.grid_sidebar.permissions.withdraw_approval_request') +
                   '</a>'
                 );

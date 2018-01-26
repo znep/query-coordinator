@@ -5,7 +5,7 @@ export const defaultState = {
   collapsed: true,
   focusedResult: undefined,
   query: _.get(window, 'initialState.autocomplete.query'),
-  resultsVisible: true,
+  resultsVisible: false,
   searchResults: {
     resultSetSize: 0,
     results: [],

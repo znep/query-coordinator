@@ -112,7 +112,7 @@
                 <h3><%= t('editor.settings_panel.publishing_section.visibility.private') %></h3>
               </div>
               <div>
-                <button class="btn btn-alternate-2 btn-dark" <%= ' disabled' unless can_manage_story_visibility?(is_goal) %>>
+                <button class="btn btn-alternate-2 btn-dark btn-legacy" <%= ' disabled' unless can_manage_story_visibility?(is_goal) %>>
                   <span><%= t('editor.settings_panel.publishing_section.visibility.make_story_public') %></span>
                 </button>
               </div>
@@ -126,7 +126,7 @@
                 <h3><%= t('editor.settings_panel.publishing_section.status.draft') %></h3>
               </div>
               <div>
-                <button class="btn btn-primary btn-dark" disabled>
+                <button class="btn btn-primary btn-dark btn-legacy" disabled>
                   <span><%= t('editor.settings_panel.publishing_section.status.update_public_version') %></span>
                 </button>
               </div>

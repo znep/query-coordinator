@@ -1,4 +1,4 @@
-FROM socrata/runit-ruby-2.3
+FROM socrata/runit-ruby-2.3.5
 MAINTAINER Socrata <sysadmin@socrata.com>
 
 ENV TIMECMD="/usr/bin/time -p"

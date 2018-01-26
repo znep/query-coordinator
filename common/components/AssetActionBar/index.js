@@ -83,7 +83,6 @@ class AssetActionBar extends Component {
 
   render() {
     const assetName = _.get(this.currentView, 'name');
-    const currentViewUid = this.currentView.id;
     const publicationState = this.comprehendPublicationState();
     const { edit, manage } = this.grantedPermissionTo;
 
@@ -95,7 +94,8 @@ class AssetActionBar extends Component {
           key="publication-action"
           {...publicationState}
           currentViewName={assetName}
-          currentViewUid={currentViewUid}
+          currentViewType={this.currentView.viewType}
+          currentViewUid={this.currentView.id}
           allowedTo={this.grantedPermissionTo} />
       );
     }

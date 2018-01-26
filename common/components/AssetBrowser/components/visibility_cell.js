@@ -131,6 +131,7 @@ export class VisibilityCell extends Component {
 }
 
 VisibilityCell.propTypes = {
+  approvals: PropTypes.array,
   grants: PropTypes.array,
   isExplicitlyHidden: PropTypes.bool,
   isModerationApproved: PropTypes.bool,
@@ -140,6 +141,10 @@ VisibilityCell.propTypes = {
   moderationStatus: PropTypes.string,
   routingStatus: PropTypes.string,
   visibleToAnonymous: PropTypes.bool.isRequired
+};
+
+VisibilityCell.defaultProps = {
+  approvals: []
 };
 
 export default VisibilityCell;

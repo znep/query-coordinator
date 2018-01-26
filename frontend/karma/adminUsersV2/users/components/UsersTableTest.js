@@ -11,7 +11,8 @@ import ResultsTable from 'adminUsersV2/components/ResultsTable';
 
 describe('components/UsersTable', () => {
   const defaultProps = {
-    ...initialState,
+    users: initialState.users.results,
+    onChangePage: sinon.spy(),
     onRoleChange: sinon.spy(),
     onRemoveUserRole: sinon.spy(),
     onResetPassword: sinon.spy(),

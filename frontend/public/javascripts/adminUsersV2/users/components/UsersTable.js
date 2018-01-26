@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { connect as fullConnect } from '../../utils';
+import { connect as fullConnect, I18nPropType } from '../../utils';
 import ResultsTable from '../../components/ResultsTable';
 import DateFromNow from '../../components/DateFromNow';
 import SocrataIcon from 'common/components/SocrataIcon';
@@ -17,7 +17,7 @@ import { SORT_KEYS } from 'common/users-api';
 
 export class UsersTable extends Component {
   static propTypes = {
-    I18n: PropTypes.object.isRequired,
+    I18n: I18nPropType.isRequired,
     loadingData: PropTypes.bool.isRequired,
     onChangePage: PropTypes.func.isRequired,
     onRemoveUserRole: PropTypes.func.isRequired,

@@ -1,7 +1,13 @@
 import d3 from 'd3';
 import _ from 'lodash';
 import testData from '../testData';
-import MetadataProvider from 'common/visualizations/dataProviders/MetadataProvider';
+import MetadataProvider, {
+  getDisplayableColumns,
+  getFilterableColumns,
+  isHiddenColumn,
+  isSubcolumn,
+  isSystemColumn
+} from 'common/visualizations/dataProviders/MetadataProvider';
 
 describe('MetadataProvider', () => {
   const VALID_DOMAIN = 'example.com';
@@ -325,11 +331,11 @@ describe('MetadataProvider', () => {
 
   describe('isSystemColumn()', () => {
     it('returns true if and only if the column starts with :', () => {
-      assert.isFalse(metadataProvider.isSystemColumn('foo', SAMPLE_DATASET_METADATA));
-      assert.isFalse(metadataProvider.isSystemColumn('foo:', SAMPLE_DATASET_METADATA));
-      assert.isFalse(metadataProvider.isSystemColumn('fo:o', SAMPLE_DATASET_METADATA));
-      assert.isFalse(metadataProvider.isSystemColumn('@foo', SAMPLE_DATASET_METADATA));
-      assert.isTrue(metadataProvider.isSystemColumn(':foo', SAMPLE_DATASET_METADATA));
+      assert.isFalse(isSystemColumn('foo', SAMPLE_DATASET_METADATA));
+      assert.isFalse(isSystemColumn('foo:', SAMPLE_DATASET_METADATA));
+      assert.isFalse(isSystemColumn('fo:o', SAMPLE_DATASET_METADATA));
+      assert.isFalse(isSystemColumn('@foo', SAMPLE_DATASET_METADATA));
+      assert.isTrue(isSystemColumn(':foo', SAMPLE_DATASET_METADATA));
     });
   });
 
@@ -381,25 +387,25 @@ describe('MetadataProvider', () => {
     });
 
     it('returns true when there is a suffix', () => {
-      assert.isFalse(metadataProvider.isSubcolumn(
+      assert.isFalse(isSubcolumn(
         'location_1',
         sampleDatasetMetadataWithExtraSimilarlyNamedColumns
       ));
 
-      assert.isTrue(metadataProvider.isSubcolumn(
+      assert.isTrue(isSubcolumn(
         'location_1_city',
         sampleDatasetMetadataWithExtraSimilarlyNamedColumns
       ));
     });
 
     it('flags subcolumns when there is not a suffix', () => {
-      assert.isFalse(metadataProvider.isSubcolumn('location', SAMPLE_DATASET_METADATA));
-      assert.isTrue(metadataProvider.isSubcolumn('location_city', SAMPLE_DATASET_METADATA));
+      assert.isFalse(isSubcolumn('location', SAMPLE_DATASET_METADATA));
+      assert.isTrue(isSubcolumn('location_city', SAMPLE_DATASET_METADATA));
     });
 
     // EN-17640 - this is to allow us to recreate OBE-style URL columns given NBE data
     it('doesnt flag URL subcolumns', () => {
-      assert.isFalse(metadataProvider.isSubcolumn(
+      assert.isFalse(isSubcolumn(
         'website_url_description',
         sampleDatasetMetadataWithExtraSimilarlyNamedColumns
       ));
@@ -408,64 +414,79 @@ describe('MetadataProvider', () => {
 
   describe('isHiddenColumn()', () => {
     it('returns true if the column flags includes "hidden"', () => {
-      assert.isTrue(metadataProvider.isHiddenColumn(['hidden'], SAMPLE_DATASET_METADATA));
+      assert.isTrue(isHiddenColumn(['hidden'], SAMPLE_DATASET_METADATA));
     });
 
     it('returns false if the column flags does not include "hidden"', () => {
-      assert.isFalse(metadataProvider.isHiddenColumn(['potato'], SAMPLE_DATASET_METADATA));
+      assert.isFalse(isHiddenColumn(['potato'], SAMPLE_DATASET_METADATA));
     });
 
     it('returns false if the column flags is undefined', () => {
-      assert.isFalse(metadataProvider.isHiddenColumn(undefined, SAMPLE_DATASET_METADATA));
+      assert.isFalse(isHiddenColumn(undefined, SAMPLE_DATASET_METADATA));
     });
   });
 
   describe('getDisplayableColumns()', () => {
-    const mockMetadata = {
+    const withSystemColumn = {
       columns: [{
-        fieldName: 'mockColumn'
+        fieldName: ':id',
+        name: 'system id'
       }]
     };
 
+    const withHiddenColumn = {
+      columns: [{
+        fieldName: 'secret',
+        flags: ['hidden'],
+        name: 'a hidden column'
+      }]
+    };
+
+    const withSubcolumn = {
+      columns: [
+        {
+          fieldName: 'subcolumn_zip',
+          name: 'a subcolumn (zip)'
+        },
+        {
+          fieldName: 'subcolumn',
+          name: 'a subcolumn'
+        }
+      ]
+    };
+
+    const allNormalColumns = {
+      columns: [{
+        fieldName: 'abby_normal',
+        name: 'Abby Normal'
+      }]
+    };
+
+    it('is a valid test suite', () => {
+      assert.isTrue(isSystemColumn(withSystemColumn.columns[0].fieldName));
+      assert.isFalse(isHiddenColumn(withSystemColumn.columns[0].flags));
+      assert.isFalse(isSubcolumn(':id', withSystemColumn));
+
+      assert.isFalse(isSystemColumn(withHiddenColumn.columns[0].fieldName));
+      assert.isTrue(isHiddenColumn(withHiddenColumn.columns[0].flags));
+      assert.isFalse(isSubcolumn('secret', withHiddenColumn));
+
+      assert.isFalse(isSystemColumn(withSubcolumn.columns[0].fieldName));
+      assert.isFalse(isHiddenColumn(withSubcolumn.columns[0].flags));
+      assert.isTrue(isSubcolumn('subcolumn_zip', withSubcolumn));
+
+      assert.isFalse(isSystemColumn(allNormalColumns.columns[0].fieldName));
+      assert.isFalse(isHiddenColumn(allNormalColumns.columns[0].flags));
+      assert.isFalse(isSubcolumn('abby_normal', allNormalColumns));
+    });
+
     it('excludes the column if isSystemColumn, isSubcolumn, or isHiddenColumn are true', () => {
-      sinon.stub(metadataProvider, 'isSystemColumn').returns(true);
-      sinon.stub(metadataProvider, 'isSubcolumn').returns(false);
-      sinon.stub(metadataProvider, 'isHiddenColumn').returns(false);
-      assert.lengthOf(metadataProvider.getDisplayableColumns(mockMetadata), 0);
-      metadataProvider.isSystemColumn.restore();
-      metadataProvider.isSubcolumn.restore();
-      metadataProvider.isHiddenColumn.restore();
-
-      sinon.stub(metadataProvider, 'isSystemColumn').returns(false);
-      sinon.stub(metadataProvider, 'isSubcolumn').returns(true);
-      sinon.stub(metadataProvider, 'isHiddenColumn').returns(false);
-      assert.lengthOf(metadataProvider.getDisplayableColumns(mockMetadata), 0);
-      metadataProvider.isSystemColumn.restore();
-      metadataProvider.isSubcolumn.restore();
-      metadataProvider.isHiddenColumn.restore();
-
-      sinon.stub(metadataProvider, 'isSystemColumn').returns(false);
-      sinon.stub(metadataProvider, 'isSubcolumn').returns(false);
-      sinon.stub(metadataProvider, 'isHiddenColumn').returns(true);
-      assert.lengthOf(metadataProvider.getDisplayableColumns(mockMetadata), 0);
-      metadataProvider.isSystemColumn.restore();
-      metadataProvider.isSubcolumn.restore();
-      metadataProvider.isHiddenColumn.restore();
-
-      sinon.stub(metadataProvider, 'isSystemColumn').returns(true);
-      sinon.stub(metadataProvider, 'isSubcolumn').returns(true);
-      sinon.stub(metadataProvider, 'isHiddenColumn').returns(true);
-      assert.lengthOf(metadataProvider.getDisplayableColumns(mockMetadata), 0);
-      metadataProvider.isSystemColumn.restore();
-      metadataProvider.isSubcolumn.restore();
-      metadataProvider.isHiddenColumn.restore();
-
-      sinon.stub(metadataProvider, 'isSystemColumn').returns(false);
-      sinon.stub(metadataProvider, 'isSubcolumn').returns(false);
-      sinon.stub(metadataProvider, 'isHiddenColumn').returns(false);
+      assert.lengthOf(getDisplayableColumns(withSystemColumn), 0);
+      assert.lengthOf(getDisplayableColumns(withSubcolumn), withSubcolumn.columns.length - 1);
+      assert.lengthOf(getDisplayableColumns(withHiddenColumn), 0);
       assert.deepEqual(
-        metadataProvider.getDisplayableColumns(mockMetadata),
-        mockMetadata.columns
+        getDisplayableColumns(allNormalColumns),
+        allNormalColumns.columns
       );
     });
   });
@@ -477,7 +498,7 @@ describe('MetadataProvider', () => {
         { dataTypeName: 'money', fieldName: 'roomba', rangeMin: 1, rangeMax: 100 }
       ];
 
-      const filteredColumns = metadataProvider.getFilterableColumns({ columns });
+      const filteredColumns = getFilterableColumns({ columns });
 
       assert.deepEqual(filteredColumns, [columns[1]]);
     });
@@ -488,7 +509,7 @@ describe('MetadataProvider', () => {
         { dataTypeName: 'number', fieldName: 'roomba', rangeMin: 1, rangeMax: 100 }
       ];
 
-      const filteredColumns = metadataProvider.getFilterableColumns({ columns });
+      const filteredColumns = getFilterableColumns({ columns });
 
       assert.deepEqual(filteredColumns, [columns[1]]);
     });
@@ -499,7 +520,7 @@ describe('MetadataProvider', () => {
         { dataTypeName: 'text', fieldName: 'sparrow' }
       ];
 
-      const filteredColumns = metadataProvider.getFilterableColumns({ columns });
+      const filteredColumns = getFilterableColumns({ columns });
 
       assert.deepEqual(filteredColumns, [columns[1]]);
     });
@@ -510,7 +531,7 @@ describe('MetadataProvider', () => {
         { dataTypeName: 'calendar_date', fieldName: 'piggy' }
       ];
 
-      const filteredColumns = metadataProvider.getFilterableColumns({ columns });
+      const filteredColumns = getFilterableColumns({ columns });
 
       assert.deepEqual(filteredColumns, [columns[1]]);
     });
@@ -529,8 +550,8 @@ describe('MetadataProvider', () => {
 
     it('returns only displayable and filterable columns', () => {
       return metadataProvider.getDisplayableFilterableColumns().then((columns) => {
-        assert.deepEqual(metadataProvider.getFilterableColumns({ columns }), columns);
-        assert.deepEqual(metadataProvider.getDisplayableColumns({ columns }), columns);
+        assert.deepEqual(getFilterableColumns({ columns }), columns);
+        assert.deepEqual(getDisplayableColumns({ columns }), columns);
       });
     });
   });

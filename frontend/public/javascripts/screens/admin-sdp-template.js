@@ -395,13 +395,13 @@ function t(str, props) {
 }
 
 $.Control.extend('pane_sdpTmplMetadata', {
-  getTitle: () => t('panes.metadata.title'),
+  getTitle: function() { return t('panes.metadata.title'); },
 
   getTemplateName: function() {
     return 'sidebarPaneWithFieldset';
   },
 
-  getSubtitle: () => t('panes.metadata.subtitle'),
+  getSubtitle: function() { return t('panes.metadata.subtitle'); },
 
   _getCurrentData: function() {
     return this._super() || publishNS.resolveCurrentThemeMeta();

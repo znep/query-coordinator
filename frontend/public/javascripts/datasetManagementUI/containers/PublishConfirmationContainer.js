@@ -22,7 +22,8 @@ export function mapStateToProps({ entities, ui }, { params }) {
 
   return {
     btnDisabled: !!revisionUpdatesInProgress.length,
-    publicSelected: permission === 'public'
+    publicSelected: permission === 'public',
+    view: entities.views[params.fourfour]
   };
 }
 

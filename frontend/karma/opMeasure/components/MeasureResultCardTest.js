@@ -8,7 +8,7 @@ import I18n from 'common/i18n';
 
 import { MeasureResultCard } from 'opMeasure/components/MeasureResultCard';
 
-describe('MeasureResultCard', () => {
+describe.only('MeasureResultCard', () => {
   const unresolvedPromise = new Promise(_.noop);
 
   const getProps = (props) => {
@@ -30,7 +30,7 @@ describe('MeasureResultCard', () => {
     const computedMeasure = {
       result: '33.00'
     };
-    const element = shallow(<MeasureResultCard computedMeasure={computedMeasure} {...getProps()} />);
+    const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
     const bigNumber = element.find('.measure-result-big-number');
     assert.lengthOf(bigNumber, 1);
     assert.equal(bigNumber.text(), '33.00');
@@ -97,7 +97,7 @@ describe('MeasureResultCard', () => {
       result: '1234567890.00'
     };
 
-    const card = shallow(<MeasureResultCard computedMeasure={computedMeasure} {...getProps()} />);
+    const card = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
     assert.equal(getRenderedValue(card), '1.23B');
   });
 
@@ -168,6 +168,20 @@ describe('MeasureResultCard', () => {
       });
     });
 
-  });
+    describe('when result is "NaN" or "Infinity"', () => {
+      it('renders message about not enough data', () => {
+        const computedMeasure = {
+          result: 'NaN',
+          dividingByZero: true
+        };
+        let element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+        assert.include(getSubtitle(element), I18n.t('open_performance.measure.dividing_by_zero'));
 
+        computedMeasure.result = 'Infinity';
+        element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+        assert.include(getSubtitle(element), I18n.t('open_performance.measure.dividing_by_zero'));
+      });
+    });
+
+  });
 });

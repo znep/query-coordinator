@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect } from '../../utils';
+import { connect as fullConnect, I18nPropType } from '../../utils';
 import * as Selectors from '../../selectors';
 
 export class CSVExportButton extends Component {
@@ -16,7 +16,7 @@ export class CSVExportButton extends Component {
 
 CSVExportButton.propTypes = {
   href: PropTypes.string.isRequired,
-  I18n: PropTypes.object.isRequired
+  I18n: I18nPropType.isRequired
 };
 
 const mapStateToProps = state => ({

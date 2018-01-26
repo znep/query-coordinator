@@ -90,12 +90,12 @@ export default class UnifiedMap extends SvgVisualization {
       } else if (vif.isRegionMap()) {
         return new VifRegionOverlay(this._map, this._element);
       } else {
-        return new VifPointOverlay(this._map);
+        return new VifPointOverlay(this._map, this._element);
       }
     } else if (newMapType === MAP_TYPES.LINE_MAP) {
-      return new VifLineOverlay(this._map);
+      return new VifLineOverlay(this._map, this._element);
     } else if (newMapType === MAP_TYPES.BOUNDARY_MAP) {
-      return new VifShapeOverlay(this._map);
+      return new VifShapeOverlay(this._map, this._element);
     } else {
       throw new Error(`Unknown map type ${newMapType}`);
     }

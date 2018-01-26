@@ -10,7 +10,7 @@ helper. Other projects should adopt similar helpers, please read the frontend ve
 This is expected to be a simple object containing keys for all defined feature flags. Usage example:
 
 ```javascript
-import { FeatureFlags } from 'common/feature_flags';
+import FeatureFlags from 'common/feature_flags';
 console.log('someFlag = ' + FeatureFlags.value('some_flag'));
 ```
 

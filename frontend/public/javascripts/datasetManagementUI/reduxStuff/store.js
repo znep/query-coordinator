@@ -20,12 +20,14 @@ export function getInitialState(view, customMetadataFieldsets) {
     downloadCount: view.downloadCount,
     license: view.license || {},
     licenseId: view.licenseId,
+    provenance: view.provenance,
     attribution: view.attribution,
     attributionLink: view.attributionLink,
     tags: view.tags || [],
     privateMetadata: view.privateMetadata || {},
     attachments: _.get(view, 'metadata.attachments', []),
     metadata: view.metadata || {},
+    approvals: view.approvals || [],
     customMetadataFieldsets
   };
 

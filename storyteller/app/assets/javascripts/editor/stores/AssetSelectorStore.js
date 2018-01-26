@@ -822,94 +822,26 @@ export default function AssetSelectorStore() {
     self._emitChange();
   }
 
-  // Given a view data object we can't directly visualize, returns a promise
-  // for a view data object we can directly visualize. Not guaranteed to succeed, as
-  // this transformation is not possible in all conditions.
-  function _getVisualizableView(originalViewData) {
-
-    // If we could not reach Core Server, fail silently because the HTTP request
-    // failure has already notified Airbrake.
-    if (originalViewData === null) {
-      return Promise.reject(null);
-    }
-
-    if (viewIsDirectlyVisualizable(_state.componentType, originalViewData)) {
-      return Promise.resolve(originalViewData);
-    }
-
-    return _getNbeView(originalViewData.domain, originalViewData.id).
-      then((nbeViewData) => {
-
-        // EN-7322 - No response on choosing some datasets
-        //
-        // Do not assume that we have view data. If the request for
-        // /api/migrations/four-four.json returned 404 it means that there
-        // is no corresponding NBE version of this dataset.
-        if (_.isPlainObject(nbeViewData)) {
-
-          // We should be able to handle all NBE datasets.
-          assert(
-            viewIsDirectlyVisualizable(_state.componentType, nbeViewData),
-            'All versions of this dataset deemed unfit for visualization!'
-          );
-          return nbeViewData;
-        } else {
-
-          // No migration. Give up.
-          alert(t('visualization.choose_dataset_unsupported_error')); // eslint-disable-line no-alert
-          return Promise.reject(null);
-        }
-      });
-  }
-
   function _chooseVisualizationDataset(payload) {
-    assertIsOneOfTypes(payload.domain, 'string');
-    assertIsOneOfTypes(payload.datasetUid, 'string');
+    assertIsOneOfTypes(payload.viewData, 'object');
 
-    _getView(payload.domain, payload.datasetUid).
-      then(_getVisualizableView).
-      then((viewData) => {
-        const isCreatingTable = _state.componentType === 'socrata.visualization.table';
+    const isCreatingTable = _state.componentType === 'socrata.visualization.table';
 
-        _setComponentPropertiesFromViewData(viewData);
+    _setComponentPropertiesFromViewData(payload.viewData);
 
-        if (isCreatingTable) {
-          _setUpTableFromSelectedDataset();
-          _state.step = WIZARD_STEP.TABLE_PREVIEW;
-        } else {
-          _state.step = WIZARD_STEP.AUTHOR_VISUALIZATION;
-        }
+    if (isCreatingTable) {
+      _setUpTableFromSelectedDataset();
+      _state.step = WIZARD_STEP.TABLE_PREVIEW;
+    } else {
+      // If we previously configured a table in this AssetSelector session, the vif.type is set to "table"
+      // which screws with the AX's initial state and causes a bug with the chart type picker
+      if (_.get(_state, 'componentProperties.vif.type') === 'table') {
+        _.unset(_state, 'componentProperties.vif.type');
+      }
+      _state.step = WIZARD_STEP.AUTHOR_VISUALIZATION;
+    }
 
-        self._emitChange();
-      }).
-      catch((error) => {
-
-        // EN-7322 - No response on choosing some datasets
-        //
-        // If the user attempts to add a chart using an OBE dataset that has
-        // no corresponding migrated NBE dataset, this promise chain is
-        // expected to fail. As such, we probably don't want to notify
-        // Airbrake.
-        //
-        // If the user has attempted to add a chart using one of these
-        // datasets we will reject the _getVisualizableView promise with
-        // null, which can be used to signify that this is one of the
-        // expected errors.
-        // Since the messaging to the user that the dataset they selected is
-        // not currently visualizable is done in _getVisualizableView, we can
-        // just fail silently here.
-        //
-        // TODO: Consider consolidating the user messaging for different
-        // expected error cases here and not in their upstream functions.
-        if (error !== null) {
-
-          if (window.console && console.error) {
-            console.error('Error selecting dataset: ', error);
-          }
-
-          exceptionNotifier.notify(error);
-        }
-      });
+    self._emitChange();
   }
 
   function _chooseVisualizationMapOrChart(payload) {
@@ -1017,30 +949,6 @@ export default function AssetSelectorStore() {
     // Not going into _state.componentProperties, as we don't want this blob
     // to end up stored in the story component data.
     _state.dataset = _.cloneDeep(viewData);
-  }
-
-  function _getNbeView(domain, obeUid) {
-    const migrationsUrl = `https://${domain}/api/migrations/${obeUid}.json`;
-
-    return httpRequest('GET', migrationsUrl).
-      then(({ data }) => _getView(domain, data.nbeId)).
-      catch((error) => {
-        const noMigrationMatch = error.message.match('Cannot find migration info for view with id');
-
-        // We expect to get 404s back for calls to /api/migrations for
-        // OBE datasets with no corresponding NBE dataset, so let's not
-        // notify Airbrake if this is the case. (This isn't a great
-        // approach but it seems better than treating 404s as a special
-        // case in httpRequest and then needing to explicitly check for
-        // 404s in every place that we use it).
-        if (noMigrationMatch === null) {
-          exceptionNotifier.notify(error);
-        }
-
-        // Because this error is already notified here we do not need to
-        // propagate it upward where the return vaule may be misinterpreted.
-        return null;
-      });
   }
 
   function _getView(domain, uid) {

@@ -21,6 +21,133 @@ const headersForDomain = (domain) => {
   return headers;
 };
 
+/*
+ * Static helper functions.
+ */
+
+export const isSystemColumn = (fieldName) => {
+  return fieldName[0] === ':';
+};
+
+// EN-13453: Don't try to pass along hidden columns.
+// If a logged in user has write access to a view, the request for metadata will return hidden
+// columns decorated with a nice hidden flag, instead of omitting the hidden columns completely.
+export const isHiddenColumn = (flags) => {
+  return flags ? _.includes(flags, 'hidden') : false;
+};
+
+/*
+ * CORE-4645 OBE datasets can have columns that have sub-columns. When converted to the NBE, these
+ * sub-columns become their own columns. This function uses heuristics to figure out if a
+ * column is likely to be a subcolumn (so not guaranteed to be 100% accurate!).
+ *
+ * This code is lifted from frontend: lib/common_metadata_methods.rb.
+ */
+export const isSubcolumn = (fieldName, datasetMetadata) => {
+  utils.assertIsOneOfTypes(fieldName, 'string');
+
+  let parentColumnName;
+  let returnValue = false;
+  const columns = datasetMetadata.columns;
+  const fieldNameByName = {};
+
+  const fieldNameWithoutCollisionSuffix = fieldName.replace(/_\d+$/g, '');
+
+  // EN-17640 - If we want pretty URL columns for NBE datasets, we need to let
+  // the _description subcolumn through to reconstruct OBE-like URL columns
+  const hasExplodedSuffix = /_(address|city|state|zip|type)$/.test(fieldNameWithoutCollisionSuffix);
+  const matchedColumn = _.find(columns, _.matches({ fieldName: fieldName }));
+
+  utils.assert(
+    matchedColumn,
+    `could not find column ${fieldName} in dataset ${datasetMetadata.id}`
+  );
+
+  // The naming convention is that child column names are the parent column name, followed by the
+  // child column name in parentheses. Remove the parentheses to get the parent column's name.
+  parentColumnName = matchedColumn.name.replace(/(\w) +\(.+\)$/, '$1');
+
+  /*
+   * CORE-6925: Fairly brittle, but with no other clear option, it seems that
+   * we can and should only flag a column as a subcolumn if it follows the
+   * naming conventions associated with "exploding" location, URL, and phone
+   * number columns, which is an OBE-to-NBE occurrence. Robert Macomber has
+   * verified the closed set of suffixes in Slack PM:
+   *
+   *   _type for the type subcolumn on phones (the number has no suffix)
+   *   _description for the description subcolumn on urls (the url itself has no suffix)
+   *   _address, _city, _state, _zip for location columns (the point has no suffix)
+   *
+   * See also https://socrata.slack.com/archives/engineering/p1442959713000621
+   * for an unfortunately lengthy conversation on this topic.
+   *
+   * Complicating this matter... there is no strict guarantee that any suffix
+   * for collision prevention (e.g. `_1`) will belong to a user-given column
+   * or an exploded column consistently. It's possible that a user will have
+   * a column ending in a number. Given that we're already restricting the
+   * columns that we're willing to mark as subcolumns based on the closed set
+   * of (non-numeric) suffixes, and the low probability of this very specific
+   * type of column name similarity, we'll strip numeric parts off the end of
+   * the column name *before* checking the closed set. This leaves us with a
+   * very low (but non-zero) probability that a user-provided column will be
+   * marked as an exploded subcolumn.
+   */
+  if (parentColumnName !== matchedColumn.name && hasExplodedSuffix) {
+    _.each(columns, (column) => {
+      fieldNameByName[column.name] = fieldNameByName[column.name] || [];
+      fieldNameByName[column.name].push(column.fieldName);
+    });
+
+    // Look for the parent column
+    // There are columns that have the same name as this one, sans parenthetical.
+    // Its field_name naming convention should also match, for us to infer it's a subcolumn.
+    returnValue = (fieldNameByName[parentColumnName] || []).
+      some((parentFieldName) => {
+        return parentFieldName + '_' === fieldName.substring(0, parentFieldName.length + 1);
+      });
+  }
+
+  return returnValue;
+};
+
+// Given a dataset metadata object (see .getDatasetMetadata()),
+// returns an array of the columns  which are suitable for
+// display to the user (all columns minus system and subcolumns).
+//
+// @return {Object[]}
+export const getDisplayableColumns = (datasetMetadata) => {
+  utils.assertHasProperty(datasetMetadata, 'columns');
+
+  return _.reject(datasetMetadata.columns, (column) => {
+    return isSystemColumn(column.fieldName) ||
+      isSubcolumn(column.fieldName, datasetMetadata) ||
+      isHiddenColumn(column.flags);
+  });
+};
+
+/**
+ * Returns columns that are support by our filtering experience.
+ * These columns include numbers (with column stats), text and
+ * calendar dates.
+ */
+export const getFilterableColumns = (datasetMetadata) => {
+  utils.assertHasProperty(datasetMetadata, 'columns');
+
+  return _.filter(datasetMetadata.columns, (column) => {
+    switch (column.dataTypeName) {
+      case 'money':
+      case 'number':
+        return _.isNumber(column.rangeMin) && _.isNumber(column.rangeMax);
+      case 'text':
+      case 'calendar_date':
+      case 'checkbox':
+        return true;
+      default:
+        return false;
+    }
+  });
+};
+
 function MetadataProvider(config, useCache = false) {
   utils.assertHasProperty(config, 'domain');
   utils.assertHasProperty(config, 'datasetUid');
@@ -194,131 +321,10 @@ function MetadataProvider(config, useCache = false) {
     });
   };
 
-  this.isSystemColumn = (fieldName) => {
-    return fieldName[0] === ':';
-  };
-
-  /*
-   * CORE-4645 OBE datasets can have columns that have sub-columns. When converted to the NBE, these
-   * sub-columns become their own columns. This function uses heuristics to figure out if a
-   * column is likely to be a subcolumn (so not guaranteed to be 100% accurate!).
-   *
-   * This code is lifted from frontend: lib/common_metadata_methods.rb.
-   */
-  this.isSubcolumn = (fieldName, datasetMetadata) => {
-    utils.assertIsOneOfTypes(fieldName, 'string');
-
-    let parentColumnName;
-    let isSubcolumn = false;
-    const columns = datasetMetadata.columns;
-    const fieldNameByName = {};
-
-    const fieldNameWithoutCollisionSuffix = fieldName.replace(/_\d+$/g, '');
-
-    // EN-17640 - If we want pretty URL columns for NBE datasets, we need to let
-    // the _description subcolumn through to reconstruct OBE-like URL columns
-    const hasExplodedSuffix = /_(address|city|state|zip|type)$/.test(fieldNameWithoutCollisionSuffix);
-    const matchedColumn = _.find(columns, _.matches({ fieldName: fieldName }));
-
-    utils.assert(
-      matchedColumn,
-      `could not find column ${fieldName} in dataset ${datasetMetadata.id}`
-    );
-
-    // The naming convention is that child column names are the parent column name, followed by the
-    // child column name in parentheses. Remove the parentheses to get the parent column's name.
-    parentColumnName = matchedColumn.name.replace(/(\w) +\(.+\)$/, '$1');
-
-    /*
-     * CORE-6925: Fairly brittle, but with no other clear option, it seems that
-     * we can and should only flag a column as a subcolumn if it follows the
-     * naming conventions associated with "exploding" location, URL, and phone
-     * number columns, which is an OBE-to-NBE occurrence. Robert Macomber has
-     * verified the closed set of suffixes in Slack PM:
-     *
-     *   _type for the type subcolumn on phones (the number has no suffix)
-     *   _description for the description subcolumn on urls (the url itself has no suffix)
-     *   _address, _city, _state, _zip for location columns (the point has no suffix)
-     *
-     * See also https://socrata.slack.com/archives/engineering/p1442959713000621
-     * for an unfortunately lengthy conversation on this topic.
-     *
-     * Complicating this matter... there is no strict guarantee that any suffix
-     * for collision prevention (e.g. `_1`) will belong to a user-given column
-     * or an exploded column consistently. It's possible that a user will have
-     * a column ending in a number. Given that we're already restricting the
-     * columns that we're willing to mark as subcolumns based on the closed set
-     * of (non-numeric) suffixes, and the low probability of this very specific
-     * type of column name similarity, we'll strip numeric parts off the end of
-     * the column name *before* checking the closed set. This leaves us with a
-     * very low (but non-zero) probability that a user-provided column will be
-     * marked as an exploded subcolumn.
-     */
-    if (parentColumnName !== matchedColumn.name && hasExplodedSuffix) {
-      _.each(columns, (column) => {
-        fieldNameByName[column.name] = fieldNameByName[column.name] || [];
-        fieldNameByName[column.name].push(column.fieldName);
-      });
-
-      // Look for the parent column
-      // There are columns that have the same name as this one, sans parenthetical.
-      // Its field_name naming convention should also match, for us to infer it's a subcolumn.
-      isSubcolumn = (fieldNameByName[parentColumnName] || []).
-        some((parentFieldName) => {
-          return parentFieldName + '_' === fieldName.substring(0, parentFieldName.length + 1);
-        });
-    }
-
-    return isSubcolumn;
-  };
-
-  // EN-13453: Don't try to pass along hidden columns.
-  // If a logged in user has write access to a view, the request for metadata will return hidden
-  // columns decorated with a nice hidden flag, instead of omitting the hidden columns completely.
-  this.isHiddenColumn = (flags) => {
-    return flags ? _.includes(flags, 'hidden') : false;
-  };
-
-  // Given a dataset metadata object (see .getDatasetMetadata()),
-  // returns an array of the columns  which are suitable for
-  // display to the user (all columns minus system and subcolumns).
-  //
-  // @return {Object[]}
-  this.getDisplayableColumns = (datasetMetadata) => {
-    utils.assertHasProperty(datasetMetadata, 'columns');
-
-    return _.reject(datasetMetadata.columns, (column) => {
-      return this.isSystemColumn(column.fieldName) ||
-        this.isSubcolumn(column.fieldName, datasetMetadata) ||
-        this.isHiddenColumn(column.flags);
-    });
-  };
-
-  /**
-   * Returns columns that are support by our filtering experience.
-   * These columns include numbers (with column stats), text and
-   * calendar dates.
-   */
-  this.getFilterableColumns = (datasetMetadata) => {
-    utils.assertHasProperty(datasetMetadata, 'columns');
-
-    return _.filter(datasetMetadata.columns, (column) => {
-      switch (column.dataTypeName) {
-        case 'money':
-        case 'number':
-          return _.isNumber(column.rangeMin) && _.isNumber(column.rangeMax);
-        case 'text':
-        case 'calendar_date':
-        case 'checkbox':
-          return true;
-        default:
-          return false;
-      }
-    });
-  };
-
   /**
    * Returns the result of getDisplayableColumns and getFilterableColumns.
+   * Also augments the column metadata with column stats for historical (bad?)
+   * reasons.
    * @param datasetMetadata A metadata object or a Promise for a metadata object
    *                        (optional; will fetch fresh metadata if omitted)
    */
@@ -337,8 +343,8 @@ function MetadataProvider(config, useCache = false) {
         const [datasetMetadata, columnStats] = resolutions;
         const columns = _.merge([], columnStats, datasetMetadata.columns);
         const getDisplayableFilterableColumns = _.flow(
-          this.getDisplayableColumns,
-          (displayableColumns) => this.getFilterableColumns({ columns: displayableColumns })
+          getDisplayableColumns,
+          (displayableColumns) => getFilterableColumns({ columns: displayableColumns })
         );
 
         return Promise.resolve(getDisplayableFilterableColumns({ columns }));
@@ -381,4 +387,4 @@ function MetadataProvider(config, useCache = false) {
   };
 }
 
-module.exports = MetadataProvider;
+export default MetadataProvider;

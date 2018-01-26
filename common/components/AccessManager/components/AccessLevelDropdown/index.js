@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
 
+import FeatureFlags from 'common/feature_flags';
 import I18n from 'common/i18n';
 import Dropdown from 'common/components/Dropdown';
 
@@ -41,7 +42,10 @@ class AccessLevelDropdown extends Component {
   static accessLevelsToOptions = (levels) =>
     levels.map(level => ({
       title: I18n.t(
-        `shared.site_chrome.access_manager.access_levels.${level.name}`
+        // we change these labels based on the value of the strict_permissions flag
+        FeatureFlags.value('strict_permissions') ?
+          `shared.site_chrome.access_manager.access_levels_strict_permissions.${level.name}` :
+          `shared.site_chrome.access_manager.access_levels.${level.name}`
       ),
       value: level
     })

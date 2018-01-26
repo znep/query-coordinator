@@ -769,7 +769,7 @@ module BrowseActions
     if measures_catalog_entries_enabled?
       measures_view_type = {
         :text => ::I18n.t('controls.browse.facets.view_types.measures'),
-        :value => 'measure',
+        :value => 'measures',
         :class => 'typeMeasure'
       }
 

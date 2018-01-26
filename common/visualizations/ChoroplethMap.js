@@ -2,7 +2,7 @@ var _ = require('lodash');
 var $ = require('jquery');
 var utils = require('common/js_utils');
 var ChoroplethMap = require('./views/ChoroplethMap');
-var MetadataProvider = require('./dataProviders/MetadataProvider');
+import MetadataProvider from 'common/visualizations/dataProviders/MetadataProvider';
 var GeospaceDataProvider = require('./dataProviders/GeospaceDataProvider');
 var SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 var SoqlHelpers = require('./dataProviders/SoqlHelpers');

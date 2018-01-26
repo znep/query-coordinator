@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect as fullConnect } from '../utils';
+import { connect as fullConnect, I18nPropType } from '../utils';
 import { spring } from 'react-motion';
 import ToastNotification from 'common/components/ToastNotification';
 import * as Selectors from '../selectors';
@@ -7,6 +7,7 @@ import has from 'lodash/has';
 
 export class Notification extends Component {
   static propTypes = {
+    I18n: I18nPropType.isRequired,
     ...ToastNotification.propTypes
   };
   static defaultProps = {

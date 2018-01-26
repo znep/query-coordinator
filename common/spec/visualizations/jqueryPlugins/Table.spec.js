@@ -1,5 +1,8 @@
 import _ from 'lodash';
 import $ from 'jquery';
+
+import { getDisplayableColumns } from 'common/visualizations/dataProviders/MetadataProvider';
+
 import testData from '../testData';
 import { __RewireAPI__ as TableAPI } from 'common/visualizations/Table';
 
@@ -68,8 +71,6 @@ describe('Table', () => {
     let getTableDataSpy;
     let tableRenderSpy;
     let tableRenderErrorSpy;
-    // Arbitrary choice, in real life MetadataProvider.getDisplayableColumns provides this for us.
-    let theSingleNonDisplayableColumn = 'location_city';
     let displayableColumns;
     let displayableColumnNames;
 
@@ -84,10 +85,7 @@ describe('Table', () => {
       tableRenderSpy = sinon.spy();
       tableRenderErrorSpy = sinon.spy();
 
-      displayableColumns = _.filter(
-        testData.CHICAGO_CRIMES_DATASET_METADATA.columns,
-        (column) => column.fieldName !== theSingleNonDisplayableColumn
-      );
+      displayableColumns = getDisplayableColumns(testData.CHICAGO_CRIMES_DATASET_METADATA);
       displayableColumnNames = _.map(displayableColumns, 'fieldName');
 
       // Mock data providers
@@ -95,7 +93,6 @@ describe('Table', () => {
         this.getDatasetMetadata = _.constant(
           Promise.resolve(testData.CHICAGO_CRIMES_DATASET_METADATA)
         );
-        this.getDisplayableColumns = () => displayableColumns;
       });
 
       TableAPI.__Rewire__('SoqlDataProvider', function() {
@@ -136,6 +133,15 @@ describe('Table', () => {
     }
 
     it('displays only displayable columns', () => {
+      const notDisplayableColumn = ':@computed_region_bdys_3d7i';
+
+      // Test sanity
+      assert.notInclude(displayableColumnNames, notDisplayableColumn);
+      assert.include(
+        _.map(testData.CHICAGO_CRIMES_DATASET_METADATA.columns, 'fieldName'),
+        notDisplayableColumn
+      );
+
       // We're testing that Table delegates to MetadataProvider.getDisplayableColumns.
       const calls = tableRenderSpy.getCalls();
 
@@ -147,7 +153,7 @@ describe('Table', () => {
       );
 
       assert.include(columnNamesQueriedFor, 'ward');
-      assert.notInclude(columnNamesQueriedFor, theSingleNonDisplayableColumn);
+      assert.notInclude(columnNamesQueriedFor, ':@computed_region_bdys_3d7i');
     });
 
     it('uses the order specified in the VIF', () => {

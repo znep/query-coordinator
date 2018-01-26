@@ -134,7 +134,7 @@ describe('components/DragDropUpload', () => {
       const expectedAction = actions.filter(
         action =>
           action.type === 'SHOW_FLASH_MESSAGE' &&
-          action.message === 'Directory uploads are not supported'
+          action.message === 'Directory uploads are not supported.'
       );
       assert.equal(expectedAction.length, 1);
       done();

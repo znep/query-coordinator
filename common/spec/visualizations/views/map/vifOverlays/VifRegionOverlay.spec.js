@@ -29,14 +29,20 @@ describe('VifRegionOverlay', () => {
   });
 
   beforeEach(() => {
-    mockMap = {};
+    mockMap = {
+      getSource: sinon.stub().returns({}),
+      removeSource: sinon.spy(),
+      removeLayer: sinon.spy(),
+      style: {}
+    };
     vifRegionOverlay = new VifRegionOverlay(mockMap, element);
     vifRegionOverlay._regions = {
       setup: sinon.spy(),
       update: sinon.spy()
     };
-    vifRegionOverlay._regionMapLegend = {
-      show: sinon.spy()
+    vifRegionOverlay._legend = {
+      show: sinon.spy(),
+      destroy: sinon.spy()
     };
     fakeServer = sinon.createFakeServer();
     fakeServer.autoRespond = true;
@@ -68,6 +74,11 @@ describe('VifRegionOverlay', () => {
 
     it('should render the shapes and legend based on given vif', () => {
       vif.series[0].mapOptions.numberOfDataClasses = 4;
+      const expectedBuckets = [
+        sinon.match({ start: 6, end: 12, color: '#e41a1c' }),
+        sinon.match({ start: 12, end: 20, color: '#9e425a' }),
+        sinon.match({ start: 20, end: 30, color: '#596a98' })
+      ];
       const expectedRenderOptions = sinon.match({
         measures: [
           sinon.match({ shapeId: '1', value: 6 }),
@@ -98,9 +109,8 @@ describe('VifRegionOverlay', () => {
           vif,
           expectedRenderOptions);
         sinon.assert.calledWith(
-          vifRegionOverlay._regionMapLegend.show,
-          vif,
-          expectedRenderOptions);
+          vifRegionOverlay._legend.show,
+          expectedBuckets);
       });
     });
   });
@@ -145,7 +155,11 @@ describe('VifRegionOverlay', () => {
         }]
       });
       newVif.series[0].mapOptions.numberOfDataClasses = 4;
-
+      const expectedBuckets = [
+        sinon.match({ start: 6, end: 12, color: '#66c2a5' }),
+        sinon.match({ start: 12, end: 20, color: '#9aaf8d' }),
+        sinon.match({ start: 20, end: 30, color: '#cf9c76' })
+      ];
       const expectedRenderOptions = sinon.match({
         measures: [
           sinon.match({ shapeId: '1', value: 6 }),
@@ -173,10 +187,11 @@ describe('VifRegionOverlay', () => {
       return vifRegionOverlay.update(newVif).then(() => {
         sinon.assert.calledWith(vifRegionOverlay._regions.update,
           newVif,
-          expectedRenderOptions);
-        sinon.assert.calledWith(vifRegionOverlay._regionMapLegend.show,
-          newVif,
-          expectedRenderOptions);
+          expectedRenderOptions
+        );
+        sinon.assert.calledWith(vifRegionOverlay._legend.show,
+          expectedBuckets
+        );
       });
     });
   });
@@ -204,6 +219,16 @@ describe('VifRegionOverlay', () => {
         '{simplify_precision}), _feature_id where {{\'the_geom\' column condition}} ' +
         'limit 10000 #substituteSoqlParams_tileParams={z}|{x}|{y}'
         );
+    });
+  });
+
+  describe('destroy', () => {
+    it('should remove the map layer, source and legend', () => {
+      vifRegionOverlay.destroy();
+
+      sinon.assert.calledWith(mockMap.removeLayer, 'shape-line');
+      sinon.assert.calledWith(mockMap.removeSource, 'polygonVectorDataSource');
+      sinon.assert.called(vifRegionOverlay._legend.destroy);
     });
   });
 

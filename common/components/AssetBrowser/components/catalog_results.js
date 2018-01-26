@@ -98,6 +98,7 @@ export class CatalogResults extends Component {
       page,
       renderStyle,
       selectMode,
+      showBackButton,
       showFilters,
       showManageAssets,
       showSearchField,
@@ -155,7 +156,7 @@ export class CatalogResults extends Component {
     const searchField = showSearchField ?
       <Autocomplete {...autocompleteOptions} className="autocomplete" /> : null;
 
-    const backButton = (selectMode === true) ? <BackButton onClick={onClose} /> : null;
+    const backButton = (selectMode === true && showBackButton === true) ? <BackButton onClick={onClose} /> : null;
 
     return (
       <div className={topbarClassnames}>
@@ -171,7 +172,7 @@ export class CatalogResults extends Component {
   }
 
   renderResults() {
-    const { actionElement, fetchingResults, onAssetSelected, onClose, renderStyle } = this.props;
+    const { actionElement, closeOnSelect, fetchingResults, onAssetSelected, onClose, renderStyle } = this.props;
 
     const spinner = fetchingResults ? (
       <div className="catalog-results-spinner-container">
@@ -185,6 +186,7 @@ export class CatalogResults extends Component {
     if (renderStyle === 'card') {
       resultListing = ResultCardContainer;
       resultListingProps = {
+        closeOnSelect,
         onAssetSelected,
         onClose
       };
@@ -307,6 +309,7 @@ CatalogResults.propTypes = {
   pageNumber: PropTypes.number,
   pageSize: PropTypes.number,
   resultSetSize: PropTypes.number.isRequired,
+  showBackButton: PropTypes.bool,
   tabs: PropTypes.object.isRequired,
   toggleFilters: PropTypes.func.isRequired,
   updatePageSize: PropTypes.func.isRequired
@@ -321,7 +324,8 @@ CatalogResults.defaultProps = {
   fetchingResultsError: false,
   initialResultsFetched: false,
   pageNumber: 1,
-  pageSize: DEFAULT_RESULTS_PER_PAGE
+  pageSize: DEFAULT_RESULTS_PER_PAGE,
+  showBackButton: true
 };
 
 const mapStateToProps = (state) => ({

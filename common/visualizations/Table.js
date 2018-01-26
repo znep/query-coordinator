@@ -7,7 +7,8 @@ const SoqlHelpers = require('./dataProviders/SoqlHelpers');
 const VifHelpers = require('./helpers/VifHelpers');
 const InlineDataProvider = require('./dataProviders/InlineDataProvider');
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
-const MetadataProvider = require('./dataProviders/MetadataProvider');
+import MetadataProvider, { getDisplayableColumns }
+  from 'common/visualizations/dataProviders/MetadataProvider';
 
 const ROW_HEIGHT_PX = 31;
 const MAX_COLUMN_COUNT = 64;
@@ -720,9 +721,7 @@ $.fn.socrataTable = function(originalVif, locale) {
     }
 
     function getSoqlDataUsingDatasetMetadata(datasetMetadata) {
-      const displayableColumns = new MetadataProvider(dataProviderConfig, true).
-        getDisplayableColumns(datasetMetadata).
-        slice(0, MAX_COLUMN_COUNT);
+      const displayableColumns = getDisplayableColumns(datasetMetadata).slice(0, MAX_COLUMN_COUNT);
 
       let displayableColumnsFieldNames = _.map(displayableColumns, 'fieldName');
 

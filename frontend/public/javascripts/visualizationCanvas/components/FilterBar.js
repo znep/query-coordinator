@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import { FilterBar } from 'common/components';
 import { dataProviders } from 'common/visualizations';
+import { getDisplayableColumns, getFilterableColumns }
+  from 'common/visualizations/dataProviders/MetadataProvider';
 
 import { setFilters } from '../actions';
 
@@ -23,16 +25,14 @@ export function mapStateToProps(state) {
     domain: serverConfig.domain
   };
 
-  const metadataProvider = new dataProviders.MetadataProvider(metadataConfig, true);
-
   // Get displayable columns only, subcolumns and system columns are omitted
-  const displayableColumns = metadataProvider.getDisplayableColumns({
+  const displayableColumns = getDisplayableColumns({
     ...view,
     columns: columnsWithColumnStats
   });
 
   // Filter out unsupported column types
-  const columns = metadataProvider.getFilterableColumns({ columns: displayableColumns });
+  const columns = getFilterableColumns({ columns: displayableColumns });
 
   // Filter out any filters that depend on columns that might be missing
   const displayableFilters = _.filter(filters, (filter) => {

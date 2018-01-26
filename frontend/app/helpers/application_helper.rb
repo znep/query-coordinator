@@ -85,6 +85,19 @@ module ApplicationHelper
     end
   end
 
+  def approvals_settings
+    if using_approvals?(:new)
+      approval_workflow = Fontana::Approval::Workflow.find
+      if approval_workflow.try(:steps).present?
+        return {
+          :official => approval_workflow.steps.first.official_task.manual? ? 'manual' : 'automatic',
+          :community => approval_workflow.steps.first.community_task.manual? ? 'manual' : 'automatic'
+        }
+      end
+    end
+    {}
+  end
+
 # CACHE HELPERS
 
   def cache_key(prefix, state)
@@ -1343,6 +1356,9 @@ module ApplicationHelper
 
   def render_global_socrata_state
     socrata_state = {
+      :approvals => {
+        :settings => approvals_settings
+      },
       :csrfToken => form_authenticity_token.to_s,
       :currentUser => current_user,
       :domain => CurrentDomain.cname,

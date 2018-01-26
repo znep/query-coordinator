@@ -35,6 +35,30 @@ describe('reducers', () => {
         userRoleFilter: undefined
       },
       config: { },
+      teams: {
+        teams: {
+          addMemberErrors: [],
+          addMemberSuccesses: [],
+          currentTeamId: null,
+          offset: 0,
+          resultCount: 0,
+          teamForm: { id: null, screenName: '', description: '', errors: [] },
+          teams: [],
+          teamRoles: [],
+          userSearch: { currentQuery: '', results: null, selectedUsers: [] }
+        },
+        ui: {
+          disableAddTeamMembersModal: false,
+          disableEditTeamModal: false,
+          loadingData: true,
+          loadingTeam: true,
+          loadingError: null,
+          loadingTeamRoles: true,
+          showEditTeamModal: false,
+          showAddTeamMembersModal: false,
+          submittingUsers: false
+        }
+      },
       autocomplete: {
         collapsed: true,
         focusedResult: undefined,

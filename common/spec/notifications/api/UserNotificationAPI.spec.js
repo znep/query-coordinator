@@ -21,18 +21,36 @@ describe('User Notification API', () => {
     notificationStub.restore();
   });
 
-  it('should hit get notifications api on new user notifications mount', () => {
+  it('should hit get socket token api on new user notifications mount', () => {
     // TODO: Do this in a before.
     userNotificationAPI = new UserNotificationAPI(userId, null, { debugLog: false });
     sinon.assert.calledOnce(notificationStub);
 
-    const params = { limit: NOTIFICATIONS_PER_PAGE, offset };
-    const queryString = $.param(params);
-
     assert.equal(
       window.fetch.args[0][0],
-      `/api/notifications_and_alerts/notifications?${queryString}`
+      '/api/notifications_and_alerts/socket_token'
     );
+  });
+
+  it('should hit get notifications api after getting user socket token', async () => {
+    userNotificationAPI = new UserNotificationAPI(userId, null, { debugLog: false });
+    let socketTokenStub = sinon.stub(userNotificationAPI, '_getSocketToken');
+
+    socketTokenStub.callsFake(async() => {
+      return { token: 'NzU4OTdhMmUtNDNlZS00ODE5LWJkZTgtNTg0YWM3NDI5ODQ3' };
+    });
+
+    userNotificationAPI._getSocketToken().then(() => {
+      userNotificationAPI._loadNotifications();
+      sinon.assert.calledTwice(notificationStub);
+
+      const params = { limit: NOTIFICATIONS_PER_PAGE, offset };
+      const queryString = $.param(params);
+      assert.equal(
+        window.fetch.args[1][0],
+        `/api/notifications_and_alerts/notifications?${queryString}`
+      );
+    });
   });
 
   it('should hit delete notification api as a DELETE method', () => {

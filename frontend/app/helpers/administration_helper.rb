@@ -95,6 +95,10 @@ module AdministrationHelper
 
     scope = 'screens.admin.index'
 
+    if title_key == 'users' && FeatureFlags.derive(nil, request).enable_teams
+      title_key = 'users_teams'
+    end
+
     link_to(
       content_tag(:strong, I18n.t(title_key, :scope => scope)) +
         content_tag(:span, I18n.t("#{title_key}_description", :scope => scope)),
@@ -277,6 +281,7 @@ module AdministrationHelper
       airbrakeEnvironment: ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
       csrfToken: form_authenticity_token.to_s,
       currentUser: current_user,
+      defaultMemberRoleId: 'member',
       domain: CurrentDomain.cname,
       environment: Rails.env,
       locale: I18n.locale.to_s,
@@ -285,6 +290,7 @@ module AdministrationHelper
       routes: {
         csvUrl: url_for(:controller => 'administration', :action => 'users', :format => 'csv'),
         invitedUsersAdminPath: invited_users_admin_path,
+        teamsAdminPath: teams_admin_path,
         usersAdminPath: users_admin_path
       }
     }

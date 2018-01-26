@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ModalContent, ModalFooter } from 'common/components';
+import * as assetUtils from 'common/asset/utils';
 import SocrataIcon from '../../../common/components/SocrataIcon';
 import ApiCallButton from 'datasetManagementUI/containers/ApiCallButtonContainer';
 import { APPLY_REVISION } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
@@ -10,7 +11,8 @@ class PublishConfirmation extends Component {
   constructor(props) {
     super();
     this.state = {
-      currentPermission: props.publicSelected ? 'public' : 'private'
+      currentPermission: props.publicSelected ? 'public' : 'private',
+      showApprovalMessage: false
     };
     this.setCurrentPermission = this.setCurrentPermission.bind(this);
   }
@@ -19,9 +21,24 @@ class PublishConfirmation extends Component {
   }
   render() {
     const {
-      doCancel, dispatchApplyRevision, setPermission, btnDisabled, dispatchRevisionError
+      doCancel, dispatchApplyRevision, setPermission, btnDisabled, dispatchRevisionError, view
     } = this.props;
     const { currentPermission } = this.state;
+
+    const assetWillBePublic = currentPermission === 'public';
+
+    assetUtils.assetWillEnterApprovalsQueueOnPublish({ coreView: view, assetWillBePublic }).then(
+      (showApprovalMessage) => {
+        if (showApprovalMessage !== this.state.showApprovalMessage) {
+          this.setState({ showApprovalMessage });
+        }
+      });
+
+    const approvalMessage = this.state.showApprovalMessage ?
+      <div className={styles.approvalMessage}>
+        {I18n.home_pane.publish_confirmation.approval_note}
+      </div> : null;
+
     return (
       <div className="publish-confirmation-modal-inner">
         <h2>
@@ -52,6 +69,7 @@ class PublishConfirmation extends Component {
             <SocrataIcon className={styles.icon} name="private" />
             {I18n.home_pane.publish_confirmation.private_msg}
           </span>
+          {approvalMessage}
         </ModalContent>
         <ModalFooter className={styles.modalFooter}>
           <button onClick={() => doCancel()} className={styles.cancelButton}>
@@ -86,7 +104,8 @@ PublishConfirmation.propTypes = {
   btnDisabled: PropTypes.bool,
   setPermission: PropTypes.func,
   publicSelected: PropTypes.bool.isRequired,
-  dispatchRevisionError: PropTypes.func
+  dispatchRevisionError: PropTypes.func,
+  view: PropTypes.object
 };
 
 export default PublishConfirmation;

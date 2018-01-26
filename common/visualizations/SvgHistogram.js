@@ -3,7 +3,8 @@ const $ = require('jquery');
 const utils = require('common/js_utils');
 const DistributionChartHelpers = require('./views/DistributionChartHelpers');
 const SvgHistogram = require('./views/SvgHistogram');
-const MetadataProvider = require('./dataProviders/MetadataProvider');
+import MetadataProvider, { getDisplayableColumns }
+  from 'common/visualizations/dataProviders/MetadataProvider';
 const SoqlDataProvider = require('./dataProviders/SoqlDataProvider');
 const VifHelpers = require('./helpers/VifHelpers');
 const ColumnFormattingHelpers = require('./helpers/ColumnFormattingHelpers');
@@ -283,7 +284,7 @@ $.fn.socrataSvgHistogram = function(originalVif, options) {
               return dataResponse.rows.map((row) => row[measureIndex]);
             });
 
-            const displayableColumns = datasetMetadataProvider.getDisplayableColumns(datasetMetadata);
+            const displayableColumns = getDisplayableColumns(datasetMetadata);
 
             dataResponses[0].columnFormats = ColumnFormattingHelpers.getColumnFormats(displayableColumns);
 

@@ -2,7 +2,7 @@
 @import 'common/row-details';
 @import 'common/styleguide/partials/pager';
 @import 'common/visualizations/views/styles/socrata-visualizations';
-@import 'styleguide-colors';
+@import 'common/styleguide/variables/colors';
 
 .admin-header {
   border-bottom: 0;
@@ -23,6 +23,49 @@
 #app {
   #users-table {
     margin: 0;
+  }
+
+  // legacy style whack-a-mole
+  form {
+    .text-input {
+      border: solid 1px #c8c8c8;
+      font-size: 15px;
+      font-family: "Open Sans", "Helvetica", Arial, sans-serif;
+      padding: 10px;
+      margin-bottom: 13px;
+      line-height: normal;
+    }
+  }
+
+  .multiselect-root {
+    width: 100%;
+    margin-bottom: 10px;
+    position: relative;
+
+    .multiselect-form-container {
+      width: 100%;
+      max-width: none;
+      min-width: 0;
+    }
+
+    .multiselect-options-container {
+      align-items: center;
+      height: auto;
+      min-height: 90px;
+      width: 100%;
+    }
+
+    .multiselect-option,
+    .multiselect-option-active {
+      width: 100%;
+    }
+
+    .multiselect-options-spinner {
+      left: 50%;
+      margin: -25px 0 0 -25px;
+      position: absolute;
+      top: 50%;
+    }
   }
 
   .nav-bar {
@@ -82,7 +125,7 @@
       float: right;
     }
 
-    $results-list-header-cell-border-color: $light-grey-1;
+    $results-list-header-cell-border-color: $light-grey-3;
 
     .results-list-header-cell {
       border: 1px solid $results-list-header-cell-border-color;
@@ -102,7 +145,7 @@
 
       &.active {
         background-color: $light-grey-4;
-        font-weight: bold;
+        font-weight: 600;
       }
 
       &.ascending {
@@ -124,21 +167,23 @@
     justify-content: space-between;
   }
 
+  $row-highlight-color: $primary-light;
+
   .results-list-row {
 
     background-color: $white;
 
     &:hover {
-      background-color: #eaf4f9;
+      background-color: $row-highlight-color;
 
       .pending-action-cover {
-        background-color: #eaf4f9;
+        background-color: $row-highlight-color;
       }
     }
   }
 
   .results-list-header {
-    background-color: $light-grey-6;
+    background-color: $light-grey-5;
   }
 
   .role-picker-cell {
@@ -226,7 +271,8 @@
 
       &:disabled {
         background-color: inherit;
-        cursor: default;
+        color: $light-grey-4;
+        cursor: not-allowed;
       }
     }
 
@@ -296,11 +342,20 @@
     }
   }
 
+  .add-team-member {
+    .modal-content {
+      overflow-y: visible;
+    }
+    .alert.success {
+      margin-bottom: 5px;
+    }
+  }
+
   .cancel-button {
     margin-right: 10px;
   }
 
-  .error-list {
+  .alert-list {
     margin-bottom: 0;
     margin-top: 0;
   }
@@ -337,6 +392,40 @@
         color: $dark-grey-1;
         font-size: .9rem;
       }
+    }
+  }
+
+  .team-view-back {
+    align-items: center;
+    display: flex;
+    font-size: 0.9em;
+    line-height: 1;
+    margin-bottom: 10px;
+
+    &:hover,
+    &:visited {
+      color: $primary-base;
+    }
+  }
+
+  .team-view-back-icon {
+    height: 20px;
+    margin-right: 5px;
+    width: auto;
+  }
+
+  .edit-team-info {
+    cursor: pointer;
+    margin-bottom: 10px;
+    padding-left: 25px;
+
+    .team-name {
+      color: $primary-base;
+    }
+
+    .team-edit-icon {
+      cursor: pointer;
+      margin-left: 10px;
     }
   }
 }

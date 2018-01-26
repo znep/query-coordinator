@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect } from '../../utils';
+import { connect as fullConnect, I18nPropType } from '../../utils';
 import { Dropdown } from 'common/components';
 import * as Selectors from '../../selectors';
 
@@ -9,7 +9,7 @@ export class RolePicker extends Component {
     availableRoles: PropTypes.arrayOf(PropTypes.object).isRequired,
     roleId: PropTypes.string,
     onRoleChange: PropTypes.func.isRequired,
-    I18n: PropTypes.object.isRequired,
+    I18n: I18nPropType.isRequired,
     initialOption: PropTypes.object,
     placeholder: PropTypes.string
   };

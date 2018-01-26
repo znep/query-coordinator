@@ -1,38 +1,46 @@
 import _ from 'lodash';
+import classNames from 'classnames';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import classNames from 'classnames';
-import { Dropdown, ColorPicker, AccordionContainer, AccordionPane } from 'common/components';
-import BlockLabel from '../shared/BlockLabel';
-import I18n from 'common/i18n';
-import { getMeasureTitle } from '../../helpers';
 
 import {
+  AccordionContainer,
+  AccordionPane,
+  ColorPicker,
+  Dropdown
+} from 'common/components';
+import I18n from 'common/i18n';
+
+import * as actions from '../../actions';
+import BlockLabel from '../shared/BlockLabel';
+import ColorPalettePreview from '../shared/ColorPalettePreview';
+import {
   BASE_LAYERS,
-  COLOR_SCALES,
   COLOR_PALETTES,
-  COLOR_PALETTE_VALUES,
+  COLOR_PALETTE_VALUES_FOR_MAPS,
+  COLOR_PALETTES_FOR_MAPS,
   COLORS,
+  COLOR_SCALES,
   getMapSliderDebounceMs,
   SERIES_TYPE_FLYOUT
 } from '../../constants';
-
-import EmptyPane from './EmptyPane';
-import DebouncedSlider from '../shared/DebouncedSlider';
 import DebouncedInput from '../shared/DebouncedInput';
+import DebouncedSlider from '../shared/DebouncedSlider';
 import DebouncedTextArea from '../shared/DebouncedTextArea';
-import * as selectors from '../../selectors/vifAuthoring';
-import * as actions from '../../actions';
+import EmptyPane from './EmptyPane';
+import { getMeasureTitle } from '../../helpers';
+import LineWeightPreview from '../shared/LineWeightPreview';
 import {
   hasData,
-  isPointMapColumn,
-  isLineMapColumn,
   isBoundaryMapColumn,
-  isNumericDimensionType
+  isLineMapColumn,
+  isNumericDimensionType,
+  isPointMapColumn
 } from '../../selectors/metadata';
 import PointSizePreview from '../shared/PointSizePreview';
-import LineWeightPreview from '../shared/LineWeightPreview';
-import ColorPalettePreview from '../shared/ColorPalettePreview';
+import * as selectors from '../../selectors/vifAuthoring';
+
+const scope = 'shared.visualizations.panes.presentation';
 
 export class PresentationPane extends Component {
   componentWillReceiveProps = (nextProps) => {
@@ -55,8 +63,6 @@ export class PresentationPane extends Component {
     this.props.onSelectColorScale(colorScale);
   }
 
-  scope = 'shared.visualizations.panes.presentation';
-
   renderPrimaryColor = (labelText) => {
     const { vifAuthoring, onChangePrimaryColor } = this.props;
     const primaryColor = selectors.getPrimaryColor(vifAuthoring);
@@ -68,7 +74,7 @@ export class PresentationPane extends Component {
     };
 
     return (
-      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
+      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope })}>
         <div>
           <label className="block-label" htmlFor="primary-color">{labelText}</label>
           <ColorPicker {...colorPickerAttributes} />
@@ -119,9 +125,9 @@ export class PresentationPane extends Component {
     };
 
     return (
-      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
+      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope })}>
         <label className="block-label" htmlFor="color-palette">
-          {I18n.t('fields.color_palette.title', { scope: this.scope })}
+          {I18n.t('fields.color_palette.title', { scope })}
         </label>
         <div className="color-scale-dropdown-container">
           <Dropdown {...colorPaletteAttributes} />
@@ -204,7 +210,7 @@ export class PresentationPane extends Component {
     } else if (customPaletteSelected && hasCustomColorPaletteError) {
       return (
         <div className="custom-color-palette-error alert error">
-          {I18n.t('custom_color_palette_error', { scope: this.scope })}
+          {I18n.t('custom_color_palette_error', { scope })}
         </div>
       );
     } else {
@@ -229,7 +235,7 @@ export class PresentationPane extends Component {
             <span className="fake-checkbox">
               <span className="icon-checkmark3"></span>
             </span>
-            {I18n.t('fields.show_dimension_labels.title', { scope: this.scope })}
+            {I18n.t('fields.show_dimension_labels.title', { scope })}
           </label>
         </div>
       </div>
@@ -250,7 +256,7 @@ export class PresentationPane extends Component {
     const dimensionLabels = dimensionLabelsVisible ? this.renderDimensionLabels() : null;
 
     return (
-      <AccordionPane key="labels" title={I18n.t('subheaders.labels', { scope: this.scope })}>
+      <AccordionPane key="labels" title={I18n.t('subheaders.labels', { scope })}>
         {dimensionLabels}
         {valueLabels}
         {valueLabelsAsPercent}
@@ -275,7 +281,7 @@ export class PresentationPane extends Component {
             <span className="fake-checkbox">
               <span className="icon-checkmark3"></span>
             </span>
-            {I18n.t('fields.show_value_labels.title', { scope: this.scope })}
+            {I18n.t('fields.show_value_labels.title', { scope })}
           </label>
         </div>
       </div>
@@ -306,7 +312,7 @@ export class PresentationPane extends Component {
             <span className="fake-checkbox">
               <span className="icon-checkmark3"></span>
             </span>
-            {I18n.t('fields.show_value_labels_as_percent.title', { scope: this.scope })}
+            {I18n.t('fields.show_value_labels_as_percent.title', { scope })}
           </label>
         </div>
       </div>
@@ -346,7 +352,7 @@ export class PresentationPane extends Component {
       this.renderVisualizationLabel(
         'label-bottom',
         onChangeLabelBottom,
-        I18n.t('fields.bottom_axis_title.title', { scope: this.scope }),
+        I18n.t('fields.bottom_axis_title.title', { scope }),
         _.get(axisLabels, 'bottom', '')
       ) : null;
 
@@ -354,7 +360,7 @@ export class PresentationPane extends Component {
       this.renderVisualizationLabel(
         'label-left',
         onChangeLabelLeft,
-        I18n.t('fields.left_axis_title.title', { scope: this.scope }),
+        I18n.t('fields.left_axis_title.title', { scope }),
         _.get(axisLabels, 'left', '')
       ) : null;
 
@@ -362,7 +368,7 @@ export class PresentationPane extends Component {
       this.renderVisualizationLabel(
         'label-right',
         onChangeLabelRight,
-        I18n.t('fields.right_axis_title.title', { scope: this.scope }),
+        I18n.t('fields.right_axis_title.title', { scope }),
         _.get(axisLabels, 'right', '')
       ) : null;
 
@@ -370,12 +376,12 @@ export class PresentationPane extends Component {
       this.renderVisualizationLabel(
         'label-top',
         onChangeLabelTop,
-        I18n.t('fields.top_axis_title.title', { scope: this.scope }),
+        I18n.t('fields.top_axis_title.title', { scope }),
         _.get(axisLabels, 'top', '')
       ) : null;
 
     return (
-      <AccordionPane key="axis-labels" title={I18n.t('subheaders.axis_titles', { scope: this.scope })}>
+      <AccordionPane key="axis-labels" title={I18n.t('subheaders.axis_titles', { scope })}>
         {leftLabel}
         {rightLabel}
         {bottomLabel}
@@ -421,7 +427,7 @@ export class PresentationPane extends Component {
           <span className="fake-checkbox">
             <span className="icon-checkmark3"></span>
           </span>
-          {I18n.t('fields.show_source_data_link.title', { scope: this.scope })}
+          {I18n.t('fields.show_source_data_link.title', { scope })}
         </label>
       </div>
     );
@@ -433,7 +439,7 @@ export class PresentationPane extends Component {
 
     return (
       <div className="authoring-field">
-        <label className="block-label" htmlFor="title">{I18n.t('fields.title.title', { scope: this.scope })}</label>
+        <label className="block-label" htmlFor="title">{I18n.t('fields.title.title', { scope })}</label>
         <DebouncedInput id="title" className="text-input" type="text" onChange={onChangeTitle} value={title} />
       </div>
     );
@@ -445,7 +451,7 @@ export class PresentationPane extends Component {
 
     return (
       <div className="authoring-field">
-        <label className="block-label" htmlFor="description">{I18n.t('fields.description.title', { scope: this.scope })}</label>
+        <label className="block-label" htmlFor="description">{I18n.t('fields.description.title', { scope })}</label>
         <DebouncedTextArea id="description" className="text-input text-area" onChange={onChangeDescription} value={description} />
       </div>
     );
@@ -453,7 +459,7 @@ export class PresentationPane extends Component {
 
   renderGeneral = () => {
     return (
-      <AccordionPane title={I18n.t('subheaders.general', { scope: this.scope })}>
+      <AccordionPane title={I18n.t('subheaders.general', { scope })}>
         {this.renderTitleField()}
         {this.renderDescriptionField()}
         {this.renderShowSourceDataLink()}
@@ -470,7 +476,7 @@ export class PresentationPane extends Component {
   }
 
   renderBarChartControls = () => {
-    const labelText = I18n.t('fields.bar_color.title', { scope: this.scope });
+    const labelText = I18n.t('fields.bar_color.title', { scope });
 
     return [
       this.renderPrimaryColor(labelText),
@@ -488,7 +494,7 @@ export class PresentationPane extends Component {
   }
 
   renderColumnChartControls = () => {
-    const labelText = I18n.t('fields.bar_color.title', { scope: this.scope });
+    const labelText = I18n.t('fields.bar_color.title', { scope });
 
     return [
       this.renderPrimaryColor(labelText),
@@ -506,7 +512,7 @@ export class PresentationPane extends Component {
   }
 
   renderComboChartControls = () => {
-    const labelText = I18n.t('fields.bar_color.title', { scope: this.scope });
+    const labelText = I18n.t('fields.bar_color.title', { scope });
 
     return [
       this.renderPrimaryColor(labelText),
@@ -516,7 +522,7 @@ export class PresentationPane extends Component {
   }
 
   renderHistogramControls = () => {
-    const labelText = I18n.t('fields.bar_color.title', { scope: this.scope });
+    const labelText = I18n.t('fields.bar_color.title', { scope });
 
     return [
       this.renderPrimaryColor(labelText),
@@ -525,7 +531,7 @@ export class PresentationPane extends Component {
   }
 
   renderTimelineChartControls = () => {
-    const labelText = I18n.t('fields.bar_color.title', { scope: this.scope });
+    const labelText = I18n.t('fields.bar_color.title', { scope });
 
     return [
       this.renderPrimaryColor(labelText),
@@ -561,7 +567,7 @@ export class PresentationPane extends Component {
         <div className="authoring-field">
           <label
             className="block-label"
-            htmlFor="point-opacity">{I18n.t('fields.point_opacity.title', { scope: this.scope })}</label>
+            htmlFor="point-opacity">{I18n.t('fields.point_opacity.title', { scope })}</label>
           <div id="point-opacity">
             <DebouncedSlider {...pointOpacityAttributes} />
           </div>
@@ -570,23 +576,23 @@ export class PresentationPane extends Component {
     }
   }
 
-  renderColorPaletteForMaps = (colorLabelText) => {
-    const { vifAuthoring, colorPalettes, onSelectColorPalette } = this.props;
+  renderColorPaletteForNewGLMaps = (colorLabelText) => {
+    const { vifAuthoring, onSelectColorPalette } = this.props;
     const colorPaletteValue = selectors.getMapColorPalette(vifAuthoring);
+    const colorSwatch = COLOR_PALETTE_VALUES_FOR_MAPS[colorPaletteValue](5);
     const colorPaletteAttributes = {
       id: 'color-palette',
-      options: colorPalettes,
+      options: COLOR_PALETTES_FOR_MAPS,
       value: colorPaletteValue,
       onSelection: (event) => {
         onSelectColorPalette(event.value);
       }
     };
-    const colorSwatch = _.take(COLOR_PALETTE_VALUES[colorPaletteValue], 5);
 
     return (
       <div>
         <label className="block-label" htmlFor="color-palette">
-          {I18n.t('fields.color_palette.title', { scope: this.scope })}
+          {I18n.t('fields.color_palette.title', { scope })}
         </label>
         <div className="color-scale-dropdown-container has-color-palette-preview">
           <ColorPalettePreview colors={colorSwatch} />
@@ -613,7 +619,7 @@ export class PresentationPane extends Component {
     return (
       <div className="authoring-field">
         <label className="block-label" htmlFor="data-classes">
-          {I18n.t('fields.data_classes.title', { scope: this.scope })}
+          {I18n.t('fields.data_classes.title', { scope })}
         </label>
         <div className="data-classes-dropdown-container">
           <Dropdown {...dataClassesAttributes} />
@@ -655,7 +661,7 @@ export class PresentationPane extends Component {
           <div className="authoring-field">
             <label
               className="block-label"
-              htmlFor="minimum-line-weight">{I18n.t('fields.line_weight.minimum', { scope: this.scope })}</label>
+              htmlFor="minimum-line-weight">{I18n.t('fields.line_weight.minimum', { scope })}</label>
             <div id="minimum-line-weight" className="debounced-slider-with-preview">
               <div className="line-weight-slider-container">
                 <DebouncedSlider {...minimumLineWeightAttributes} />
@@ -667,7 +673,7 @@ export class PresentationPane extends Component {
           <div className="authoring-field">
             <label
               className="block-label"
-              htmlFor="maximum-line-weight">{I18n.t('fields.line_weight.maximum', { scope: this.scope })}</label>
+              htmlFor="maximum-line-weight">{I18n.t('fields.line_weight.maximum', { scope })}</label>
             <div id="maximum-line-weight" className="debounced-slider-with-preview">
               <div className="line-weight-slider-container">
                 <DebouncedSlider {...maximumLineWeightAttributes} />
@@ -696,7 +702,7 @@ export class PresentationPane extends Component {
         <div className="authoring-field">
           <label
             className="block-label"
-            htmlFor="line-weight">{I18n.t('fields.line_weight.title', { scope: this.scope })}</label>
+            htmlFor="line-weight">{I18n.t('fields.line_weight.title', { scope })}</label>
           <div id="line-weight">
             <DebouncedSlider {...lineWeightAttributes} />
           </div>
@@ -705,7 +711,7 @@ export class PresentationPane extends Component {
     }
 
     return (
-      <AccordionPane key="lineWeightControls" title={I18n.t('subheaders.line_weight', { scope: this.scope })}>
+      <AccordionPane key="lineWeightControls" title={I18n.t('subheaders.line_weight', { scope })}>
         {LineMapWeightControls}
       </AccordionPane>
     );
@@ -744,7 +750,7 @@ export class PresentationPane extends Component {
           <div className="authoring-field">
             <label
               className="block-label"
-              htmlFor="minimum-point-size">{I18n.t('fields.point_size.minimum', { scope: this.scope })}</label>
+              htmlFor="minimum-point-size">{I18n.t('fields.point_size.minimum', { scope })}</label>
             <div id="minimum-point-size" className="debounced-slider-with-preview">
               <div className="point-size-slider-container">
                 <DebouncedSlider {...minimumPointSizeAttributes} />
@@ -756,7 +762,7 @@ export class PresentationPane extends Component {
           <div className="authoring-field">
             <label
               className="block-label"
-              htmlFor="maximum-point-size">{I18n.t('fields.point_size.maximum', { scope: this.scope })}</label>
+              htmlFor="maximum-point-size">{I18n.t('fields.point_size.maximum', { scope })}</label>
             <div id="maximum-point-size" className="debounced-slider-with-preview">
               <div className="point-size-slider-container">
                 <DebouncedSlider {...maximumPointSizeAttributes} />
@@ -785,7 +791,7 @@ export class PresentationPane extends Component {
         <div className="authoring-field">
           <label
             className="block-label"
-            htmlFor="point-size">{I18n.t('fields.point_size.title', { scope: this.scope })}</label>
+            htmlFor="point-size">{I18n.t('fields.point_size.title', { scope })}</label>
           <div id="point-size">
             <DebouncedSlider {...pointSizeAttributes} />
           </div>
@@ -794,7 +800,7 @@ export class PresentationPane extends Component {
     }
 
     return (
-      <AccordionPane key="pointSizeControls" title={I18n.t('subheaders.point_size', { scope: this.scope })}>
+      <AccordionPane key="pointSizeControls" title={I18n.t('subheaders.point_size', { scope })}>
         {pointMapSizeControls}
       </AccordionPane>
     );
@@ -814,7 +820,7 @@ export class PresentationPane extends Component {
     return (
       <div className="authoring-field">
         <BlockLabel
-          title={I18n.t(`fields.${name}.title`, { scope: this.scope })}
+          title={I18n.t(`fields.${name}.title`, { scope })}
           htmlFor={name}
           description={description} />
         <DebouncedSlider {...attributes} />
@@ -838,7 +844,7 @@ export class PresentationPane extends Component {
       1,
       selectors.getMaxClusteringZoomLevel(vifAuthoring),
       onMaxClusteringZoomLevelChange,
-      I18n.t('fields.max_clustering_zoom_level.description', { scope: this.scope })
+      I18n.t('fields.max_clustering_zoom_level.description', { scope })
     );
     const pointThresholdSlider = this.renderSliderControl(
       'point_threshold',
@@ -847,7 +853,7 @@ export class PresentationPane extends Component {
       100,
       selectors.getPointThreshold(vifAuthoring),
       onPointThresholdChange,
-      I18n.t('fields.point_threshold.description', { scope: this.scope })
+      I18n.t('fields.point_threshold.description', { scope })
     );
     const clusterRadiusSlider = this.renderSliderControl(
       'cluster_radius',
@@ -878,7 +884,7 @@ export class PresentationPane extends Component {
     );
 
     return (
-      <AccordionPane key="clusterControls" title={I18n.t('subheaders.clusters', { scope: this.scope })}>
+      <AccordionPane key="clusterControls" title={I18n.t('subheaders.clusters', { scope })}>
         {maxClusteringZoomLevelSlider}
         {/* Defering implementation to spiderifcation story. */}
         {/* Hiding the form field for now. */}
@@ -909,7 +915,7 @@ export class PresentationPane extends Component {
         <label htmlFor={id}>
           <span className="fake-radiobutton" />
           <div className="translation-within-label">
-            {I18n.t(`fields.quantification_method.${quantificationMethod}`, { scope: this.scope })}
+            {I18n.t(`fields.quantification_method.${quantificationMethod}`, { scope })}
           </div>
         </label>
       </div>
@@ -920,7 +926,7 @@ export class PresentationPane extends Component {
     return (
       <div className="authoring-field">
         <label className="block-label">
-          {I18n.t('subheaders.quantification_method', { scope: this.scope })}
+          {I18n.t('subheaders.quantification_method', { scope })}
         </label>
 
         <div className="radiobutton">
@@ -958,12 +964,12 @@ export class PresentationPane extends Component {
     }
 
     const isRegionMap = selectedPointAggregation === 'region_map';
-    const colorLabelText = I18n.t('fields.point_color.title', { scope: this.scope });
+    const colorLabelText = I18n.t('fields.point_color.title', { scope });
     const colorControls = (
-      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
+      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope })}>
         {_.isNull(selectors.getPointColorByColumn(vifAuthoring)) && !isRegionMap ?
           this.renderPrimaryColorForMaps(colorLabelText) :
-          this.renderColorPaletteForMaps(colorLabelText)}
+          this.renderColorPaletteForNewGLMaps(colorLabelText)}
         {!isRegionMap && this.renderPointOpacityControls()}
         {isRegionMap && this.renderDataClassesSelector()}
       </AccordionPane>
@@ -982,12 +988,12 @@ export class PresentationPane extends Component {
 
   renderLineMapControls = () => {
     const { vifAuthoring } = this.props;
-    const colorLabelText = I18n.t('fields.line_color.title', { scope: this.scope });
+    const colorLabelText = I18n.t('fields.line_color.title', { scope });
     const colorControls = (
-      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
+      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope })}>
         {_.isNull(selectors.getLineColorByColumn(vifAuthoring)) ?
           this.renderPrimaryColorForMaps(colorLabelText) :
-          this.renderColorPaletteForMaps(colorLabelText)}
+          this.renderColorPaletteForNewGLMaps(colorLabelText)}
       </AccordionPane>
     );
 
@@ -1000,7 +1006,7 @@ export class PresentationPane extends Component {
   renderBoundaryMapControls = () => {
     const { vifAuthoring, metadata } = this.props;
     const boundaryColorByColumn = selectors.getBoundaryColorByColumn(vifAuthoring);
-    const colorLabelText = I18n.t('fields.boundary_color.title', { scope: this.scope });
+    const colorLabelText = I18n.t('fields.boundary_color.title', { scope });
     const disableDataClassesDropdown = selectors.getQuantificationMethod(vifAuthoring) !== 'numerical';
     let renderColorPalette = false;
     let isNumericalColumnSelected = false;
@@ -1011,9 +1017,9 @@ export class PresentationPane extends Component {
     }
 
     const colorControls = (
-      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope: this.scope })}>
+      <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope })}>
         {renderColorPalette ?
-          this.renderColorPaletteForMaps(colorLabelText) :
+          this.renderColorPaletteForNewGLMaps(colorLabelText) :
           this.renderPrimaryColorForMaps(colorLabelText)}
         {isNumericalColumnSelected && this.renderQuantificationMethodOptions()}
         {isNumericalColumnSelected && this.renderDataClassesSelector(disableDataClassesDropdown)}
@@ -1023,7 +1029,7 @@ export class PresentationPane extends Component {
     return [colorControls];
   }
 
-  renderNewMapControls = () => {
+  renderNewGLMapControls = () => {
     const { vifAuthoring, metadata } = this.props;
     const dimension = selectors.getDimension(vifAuthoring);
     const isPointMap = isPointMapColumn(metadata, dimension);
@@ -1074,17 +1080,17 @@ export class PresentationPane extends Component {
     };
 
     const pointControls = (
-      <AccordionPane key="pointControls" title={I18n.t('subheaders.points', { scope: this.scope })}>
+      <AccordionPane key="pointControls" title={I18n.t('subheaders.points', { scope })}>
         <div className="authoring-field">
           <label
             className="block-label"
-            htmlFor="point-color">{I18n.t('fields.point_color.title', { scope: this.scope })}</label>
+            htmlFor="point-color">{I18n.t('fields.point_color.title', { scope })}</label>
           <ColorPicker {...pointColorAttributes} />
         </div>
         <div className="authoring-field">
           <label
             className="block-label"
-            htmlFor="point-opacity">{I18n.t('fields.point_opacity.title', { scope: this.scope })}</label>
+            htmlFor="point-opacity">{I18n.t('fields.point_opacity.title', { scope })}</label>
           <div id="point-opacity">
             <DebouncedSlider {...pointOpacityAttributes} />
           </div>
@@ -1092,7 +1098,7 @@ export class PresentationPane extends Component {
         <div className="authoring-field">
           <label
             className="block-label"
-            htmlFor="point-size">{I18n.t('fields.point_size.title', { scope: this.scope })}</label>
+            htmlFor="point-size">{I18n.t('fields.point_size.title', { scope })}</label>
           <div id="point-size">
             <DebouncedSlider {...pointSizeAttributes} />
           </div>
@@ -1123,10 +1129,10 @@ export class PresentationPane extends Component {
     };
 
     const colorControls = (
-      <AccordionPane key="colorControls" title={I18n.t('subheaders.colors', { scope: this.scope })}>
+      <AccordionPane key="colorControls" title={I18n.t('subheaders.colors', { scope })}>
         <label
           className="block-label"
-          htmlFor="color-scale">{I18n.t('fields.color_scale.title', { scope: this.scope })}</label>
+          htmlFor="color-scale">{I18n.t('fields.color_scale.title', { scope })}</label>
         <div className="color-scale-dropdown-container">
           <Dropdown {...colorScaleAttributes} />
         </div>
@@ -1159,10 +1165,10 @@ export class PresentationPane extends Component {
     };
 
     return (
-      <AccordionPane key="mapLayerControls" title={I18n.t('subheaders.map', { scope: this.scope })}>
+      <AccordionPane key="mapLayerControls" title={I18n.t('subheaders.map', { scope })}>
         <div className="authoring-field">
           <label className="block-label" htmlFor="base-layer">
-            {I18n.t('fields.base_layer.title', { scope: this.scope })}>
+            {I18n.t('fields.base_layer.title', { scope })}>
           </label>
           <div className="base-layer-dropdown-container">
             <Dropdown {...baseLayerAttributes} />
@@ -1170,7 +1176,7 @@ export class PresentationPane extends Component {
         </div>
         <div className="authoring-field">
           <label className="block-label" htmlFor="base-layer-opacity">
-            {I18n.t('fields.base_layer_opacity.title', { scope: this.scope })}
+            {I18n.t('fields.base_layer_opacity.title', { scope })}
           </label>
           <div id="base-layer-opacity">
             <DebouncedSlider {...baseLayerOpacityAttributes} />
@@ -1233,7 +1239,7 @@ export class PresentationPane extends Component {
     } else if (selectors.isHistogram(vifAuthoring)) {
       configuration = this.renderHistogramControls();
     } else if (selectors.isNewGLMap(vifAuthoring)) {
-      configuration = this.renderNewMapControls();
+      configuration = this.renderNewGLMapControls();
     } else if (selectors.isFeatureMap(vifAuthoring)) {
       configuration = this.renderFeatureMapControls();
     } else if (selectors.isRegionMap(vifAuthoring)) {

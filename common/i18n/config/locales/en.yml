@@ -911,6 +911,8 @@ en:
         categorical2: Categorical 2
         custom: Custom...
         dark: Dark
+        sequential1: Sequential 1
+        sequential2: Sequential 2
       color_scales:
         green_white_purple: Green White Purple
         red_yellow: Red Yellow

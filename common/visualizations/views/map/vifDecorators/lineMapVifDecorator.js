@@ -13,19 +13,19 @@ export function getLineWeighByColumn() {
 }
 
 export function getLineColor(colorByColumnAlias, colorByCategories) {
-  const colorPallete = this.getColorPalette();
-
   if (colorByCategories == null) {
     return _.get(this, 'series[0].color.primary', '#ff00ff');
   }
 
-  const stops = _.map(colorByCategories, (colorByCategory, index) => [colorByCategory, colorPallete[index]]);
+  // +1 for 'other' category
+  const colorPalette = this.getColorPalette(colorByCategories.length + 1);
+  const stops = _.map(colorByCategories, (colorByCategory, index) => [colorByCategory, colorPalette[index]]);
 
   return {
     property: colorByColumnAlias,
     type: 'categorical',
     stops,
-    default: colorPallete[stops.length]
+    default: colorPalette[stops.length]
   };
 }
 

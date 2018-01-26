@@ -60,16 +60,16 @@ export function getPointCircleRadius(resizeByRange, aggregateAndResizeBy) {
 // If 'colorByColumn' not configured
 //    returns the configured point color.
 // If 'colorByColumn' configured and categories present
-//    We set stops with one color for each category from the configured pallete.
-//    And set the next available color in the pallete as default
+//    We set stops with one color for each category from the configured palette.
+//    And set the next available color in the palette as default
 //    for the remaining categories.
 export function getPointColor(colorByColumnAlias, colorByCategories) {
-  const colorPalette = this.getColorPalette();
-
   if (colorByCategories == null) {
     return _.get(this, 'series[0].color.primary', '#ff00ff');
   }
 
+  // +1 for 'other' category
+  const colorPalette = this.getColorPalette(colorByCategories.length + 1);
   const stops = _.map(colorByCategories, (colorByCategory, index) => [colorByCategory, colorPalette[index]]);
 
   return {

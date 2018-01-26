@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import d3 from 'd3';
 
-import { COLOR_PALETTE_VALUES } from 'common/authoring_workflow/constants';
+import { COLOR_PALETTE_VALUES_FOR_MAPS } from 'common/authoring_workflow/constants';
 
 export function getDomain() {
   return _.get(this, 'series[0].dataSource.domain');
@@ -19,8 +19,14 @@ export function getColorPaletteId() {
   return _.get(this, 'series[0].color.palette');
 }
 
-export function getColorPalette() {
-  return _.get(COLOR_PALETTE_VALUES, this.getColorPaletteId(), COLOR_PALETTE_VALUES.categorical);
+export function getColorPalette(count) {
+  const colorPaletteGetter = _.get(
+    COLOR_PALETTE_VALUES_FOR_MAPS,
+    this.getColorPaletteId(),
+    COLOR_PALETTE_VALUES_FOR_MAPS.categorical
+  );
+
+  return colorPaletteGetter(count);
 }
 
 export function getMapType() {
@@ -102,8 +108,6 @@ function niceRoundOff(value) {
 }
 
 export function getColorByBuckets(colorByCategories) {
-  const colors = this.getColorPalette();
-
   // Converting
   //  colors => ['#aaa', '#bbb', '#ccc', '#ddd', ......]
   //  colorByCategories => [2011, 2012, 2013, ......]
@@ -117,13 +121,10 @@ export function getColorByBuckets(colorByCategories) {
     return [];
   }
 
+  const colors = this.getColorPalette(colorByCategories.length + 1);
+
   return _.chain(colorByCategories).
-    zipWith(colors, (category, color) => {
-      return {
-        category: category,
-        color: color
-      };
-    }).
+    zipWith(colors, (category, color) => ({ category, color })).
     take(colorByCategories.length).
     concat({
       category: 'Other',

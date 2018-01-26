@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import { COLOR_PALETTE_VALUES } from 'common/authoring_workflow/constants';
 import { MAP_TYPES, POINT_AGGREATIONS } from 'common/visualizations/views/mapConstants';
 import ChoroplethMapUtils from 'common/visualizations/views/ChoroplethMapUtils';
 
@@ -28,7 +27,7 @@ export function getRegionMapBuckets(measures) {
     numberOfClasses: this.getRegionMapBucketsCount()
   });
 
-  const colors = this.getColorPalette();
+  const colors = this.getColorPalette(rawBuckets.length - 1);
 
   // Converting
   //  colors => ['#aaa', '#bbb', '#ccc', '#ddd', ......]

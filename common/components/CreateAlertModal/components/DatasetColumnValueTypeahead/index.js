@@ -28,8 +28,8 @@ class DatasetColumnValueTypeahead extends Component {
   }
 
   componentWillMount = () => {
-    const { haveNbeView, viewId, column } = this.props;
-    const params = { viewId: viewId, column: column };
+    const { column, haveNbeView, viewId } = this.props;
+    const params = { viewId, column };
 
     if (!haveNbeView) {
       this.setState({ isDataLoading: true });
@@ -59,9 +59,9 @@ class DatasetColumnValueTypeahead extends Component {
   translationScope = 'shared.components.create_alert_modal.custom_alert';
 
   // Fetching values in column matching the user entered text.
-  updateDropdownResults = _.debounce((option) => { // eslint-disable-line react/sort-comp
-    const { haveNbeView, viewId, column } = this.props;
-    const params = { viewId: viewId, column: column };
+  updateDropdownResults = _.debounce((option) => {
+    const { column, haveNbeView, viewId } = this.props;
+    const params = { viewId, column };
     let promise;
 
     if (haveNbeView) {
@@ -72,12 +72,12 @@ class DatasetColumnValueTypeahead extends Component {
     }
     this.setState({ isDataLoading: true });
     promise.then((columnValues) => {
-      this.setState({ selectedColumnValues: columnValues, isDataLoading: false });
+      this.setState({ columnValues, isDataLoading: false });
     }).catch((error) => {
       console.error(error);
       this.setState({ isDataLoading: false });
     });
-  }, 400, { leading: false, trailing: true });
+  }, this.props.typeheadWaitTime, { leading: false, trailing: true });
 
   render() {
     const { value, onSelect } = this.props;
@@ -97,12 +97,14 @@ class DatasetColumnValueTypeahead extends Component {
 }
 
 DatasetColumnValueTypeahead.defaultProps = {
+  typeheadWaitTime: 400,
   value: ''
 };
 
 DatasetColumnValueTypeahead.propTypes = {
   column: PropTypes.string.isRequired,
   haveNbeView: PropTypes.bool.isRequired,
+  typeheadWaitTime: PropTypes.number,
   value: PropTypes.string,
   viewId: PropTypes.string.isRequired,
   onSelect: PropTypes.func.isRequired

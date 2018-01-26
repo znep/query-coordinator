@@ -57,7 +57,7 @@ class Tabs extends Component {
 
 Tabs.defaultProps = {
   editMode: false,
-  selectedTab: TABS.CUSTOM_ALERT
+  selectedTab: TABS.CUSTOM_ALERT.name
 };
 
 Tabs.propTypes = {

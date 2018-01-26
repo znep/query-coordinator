@@ -1,6 +1,6 @@
+import { mount } from 'enzyme';
 import React, { Component } from 'react';
 import TestUtils from 'react-dom/test-utils';
-import { mount } from 'enzyme';
 
 import InputDropDown from 'common/components/CreateAlertModal/components/InputDropDown';
 import Picklist from 'common/components/Picklist';
@@ -12,8 +12,8 @@ describe('InputDropDown', () => {
     assert.isDefined(element);
   });
 
-  describe('input filed', () => {
-    it('should renders element with input filed', () => {
+  describe('input field', () => {
+    it('should render element with input field', () => {
       const element = mount(<InputDropDown />);
 
       assert.lengthOf(element.find('input'), 1);
@@ -46,7 +46,7 @@ describe('InputDropDown', () => {
   });
 
   describe('onSelect', () => {
-    it('calls onSelect props on dropdown selection', () => {
+    it('should call onSelect props on dropdown selection', () => {
       const onSelectStub = sinon.stub();
       const options = [{ title: 'abc', value: 'abc' }];
       const element = mount(<InputDropDown onSelect={onSelectStub} options={options} />);

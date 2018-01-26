@@ -11,11 +11,20 @@
     display: none !important;
   }
 
+  :global(.input-range-slider) {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
   :global(.InputRange-slider) {
     height: 15px;
     width: 15px;
     border-radius: 100%;
     margin-top: -10px;
+  }
+
+  .icon-section {
+    cursor: pointer;
   }
 
   .section {

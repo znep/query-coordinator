@@ -8,8 +8,8 @@ import I18n from 'common/i18n';
 import SocrataIcon from 'common/components/SocrataIcon';
 import Spinner from 'common/components/Spinner';
 
-import SoqlSliceBuilder from './SoqlSliceBuilder';
 import datasetApi from 'common/components/CreateAlertModal/api/datasetApi';
+import SoqlSliceBuilder from 'common/components/CreateAlertModal/components/SoqlBuilder/SoqlSliceBuilder';
 import styles from './index.module.scss';
 
 /**
@@ -49,7 +49,7 @@ class SoqlBuilder extends Component {
       datasetColumns.push({ title: rowCountText, value: 'COUNT(*)', column_type: 'row_identifier' });
       this.setState({
         datasetColumns,
-        haveNbeView: !_.isEmpty(_.get(migrationData, 'nbeId')),
+        haveNbeView: _.has(migrationData, 'nbeId'),
         isDataLoading: false
       });
     }).catch((error) => {

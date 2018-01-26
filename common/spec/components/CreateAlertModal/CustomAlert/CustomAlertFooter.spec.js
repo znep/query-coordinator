@@ -1,17 +1,17 @@
-import TestUtils from 'react-dom/test-utils';
-import CustomAlertFooter from 'common/components/CreateAlertModal/CustomAlert/CustomAlertFooter';
-import { renderComponent } from '../../../helpers';
-import React, { Component } from 'react';
 import { mount } from 'enzyme';
+import React, { Component } from 'react';
+import TestUtils from 'react-dom/test-utils';
+
+import CustomAlertFooter from 'common/components/CreateAlertModal/CustomAlert/CustomAlertFooter';
 
 describe('CustomAlertFooter', () => {
   it('renders an element', () => {
-    const element = renderComponent(CustomAlertFooter);
+    const element = mount(<CustomAlertFooter />);
 
-    assert.isNotNull(element);
+    assert.isDefined(element);
   });
 
-  it('should renders element with save, delete, back button and name filed', () => {
+  it('should render element with save, delete, back button and name field', () => {
     const element = mount(<CustomAlertFooter />);
 
     element.setState({
@@ -29,7 +29,7 @@ describe('CustomAlertFooter', () => {
   });
 
   describe('name filed change', () => {
-    it('should call on alert name change function ', () => {
+    it('should call onAlertNameChange function on alert name change', () => {
       const nameChangeSpy = sinon.spy();
       const element = mount(<CustomAlertFooter onAlertNameChange={nameChangeSpy} />);
 
@@ -41,7 +41,7 @@ describe('CustomAlertFooter', () => {
   });
 
   describe('delete button', () => {
-    it('should call onDelete props function on click ', () => {
+    it('should call onDelete props function on click', () => {
       const onDeleteSpy = sinon.spy();
       const element = mount(<CustomAlertFooter onDeleteClick={onDeleteSpy} />);
 
@@ -53,7 +53,7 @@ describe('CustomAlertFooter', () => {
   });
 
   describe('Validate button', () => {
-    it('should call onValidate props function on click ', () => {
+    it('should call onValidate props function on click', () => {
       const onValidateClickSpy = sinon.spy();
       const element = mount(<CustomAlertFooter onValidateClick={onValidateClickSpy} />);
 
@@ -65,7 +65,7 @@ describe('CustomAlertFooter', () => {
   });
 
   describe('back button', () => {
-    it('should call onPageChange props function on click ', () => {
+    it('should call onPageChange props function on click', () => {
       const onPageChangeSpy = sinon.spy();
       const element = mount(<CustomAlertFooter onPageChange={onPageChangeSpy} />);
 
@@ -77,7 +77,7 @@ describe('CustomAlertFooter', () => {
   });
 
   describe('save button', () => {
-    it('should call onSave props function on click ', () => {
+    it('should call onSave props function on click', () => {
       const onSaveSpy = sinon.spy();
       const props = {
         onSaveClick: onSaveSpy,
@@ -92,7 +92,7 @@ describe('CustomAlertFooter', () => {
       sinon.assert.calledOnce(onSaveSpy);
     });
 
-    it('should not call onSave props function on click ', () => {
+    it('should not call onSave props function on click if enableSaveButton is false', () => {
       const onSaveSpy = sinon.spy();
       let element = mount(<CustomAlertFooter onSaveClick={onSaveSpy} enableSaveButton={false} />);
       element.setState({ showSaveButton: true });
@@ -102,7 +102,7 @@ describe('CustomAlertFooter', () => {
       sinon.assert.notCalled(onSaveSpy);
     });
 
-    it('should call onPageChange props function on click ', () => {
+    it('should call onPageChange props function on click', () => {
       const onPageChangeSpy = sinon.spy();
       const disableNextButton = false;
       const element = mount(<CustomAlertFooter onPageChange={onPageChangeSpy} />);

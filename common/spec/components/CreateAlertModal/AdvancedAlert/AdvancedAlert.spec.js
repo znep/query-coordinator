@@ -1,6 +1,6 @@
+import { mount } from 'enzyme';
 import React, { Component } from 'react';
 import TestUtils from 'react-dom/test-utils';
-import { mount } from 'enzyme';
 
 import AdvancedAlert from 'common/components/CreateAlertModal/AdvancedAlert';
 
@@ -12,7 +12,7 @@ describe('AdvancedAlert', () => {
     assert.isDefined(element);
   });
 
-  it('should renders text area for row soql input', () => {
+  it('should render text area for raw soql input', () => {
     const spy = sinon.spy();
     const element = mount(<AdvancedAlert onRawSoqlQueryChange={spy} />);
 

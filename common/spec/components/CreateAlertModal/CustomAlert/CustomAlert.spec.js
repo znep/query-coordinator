@@ -1,7 +1,7 @@
+import _ from 'lodash';
+import { mount } from 'enzyme';
 import React, { Component } from 'react';
 import TestUtils from 'react-dom/test-utils';
-import { mount } from 'enzyme';
-import _ from 'lodash';
 
 import CustomAlert from 'common/components/CreateAlertModal/CustomAlert';
 import datasetApi from 'common/components/CreateAlertModal/api/datasetApi';
@@ -21,7 +21,7 @@ describe('CustomAlert', () => {
     assert.isDefined(element);
   });
 
-  it('should renders alert breadcrumbs', () => {
+  it('should render alert breadcrumbs', () => {
     const element = mount(<CustomAlert {...getProps()} />);
 
     assert.lengthOf(element.find('.alert-breadcrumbs'), 1);
@@ -30,14 +30,14 @@ describe('CustomAlert', () => {
   describe('Alert Type Page', () => {
     const props = getProps({ customAlertPage: 'alertType' });
 
-    it('should renders Alert Type Page', () => {
+    it('should render page with alert type content', () => {
       const element = mount(<CustomAlert {...props} />);
 
       element.setState({ isDataLoading: false });
       assert.equal(element.find('.alert-type-page').length, 1);
     });
 
-    it('should renders with threshold alert type select option', () => {
+    it('should render page with threshold alert type select option', () => {
       const element = mount(<CustomAlert {...props} />);
 
       element.setState({ isDataLoading: false });
@@ -60,7 +60,7 @@ describe('CustomAlert', () => {
       getMigrationPromise.restore();
     });
 
-    it('should renders Soql builder', () => {
+    it('should render soql builder', () => {
       const props = getProps({
         customAlertPage: 'parameters',
         customAlertType: 'entire_data',
@@ -78,7 +78,7 @@ describe('CustomAlert', () => {
       customAlert: []
     });
 
-    it('should renders Alert Trigger Page', () => {
+    it('should render page with alert trigger content', () => {
       const element = mount(<CustomAlert {...props} />);
 
       element.setState({ isDataLoading: false });
@@ -86,7 +86,7 @@ describe('CustomAlert', () => {
       assert.equal(element.find('.alert-trigger-page').length, 1);
     });
 
-    it('should renders with rolling query option', () => {
+    it('should render trigger content with rolling query option', () => {
       const element = mount(<CustomAlert {...props} />);
 
       element.setState({ isDataLoading: false });

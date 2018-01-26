@@ -82,7 +82,7 @@ class CustomAlertFooter extends Component {
             type="text"
             placeholder={I18n.t('alert_name_placeholder', { scope: this.scope })}
             value={alertName}
-            onChange={(event) => onAlertNameChange(event)} />
+            onChange={onAlertNameChange} />
         </div>
       );
     }

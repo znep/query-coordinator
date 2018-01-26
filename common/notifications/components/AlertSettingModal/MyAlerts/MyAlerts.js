@@ -68,7 +68,8 @@ class MyAlerts extends Component {
 
   formatDatasetName(datasetName) {
     // sometimes datesetName may be null
-    let name = (datasetName || '').replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_\-]/g, '-').replace(/\-+/g, '-');
+    let name = (datasetName || '');
+    name = name.replace(/[\W\s]/g, '-').replace(/\-+/g, '-');
 
     if (name.length < 1) {
       name = '-';

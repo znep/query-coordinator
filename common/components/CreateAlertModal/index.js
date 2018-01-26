@@ -17,14 +17,19 @@ import styles from './index.module.scss';
 import Tabs from './components/Tabs';
 
 /**
- <description>
- @prop alert - object represent the alert
- @prop editAlertType - represent the alert type
- @prop editMode - boolean to enable edit mode
- @props mapboxAccessToken - mapbox access token
- @pops onClose - trigger when modal close
-*/
+  CreateAlertModal - Surface to create alerts
+  Alerts types:
+     Custom alert   - Alert created using the Soql builder
+     Advanced alert - Alert created by typing the raw soql query
 
+ @prop alert              - Alert object with alert params. (to be saved/got from the 'notifications
+                            and alerts' service. We use camel case for all the keys in the object to
+                            meet notifications and alert service's api.)
+ @prop editAlertType      - 'custom'|'abstract'
+ @prop editMode           - enable or disable edit mode (in edit mode, we show delete button and ...)
+ @props mapboxAccessToken - mapbox access token used for geocode search
+ @pops onClose            - called when the modal is closed
+*/
 class CreateAlertModal extends Component {
 
   constructor(props) {
@@ -33,8 +38,8 @@ class CreateAlertModal extends Component {
     this.state = {
       alertName: '',
       customAlert: [],
-      customAlertType: '',
       customAlertTriggerType: '',
+      customAlertType: '',
       currentCustomAlertPage: 'alertType',
       enableSaveButton: false,
       enableValidationInfo: false,
@@ -43,8 +48,8 @@ class CreateAlertModal extends Component {
       mapboxAccessToken: '',
       rawSoqlQuery: '',
       selectedTab: 'customAlert',
-      showInfoText: false,
       showDeleteAlertPage: false,
+      showInfoText: false,
       viewId: ''
     };
 
@@ -68,8 +73,8 @@ class CreateAlertModal extends Component {
     const { alert, editAlertType, editMode } = this.props;
     let {
       alertName,
-      customAlertTriggerType,
       customAlert,
+      customAlertTriggerType,
       currentCustomAlertPage,
       mapboxAccessToken,
       rawSoqlQuery,
@@ -162,7 +167,7 @@ class CreateAlertModal extends Component {
     }
   }
 
-  onCustomAlertPageChange(page) { // eslint-disable-line react/sort-comp
+  onCustomAlertPageChange(page) {
     this.setState({ currentCustomAlertPage: page, enableValidationInfo: false });
   }
 
@@ -199,7 +204,7 @@ class CreateAlertModal extends Component {
     });
   }
 
-  getAlertParams() { // eslint-disable-line react/sort-comp
+  getAlertParams() {
     const { alertName, customAlert, rawSoqlQuery, selectedTab } = this.state;
     const { alert } = this.props;
     const alertParams = { type: 'push' };
@@ -259,20 +264,19 @@ class CreateAlertModal extends Component {
     if (selectedTab === 'customAlert') {
       return (
         <CreateCustomAlert
-          viewId={viewId}
-          mapboxAccessToken={mapboxAccessToken}
+          customAlert={customAlert}
+          customAlertPage={currentCustomAlertPage}
+          customAlertTriggerType={customAlertTriggerType}
+          customAlertType={customAlertType}
           editMode={editMode}
           enableSaveButton={enableSaveButton}
-          customAlert={customAlert}
+          mapboxAccessToken={mapboxAccessToken}
+          viewId={viewId}
           onCustomAlertTypeChange={this.onCustomAlertTypeChange}
-          customAlertType={customAlertType}
           onTriggerTypeChange={this.onTriggerTypeChange}
-          customAlertTriggerType={customAlertTriggerType}
           onAlertPageOptionChange={this.onAlertPageOptionChange}
           onCustomAlertPageChange={this.onCustomAlertPageChange}
-          onCustomAlertChange={this.onCustomAlertChange}
-          customAlertPage={currentCustomAlertPage} />
-
+          onCustomAlertChange={this.onCustomAlertChange} />
       );
     } else if (selectedTab === 'advancedAlert') {
       return (
@@ -297,13 +301,13 @@ class CreateAlertModal extends Component {
   }
 
   renderAlertInfo() {
-    const { alertName, enableValidationInfo, isLoading, isInvalidQuery } = this.state;
+    const { alertName, enableValidationInfo, isInvalidQuery, isLoading } = this.state;
     return (
       <AlertInfo
         alertName={alertName}
         enableValidationInfo={enableValidationInfo}
-        isLoading={isLoading}
-        isInvalidQuery={isInvalidQuery} />
+        isInvalidQuery={isInvalidQuery}
+        isLoading={isLoading} />
     );
   }
 
@@ -323,27 +327,27 @@ class CreateAlertModal extends Component {
       footerContent = (
         <CustomAlertFooter
           alertName={alertName}
+          customAlertPage={currentCustomAlertPage}
           customAlertType={customAlertType}
-          enableSaveButton={enableSaveButton}
-          onAlertNameChange={this.onAlertNameChange}
-          onSaveClick={this.onCreateAlertClick}
-          onValidateClick={this.onValidateAlert}
-          onPageChange={this.onCustomAlertPageChange}
-          onDeleteClick={this.onDeleteButtonClick}
           customAlertTriggerType={customAlertTriggerType}
           editMode={editMode}
-          customAlertPage={currentCustomAlertPage} />
+          enableSaveButton={enableSaveButton}
+          onAlertNameChange={this.onAlertNameChange}
+          onDeleteClick={this.onDeleteButtonClick}
+          onPageChange={this.onCustomAlertPageChange}
+          onSaveClick={this.onCreateAlertClick}
+          onValidateClick={this.onValidateAlert} />
       );
     } else {
       footerContent = (
         <AdvancedAlertFooter
           alertName={alertName}
           enableSaveButton={enableSaveButton}
-          onAlertNameChange={this.onAlertNameChange}
           showDeleteButton={editMode}
-          onValidate={this.onValidateAlert}
+          onAlertNameChange={this.onAlertNameChange}
+          onDelete={this.onDeleteButtonClick}
           onSave={this.onCreateAlertClick}
-          onDelete={this.onDeleteButtonClick} />
+          onValidate={this.onValidateAlert} />
       );
     }
     return (

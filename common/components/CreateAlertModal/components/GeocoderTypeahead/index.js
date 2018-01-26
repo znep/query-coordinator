@@ -16,8 +16,8 @@ import styles from '../components.module.scss';
 */
 class GeocoderTypeahead extends Component {
   state = {
-    isDataLoading: false,
-    geoResults: []
+    geoResults: [],
+    isDataLoading: false
   }
 
   // On input change notify the parent component that the user has
@@ -44,12 +44,12 @@ class GeocoderTypeahead extends Component {
     }).catch(() => {
       this.setState({ isDataLoading: false });
     });
-  }, 400, { leading: false, trailing: true });
+  }, this.props.typeheadWaitTime, { leading: false, trailing: true });
 
   translationsScope = 'shared.components.create_alert_modal.custom_alert';
 
   render() {
-    const { isDataLoading, geoResults } = this.state;
+    const { geoResults, isDataLoading } = this.state;
     const { onSelect, value } = this.props;
     const placeHolder = I18n.t('placeholder.location', { scope: this.translationsScope });
 
@@ -69,6 +69,7 @@ class GeocoderTypeahead extends Component {
 }
 
 GeocoderTypeahead.defaultProps = {
+  typeheadWaitTime: 400,
   value: ''
 };
 
@@ -87,6 +88,7 @@ GeocoderTypeahead.propTypes = {
   //     Object:{
   //       title: 'United Sta'
   //      }
+  typeheadWaitTime: PropTypes.number,
   value: PropTypes.string
 };
 

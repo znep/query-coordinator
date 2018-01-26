@@ -1,6 +1,6 @@
-import TestUtils from 'react-dom/test-utils';
-import React, { Component } from 'react';
 import { mount } from 'enzyme';
+import React, { Component } from 'react';
+import TestUtils from 'react-dom/test-utils';
 
 import Tabs from 'common/components/CreateAlertModal/components/Tabs';
 
@@ -13,15 +13,15 @@ describe('Tabs', () => {
     assert.isDefined(element);
   });
 
-  it('should renders custom_alert, advance_alert tabs', () => {
+  it('should render custom_alert & advance_alert tabs', () => {
     const spy = sinon.spy();
     const element = mount(<Tabs onTabChange={spy} />);
     const liTabs = element.find('li');
 
-    assert.equal(liTabs.length, 2);
+    assert.lengthOf(liTabs, 2);
   });
 
-  it('should call tab change function on click', () => {
+  it('should call onTabChange function on click', () => {
     const spy = sinon.spy();
     const element = mount(<Tabs onTabChange={spy} />);
 
@@ -36,6 +36,6 @@ describe('Tabs', () => {
     const element = mount(<Tabs {...props} />);
     const liTabs = element.find('li');
 
-    assert.equal(liTabs.length, 1);
+    assert.lengthOf(liTabs, 1);
   });
 });

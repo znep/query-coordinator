@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { renderComponent } from '../../helpers';
+import TestUtils from 'react-dom/test-utils';
+
 import CreateAlertApi from 'common/components/CreateAlertModal/api/CreateAlertApi';
 import DeleteAlert from 'common/components/CreateAlertModal/DeleteAlert';
-import TestUtils from 'react-dom/test-utils';
+import { renderComponent } from '../../helpers';
+
 
 describe('DeleteAlert', () => {
   it('renders an element', () => {
@@ -12,7 +14,7 @@ describe('DeleteAlert', () => {
     assert.isNotNull(element);
   });
 
-  it('should renders an Modal with yes & cancel button', () => {
+  it('should render a modal with yes & cancel button', () => {
     const spy = sinon.spy();
     const element = renderComponent(DeleteAlert, { onCancel: spy, alert: {} });
 
@@ -20,7 +22,7 @@ describe('DeleteAlert', () => {
     assert.isNotNull(element.querySelector('.cancel-button'));
   });
 
-  it('on yes should call delete alert promise', () => {
+  it('should call delete alert promise on yes button click', () => {
     const spy = sinon.spy();
     const createAlertPromise = sinon.stub(CreateAlertApi, 'delete').returns(Promise.resolve({ status: 200 }));
     const element = renderComponent(DeleteAlert, { onCancel: spy, alert: {} });
@@ -32,7 +34,7 @@ describe('DeleteAlert', () => {
     createAlertPromise.restore();
   });
 
-  it('on cancel should call onCancel function', () => {
+  it('should call onCancel function on cancel button click', () => {
     const spy = sinon.spy();
     const element = renderComponent(DeleteAlert, { onCancel: spy, alert: {} });
     const cancelButton = element.querySelector('.cancel-button');

@@ -1,7 +1,7 @@
+import _ from 'lodash';
+import { mount } from 'enzyme';
 import TestUtils from 'react-dom/test-utils';
 import React, { Component } from 'react';
-import { mount } from 'enzyme';
-import _ from 'lodash';
 
 import datasetApi from 'common/components/CreateAlertModal/api/datasetApi';
 import Dropdown from 'common/components/Dropdown';
@@ -33,13 +33,13 @@ describe('SoqlSliceBuilder', () => {
     assert.isDefined(element);
   });
 
-  it('renders column selector field', () => {
+  it('should render column selector field', () => {
     const element = mount(<SoqlSliceBuilder {...getProps()} />);
 
     assert.lengthOf(element.find('.dataset-column-selector'), 1);
   });
 
-  it('renders logical operator field if alertIndex is greater than zero', () => {
+  it('should render logical operator field if alertIndex is greater than zero', () => {
     const props = getProps({ sliceIndex: 1 });
     const element = mount(<SoqlSliceBuilder {...props} />);
 
@@ -197,14 +197,14 @@ describe('SoqlSliceBuilder', () => {
   });
 
   describe('Delete Slice', () => {
-    it('should render delete icon if slice index greater than zero', () => {
+    it('should render delete icon if slice index is greater than zero', () => {
       const props = getProps({ sliceIndex: 1 });
       const element = mount(<SoqlSliceBuilder {...props} />);
 
       assert.lengthOf(element.find('.icon-close'), 1);
     });
 
-    it('should not render delete icon if slice index less than one', () => {
+    it('should not render delete icon if slice index is less than one', () => {
       const props = getProps({ sliceIndex: 0 });
       const element = mount(<SoqlSliceBuilder {...props} />);
 

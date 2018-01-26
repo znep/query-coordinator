@@ -27,19 +27,19 @@ class RadiusSlider extends Component {
 
   onStepUp = () => {
     const { value, onChange } = this.props;
-    onChange(value + 1);
+    onChange(value + STEP);
   };
 
   onStepDown = () => {
     const { value, onChange } = this.props;
-    onChange(Number(value) - 1);
+    onChange(value - STEP);
   };
 
-  transalationScope = 'shared.components.create_alert_modal.custom_alert';
+  translationScope = 'shared.components.create_alert_modal.custom_alert';
 
   renderStepUpDownArrows() {
     return (
-      <div styleName="section">
+      <div styleName="section icon-section">
         <span>
           <i className="socrata-icon-arrow-up" onClick={this.onStepUp} />
         </span>
@@ -66,7 +66,7 @@ class RadiusSlider extends Component {
           <Slider {...sliderProps} />
         </div>
         <div styleName="section">
-          {I18n.t('radius_text', { scope: this.transalationScope })}:
+          {I18n.t('radius_text', { scope: this.translationScope })}:
           {value}
         </div>
         {this.renderStepUpDownArrows()}
@@ -76,8 +76,7 @@ class RadiusSlider extends Component {
 }
 
 RadiusSlider.defaultProps = {
-  value: 1,
-  onChange: _.noop
+  value: 1
 };
 
 RadiusSlider.propTypes = {

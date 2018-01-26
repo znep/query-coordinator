@@ -41,7 +41,7 @@ class Tabs extends Component {
 
 Tabs.propTypes = {
   selectedTab: PropTypes.string,
-  onTabChange: PropTypes.func
+  onTabChange: PropTypes.func.isRequired
 };
 
 export default connectLocalization(cssModules(Tabs, styles, { allowMultiple: true }));

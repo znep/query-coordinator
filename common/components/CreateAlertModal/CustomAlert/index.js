@@ -203,10 +203,10 @@ CreateCustomAlert.propTypes = {
   customAlert: PropTypes.array,
   editMode: PropTypes.bool,
   mapboxAccessToken: PropTypes.string.isRequired,
+  viewId: PropTypes.string.isRequired,
   onAddCustomAlertRow: PropTypes.func,
-  onCustomAlertPageChange: PropTypes.func,
   onCustomAlertChange: PropTypes.func,
-  viewId: PropTypes.string.isRequired
+  onCustomAlertPageChange: PropTypes.func
 };
 
 export default cssModules(CreateCustomAlert, styles, { allowMultiple: true });

@@ -8,6 +8,12 @@ import I18n from 'common/i18n';
 import CreateAlertApi from './api/CreateAlertApi';
 import styles from './index.module.scss';
 
+/**
+ DeleteAlert - Confirmation section shown on click of 'delete alert' button. This section renders
+ the following buttons:
+   'yes'    :  will delete the alert, and on api finish, will call onDeleteSuccess
+   'cancel' :  will cancel the delelte operation
+*/
 class DeleteAlert extends Component {
   constructor() {
     super();

@@ -1,7 +1,7 @@
 import _ from 'lodash';
+import { mount } from 'enzyme';
 import React, { Component } from 'react';
 import TestUtils from 'react-dom/test-utils';
-import { mount } from 'enzyme';
 
 import datasetApi from 'common/components/CreateAlertModal/api/datasetApi';
 import DatasetColumnValueTypeahead from 'common/components/CreateAlertModal/components/DatasetColumnValueTypeahead';
@@ -16,6 +16,7 @@ describe('DatasetColumnValueTypeahead', () => {
     return _.defaultsDeep({}, props, {
       column: 'test',
       haveNbeView: false,
+      typeheadWaitTime: 0,
       viewId: 'test',
       onSelect: onSelectSpy
     });
@@ -58,21 +59,21 @@ describe('DatasetColumnValueTypeahead', () => {
     sinon.assert.calledOnce(onSelectSpy);
   });
 
-  it('on load it should call get top columns value query', () => {
+  it('on load it should call getTopValuesByColumn query', () => {
     const props = getProps({ haveNbeView: false });
     const element = mount(<DatasetColumnValueTypeahead {...props } />);
 
     sinon.assert.calledOnce(getTopValuesByColumnPromise);
   });
 
-  it('on load it should not call get top columns value query', () => {
+  it('on load it should not call getTopValuesByColumn query if dataset is NBE', () => {
     const props = getProps({ haveNbeView: true });
     const element = mount(<DatasetColumnValueTypeahead {...props } />);
 
     sinon.assert.notCalled(getTopValuesByColumnPromise);
   });
 
-  it('on input change it should call get columns value query', (done) => {
+  it('on input change it should call getColumnValues query if dataset is NBE', (done) => {
     const props = getProps({ haveNbeView: true });
     const element = mount(<DatasetColumnValueTypeahead {...props } />);
     const inputDropDown = element.find(InputDropDown);
@@ -82,11 +83,11 @@ describe('DatasetColumnValueTypeahead', () => {
     setTimeout(function() {
       sinon.assert.calledOnce(getColumnValuesPromise);
       done();
-    }, 400);
+    }, 0);
   });
 
 
-  it('on input change it should not call get columns value query', () => {
+  it('on input change it should not call getColumnValues query if dataset is NBE', () => {
     const props = getProps({ haveNbeView: false });
     const element = mount(<DatasetColumnValueTypeahead {...props } />);
     const inputDropDown = element.find(InputDropDown);

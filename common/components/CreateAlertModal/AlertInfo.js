@@ -26,7 +26,7 @@ class AlertInfo extends Component {
       );
     } else if (isInvalidQuery) {
       return (
-        <div styleName="alert-info error-info" className="invaild-query">
+        <div styleName="alert-info error-info" className="invalid-query">
           <span styleName="info-icon" className="socrata-icon-close" />
           {I18n.t('invalid_query', { scope: this.translationScope })}
         </div>
@@ -34,7 +34,7 @@ class AlertInfo extends Component {
     }
 
     return (
-      <div styleName="alert-info success-info" className="vaild-query">
+      <div styleName="alert-info success-info" className="valid-query">
         <span styleName="info-icon" className="socrata-icon-check" />
         {I18n.t('valid_query', { scope: this.translationScope })}
       </div>
@@ -44,7 +44,7 @@ class AlertInfo extends Component {
   translationScope = 'shared.components.create_alert_modal.info';
 
   render() {
-    const { isLoading, enableValidationInfo } = this.props;
+    const { enableValidationInfo, isLoading } = this.props;
 
     if (isLoading) {
       return (
@@ -61,8 +61,8 @@ class AlertInfo extends Component {
 AlertInfo.propTypes = {
   alertName: PropTypes.string,
   enableValidationInfo: PropTypes.bool,
-  isLoading: PropTypes.bool,
-  isInvalidQuery: PropTypes.bool
+  isInvalidQuery: PropTypes.bool,
+  isLoading: PropTypes.bool
 };
 
 export default cssModules(AlertInfo, styles, { allowMultiple: true });

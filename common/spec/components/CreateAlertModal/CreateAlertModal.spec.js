@@ -1,6 +1,6 @@
-import TestUtils from 'react-dom/test-utils';
-import React, { Component } from 'react';
 import { mount } from 'enzyme';
+import React, { Component } from 'react';
+import TestUtils from 'react-dom/test-utils';
 
 import AdvancedAlertFooter from 'common/components/CreateAlertModal/AdvancedAlert/AdvancedAlertFooter';
 import CreateAlertModal from 'common/components/CreateAlertModal';
@@ -32,14 +32,14 @@ describe('CreateAlertModal', () => {
     assert.isDefined(element);
   });
 
-  it('should renders an Modal with name, query inputs', () => {
+  it('should render a modal with name & query input fields', () => {
     const spy = sinon.spy();
     const element = mount(<CreateAlertModal onClose={spy} />);
 
     assert.lengthOf(element.find('.create-alert-modal-container'), 1);
   });
 
-  it('should call onClose method while dismiss', () => {
+  it('should call onClose method on modal dismiss', () => {
     const spy = sinon.spy();
     const element = mount(<CreateAlertModal onClose={spy} />);
 
@@ -48,7 +48,7 @@ describe('CreateAlertModal', () => {
     sinon.assert.calledOnce(spy);
   });
 
-  it('should rednder delete view content', () => {
+  it('should render delete view content in delete mode', () => {
     const spy = sinon.spy();
     const element = mount(<CreateAlertModal onClose={spy} selectedTab="advance_alert" />);
 
@@ -57,8 +57,8 @@ describe('CreateAlertModal', () => {
     assert.lengthOf(element.find(DeleteAlert), 1);
   });
 
-  describe('Advance Alert', () => {
-    it('should show the Advance Alert content and Footer', () => {
+  describe('Advanced Alert', () => {
+    it('should show the Advanced Alert content and footer', () => {
       const spy = sinon.spy();
       const element = mount(<CreateAlertModal onClose={spy} />);
 
@@ -70,7 +70,7 @@ describe('CreateAlertModal', () => {
   });
 
   describe('Custom Alert', () => {
-    it('should show the custom Alert content and Footer', () => {
+    it('should show the Custom Alert content and footer', () => {
       const spy = sinon.spy();
       const element = mount(<CreateAlertModal onClose={spy} />);
 

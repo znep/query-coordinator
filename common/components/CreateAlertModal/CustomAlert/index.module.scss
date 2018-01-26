@@ -153,14 +153,14 @@
     }
   }
 
-  & :global(:not(.socrata-icon-logo-color).socrata-icon) {
+  // Used for the icons in the custom alert (breadcrumbs,  dropdown)
+  & :global(.socrata-icon) {
     color: $grey;
     fill: $grey;
     height: 14px;
     width: 14px;
 
     & svg {
-
       height: 14px;
       width: 14px;
 
@@ -171,6 +171,4 @@
       }
     }
   }
-
-
 }

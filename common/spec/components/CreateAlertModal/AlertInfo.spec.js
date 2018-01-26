@@ -1,6 +1,6 @@
+import { mount } from 'enzyme';
 import React, { Component } from 'react';
 import TestUtils from 'react-dom/test-utils';
-import { mount } from 'enzyme';
 
 import AlertInfo from 'common/components/CreateAlertModal/AlertInfo';
 
@@ -11,13 +11,17 @@ describe('AlertInfo', () => {
     assert.isDefined(element);
   });
 
-  it('should show lodaing message if lodaing is true', () => {
-    const element = mount(<AlertInfo isLoading />);
+  it('should show loading message if isLoading is true', () => {
+    const props = {
+      isLoading: true,
+      enableValidationInfo: false
+    };
+    const element = mount(<AlertInfo {...props} />);
 
     assert.isTrue(element.find('.loading-message').exists());
   });
 
-  it('should show alert name missing if alert name missing', () => {
+  it('should show alert name missing message if alert name is empty', () => {
     const props = {
       enableValidationInfo: true
     };
@@ -26,7 +30,7 @@ describe('AlertInfo', () => {
     assert.isTrue(element.find('.name-error').exists());
   });
 
-  it('should show query invalid message if query validation failed', () => {
+  it('should show query invalid message if query validation fails', () => {
     const props = {
       enableValidationInfo: true,
       alertName: 'abc',
@@ -34,10 +38,10 @@ describe('AlertInfo', () => {
     };
     const element = mount(<AlertInfo {...props} />);
 
-    assert.isTrue(element.find('.invaild-query').exists());
+    assert.isTrue(element.find('.invalid-query').exists());
   });
 
-  it('should show query valid message if query validation success', () => {
+  it('should show query valid message if query validation succeeds', () => {
     const props = {
       enableValidationInfo: true,
       alertName: 'abc',
@@ -45,6 +49,6 @@ describe('AlertInfo', () => {
     };
     const element = mount(<AlertInfo {...props} />);
 
-    assert.isTrue(element.find('.vaild-query').exists());
+    assert.isTrue(element.find('.valid-query').exists());
   });
 });

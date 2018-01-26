@@ -1,6 +1,7 @@
-import TestUtils from 'react-dom/test-utils';
-import React, { Component } from 'react';
 import { mount } from 'enzyme';
+import React, { Component } from 'react';
+import TestUtils from 'react-dom/test-utils';
+
 import AdvancedAlertFooter from 'common/components/CreateAlertModal/AdvancedAlert/AdvancedAlertFooter';
 
 describe('AdvancedAlertFooter', () => {
@@ -11,7 +12,7 @@ describe('AdvancedAlertFooter', () => {
     assert.isDefined(element);
   });
 
-  it('should renders element with validate, save button and input filed', () => {
+  it('should render element with validate, save button and input field', () => {
     const spy = sinon.spy();
     const element = mount(<AdvancedAlertFooter onValidate={spy} />);
 
@@ -21,7 +22,7 @@ describe('AdvancedAlertFooter', () => {
   });
 
   describe('validate button', () => {
-    it('should call onValidate props function on click ', () => {
+    it('should call onValidate props function on click', () => {
       const spy = sinon.spy();
       const element = mount(<AdvancedAlertFooter onValidate={spy} />);
 
@@ -32,7 +33,7 @@ describe('AdvancedAlertFooter', () => {
   });
 
   describe('save button', () => {
-    it('should call onSave props function on click ', () => {
+    it('should call onSave props function on click', () => {
       const spy = sinon.spy();
       const props = {
         onSave: spy,
@@ -47,7 +48,7 @@ describe('AdvancedAlertFooter', () => {
       sinon.assert.calledOnce(spy);
     });
 
-    it('should not call onSave props function on click ', () => {
+    it('should not call onSave props function on click if enableSaveButton is false', () => {
       const spy = sinon.spy();
       const saveSpy = sinon.spy();
       const element = mount(<AdvancedAlertFooter onSave={saveSpy} onValidate={spy} />);
@@ -67,14 +68,14 @@ describe('AdvancedAlertFooter', () => {
       assert.lengthOf(element.find('.delete-button'), 1);
     });
 
-    it('should not show delete button', () => {
+    it('should not show delete button if showDeleteButton is false', () => {
       const spy = sinon.spy();
       const element = mount(<AdvancedAlertFooter onValidate={spy} />);
 
       assert.lengthOf(element.find('.delete-button'), 0);
     });
 
-    it('should call onDelete props function on click ', () => {
+    it('should call onDelete props function on click', () => {
       const spy = sinon.spy();
       const validateSpy = sinon.spy();
       const props = { showDeleteButton: true, onDelete: spy, onValidate: validateSpy };

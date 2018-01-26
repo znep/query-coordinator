@@ -1,7 +1,7 @@
 import _ from 'lodash';
+import { mount } from 'enzyme';
 import React, { Component } from 'react';
 import TestUtils from 'react-dom/test-utils';
-import { mount } from 'enzyme';
 
 import datasetApi from 'common/components/CreateAlertModal/api/datasetApi';
 import GeocoderTypeahead from 'common/components/CreateAlertModal/components/GeocoderTypeahead';
@@ -13,6 +13,7 @@ describe('GeocoderTypeahead', () => {
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       mapboxAccessToken: 'TEST_MAPBOX_ACCESS_TOKEN',
+      typeheadWaitTime: 0,
       onSelect: onSelectSpy
     });
   }
@@ -26,7 +27,7 @@ describe('GeocoderTypeahead', () => {
     assert.isDefined(element);
   });
 
-  it('should call onInputChange function on geo Search input change', () => {
+  it('should call onInputChange function on GeoSearch input change', () => {
     const element = mount(<GeocoderTypeahead {...getProps()} />);
     const inputDropDown = element.find(InputDropDown);
 
@@ -35,7 +36,7 @@ describe('GeocoderTypeahead', () => {
     sinon.assert.calledOnce(onSelectSpy);
   });
 
-  it('should call onSelect function on geo search result select', () => {
+  it('should call onSelect function on GeoSearch result select', () => {
     const element = mount(<GeocoderTypeahead {...getProps()} />);
     const inputDropDown = element.find(InputDropDown);
 
@@ -44,7 +45,7 @@ describe('GeocoderTypeahead', () => {
     sinon.assert.calledOnce(onSelectSpy);
   });
 
-  describe('geo search', () => {
+  describe('Geo Search', () => {
     it('on input change it should call geo query', (done) => {
       const geoSearchPromise = sinon.stub(datasetApi, 'geoSearch')
         .returns(Promise.resolve([]));
@@ -57,7 +58,7 @@ describe('GeocoderTypeahead', () => {
         sinon.assert.calledOnce(geoSearchPromise);
         geoSearchPromise.restore();
         done();
-      }, 400);
+      }, 0);
     });
 
     it('on input change it should not call geo query if input is empty', () => {

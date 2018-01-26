@@ -1,6 +1,6 @@
+import { mount } from 'enzyme';
 import React, { Component } from 'react';
 import TestUtils from 'react-dom/test-utils';
-import { mount } from 'enzyme';
 
 import RadiusSlider from 'common/components/CreateAlertModal/components/RadiusSlider';
 import Slider from 'common/components/Slider';
@@ -12,7 +12,7 @@ describe('RadiusSlider', () => {
     assert.isDefined(element);
   });
 
-  it('should renders element with icon and input filed', () => {
+  it('should render element with icon and input field', () => {
     const element = mount(<RadiusSlider />);
 
     assert.lengthOf(element.find('.socrata-icon-arrow-up'), 1);
@@ -22,7 +22,7 @@ describe('RadiusSlider', () => {
 
   describe('radius slider value change', () => {
 
-    it('should change value on up arrow click ', () => {
+    it('should change value on up arrow click', () => {
       const upArrowSpy = sinon.spy();
       const element = mount(<RadiusSlider onChange={upArrowSpy} />);
 

@@ -68,16 +68,16 @@ export const datasetApi = (() => {
         headers: defaultHeaders,
         credentials: 'same-origin'
       }).
-      then((response) => formatColumnData(response));
+      then(formatColumnData);
     },
     // Get top x values in a column. Used against obe datasets, which do not
     // support 'like' operator, so can not do a complete typeahead option.
     getTopValuesByColumn: (params) => {
-      const column = params.column;
+      const { column, viewId } = params;
       const limit = (_.get(params, 'limit', 20));
       const conditionText = `$select=${column}&$group=${column}&$limit=${limit}`;
 
-      return fetchJson(`/resource/${params.viewId}.json?${conditionText}`, {
+      return fetchJson(`/resource/${viewId}.json?${conditionText}`, {
         method: 'GET',
         headers: defaultHeaders,
         credentials: 'same-origin'
@@ -104,8 +104,10 @@ export const datasetApi = (() => {
     //    searchText  : search term
     //    viewId      : view id to search for matching values.
     getMatchingColumnValues: (params) => {
-      const column = params.column;
-      const searchText = encodeURIComponent((params.searchText || '').toUpperCase());
+      const { column, viewId } = params;
+      let { searchText } = params;
+      searchText = encodeURIComponent(_.toUpper(searchText));
+
       const conditionText = `$select=${column}&$group=${column}&$$read_from_nbe=true` +
         `&$where=UPPER(${column}) like '%25${searchText}%25'`;
 
@@ -118,13 +120,13 @@ export const datasetApi = (() => {
     },
     // Given a search string, it geocodes using mapbox API and returns back matching
     // results in pick list options format.
-    geoSearch : (searchString, accessToken) => {
+    geoSearch: (searchString, accessToken) => {
+      const encodedSearchString = encodeURIComponent(searchString);
       const geoQueryUrl = 'https://a.tiles.mapbox.com/geocoding/v5/mapbox.places/';
-      const queryEndpoint = geoQueryUrl + encodeURIComponent(searchString) + '.json' +
-        `?access_token=${accessToken}`;
+      const queryEndpoint = `${geoQueryUrl}${encodedSearchString}.json?access_token=${accessToken}`;
 
       return fetchJson(queryEndpoint, { method: 'GET' }).
-        then((response) => formatMapboxGeocodeResponse(response));
+        then(formatMapboxGeocodeResponse);
     }
   };
 })();

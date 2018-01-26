@@ -79,9 +79,7 @@ describe('datasetApi', () => {
 
     describe('successful response', () => {
       const mockResponse = new Response(
-        JSON.stringify([{
-          'test_column': 'test_column'
-        }]), { status: 200 });
+        JSON.stringify([{ 'test_column': 'test_column' }]), { status: 200 });
 
       beforeEach(() => {
         getTopValuesByColumnStub = sinon.stub(window, 'fetch').returns(Promise.resolve(mockResponse));
@@ -142,9 +140,7 @@ describe('datasetApi', () => {
     let getMigrationStub;
 
     describe('successful response', () => {
-      const mockResponse = new Response(
-        JSON.stringify({ valid:true }), { status: 200 }
-        );
+      const mockResponse = new Response(JSON.stringify({ valid:true }), { status: 200 });
 
       beforeEach(() => {
         getMigrationStub = sinon.stub(window, 'fetch').returns(Promise.resolve(mockResponse));
@@ -198,10 +194,7 @@ describe('datasetApi', () => {
     let getColumnValuesStub;
 
     describe('successful response', () => {
-      const mockResponse = new Response(
-        JSON.stringify([{
-          'test': 'test'
-        }]), { status: 200 });
+      const mockResponse = new Response(JSON.stringify([{ 'test': 'test' }]), { status: 200 });
 
       beforeEach(() => {
         getColumnValuesStub = sinon.stub(window, 'fetch').returns(Promise.resolve(mockResponse));
@@ -211,7 +204,7 @@ describe('datasetApi', () => {
         getColumnValuesStub.restore();
       });
 
-      it('should get columns values from dataset using get method', () => {
+      it('should get column values from dataset using get method', () => {
         const params = { column: 'test', searchText: 'test', viewId: 'test-tset' };
         const expectedOutput = [{
           title: 'test',
@@ -282,7 +275,7 @@ describe('datasetApi', () => {
         geoSearchStub.restore();
       });
 
-      it('should get palces using geo search', () => {
+      it('should get places using geo search', () => {
         const expectedOutput = [{
           geometry: 'test_geometry',
           title: 'test_place',

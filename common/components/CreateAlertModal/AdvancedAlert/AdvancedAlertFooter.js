@@ -27,7 +27,7 @@ class AdvanceAlertFooter extends Component {
           type="text"
           placeholder={I18n.t('alert_name_placeholder', { scope: this.translationScope })}
           value={alertName}
-          onChange={(event) => onAlertNameChange(event)} />
+          onChange={onAlertNameChange} />
       </div>
     );
   }

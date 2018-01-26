@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import $ from 'jquery';
 import classNames from 'classnames';
 import cssModules from 'react-css-modules';
 import PropTypes from 'prop-types';

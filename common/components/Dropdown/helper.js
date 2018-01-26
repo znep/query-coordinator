@@ -1,8 +1,6 @@
 import _ from 'lodash';
-import $ from 'jquery';
 
 export const positionPicklist = (optionsRef, dropdownRef, props) => {
-
   const hasOptions = optionsRef &&
     optionsRef.querySelectorAll('.picklist-option').length > 0;
 

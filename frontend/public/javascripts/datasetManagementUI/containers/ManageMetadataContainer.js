@@ -501,7 +501,7 @@ export function getRevision(revisions = {}, revisionSeq) {
 }
 
 // getOutputSchemaId :: Number -> Revision -> Number
-function getOutputSchemaId(idFromParams, revision, fallbackOS) {
+export function getOutputSchemaId(idFromParams, revision, fallbackOS) {
   if (isNumber(idFromParams)) {
     return idFromParams;
   } else if (revision && revision.output_schema_id) {

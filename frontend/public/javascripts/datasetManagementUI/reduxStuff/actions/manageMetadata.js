@@ -2,14 +2,20 @@ import _ from 'lodash';
 import { browserHistory } from 'react-router';
 import * as Links from 'datasetManagementUI/links/links';
 import { UNSAVED } from 'datasetManagementUI/components/ManageMetaData/ManageMetadata';
+import * as ModalActions from 'datasetManagementUI/reduxStuff/actions/modal';
 
-export const dismissMetadataPane = (currentOutputSchemaPath, params, colFormStatus, datasetFormStatus) => (
-  dispatch,
-  getState
-) => {
-  if (colFormStatus === UNSAVED || datasetFormStatus === UNSAVED) {
-    alert('really>??');
+export const dismissMetadataPane = (
+  currentOutputSchemaPath,
+  params,
+  colFormStatus,
+  datasetFormStatus,
+  closeUnsaved = false
+) => (dispatch, getState) => {
+  if (!closeUnsaved || colFormStatus === UNSAVED || datasetFormStatus === UNSAVED) {
+    dispatch(ModalActions.showModal('ManageMetadata'));
+    return;
   }
+
   const { history } = getState().ui;
   const isMetadataModalPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/metadata.*/; // eslint-disable-line
   const isShowOutputSchemaPath = /^\/[\w-]+\/.+\/\w{4}-\w{4}\/revisions\/\d+\/sources\/\d+\/schemas\/\d+\/output\/\d+/; // eslint-disable-line

@@ -117,9 +117,20 @@ export class ResultListRow extends Component {
 
     if (columnName === 'visibility') {
       const visibilityCellProps = _.pick(this.props,
-        ['datalensStatus', 'grants', 'isDatalensApproved', 'isExplicitlyHidden', 'isModerationApproved',
-          'isPublic', 'isPublished', 'isRoutingApproved', 'moderationStatus', 'routingStatus',
-          'visibleToAnonymous']
+        [
+          'approvals',
+          'datalensStatus',
+          'grants',
+          'isDatalensApproved',
+          'isExplicitlyHidden',
+          'isModerationApproved',
+          'isPublic',
+          'isPublished',
+          'isRoutingApproved',
+          'moderationStatus',
+          'routingStatus',
+          'visibleToAnonymous'
+        ]
       );
 
       return cellTag(<VisibilityCell {...visibilityCellProps} />);

@@ -259,6 +259,7 @@ en:
           visibility: Visibility
         visibility_values:
           awaiting_approval: Awaiting approval
+          pending_approval: Pending approval
           internal: Internal
           open: Open
           pending: Pending

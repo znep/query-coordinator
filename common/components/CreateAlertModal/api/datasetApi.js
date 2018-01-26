@@ -47,6 +47,8 @@ const formatColumnValues = (data, column) => {
 //   ],
 //   ...
 // }
+// Additional details can be found in the Mapbox API here:
+// https://www.mapbox.com/api-documentation/#response-object
 const formatMapboxGeocodeResponse = (response) => {
   const features = _.get(response, 'features', []);
 

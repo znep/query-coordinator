@@ -8,7 +8,7 @@ import I18n from 'common/i18n';
 
 import { MeasureResultCard } from 'opMeasure/components/MeasureResultCard';
 
-describe.only('MeasureResultCard', () => {
+describe('MeasureResultCard', () => {
   const unresolvedPromise = new Promise(_.noop);
 
   const getProps = (props) => {

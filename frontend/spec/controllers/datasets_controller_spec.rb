@@ -594,7 +594,8 @@ describe DatasetsController do
           stub_user(subject)
           allow(subject).to receive(:get_view).and_return(view)
           get :edit_metadata, :category => view.category, :view_name => view.view, :id => view.id
-          expect(response.body).to match(%r(<label class="false" for="view_metadata_custom_fields_Common_Core_Described_By">Data Dictionary</label>))
+          expect(response.body).to include('view_metadata_custom_fields_Common_Core_Described_By')
+          expect(response.body).to include('Data Dictionary')
         end
       end
     end

@@ -3,3 +3,4 @@ I18n.load_path += Dir[Rails.root.join('..', 'common', 'i18n', 'config', 'locales
 
 I18n.enforce_available_locales = false
 LocaleCache.load!
+Localeapp.configure

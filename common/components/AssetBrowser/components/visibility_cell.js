@@ -103,7 +103,7 @@ export class VisibilityCell extends Component {
     if (this.isPending()) {
       visibilityIconName = 'eye-blocked';
       visibilityCellText = this.getTranslation('private');
-      descriptionText = this.getTranslation('pending_approval');
+      descriptionText = this.getTranslation('awaiting_approval');
     }
 
     const renderDescription = (descriptionText) => {

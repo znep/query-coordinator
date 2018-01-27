@@ -12,7 +12,7 @@ import FilterItem from './FilterItem';
 import { getDefaultFilterForColumn } from './filters';
 
 // These are approximately the dimensions set by our CSS
-const MAX_FILTER_WIDTH = 140;
+const MAX_FILTER_WIDTH = 165;
 const FILTER_CONFIG_TOGGLE_WIDTH = 30;
 
 /**
@@ -224,6 +224,7 @@ export class FilterBar extends Component {
     return isReadOnly ?
       null :
       <span className="add-filter-container" ref={(ref) => this.addFilter = ref}>
+        <span className="add-filter-spacer"></span>
         <AddFilter {...props} />
       </span>;
   }

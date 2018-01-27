@@ -43,6 +43,11 @@ $filter-bar-container-padding: 20px;
 
   .add-filter-container {
     display: inline-block;
+
+    .add-filter-spacer {
+      display: block;
+      height: 18px;
+    }
   }
 
   .btn-expand-control {

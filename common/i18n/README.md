@@ -11,11 +11,12 @@ import React, { Component } from 'react';
 import I18n from 'common/i18n';
 
 export class TranslationSample extends Component {
+  const scope = 'shared.example.component';
   render() {
     return (
-      <span>
-        {I18n.t('shared.example.translation')}
-      </span>
+      <h1>
+        {I18n.t('overall_header', { scope })}
+      </h1>
     );
   }
 }
@@ -81,11 +82,12 @@ import React, { Component } from 'react';
 import I18n from 'common/i18n';
 
 export class TranslationSample extends Component {
+  const scope = 'shared.example.component';
   render() {
     return (
-      <span>
-        {I18n.t('shared.example.translation')}
-      </span>
+      <h1>
+        {I18n.t('overall_header', { scope })}
+      </h1>
     );
   }
 }

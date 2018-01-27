@@ -26,15 +26,15 @@ export class MeasureResultCard extends Component {
 
     // TODO: Consider removing the else's because we are returning on matches.
     if (dataSourceNotConfigured || _.isEmpty(computedMeasure)) {
-      return I18n.t('open_performance.no_dataset');
+      return I18n.t('shared.performance_measures.no_dataset');
     } else if (calculationNotConfigured) {
-      return I18n.t('open_performance.no_calculation');
+      return I18n.t('shared.performance_measures.no_calculation');
     } else if (noReportingPeriodConfigured) {
-      return I18n.t('open_performance.no_reporting_period');
+      return I18n.t('shared.performance_measures.no_reporting_period');
     } else if (noReportingPeriodAvailable) {
-      return I18n.t('open_performance.not_enough_data');
+      return I18n.t('shared.performance_measures.not_enough_data');
     } else if (dividingByZero) {
-      return I18n.t('open_performance.measure.dividing_by_zero');
+      return I18n.t('shared.performance_measures.measure.dividing_by_zero');
     } else {
       return _.get(measure, 'metricConfig.display.label', '');
     }
@@ -105,8 +105,8 @@ export class MeasureResultCard extends Component {
       <div className="reporting-period-type">
         {
           isClosed ?
-            I18n.t('open_performance.measure.as_of_last') :
-            I18n.t('open_performance.measure.as_of_today')
+            I18n.t('shared.performance_measures.measure.as_of_last') :
+            I18n.t('shared.performance_measures.measure.as_of_today')
         }
       </div>
     );
@@ -117,7 +117,7 @@ export class MeasureResultCard extends Component {
     const { result } = computedMeasure;
 
     const spinner = (
-      <div className="spinner-container">
+      <div className="measure-result-spinner-container">
         <div className="spinner-default spinner-large"></div>
       </div>
     );

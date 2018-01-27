@@ -34,6 +34,7 @@ When working with the measure in the Frontend, the JSON will look like:
 {
   lensId: Integer,
   dataSourceLensUid: String,
+  domain: String, // Optional, used for demo page. Defaults to page domain.
   metadata: {
     methods: String,
     analysis: String

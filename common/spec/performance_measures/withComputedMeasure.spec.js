@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import { assert } from 'chai';
 import sinon from 'sinon';
 
-import withComputedMeasure from 'opMeasure/components/withComputedMeasure';
+import withComputedMeasure from 'common/performance_measures/components/withComputedMeasure';
 
 describe('withComputedMeasure', () => {
   const MockComponent = () => <div />;

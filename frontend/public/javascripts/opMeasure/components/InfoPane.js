@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
+import { ModeStates } from 'common/performance_measures/lib/constants';
 
 import I18n from 'common/i18n';
 import * as ViewRights from '../../common/view_rights';
 import InfoPaneComponent from '../../common/components/InfoPaneComponent';
-import { ModeStates } from '../lib/constants';
 
 // This component wraps a common implementation, passing through a configuration
 // based on app state.

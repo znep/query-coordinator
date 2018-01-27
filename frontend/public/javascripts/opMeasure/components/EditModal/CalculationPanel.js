@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import I18n from 'common/i18n';
+import { CalculationTypeNames, EditTabs } from 'common/performance_measures/lib/constants';
 
 import {
   setDateColumn,
@@ -16,7 +17,6 @@ import {
 } from '../../actions/editor';
 
 import calculationTypes from './calculationTypes';
-import { CalculationTypeNames, EditTabs } from '../../lib/constants';
 import ColumnDropdown from './ColumnDropdown';
 import CalculationPreview from './CalculationPreview';
 

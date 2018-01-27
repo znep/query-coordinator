@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
+import { ModeStates, SaveStates } from 'common/performance_measures/lib/constants';
 import actions from '../actions';
-import { ModeStates, SaveStates } from '../lib/constants';
 
 // Initial state for the view reducer augments the state passed via ERB.
 const INITIAL_STATE = _.merge({}, window.socrata.opMeasure, {

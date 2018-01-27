@@ -7,9 +7,9 @@ import { connect } from 'react-redux';
 
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import I18n from 'common/i18n';
+import { EditTabs } from 'common/performance_measures/lib/constants';
 
 import { cancelEditModal, acceptEditModalChanges, setActivePanel } from '../../actions/editor';
-import { EditTabs } from '../../lib/constants';
 import EditModalTab from './EditModalTab';
 import EditModalPanel from './EditModalPanel';
 import GeneralPanel from './GeneralPanel';

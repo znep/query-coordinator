@@ -35,14 +35,12 @@ export const isColumnUsableWithMeasureArgument = (column, measure, argument) => 
 
 const setupSoqlDataProvider = (measure) => {
   const datasetUid = _.get(measure, 'dataSourceLensUid');
+  const domain = _.get(measure, 'domain', window.location.hostname);
   if (!datasetUid) {
     return null;
   }
 
-  const dataProviderConfig = {
-    domain: window.location.hostname,
-    datasetUid
-  };
+  const dataProviderConfig = { domain, datasetUid };
 
   return new SoqlDataProvider(dataProviderConfig);
 };

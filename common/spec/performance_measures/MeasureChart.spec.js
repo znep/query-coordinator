@@ -5,7 +5,7 @@ import { assert } from 'chai';
 
 import I18n from 'common/i18n';
 
-import { MeasureChart } from 'opMeasure/components/MeasureChart';
+import { MeasureChart } from 'common/performance_measures/components/MeasureChart';
 
 describe('MeasureChart', () => {
 
@@ -42,7 +42,7 @@ describe('MeasureChart', () => {
 
       const placeholder = element.find('.measure-result-placeholder-text');
       assert.lengthOf(placeholder, 1);
-      assert.include(placeholder.text(), I18n.t('open_performance.no_visualization'));
+      assert.include(placeholder.text(), I18n.t('shared.performance_measures.no_visualization'));
     });
   });
 

@@ -6,7 +6,7 @@ import { assert } from 'chai';
 
 import I18n from 'common/i18n';
 
-import { MeasureResultCard } from 'opMeasure/components/MeasureResultCard';
+import { MeasureResultCard } from 'common/performance_measures/components/MeasureResultCard';
 
 describe('MeasureResultCard', () => {
   const unresolvedPromise = new Promise(_.noop);
@@ -116,7 +116,7 @@ describe('MeasureResultCard', () => {
     describe('when computedMeasure is missing', () => {
       it('renders message about no dataset', () => {
         const element = shallow(<MeasureResultCard {...getProps()} />);
-        assert.include(getSubtitle(element), I18n.t('open_performance.no_dataset'));
+        assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_dataset'));
       });
     });
 
@@ -124,7 +124,7 @@ describe('MeasureResultCard', () => {
       it('renders message about no dataset', () => {
         const computedMeasure = {};
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
-        assert.include(getSubtitle(element), I18n.t('open_performance.no_dataset'));
+        assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_dataset'));
       });
     });
 
@@ -134,7 +134,7 @@ describe('MeasureResultCard', () => {
           dataSourceNotConfigured: true
         };
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
-        assert.include(getSubtitle(element), I18n.t('open_performance.no_dataset'));
+        assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_dataset'));
       });
     });
 
@@ -144,7 +144,7 @@ describe('MeasureResultCard', () => {
           calculationNotConfigured: true
         };
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
-        assert.include(getSubtitle(element), I18n.t('open_performance.no_calculation'));
+        assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_calculation'));
       });
     });
 
@@ -154,7 +154,7 @@ describe('MeasureResultCard', () => {
           noReportingPeriodConfigured: true
         };
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
-        assert.include(getSubtitle(element), I18n.t('open_performance.no_reporting_period'));
+        assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_reporting_period'));
       });
     });
 
@@ -164,7 +164,7 @@ describe('MeasureResultCard', () => {
           noReportingPeriodAvailable: true
         };
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
-        assert.include(getSubtitle(element), I18n.t('open_performance.not_enough_data'));
+        assert.include(getSubtitle(element), I18n.t('shared.performance_measures.not_enough_data'));
       });
     });
 
@@ -175,11 +175,11 @@ describe('MeasureResultCard', () => {
           dividingByZero: true
         };
         let element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
-        assert.include(getSubtitle(element), I18n.t('open_performance.measure.dividing_by_zero'));
+        assert.include(getSubtitle(element), I18n.t('shared.performance_measures.measure.dividing_by_zero'));
 
         computedMeasure.result = 'Infinity';
         element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
-        assert.include(getSubtitle(element), I18n.t('open_performance.measure.dividing_by_zero'));
+        assert.include(getSubtitle(element), I18n.t('shared.performance_measures.measure.dividing_by_zero'));
       });
     });
 

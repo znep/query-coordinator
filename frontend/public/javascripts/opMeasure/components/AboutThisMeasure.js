@@ -4,8 +4,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
-
-import { PeriodTypes } from '../lib/constants';
+import { PeriodTypes } from 'common/performance_measures/lib/constants';
 
 // Pane containing high-level (mostly prose) description of the measure.
 export class AboutThisMeasure extends Component {

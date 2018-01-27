@@ -21,6 +21,9 @@ import { getFilterHumanText } from 'common/components/FilterBar/filters';
 import { getIconForDataType } from 'common/icons';
 import { SoqlDataProvider } from 'common/visualizations/dataProviders';
 
+import withComputedMeasure from 'common/performance_measures/components/withComputedMeasure';
+import { CalculationTypeNames } from 'common/performance_measures/lib/constants';
+
 import ColumnDropdown from '../ColumnDropdown';
 
 import {
@@ -31,9 +34,6 @@ import {
   setNumeratorColumnCondition,
   toggleDenominatorIncludeNullValues
 } from '../../../actions/editor';
-
-import withComputedMeasure from '../../withComputedMeasure';
-import { CalculationTypeNames } from '../../../lib/constants';
 
 export class Rate extends Component {
   constructor() {
@@ -274,7 +274,9 @@ export class Rate extends Component {
         'rate-metric-dividing-by-zero': dividingByZero
       }
     );
-    const denominatorTitle = dividingByZero ? I18n.t('open_performance.measure.dividing_by_zero') : null;
+    const denominatorTitle = dividingByZero ?
+      I18n.t('shared.performance_measures.measure.dividing_by_zero') :
+      null;
 
     return (
       <div className="metric-definition-text">

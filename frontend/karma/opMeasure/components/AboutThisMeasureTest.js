@@ -4,7 +4,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 
 import { AboutThisMeasure } from 'opMeasure/components/AboutThisMeasure';
-import { PeriodSizes, PeriodTypes, CalculationTypeNames } from 'opMeasure/lib/constants';
+import { PeriodSizes, PeriodTypes, CalculationTypeNames } from 'common/performance_measures/lib/constants';
 
 describe('AboutThisMeasure', () => {
   beforeEach(() => {

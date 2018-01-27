@@ -4,10 +4,11 @@ import thunk from 'redux-thunk';
 import createDebounce from 'redux-debounced';
 import createLogger from 'redux-logger';
 
+import { ModeStates } from 'common/performance_measures/lib/constants';
+
 import rootReducer from './reducers';
 
 import { fetchDataSourceView } from 'opMeasure/actions/editor';
-import { ModeStates } from './lib/constants';
 
 const middleware = [thunk, createDebounce()];
 

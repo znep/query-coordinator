@@ -194,6 +194,7 @@ en:
         action_modal:
           change_visibility:
             accept: OK
+            approval_note: Publishing to the public requires approval.
             can_not_change_visibility:
               Sorry, you can not change the visibility of this asset because it is derived from a dataset that is Public.
             dismiss: Cancel

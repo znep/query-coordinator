@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { browserHistory } from 'react-router';
 import * as Links from 'datasetManagementUI/links/links';
-import { UNSAVED } from 'datasetManagementUI/components/ManageMetaData/ManageMetadata';
+import { UNSAVED } from 'datasetManagementUI/components/ManageMetadata/ManageMetadata';
 import * as ModalActions from 'datasetManagementUI/reduxStuff/actions/modal';
 
 export const dismissMetadataPane = (
@@ -11,9 +11,11 @@ export const dismissMetadataPane = (
   datasetFormStatus,
   closeUnsaved = false
 ) => (dispatch, getState) => {
-  if (!closeUnsaved || colFormStatus === UNSAVED || datasetFormStatus === UNSAVED) {
-    dispatch(ModalActions.showModal('ManageMetadata'));
-    return;
+  if (colFormStatus === UNSAVED || datasetFormStatus === UNSAVED) {
+    if (!closeUnsaved) {
+      dispatch(ModalActions.showModal('ManageMetadata'));
+      return;
+    }
   }
 
   const { history } = getState().ui;

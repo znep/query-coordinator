@@ -6403,9 +6403,12 @@ en:
       brief_description: Brief Description
       brief_description_prompt: Enter a description
       cancel: Cancel
+      cancel_warning: Closing this modal will lose unsaved changes.
+      cancel_warning_2: Do you still want to close?
       category: Category
       contact_email: Contact Email
       contact_information: Contact Information
+      close: Close
       custom: Custom
       custom_error: Custom semantic class must be url.
       data_provided_by: Data Provided By

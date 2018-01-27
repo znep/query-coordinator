@@ -1,24 +1,27 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ModalContent, ModalFooter } from 'common/components';
-// import SocrataIcon from '../../../common/components/SocrataIcon';
-const styles = {};
 
 class ManageMetadataModal extends Component {
   render() {
     const { cancelClose, yesReallyClose, pathToNewOutputSchema } = this.props;
 
     return (
-      <div className="publish-confirmation-modal-inner">
-        <h2>Warning</h2>
+      <div id="manage-metadata-modal">
         <ModalContent>
-          <span>boop</span>
+          <span className="dsmp-modal-msg">
+            {I18n.edit_metadata.cancel_warning}
+            <br />
+            {I18n.edit_metadata.cancel_warning_2}
+          </span>
         </ModalContent>
-        <ModalFooter className={styles.modalFooter}>
-          <button onClick={cancelClose} className={styles.cancelButton}>
+        <ModalFooter className="dsmp-modal-footer">
+          <button className="btn btn-default" onClick={cancelClose}>
             {I18n.common.cancel}
           </button>
-          <button onClick={() => yesReallyClose(pathToNewOutputSchema)}>close</button>
+          <button className="btn btn-primary" onClick={() => yesReallyClose(pathToNewOutputSchema)}>
+            {I18n.edit_metadata.close}
+          </button>
         </ModalFooter>
       </div>
     );

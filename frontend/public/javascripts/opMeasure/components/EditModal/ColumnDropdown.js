@@ -38,6 +38,7 @@ export default class ColumnDropdown extends Component {
       })),
       value: columnFieldName,
       id,
+      showOptionsBelowHandle: true,
       labelledBy
     };
 

@@ -1,4 +1,3 @@
-boo~:wq
 # Socrata Frontend
 
 ## Starting up

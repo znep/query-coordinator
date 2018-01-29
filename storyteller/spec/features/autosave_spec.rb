@@ -35,6 +35,12 @@ RSpec.describe 'autosave', type: :feature, js: true do
     )
   end
 
+  def digest
+    page.evaluate_script(
+      'storyteller.storyStore.getStoryDigest(STORY_UID)'
+    )
+  end
+
   let(:data_toggle_selector) { 'button[data-panel-toggle="add-content-panel"]' }
   def trigger_change!
     # copying from undo_redo_spec#L73
@@ -52,18 +58,14 @@ RSpec.describe 'autosave', type: :feature, js: true do
     # On page load, the starting state is 'saved'.
     expect(is_story_dirty?).to be_falsey
     expect(preview_disabled?).to be_falsey
+    original_digest = digest
 
     trigger_change!
 
-    # New state: unsaved. Preview disabled.
     wait_until do
-      is_story_dirty? && preview_disabled?
+      digest != original_digest
     end
 
-    # wait expected delay
-    sleep(expected_delay_before_autosave)
-
-    # Last state: saved. Preview re-enabled.
     wait_until do
       !is_story_dirty? && !preview_disabled?
     end

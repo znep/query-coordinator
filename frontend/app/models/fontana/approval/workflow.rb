@@ -29,10 +29,12 @@ module Fontana
           end
           raise RuntimeError.new('Unable to determine workflow_id') unless workflow_id
 
-          get(
+          response = get(
             "#{APPROVALS_API_URI}/#{workflow_id}",
             :headers => instance.approval_request_headers
-          ).parsed_response.each do |key, value|
+          ).parsed_response
+          ATTRIBUTE_NAMES.each do |key|
+            value = response[key]
             if key == 'steps'
               instance.public_send(:steps=, value.map { |step| Fontana::Approval::Step.new(instance, step) })
             else

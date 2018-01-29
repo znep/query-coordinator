@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import components from 'common/components';
 import airbrake from 'common/airbrake';
 import dslpCrossOriginErrorsFilter from 'common/airbrake/filters/dslp_cross_origin_errors';
-import Page from './components/Colocate/Page';
+import Page from './components/Collocate/Page';
 import { AppContainer } from 'react-hot-loader';
 
 // Update the csrf cookie to match the one from serverConfig, this is necessary to properly
@@ -34,8 +34,8 @@ _.defer(() => {
 
     // Hot Module Replacement API
     if (module.hot) {
-      module.hot.accept('./components/Colocate/Page', () => {
-        const NextPage = require('./components/Colocate/Page').default; //eslint-disable-line
+      module.hot.accept('./components/Collocate/Page', () => {
+        const NextPage = require('./components/Collocate/Page').default; //eslint-disable-line
         ReactDOM.render(
           <AppContainer>
             <NextPage />
@@ -65,6 +65,6 @@ _.defer(() => {
   _.defer(() => {
 
     // Initialize the javascript components
-    components.attachTo(document.querySelector('.colocate-page'));
+    components.attachTo(document.querySelector('.collocate-page'));
   });
 });

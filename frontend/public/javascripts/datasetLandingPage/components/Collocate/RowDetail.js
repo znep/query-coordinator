@@ -3,6 +3,21 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 
 export default class RowDetail extends Component {
+  static propTypes = {
+    details: PropTypes.shape({
+      // Column name
+      title: PropTypes.string,
+
+      // Icon of data type
+      icon: PropTypes.object,
+
+      // Long text description
+      description: PropTypes.string,
+
+      // Text justification option
+      rightJustify: PropTypes.bool
+    })
+  }
 
   render() {
     const props = this.props;
@@ -15,19 +30,3 @@ export default class RowDetail extends Component {
       );
   }
 }
-
-RowDetail.propTypes = {
-  details: PropTypes.shape({
-    // Column name
-    title: PropTypes.string,
-
-    // Icon of data type
-    icon: PropTypes.object,
-
-    // Long text description
-    description: PropTypes.string,
-
-    // Text justification option
-    rightJustify: PropTypes.bool
-  })
-};

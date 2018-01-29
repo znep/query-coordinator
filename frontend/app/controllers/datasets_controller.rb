@@ -48,7 +48,7 @@ class DatasetsController < ApplicationController
 
 # member actions
 
-  def colocate
+  def collocate
     if params['$$store']
       @view = View.find_in_store(params[:id], params['$$store'])
     else
@@ -56,12 +56,12 @@ class DatasetsController < ApplicationController
     end
 
     @asset_browser_config = {
-      :app_name => 'colocate',
+      :app_name => 'collocate',
       :filters_enabled => false
     }
 
     return render_404 if @view.nil? || !FeatureFlags.derive(nil, request).enable_colocate_ui
-    render 'colocate', :layout => 'styleguide'
+    render 'collocate', :layout => 'styleguide'
   end
 
   def is_dsmp?

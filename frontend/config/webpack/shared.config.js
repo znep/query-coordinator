@@ -28,7 +28,7 @@ module.exports = _.defaultsDeep({
     'componentExamplePagesMain': 'demos/components/main.js',
     'componentExamplePagesButton': 'demos/components/button.js',
     'datasetLandingPageMain': 'datasetLandingPage/main.js',
-    'datasetLandingPageColocate': 'datasetLandingPage/colocate.js',
+    'datasetLandingPageCollocate': 'datasetLandingPage/collocate.js',
     'datasetManagementUI': 'datasetManagementUI/main.js',
     'internalAssetManager': 'internal_asset_manager/main.js',
     'opMeasure': 'opMeasure/main.js',

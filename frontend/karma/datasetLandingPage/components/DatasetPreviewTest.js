@@ -40,15 +40,13 @@ describe('components/DatasetPreview', function() {
   });
 
   describe('action button', () => {
-    describe('when enable_visualization_canvas is set to true', () => {
+    describe('when the user is logged in', () => {
       beforeEach(() =>  {
         window.serverConfig.currentUser = { roleName: 'anything' };
-        window.serverConfig.featureFlags.enable_visualization_canvas = true;
       });
 
       afterEach(() => {
         window.serverConfig.currentUser = null;
-        window.serverConfig.featureFlags.enable_visualization_canvas = false;
       });
 
       it('renders the visualize link if the bootstrapUrl is defined', () => {
@@ -79,27 +77,9 @@ describe('components/DatasetPreview', function() {
       });
     });
 
-    describe('when enable_visualization_canvas is set to false', () => {
-      beforeEach(() => {
-        window.serverConfig.currentUser = { roleName: 'anything' };
-        window.serverConfig.featureFlags.enable_visualization_canvas = false;
-      });
-
-      it('renders the grid view link', function() {
-        const element = renderComponent(DatasetPreview, getProps());
-        assert.ok(element.querySelector('a.btn-grid'));
-      });
-
-      it('does not render the visualize link', () => {
-        const element = renderComponent(DatasetPreview, getProps());
-        assert.isNull(element.querySelector('a.btn-visualize[href="bootstrapUrl"]'));
-      });
-    });
-
     describe('when the user is not logged in', () => {
       beforeEach(() => {
         window.serverConfig.currentUser = null;
-        window.serverConfig.featureFlags.enable_visualization_canvas = true;
       });
 
       it('renders the visualize link if the bootstrapUrl is defined', () => {

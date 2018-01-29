@@ -10,12 +10,9 @@ export class DatasetPreview extends Component {
   renderActionButton() {
     const { view, onClickGrid } = this.props;
 
-    const enableVisualizationCanvas = serverConfig.featureFlags.enable_visualization_canvas;
-    const canCreateVisualizationCanvas = enableVisualizationCanvas &&
-      _.isString(view.bootstrapUrl);
     let createVisualizationLink = null;
 
-    if (canCreateVisualizationCanvas) {
+    if (_.isString(view.bootstrapUrl)) {
       createVisualizationLink = (
         <a href={view.bootstrapUrl} className="btn btn-default btn-sm btn-visualize">
           {I18n.dataset_preview.create_visualization_link}

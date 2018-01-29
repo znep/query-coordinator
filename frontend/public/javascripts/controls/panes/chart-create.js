@@ -193,12 +193,6 @@
       },
 
       _renderVisualizationCanvasButton: function() {
-        var enableVisualizationCanvas = blist.feature_flags.enable_visualization_canvas;
-
-        if (!enableVisualizationCanvas) {
-          return;
-        }
-
         var cpObj = this;
 
         blist.dataset.getNewBackendMetadata().

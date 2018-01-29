@@ -304,7 +304,7 @@ en:
           withdraw_approval_request_success: The request to publish %{name} to the public has been withdrawn.
         publication_state:
           draft: Draft
-          pending: Pending
+          pending: Awaiting Approval
           published: Published
       color_picker:
         open_color_picker: Open Color Picker

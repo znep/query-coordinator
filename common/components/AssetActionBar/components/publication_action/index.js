@@ -64,7 +64,7 @@ class PublicationAction extends Component {
   }
 
   moreActionsExist() {
-    return this.props.allowedTo.manage && _.some(this.moreActionsAllowed());
+    return _.some(this.moreActionsAllowed());
   }
 
   toastLater(toastType, translationKey, translationOptions) {

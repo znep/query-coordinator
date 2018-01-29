@@ -162,6 +162,7 @@ class MapFlyout extends React.Component {
     this.featureLayer = null;
 
     this.genFeatureLayer = this.genFeatureLayer.bind(this);
+    this.tryEscClose = this.tryEscClose.bind(this);
   }
 
   componentDidMount() {
@@ -180,6 +181,7 @@ class MapFlyout extends React.Component {
     });
 
     this.addFeatureLayer();
+    document.addEventListener('keyup', this.tryEscClose, true);
   }
 
   componentWillReceiveProps() {
@@ -188,8 +190,8 @@ class MapFlyout extends React.Component {
 
   componentWillUnmount() {
     this.map = null;
+    document.removeEventListener('keyup', this.tryEscClose, true);
   }
-
 
   getGeoms() {
     return _.flatMap(this.props.rows, (row) => {
@@ -223,6 +225,16 @@ class MapFlyout extends React.Component {
 
       return [];
     });
+  }
+
+  tryEscClose(event) {
+    const { onClose } = this.props;
+    const escapeKeyCode = 27;
+    if (event.keyCode === escapeKeyCode && typeof onClose === 'function') {
+      // we need to stop the event from propagating so that the parent modal doesn't also close
+      event.stopPropagation();
+      onClose();
+    }
   }
 
   _locationGroup(genMarker) {

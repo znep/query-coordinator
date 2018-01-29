@@ -76,6 +76,7 @@ module StoriesHelper
       'socrata.visualization.table' => 'component_socrata_visualization_table',
       'socrata.visualization.timelineChart' => 'component_socrata_visualization_timeline_chart',
       'socrata.visualization.featureMap' => 'component_socrata_visualization_feature_map',
+      'socrata.visualization.vizCanvas' => 'component_socrata_visualization_viz_canvas',
       'spacer' => 'component_spacer',
       'story.tile' => 'component_story_tile',
       'story.widget' => 'component_story_tile',

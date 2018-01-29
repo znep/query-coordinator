@@ -18,6 +18,7 @@ import './componentSocrataVisualizationPieChart';
 import './componentSocrataVisualizationRegionMap';
 import './componentSocrataVisualizationTable';
 import './componentSocrataVisualizationTimelineChart';
+import './componentSocrataVisualizationVizCanvas';
 import './componentSpacer';
 import './componentStoryTile';
 import './componentYoutubeVideo';

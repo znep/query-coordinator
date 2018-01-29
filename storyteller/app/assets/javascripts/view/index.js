@@ -23,6 +23,7 @@ import '../editor/block-component-renderers/componentSocrataVisualizationPieChar
 import '../editor/block-component-renderers/componentSocrataVisualizationRegionMap';
 import '../editor/block-component-renderers/componentSocrataVisualizationTable';
 import '../editor/block-component-renderers/componentSocrataVisualizationTimelineChart';
+import '../editor/block-component-renderers/componentSocrataVisualizationVizCanvas';
 import '../editor/block-component-renderers/componentStoryTile';
 
 import Environment from '../StorytellerEnvironment';
@@ -155,6 +156,10 @@ $(document).on('ready', function() {
 
         case 'socrata.visualization.timelineChart':
           $element.componentSocrataVisualizationTimelineChart(props);
+          break;
+
+        case 'socrata.visualization.vizCanvas':
+          $element.componentSocrataVisualizationVizCanvas(props);
           break;
 
         case 'embeddedHtml':

@@ -135,6 +135,16 @@ RSpec.describe DomainUpdater do
         expect(migrated_component).to eq(new_component)
       end
     end
+
+    describe '#migrate_viz_canvas_visualization' do
+      it 'returns a migrated component' do
+        old_component = viz_canvas_component(component_domain)
+        new_component = viz_canvas_component(destination_domain)
+
+        migrated_component = DomainUpdater.send(:migrate_viz_canvas_visualization, old_component, destination_domain)
+        expect(migrated_component).to eq(new_component)
+      end
+    end
   end
 
   private
@@ -254,5 +264,19 @@ RSpec.describe DomainUpdater do
         'link' => "https://#{cname}/page"
       }
     }
+  end
+
+  def viz_canvas_component(cname)
+    {
+      'type' => 'socrata.visualization.vizCanvas',
+      'value' => {
+        'dataset' => {
+          'domain' => cname,
+          'domainUid' => 'test-test',
+          'vifId' => '1234abc-defg-849942'
+        }
+      }
+    }
+
   end
 end

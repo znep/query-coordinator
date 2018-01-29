@@ -924,6 +924,8 @@ export default function StoryRenderer(options) {
         return 'componentSocrataVisualizationFeatureMap';
       case 'socrata.visualization.map':
         return 'componentSocrataVisualizationMap';
+      case 'socrata.visualization.vizCanvas' :
+        return 'componentSocrataVisualizationVizCanvas';
       case 'embeddedHtml':
         return 'componentEmbeddedHtml';
       default:

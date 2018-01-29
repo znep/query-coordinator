@@ -39,6 +39,12 @@ export default class UnifiedMap extends SvgVisualization {
       visualizationElement[0].map = map;
     });
 
+    this.invalidateSize = () => {
+      if (this._map) {
+        this._map.resize();
+      }
+    };
+
     this.onUpdateEvent = (event) => {
       const newVif = _.get(event, 'originalEvent.detail');
       this.update(newVif);

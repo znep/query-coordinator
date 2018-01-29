@@ -131,6 +131,9 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       assertIsNumber(rowCount);
       assertIsOneOfTypes(dataSourceView, 'object');
 
+      // We need to clear out any stale metricConfig data, now that we
+      // have a new data source. The easiest way is to call our reset helper function.
+      state = resetDataSource(state);
       const { measure } = state;
 
       return {

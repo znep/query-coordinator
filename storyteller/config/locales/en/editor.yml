@@ -341,6 +341,12 @@ en:
         column_incompatibility_error: 'The data column is incompatible with this visualization'
         feature_extent_query_error: 'An error occurred when rendering this chart.'
       map_center_and_zoom_notification: 'Current zoom level and positioning will be preserved.'
+    viz_canvas:
+      errors:
+        status_403: 'Sorry! You do not have permission to view this visualization.'
+        status_404: 'Sorry! This visualization has been deleted.'
+        status_unspecified: 'Sorry! An error was encountered when rendering this visualization. Contact our support team for help.'
+
     time:
       full_month_1: 'January'
       full_month_2: 'February'

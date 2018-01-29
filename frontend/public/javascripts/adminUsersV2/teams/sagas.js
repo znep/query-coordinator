@@ -148,7 +148,11 @@ export function* removeTeamMember({ payload: { teamId, userId } }) {
   const teamMember = yield select(Selectors.findTeamMemberById, teamId, userId);
   const displayName = TeamSelectors.getDisplayName(teamMember);
   try {
-    yield call(CoreTeamsApi.removeTeamMember, teamId, userId);
+    try {
+      yield call(CoreTeamsApi.removeTeamMember, teamId, userId);
+    } catch (error) {
+      if (! (error instanceof SyntaxError)) { throw error; } // No JSON response is returned, which causes an error
+    }
     yield put(Actions.removeTeamMemberSuccess(teamId, userId));
     yield put(
       GlobalActions.showLocalizedSuccessNotification('users.edit_team.remove_team_member_success', {

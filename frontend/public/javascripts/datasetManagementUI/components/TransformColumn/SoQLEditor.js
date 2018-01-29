@@ -76,10 +76,16 @@ export class SoQLEditor extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.configureAutocomplete = this.configureAutocomplete.bind(this);
     this.onChangeSelection = this.onChangeSelection.bind(this);
+    this.captureEscKey = this.captureEscKey.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('keyup', this.captureEscKey, true);
   }
 
   componentWillUnmount() {
     this.maybeRemovePopupListener();
+    document.removeEventListener('keyup', this.captureEscKey, true);
   }
 
   onChange(newCode) {
@@ -150,6 +156,13 @@ export class SoQLEditor extends React.Component {
     }
   }
 
+  captureEscKey(event) {
+    const escapeKeyCode = 27;
+    if (event.keyCode === escapeKeyCode && this.editor.$isFocused) {
+      // we need to stop the event from propagating so that the parent modal doesn't also close
+      event.stopPropagation();
+    }
+  }
 
   render() {
     const r = `${styles.compilerResult} `;

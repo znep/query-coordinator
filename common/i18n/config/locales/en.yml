@@ -204,6 +204,7 @@ en:
         action_modal:
           change_visibility:
             accept: OK
+            approval_note: Publishing to the public requires approval.
             can_not_change_visibility:
               Sorry, you can not change the visibility of this asset because it is derived from a dataset that is Public.
             dismiss: Cancel
@@ -313,7 +314,7 @@ en:
           withdraw_approval_request_success: The request to publish %{name} to the public has been withdrawn.
         publication_state:
           draft: Draft
-          pending: Pending
+          pending: Awaiting Approval
           published: Published
       color_picker:
         open_color_picker: Open Color Picker

@@ -255,9 +255,9 @@ export class Rate extends Component {
   }
 
   renderDefinition() {
-    const numerator = _.get(this.props, 'computedMeasure.numerator');
-    const denominator = _.get(this.props, 'computedMeasure.denominator');
-    const dividingByZero = _.get(this.props, 'computedMeasure.dividingByZero');
+    const numerator = _.get(this.props, 'computedMeasure.result.numerator');
+    const denominator = _.get(this.props, 'computedMeasure.result.denominator');
+    const dividingByZero = _.get(this.props, 'computedMeasure.errors.dividingByZero');
 
     const callToActionClass = classNames(
       'rate-metric-call-to-action',

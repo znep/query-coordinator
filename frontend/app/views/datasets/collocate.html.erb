@@ -4,10 +4,10 @@
   <!--  We dont use the default view_meta_description (EN-5265) -->
   <%= meta_tags :description => meta_description, :keywords => view_meta_keywords %>
 
-  <%= rendered_stylesheet_tag 'dataset-landing-page-colocate' %>
+  <%= rendered_stylesheet_tag 'dataset-landing-page-collocate' %>
 <% end %>
 
-<div class="colocate-page">
+<div class="collocate-page">
   <div id="app">
     <div class="spinner-default spinner-large"></div>
     <div class="main-spinner"></div>
@@ -29,7 +29,7 @@
    ;
   </script>
   <%== render_asset_browser_initial_state %>
-  <%= include_webpack_bundle 'shared/datasetLandingPageColocate' %>
+  <%= include_webpack_bundle 'shared/datasetLandingPageCollocate' %>
 
   <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?render=explicit" async></script>
 <% end %>

@@ -13,10 +13,17 @@ describe('MeasureResultCard', () => {
 
   const getProps = (props) => {
     return {
-      measure: {},
+      measure: { dataSourceLensUid: 'test-test' },
       coreView: {},
       ...props
     };
+  };
+
+  const getComputedMeasure = (overrides) => {
+    return _.merge({
+      result: {},
+      errors: {}
+    }, overrides);
   };
 
   const getRenderedValue = (element) => element.find('.measure-result-big-number').nodes[0].props.children;
@@ -27,9 +34,9 @@ describe('MeasureResultCard', () => {
   });
 
   it('renders result if it is set in computedMeasure', () => {
-    const computedMeasure = {
-      result: '33.00'
-    };
+    const computedMeasure = getComputedMeasure({
+      result: { value: '33.00' }
+    });
     const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
     const bigNumber = element.find('.measure-result-big-number');
     assert.lengthOf(bigNumber, 1);
@@ -37,9 +44,9 @@ describe('MeasureResultCard', () => {
   });
 
   it('adds "percent" class to result only if the measure is a percentage', () => {
-    const computedMeasure = {
-      result: '33.00'
-    };
+    const computedMeasure = getComputedMeasure({
+      result: { value: '33.00' }
+    });
 
     const defaultPercentMeasure = {};
     assert.lengthOf(
@@ -63,39 +70,48 @@ describe('MeasureResultCard', () => {
     );
   });
 
-  it('truncates the result string to fit', () => {
-    const computedMeasure = {
-      result: '33.1234567890123456789'
-    };
-    let card;
-
-    const measureWithFixedDecimalPlaces = _.set({}, 'metricConfig.display.decimalPlaces', 1);
-    card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithFixedDecimalPlaces} />);
-    assert.equal(getRenderedValue(card), '33.1');
-
+  describe('result string truncation', () => {
+    const computedMeasure = getComputedMeasure({
+      result: { value: '33.1234567890123456789' }
+    });
     const measureWithoutDecimalPlaces = {};
-    card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithoutDecimalPlaces} />);
-    assert.equal(getRenderedValue(card), '33.123'); // Truncates to the default maxLength of 6.
-
+    const measureWithFixedDecimalPlaces = _.set({}, 'metricConfig.display.decimalPlaces', 1);
     const measureWithManyDecimalPlaces = _.set({}, 'metricConfig.display.decimalPlaces', 100);
-    card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithManyDecimalPlaces} />);
-    assert.equal(getRenderedValue(card), '33.123'); // Still truncates at a maxLength.
 
-    computedMeasure.result = '33.123';
-    card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithManyDecimalPlaces} />);
-    assert.equal(getRenderedValue(card), '33.123');
+    describe('when decimal place display is specified', () => {
+      it('renders # of decimal places as long as total string length is below the default maxLength', () => {
+        const card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithFixedDecimalPlaces} />);
+        assert.equal(getRenderedValue(card), '33.1');
+      });
 
-    card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithManyDecimalPlaces} maxLength={100} />);
-    assert.equal(getRenderedValue(card), computedMeasure.result);
+      it('renders a string of maxLength if # of decimal places creates string greater than maxLength', () => {
+        const card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithManyDecimalPlaces} />);
+        assert.equal(getRenderedValue(card), '33.123'); // Still truncates at a maxLength.
+      });
+    });
+
+    describe('when decimal place display is not specified', () => {
+      it('renders up to the maxLength when no decimal places are specified in display options', () => {
+        const card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithoutDecimalPlaces} />);
+        assert.equal(getRenderedValue(card), '33.123'); // Truncates to the default maxLength of 6.
+      });
+    });
+
+    describe('when a different maxLength is provided', () => {
+      it('allows a longer string to be rendered', () => {
+        const card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithManyDecimalPlaces} maxLength={100} />);
+        assert.equal(getRenderedValue(card), computedMeasure.result.value);
+      });
+    });
   });
 
   // We may want to adjust the logic for when to humanize numbers.
   // Perhaps the metricConfig.display should take in a boolean prop to indicate when to humanize,
   // but for now, we only humanize when number of characters are too many to fit.
   it('displays human readable numbers for large values', () => {
-    const computedMeasure = {
-      result: '1234567890.00'
-    };
+    const computedMeasure = getComputedMeasure({
+      result: { value: '1234567890.00' }
+    });
 
     const card = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
     assert.equal(getRenderedValue(card), '1.23B');
@@ -113,26 +129,21 @@ describe('MeasureResultCard', () => {
 
   describe('Error messages', () => {
     const getSubtitle = (element) => element.find('.measure-result-placeholder-text').text();
-    describe('when computedMeasure is missing', () => {
-      it('renders message about no dataset', () => {
-        const element = shallow(<MeasureResultCard {...getProps()} />);
-        assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_dataset'));
-      });
-    });
 
-    describe('when computedMeasure is empty', () => {
+    describe('when measure does not have a dataSourceLensUid', () => {
       it('renders message about no dataset', () => {
-        const computedMeasure = {};
-        const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+        const computedMeasure = getComputedMeasure();
+        const measure = {};
+        const element = shallow(<MeasureResultCard {...getProps({ computedMeasure, measure })} />);
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_dataset'));
       });
     });
 
     describe('when computedMeasure.dataSourceNotConfigured = true', () => {
       it('renders message about no dataset', () => {
-        const computedMeasure = {
-          dataSourceNotConfigured: true
-        };
+        const computedMeasure = getComputedMeasure({
+          errors: { dataSourceNotConfigured: true }
+        });
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_dataset'));
       });
@@ -140,9 +151,9 @@ describe('MeasureResultCard', () => {
 
     describe('when computedMeasure.calculationNotConfigured = true', () => {
       it('renders message about calculation not configured', () => {
-        const computedMeasure = {
-          calculationNotConfigured: true
-        };
+        const computedMeasure = getComputedMeasure({
+          errors: { calculationNotConfigured: true }
+        });
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_calculation'));
       });
@@ -150,9 +161,9 @@ describe('MeasureResultCard', () => {
 
     describe('when computedMeasure.noReportingPeriodConfigured = true', () => {
       it('renders message about reporting period not configured', () => {
-        const computedMeasure = {
-          noReportingPeriodConfigured: true
-        };
+        const computedMeasure = getComputedMeasure({
+          errors: { noReportingPeriodConfigured: true }
+        });
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_reporting_period'));
       });
@@ -160,9 +171,9 @@ describe('MeasureResultCard', () => {
 
     describe('when computedMeasure.noReportingPeriodAvailable = true', () => {
       it('renders message about not enough data', () => {
-        const computedMeasure = {
-          noReportingPeriodAvailable: true
-        };
+        const computedMeasure = getComputedMeasure({
+          errors: { noReportingPeriodAvailable: true }
+        });
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.not_enough_data'));
       });
@@ -171,13 +182,13 @@ describe('MeasureResultCard', () => {
     describe('when result is "NaN" or "Infinity"', () => {
       it('renders message about not enough data', () => {
         const computedMeasure = {
-          result: 'NaN',
-          dividingByZero: true
+          result: { value: 'NaN' },
+          errors: { dividingByZero: true }
         };
         let element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.measure.dividing_by_zero'));
 
-        computedMeasure.result = 'Infinity';
+        computedMeasure.result.value = 'Infinity';
         element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.measure.dividing_by_zero'));
       });

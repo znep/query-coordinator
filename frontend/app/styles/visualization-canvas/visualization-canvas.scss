@@ -484,15 +484,13 @@ body {
   }
 
   // TODO (EN-13130) Fix these z-index issues upstream in AX
-  .authoring-workflow-modal {
-    .filter-bar-container {
-      .filter-controls, .filter-config {
-        z-index: 60;
-      }
+  .filter-bar-container {
+    .filter-controls, .filter-config {
+      z-index: 60;
+    }
 
-      .collapsed-filters-container {
-        z-index: 53;
-      }
+    .collapsed-filters-container {
+      z-index: 53;
     }
   }
 }

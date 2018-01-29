@@ -1,6 +1,6 @@
 @import "styleguide-colors";
 
-.colocate {
+.collocate {
   font-family: "Open Sans", sans-serif;
   padding: 15px;
 
@@ -81,5 +81,11 @@
     .btn {
       margin: 7px;
     }
+  }
+  
+  .join-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
 }

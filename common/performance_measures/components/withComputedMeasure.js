@@ -8,7 +8,11 @@ import React, { Component } from 'react';
 
 import airbrake from 'common/airbrake';
 
-import { getMetricValue as defaultGetMetricValue } from '../measureCalculator';
+import {
+  getMetricValue as defaultGetMetricValue,
+  getMetricSeries as defaultGetMetricSeries
+} from '../measureCalculator';
+
 
 // Avoid recomputing measures if there's already been a request for the same (reference-equal)
 // measure. Avoids recomputation in these common scenarios:
@@ -23,7 +27,9 @@ const computationCache = new Map();
 
 // This function takes a component...
 export default function withComputedMeasure(
-  getMetricValue = defaultGetMetricValue // Allow for dependency injection in tests
+  includeSeries = false,
+  getMetricValue = defaultGetMetricValue, // Allow for dependency injection in tests
+  getMetricSeries = defaultGetMetricSeries
 ) {
   return (WrappedComponent) => {
     const wrappedComponentDisplayName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -74,29 +80,59 @@ export default function withComputedMeasure(
 
       makeRequest() {
         const { measure } = this.props;
-        const promise = computationCache.get(measure) || getMetricValue(measure);
-        computationCache.set(measure, promise);
-        // TODO: handle getMetricValue promise failures
-        promise.then(
-          (result) => {
-            this.setState(
-              {
-                dataResponse: result,
-                dataRequestInFlight: false
-              },
-              () => this.checkProps(this.props)
-            );
+        const dataResponse = {};
+
+        const handleError = (error) => {
+          airbrake.notify({
+            error: error,
+            context: { component: 'withComputedMeasure' }
+          });
+          this.setState({
+            dataRequestInFlight: false
+          });
+        };
+
+        const handleSuccess = (response = {}) => {
+          this.setState({
+            dataResponse: response,
+            dataRequestInFlight: false
           },
-          (error) => {
-            airbrake.notify({
-              error: error,
-              context: { component: 'withComputedMeasure' }
-            });
-            this.setState({
-              dataRequestInFlight: false
-            });
-          }
-        );
+          () => this.checkProps(this.props));
+        };
+
+        const metricValuePromise = _.get(computationCache.get(measure), 'metricValue') ||
+                                   getMetricValue(measure);
+        const promiseCache = {
+          metricValue: metricValuePromise
+        };
+
+        if (includeSeries) {
+          const metricSeriesPromise = _.get(computationCache.get(measure), 'metricSeries') ||
+                                      getMetricSeries(measure);
+
+          promiseCache.metricSeries = metricSeriesPromise;
+
+          Promise.all([metricValuePromise, metricSeriesPromise]).then(
+            ([metricValueResult, metricSeriesResult]) => {
+              dataResponse.result = metricValueResult.result;
+              dataResponse.series = metricSeriesResult;
+              dataResponse.errors = metricValueResult.errors;
+              handleSuccess(dataResponse);
+            },
+            handleError
+          );
+        } else {
+          metricValuePromise.then(
+            (metricValueResult) => {
+              dataResponse.result = metricValueResult.result;
+              dataResponse.errors = metricValueResult.errors;
+              handleSuccess(dataResponse);
+            },
+            handleError
+          );
+        }
+
+        computationCache.set(measure, promiseCache);
       }
 
       render() {

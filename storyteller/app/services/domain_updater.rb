@@ -23,12 +23,13 @@ class DomainUpdater
         socrata.visualization.regionMap
         socrata.visualization.columnChart
         socrata.visualization.comboChart
+        socrata.visualization.featureMap
         socrata.visualization.histogram
+        socrata.visualization.map
         socrata.visualization.pieChart
         socrata.visualization.table
         socrata.visualization.timelineChart
-        socrata.visualization.featureMap
-        socrata.visualization.map
+        socrata.visualization.vizCanvas
       )
     }
 
@@ -115,6 +116,9 @@ class DomainUpdater
           when 'socrata.visualization.classic'
             migrate_classic_visualization(component, destination_domain)
 
+          when 'socrata.visualization.vizCanvas'
+            migrate_viz_canvas_visualization(component, destination_domain)
+
           when /^socrata.visualization/
             vif_version = component.dig('value', 'vif', 'format', 'version').to_i
             case vif_version
@@ -184,6 +188,16 @@ class DomainUpdater
           },
           'visualization' => {
             'domainCName' => destination_domain
+          }
+        }
+      )
+    end
+
+    def migrate_viz_canvas_visualization(component, destination_domain)
+      component.deep_merge(
+        'value' => {
+          'dataset' => {
+            'domain' => destination_domain
           }
         }
       )

@@ -4,6 +4,24 @@ This module helps us localize content in both Ruby and JS and has two main funct
 * provide shared React components or a basic I18n object to use in our JS code
 * store localized strings that are shared across applications within platform-ui and used in both Ruby and JS
 
+## TL;DR
+
+```jsx
+import React, { Component } from 'react';
+import I18n from 'common/i18n';
+
+export class TranslationSample extends Component {
+  const scope = 'shared.example.component';
+  render() {
+    return (
+      <h1>
+        {I18n.t('overall_header', { scope })}
+      </h1>
+    );
+  }
+}
+```
+
 ## How this works with Rails
 We currently have two main Rails applications - the main [Frontend](https://github.com/socrata/platform-ui/tree/master/frontend) app,
 and [Storyteller](https://github.com/socrata/platform-ui/tree/master/storyteller). Each application follows the [typical Rails I18n convention](http://guides.rubyonrails.org/i18n.html#setup-the-rails-application-for-internationalization) by storing their set of localized
@@ -57,46 +75,30 @@ _Storyteller_ should automatically have the correct translations. If not, ensure
 `_storyteller_environment.html.erb` is getting included (it should be included in the
 main application layout).
 
-Once the translations are on the window, we have two main ways to get access to I18n functionality.
+Once the translations are on the window, you may use the `I18n` module to access them:
 
-### 1) Directly using `import I18n from 'common/i18n'`
-If you are not in a React context, you can import the common `I18n` module directly, which will load the available translations on `window.translations`
-and expose an `I18n.js` object which you can use like: `I18n.t('path.to.string.here')`. You will also have access to any other method on `I18n.js` which you can
+```jsx
+import React, { Component } from 'react';
+import I18n from 'common/i18n';
+
+export class TranslationSample extends Component {
+  const scope = 'shared.example.component';
+  render() {
+    return (
+      <h1>
+        {I18n.t('overall_header', { scope })}
+      </h1>
+    );
+  }
+}
+```
+
+You will also have access to any other method on `I18n.js` which you can
 [read more about here](https://github.com/fnando/i18n-js).
 
 ### 2) Using the React `<Localization>` HOC (higher-order-component)
-If you are in a React context, you can wrap the entry point to the app like this:
 
-```js
-import Localization from 'common/i18n/components/Localization';
-
-ReactDOM.render(
-  <Localization
-    translations={translations}
-    locale={serverConfig.locale || 'en'}>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </Localization>,
-  document.querySelector('#my-landing-page')
-);
-```
-
-And in components where you want access to translations:
-
-```js
-import connectLocalization from 'common/i18n/components/connectLocalization';
-
-const MyComponent = (props) => {
-  var { I18n } = props; // <-- I18n available here!
-
-  return (
-    <h1>{I18n.t('path.to.string')}</h1>
-  )
-}
-
-export default connectLocalization(connect(mapStateToProps)(MyComponent)); // <-- what actually makes I18n available via context
-```
+This is deprecated. Please use option 1, as that will work in any context.
 
 ## In tests
 If you need to set translations in a test, use the `useTestTranslations` helper in the `I18n` module:

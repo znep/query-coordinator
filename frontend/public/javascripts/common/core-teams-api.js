@@ -77,14 +77,8 @@ export const getTeamMembers = (teamId, options) =>
  * @param {*} [options] Override http request option.
  * @throws {RequiredError}
  */
-export const removeTeamMember = (teamId, userId, options) => {
-  try {
-    return api.removeTeamMember(teamId, userId, appToken(), csrfToken(), options)(wrappedFetch, '/api');
-  } catch (error) {
-    if (error instanceof SyntaxError) { return; } // No JSON response is returned, which causes an error
-    throw error;
-  }
-};
+export const removeTeamMember = (teamId, userId, options) =>
+  api.removeTeamMember(teamId, userId, appToken(), csrfToken(), options)(wrappedFetch, '/api');
 
 /**
  * Update a specific `Team` object for the domain.

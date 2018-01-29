@@ -55,6 +55,7 @@ All modules, regardless of technology used, must satisfy these conditions:
 3. Have a README.md in their folder.
 4. Run a suite of tests when the `test` task is invoked from the shared Rakefile (`common/Rakefile`).
 5. Run a linter when the `lint` task is invoked from the shared Rakefile (`common/Rakefile`).
+6. If the module adds a React component, a demo page is added to frontend. See [HOWTO](https://github.com/socrata/platform-ui/blob/master/frontend/app/views/demos/README.md).
 
 ## Contributing
 

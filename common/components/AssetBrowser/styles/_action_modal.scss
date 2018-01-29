@@ -84,5 +84,16 @@
         }
       }
     }
+
+    .approval-message {
+      margin-top: 15px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .approval-message-placeholder {
+      padding-top: 3.95rem;
+      visibility: hidden;
+    }
   }
 }

@@ -9,6 +9,7 @@ import SocrataIcon from 'common/components/SocrataIcon';
 import { changeVisibility, fetchParentVisibility } from 'common/components/AssetBrowser/actions/asset_actions';
 import { handleEnter } from 'common/dom_helpers/keyPressHelpers';
 import I18n from 'common/i18n';
+import { assetWillEnterApprovalsQueueOnPublish } from 'common/asset/utils';
 
 export class ChangeVisibility extends React.Component {
   constructor(props) {
@@ -17,6 +18,7 @@ export class ChangeVisibility extends React.Component {
     this.state = {
       fetchingParentVisibility: true,
       parentVisibilityIsOpen: null,
+      showApprovalMessage: false,
       visibility: null
     };
 
@@ -53,7 +55,7 @@ export class ChangeVisibility extends React.Component {
   }
 
   getTranslation(key) {
-    return I18n.t(`shared.asset_browser.result_list_table.action_modal.change_visibility.${key}`);
+    return I18n.t(key, { scope: 'shared.asset_browser.result_list_table.action_modal.change_visibility' });
   }
 
   isDatalens() { // eslint-disable-line react/sort-comp
@@ -169,6 +171,7 @@ export class ChangeVisibility extends React.Component {
 
   render() {
     const { assetActions, assetType, onDismiss, uid } = this.props;
+    const { showApprovalMessage, visibility } = this.state;
 
     const modalProps = { fullScreen: false, onDismiss };
     const headerProps = { onDismiss, title: this.getTranslation('title'), showCloseButton: false };
@@ -185,6 +188,23 @@ export class ChangeVisibility extends React.Component {
       'hidden': this.canNotChangeVisibilityForAsset()
     });
 
+    const assetWillBePublic = visibility === 'open';
+    assetWillEnterApprovalsQueueOnPublish({ coreView: this.currentAsset(), assetWillBePublic }).then(
+      (response) => {
+        if (response !== showApprovalMessage) {
+          this.setState({ showApprovalMessage: response });
+        }
+      });
+
+    const approvalMessageClassnames =
+      showApprovalMessage ? 'alert warning approval-message' : 'approval-message-placeholder';
+
+    const approvalMessage = (
+      <div className={approvalMessageClassnames}>
+        {showApprovalMessage && this.getTranslation('approval_note')}
+      </div>
+    );
+
     return (
       <div className="action-modal change-visibility">
         <Modal {...modalProps} >
@@ -192,6 +212,7 @@ export class ChangeVisibility extends React.Component {
 
           <ModalContent>
             {this.renderModalContent()}
+            {approvalMessage}
             {errorMessage}
           </ModalContent>
 

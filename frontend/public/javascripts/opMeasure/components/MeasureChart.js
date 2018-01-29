@@ -5,11 +5,13 @@ import I18n from 'common/i18n';
 import { SocrataIcon } from 'common/components';
 
 import withComputedMeasure from './withComputedMeasure';
+import computedMeasurePropType from '../propTypes/computedMeasurePropType';
 
 export class MeasureChart extends Component {
 
   renderChart(series) {
     if (!series) return null;
+
     // TODO: Render the series of data in a SVGTimelineChart
     return null;
   }
@@ -51,12 +53,16 @@ MeasureChart.propTypes = {
   measure: PropTypes.shape({
     vif: PropTypes.object // TODO: Q: Should the measure have a vif?
   }).isRequired,
-  computedMeasure: PropTypes.object, // See withComputedMeasure.
+  computedMeasure: computedMeasurePropType,
   dataRequestInFlight: PropTypes.bool
 };
 
 MeasureChart.defaultProps = {
-  computedMeasure: {}
+  computedMeasure: {
+    result: {},
+    errors: {}
+  }
 };
 
-export default withComputedMeasure()(MeasureChart);
+const includeSeries = true;
+export default withComputedMeasure(includeSeries)(MeasureChart);

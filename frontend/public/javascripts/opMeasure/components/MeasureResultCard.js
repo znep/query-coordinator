@@ -9,6 +9,7 @@ import { SocrataIcon } from 'common/components';
 
 import withComputedMeasure from './withComputedMeasure';
 import { PeriodTypes } from '../lib/constants';
+import computedMeasurePropType from '../propTypes/computedMeasurePropType';
 
 // Calculates and displays a measure as a tile
 export class MeasureResultCard extends Component {
@@ -22,10 +23,9 @@ export class MeasureResultCard extends Component {
       dividingByZero,
       noReportingPeriodAvailable,
       noReportingPeriodConfigured
-    } = computedMeasure;
+    } = computedMeasure.errors;
 
-    // TODO: Consider removing the else's because we are returning on matches.
-    if (dataSourceNotConfigured || _.isEmpty(computedMeasure)) {
+    if (dataSourceNotConfigured || !measure.dataSourceLensUid) {
       return I18n.t('open_performance.no_dataset');
     } else if (calculationNotConfigured) {
       return I18n.t('open_performance.no_calculation');
@@ -122,8 +122,8 @@ export class MeasureResultCard extends Component {
       </div>
     );
 
-    const content = result ?
-      this.renderResult(result) :
+    const content = result && result.value ?
+      this.renderResult(result.value) :
       this.renderPlaceholder();
 
     return (
@@ -135,7 +135,10 @@ export class MeasureResultCard extends Component {
 }
 
 MeasureResultCard.defaultProps = {
-  computedMeasure: {},
+  computedMeasure: {
+    result: {},
+    errors: {}
+  },
   // maxLength was chosen based on looking at roughly how many digits fit into the div.
   // This is an approximate value that could be refined later.
   maxLength: 6
@@ -152,8 +155,7 @@ MeasureResultCard.propTypes = {
       })
     })
   }).isRequired,
-  // TODO: Consider adding a shape for computedMeasure
-  computedMeasure: PropTypes.object, // See withComputedMeasure.
+  computedMeasure: computedMeasurePropType,
   dataRequestInFlight: PropTypes.bool,
   maxLength: PropTypes.number // Can override the measure decimalPlaces.
 };

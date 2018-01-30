@@ -9,6 +9,7 @@ import '../componentBase';
 import Constants from '../Constants';
 import I18n from '../I18n';
 import StorytellerUtils from '../../StorytellerUtils';
+import { vifsAreEquivalent } from 'VifUtils';
 
 $.fn.componentSocrataVisualizationVizCanvas = componentSocrataVisualizationVizCanvas;
 
@@ -69,9 +70,24 @@ function _updateVifWithDefaults(vif) {
     }
   });
 
-  if (!newVif.series[0].dataSource.filters) {
-    newVif.series[0].dataSource.filters = [];
-  }
+  // Core strips null values from our vif when we retrieve it with the ViewsService.
+  // See Block class (rails) for another spot where we fill in the stripped fields.
+  // Important fields that will break viz if they don't exist:
+  //
+  //    series[...].dataSource.filters (default this to empty array)
+  //    series[...].dataSource.filters[...].argument (default this to null)
+  //
+  _.forEach(newVif.series, (series) => {
+    if (_.isUndefined(series.dataSource.filters)) {
+      series.dataSource.filters = [];
+    } else {
+      _.forEach(series.dataSource.filters, (filter) => {
+        if (_.isUndefined(filter.arguments)) {
+          filter.arguments = null;
+        }
+      });
+    }
+  });
 
   return newVif;
 }
@@ -106,15 +122,29 @@ function _updateVisualization($element, props) {
     'value.dataset.vifId'
   );
 
-  function _renderVisualization(vif) {
-    $element.attr('data-rendered-vif', JSON.stringify(vif));
-    $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
+  function _getRenderedVif() {
+    let renderedVif;
+    try {
+      renderedVif = JSON.parse($element.attr('data-rendered-vif'));
+    } catch (error) {
+      renderedVif = {};
+    }
+    return renderedVif;
+  }
 
-    new VisualizationRenderer(
-      _updateVifWithDefaults(vif),
-      $componentContent,
-      { displayFilterBar: true }
-    );
+  function _renderVisualization(newVif) {
+    const vifsAreNotEquivalent = !vifsAreEquivalent(_getRenderedVif(), newVif);
+
+    if (vifsAreNotEquivalent) {
+      $element.attr('data-rendered-vif', JSON.stringify(newVif));
+      $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
+
+      new VisualizationRenderer(
+        _updateVifWithDefaults(newVif),
+        $componentContent,
+        { displayFilterBar: true }
+      );
+    }
   }
 
   function _renderError(statusCode = '') {
@@ -123,7 +153,7 @@ function _updateVisualization($element, props) {
     const knownStatusCodes = ['403', '404'];
     const statusCodeKey = `status_${_.includes(knownStatusCodes, statusCode.toString()) ? statusCode : 'unspecified'}`;
     const errorMessage = I18n.t(`editor.viz_canvas.errors.${statusCodeKey}`);
-    const containerHeight = `${componentData.value.layout.height}px`;
+    const containerHeight = `${_.get(componentData, 'value.layout.height', props.resizeOptions.minHeight)}px`;
     // Fake the visualization's internal error rendering
     const $errorMessageElement = $(`
       <div style="height: ${containerHeight}" class="socrata-visualization socrata-visualization-error">

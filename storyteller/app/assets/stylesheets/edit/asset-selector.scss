@@ -16,6 +16,12 @@
   }
 }
 
+// rems, ems, px, oh my... We don't handle the rendering of "styleguide" shared components styles
+// too well. We end up with the wrong height buttons in many cases. Here's one.
+.asset-browser .result-card-container .result-card.media .view-card-overlay .hover-target .overlay .select-button {
+  height: 40px;
+}
+
 // .component-html already includes its own fade in.
 .component[class^="component-"]:not(.component-html),
 .component[class*=" component-"]:not(.component-html),
@@ -446,7 +452,8 @@
 
 /* Visualization chooser */
 .asset-selector-full-width-iframe,
-#asset-selector-container .component-socrata-visualization-classic {
+#asset-selector-container .component-socrata-visualization-classic,
+#asset-selector-container .component-socrata-visualization-viz-canvas {
   width: 100%;
   height: 560px;
 }

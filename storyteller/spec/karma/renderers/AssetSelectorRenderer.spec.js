@@ -339,21 +339,23 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
-    it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART` on a mapOrChartSelected event', function(done) {
-      dispatcher.register(function(payload) {
-        var action = payload.action;
-        assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART);
-        // the values will be empty, but assert that the event adds the keys
-        assert.propertyVal(payload, 'mapOrChartUid', 'mapc-hart');
-        assert.propertyVal(payload, 'domain', window.location.hostname);
-        done();
-      });
+    // TODO add tests for handling the dataset/chart/map chosen...
 
-      container.find('.modal-dialog').trigger('mapOrChartSelected', {
-        id: 'mapc-hart',
-        domainCName: undefined
-      });
-    });
+    // it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART` on a mapOrChartSelected event', function(done) {
+    //   dispatcher.register(function(payload) {
+    //     var action = payload.action;
+    //     assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART);
+    //     // the values will be empty, but assert that the event adds the keys
+    //     assert.propertyVal(payload, 'mapOrChartUid', 'mapc-hart');
+    //     assert.propertyVal(payload, 'domain', window.location.hostname);
+    //     done();
+    //   });
+    //
+    //   container.find('.modal-dialog').trigger('mapOrChartSelected', {
+    //     id: 'mapc-hart',
+    //     domainCName: undefined
+    //   });
+    // });
 
     it('dispatches `ASSET_SELECTOR_TOGGLE_IMAGE_WINDOW_TARGET` when new window checkbox is clicked', function(done) {
       sinon.stub(assetSelectorStoreMock, 'getComponentType', _.constant('image'));
@@ -649,43 +651,78 @@ describe('AssetSelectorRenderer', function() {
 
     describe('an `ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN` action with visualizationOption = INSERT_VISUALIZATION is fired', function() {
       beforeEach(function() {
+        $(document.body).append($('<div>', {id: 'common-asset-selector'}));
+
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN,
           visualizationOption: 'INSERT_VISUALIZATION'
         });
       });
 
-      it('renders an iframe', function() {
-        assert.equal(container.find('.asset-selector-mapOrChart-chooser-iframe').length, 1);
+      afterEach(function() {
+        $('#common-asset-selector').remove();
       });
 
-      describe('the iframe', function() {
-        it('has the correct source', function() {
-          var iframeSrc = decodeURI(container.find('iframe').attr('src'));
-          assert.include(iframeSrc, 'browse/select_dataset');
-          assert.include(iframeSrc, 'filtered_types[]=maps&filtered_types[]=charts');
-          assert.include(iframeSrc, 'limitTo[]=charts&limitTo[]=maps&limitTo[]=blob');
+      describe('AssetSelector props', function() {
+        it('sets baseFilters.assetTypes', function() {
+          assert.equal(CommonAssetSelectorMock.lastProps.baseFilters.assetTypes, 'charts,maps');
+        });
+
+        it('sets closeOnSelect', function() {
+          assert.isFalse(CommonAssetSelectorMock.lastProps.closeOnSelect);
+        });
+
+        it('sets modalFooterChildren', function() {
+          assert.equal(CommonAssetSelectorMock.lastProps.modalFooterChildren.props.className, 'common-asset-selector-modal-footer-button-group');
+        });
+
+        it('sets showBackButton', function() {
+          assert.isFalse(CommonAssetSelectorMock.lastProps.showBackButton);
         });
       });
 
-      describe('the modal', function() {
-        it('has the wide class to display the iframe', function() {
-          assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
-        });
+      describe('handling assetSelected', () => {
+        const visualizationView = {
+          id: StandardMocks.vizCanvasId,
+          domainCName: 'example.com',
+          mockViewData: {}
+        };
+        const assetData = {
+          displayType: 'visualization',
+          domain: visualizationView.domainCName,
+          id: visualizationView.id
+        };
+        const triggerAssetSelected = () => { CommonAssetSelectorMock.lastProps.onAssetSelected(assetData); };
 
-        it('has a modal title loading spinner', function() {
-          assert.lengthOf(container.find('.btn-busy:not(.hidden)'), 1);
-        });
-
-        it('has a close button', function() {
-          assert.equal(container.find('.modal-close-btn').length, 1);
-        });
-
-        it('has a button that goes back to the provider list', function() {
-          assert.lengthOf(
-            container.find('[data-resume-from-step="SELECT_VISUALIZATION_OPTION"]'),
-            1
+        beforeEach((done) => {
+          server.respondImmediately = true;
+          server.respondWith(
+            'GET',
+            `https://${assetData.domain}/api/views/${assetData.id}.json?read_from_nbe=true&version=2.1`,
+            [
+              200,
+              {'Content-Type': 'application/json'},
+              JSON.stringify(visualizationView)
+            ]
           );
+
+          setTimeout(() => { done(); }, 0);
+        });
+
+        it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART`', (done) => {
+          dispatcher.register((payload) => {
+            const { action, domain, mapOrChartUid, viewData } = payload;
+            assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART);
+            assert.equal(domain, assetData.domain, 'domain is set from assetData');
+            assert.equal(mapOrChartUid, assetData.id, 'mapOrChartUid is set from assetData');
+            assert.deepEqual(
+              viewData,
+              _.extend({}, visualizationView, { domain: assetData.domain }),
+              'viewData is saved from response with `domain` added'
+            );
+            done();
+          });
+          triggerAssetSelected();
         });
       });
     });
@@ -693,6 +730,7 @@ describe('AssetSelectorRenderer', function() {
     describe('an `ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN` action with visualizationOption = AUTHOR_VISUALIZATION is fired', function() {
       beforeEach(function() {
         $(document.body).append($('<div>', {id: 'common-asset-selector'}));
+        $(document.body).append($('<div>', {id: 'authoring-workflow'}));
 
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_VISUALIZATION_OPTION_CHOSEN,
@@ -702,6 +740,7 @@ describe('AssetSelectorRenderer', function() {
 
       afterEach(function() {
         $('#common-asset-selector').remove();
+        $('#authoring-workflow').remove();
       });
 
       describe('AssetSelector props', function() {
@@ -725,6 +764,72 @@ describe('AssetSelectorRenderer', function() {
 
         it('sets showBackButton', function() {
           assert.isFalse(CommonAssetSelectorMock.lastProps.showBackButton);
+        });
+      });
+
+      describe('handling assetSelected', () => {
+        let assetData;
+        const triggerAssetSelected = () => { CommonAssetSelectorMock.lastProps.onAssetSelected(assetData); };
+
+        function stubGetDatasetMetadata(statusCode, viewData) {
+          beforeEach(() => {
+            server.respondImmediately = true;
+            server.respondWith(
+              'GET',
+              `https://${assetData.domain}/api/views/${assetData.id}.json?read_from_nbe=true&version=2.1`,
+              [
+                statusCode,
+                {'Content-Type': 'application/json'},
+                JSON.stringify(viewData)
+              ]
+            );
+          });
+        }
+
+        describe('when selected asset is an nbe dataset', () => {
+          assetData = {
+            displayType: 'dataset',
+            domain: nbeView.domainCName,
+            id: nbeView.id
+          };
+
+          describe('and successfully gets view', () => {
+            stubGetDatasetMetadata(200, nbeView);
+
+            it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` with viewData', (done) => {
+              dispatcher.register((payload) => {
+                const { action, viewData } = payload;
+                assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
+                assert.deepEqual(
+                  viewData,
+                  _.extend({}, nbeView, { domain: assetData.domain })
+                );
+                done();
+              });
+
+              triggerAssetSelected();
+            });
+          });
+
+          xdescribe('and fails to get view', () => {
+            stubGetDatasetMetadata(404, {});
+
+            it('alerts', () => {
+              window.alert = sinon.spy();
+              triggerAssetSelected();
+              sinon.assert.calledWith(window.alert, 'Translation for: editor.asset_selector.visualization.choose_dataset_unsupported_error');
+            });
+          });
+        });
+
+        xdescribe('when selected asset is an obe dataset', () => {
+          describe('when migration exists', () => {
+          });
+
+          describe('when migration does not exist', () => {
+            describe('when selected asset is a filtered view', () => {
+            });
+          });
         });
       });
     });
@@ -866,7 +971,8 @@ describe('AssetSelectorRenderer', function() {
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
           domain: 'example.com',
-          mapOrChartUid: 'mapc-hart'
+          mapOrChartUid: 'mapc-hart',
+          viewData: nbeView // TODO update this to an actual thing that looks like a view
         });
       });
 

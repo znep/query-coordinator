@@ -507,47 +507,6 @@ describe('AssetSelectorStore', function() {
         });
       });
 
-
-      // TODO MOVE TO AssetSelectorRenderer spec
-      // it('should attempt to fetch the NBE datasetUid if view is not directly visualizable', function(done) {
-      //   dispatcher.dispatch({
-      //     action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-      //     domain: window.location.hostname,
-      //     datasetUid: StandardMocks.validStoryUid,
-      //     isNewBackend: false
-      //   });
-      //
-      //   respondToMetadataRequestWith(obeViewWithFilter);
-      //
-      //   // Wait for promises...
-      //   setTimeout(function() {
-      //     assert.lengthOf(server.requests, 2);
-      //     var migrationsRequest = server.requests[1];
-      //     assert.include(migrationsRequest.url, migrationUrl);
-      //     done();
-      //   }, 1);
-      // });
-      //
-      // it('should not request API migrations if dataset is directly visualizable', function(done) {
-      //   dispatcher.dispatch({
-      //     action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-      //     datasetUid: StandardMocks.validStoryUid,
-      //     domain: 'example.com',
-      //     isNewBackend: true
-      //   });
-      //
-      //   respondToMetadataRequestWith(nbeView);
-      //
-      //   // Wait for promises...
-      //   setTimeout(function() {
-      //     assert.lengthOf(server.requests, 1);
-      //     assert.isFalse(_.some(server.requests, function(request) {
-      //       return request.url === migrationUrl;
-      //     }));
-      //     done();
-      //   }, 1);
-      // });
-
       it('should add datasetUid to _currentComponentProperities', function(done) {
         assetSelectorStore.addChangeListener(function() {
           assert.equal(
@@ -587,6 +546,209 @@ describe('AssetSelectorStore', function() {
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
             viewData: nbeView
           });
+        });
+      });
+    });
+
+    describe('after an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART` action', () => {
+      it('validates payload has domain', () => {
+        assert.throws(() => {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
+            // domain: 'example.com',
+            mapOrChartUid: 'test-test',
+            viewData: nbeView
+          });
+        });
+      });
+
+      it('validates payload has mapOrChartUid', () => {
+        assert.throws(() => {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
+            domain: 'example.com',
+            // mapOrChartUid: 'test-test',
+            viewData: nbeView
+          });
+        });
+      });
+
+      it('validates payload has viewData', () => {
+        assert.throws(() => {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
+            domain: 'example.com',
+            mapOrChartUid: 'test-test'
+            // viewData: nbeView
+          });
+        });
+      });
+
+      describe('when selected asset is a classic chart', () => {
+        const classicChartView = {
+          id: StandardMocks.classicChartId,
+          name: 'classic chart',
+          displayType: 'chart',
+          domain: 'example.com',
+          newBackend: false,
+          viewType: 'tabular',
+          query: {}
+        };
+
+        function dispatchAction() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
+            domain: 'example.com',
+            mapOrChartUid: StandardMocks.classicChartId,
+            viewData: classicChartView
+          });
+        }
+
+        it('sets the wizard step', (done) => {
+          assetSelectorStore.addChangeListener(() => {
+            assert.equal(
+              assetSelectorStore.getStep(),
+              WIZARD_STEP.CONFIGURE_MAP_OR_CHART
+            );
+            done();
+          });
+
+          dispatchAction();
+        });
+
+        it('sets dataset componentProperties', (done) => {
+          assetSelectorStore.addChangeListener(() => {
+            assert.deepEqual(
+              assetSelectorStore.getComponentValue(),
+              {
+                dataset: {
+                  domain: 'example.com',
+                  datasetUid: StandardMocks.classicChartId
+                }
+              }
+            );
+            done();
+          });
+
+          dispatchAction();
+        });
+
+        it('sets dataset in state', (done) => {
+          assetSelectorStore.addChangeListener(() => {
+            assert.deepEqual(
+              assetSelectorStore.getDataset(),
+              classicChartView
+            );
+            done();
+          });
+
+          dispatchAction();
+        });
+      });
+
+      describe('when selected asset is a viz-canvas', () => {
+        const vizCanvasView = {
+          id: StandardMocks.vizCanvasId,
+          name: 'viz canvas',
+          displayType: 'visualization',
+          domain: 'example.com',
+          newBackend: true,
+          viewType: 'tabular',
+          query: {},
+          displayFormat: {
+            visualizationCanvasMetadata: {
+              vifs: [
+                {
+                  id: StandardMocks.vizCanvasChartId
+                }
+              ]
+            }
+          }
+        };
+
+        function dispatchAction() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
+            domain: vizCanvasView.domain,
+            mapOrChartUid: vizCanvasView.id,
+            viewData: vizCanvasView
+          });
+        }
+
+        it('sets the wizard step', (done) => {
+          assetSelectorStore.addChangeListener(() => {
+            assert.equal(
+              assetSelectorStore.getStep(),
+              WIZARD_STEP.CONFIGURE_MAP_OR_CHART
+            );
+            done();
+          });
+
+          dispatchAction();
+        });
+
+        it('sets dataset componentProperties', (done) => {
+          assetSelectorStore.addChangeListener(() => {
+            assert.deepEqual(
+              assetSelectorStore.getComponentValue(),
+              {
+                dataset: {
+                  domain: vizCanvasView.domain,
+                  datasetUid: StandardMocks.vizCanvasId,
+                  vifId: StandardMocks.vizCanvasChartId
+                }
+              }
+            );
+            done();
+          });
+
+          dispatchAction();
+        });
+
+        it('sets dataset in state to visualization view data', (done) => {
+          assetSelectorStore.addChangeListener(() => {
+            assert.deepEqual(
+              assetSelectorStore.getDataset(),
+              vizCanvasView
+            );
+            done();
+          });
+
+          dispatchAction();
+        });
+      });
+
+      describe('when selected asset is not valid', () => {
+        const unsupportedAssetView = {
+          id: StandardMocks.validStoryUid,
+          name: 'viz canvas',
+          displayType: 'story',
+          domain: 'example.com',
+          newBackend: false,
+          viewType: 'story'
+        };
+
+        function dispatchAction() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
+            domain: unsupportedAssetView.domain,
+            mapOrChartUid: unsupportedAssetView.id,
+            viewData: unsupportedAssetView
+          });
+        }
+
+        it('does not update componentProperties', () => {
+          dispatchAction();
+
+          assert.isUndefined(
+            assetSelectorStore.getDataset()
+          );
+        });
+
+        it('alerts', () => {
+          window.alert = sinon.spy();
+          dispatchAction();
+          sinon.assert.calledWith(window.alert, 'Translation for: editor.asset_selector.visualization.choose_map_or_chart_error');
         });
       });
     });

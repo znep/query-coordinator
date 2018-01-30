@@ -259,17 +259,6 @@ export default function AssetSelectorRenderer(options) {
     );
 
     _container.on(
-      'mapOrChartSelected',
-      function(event, mapOrChartObj) {
-        dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
-          domain: mapOrChartObj.domainCName || window.location.hostname,
-          mapOrChartUid: mapOrChartObj.id
-        });
-      }
-    );
-
-    _container.on(
       'visualizationSelected',
       function(event, selectedVisualization) {
         dispatcher.dispatch({
@@ -2197,19 +2186,20 @@ export default function AssetSelectorRenderer(options) {
     }
   }
 
-  function _renderAssetSelectorTemplate(assetTypes) {
+  function _closeAssetSelectorModal() {
     const element = document.getElementById('common-asset-selector');
+    _.defer(() => { ReactDOM.unmountComponentAtNode(element); });
+  }
 
-    function closeModal() {
-      _.defer(() => ReactDOM.unmountComponentAtNode(element));
-    }
+  function _renderAssetSelectorTemplate(props) {
+    const element = document.getElementById('common-asset-selector');
 
     function handleClose() {
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_CLOSE
       });
 
-      closeModal();
+      _closeAssetSelectorModal();
     }
 
     function handleBackButtonClick() {
@@ -2218,101 +2208,7 @@ export default function AssetSelectorRenderer(options) {
         step: WIZARD_STEP.SELECT_VISUALIZATION_OPTION
       });
 
-      closeModal();
-    }
-
-    function handleAssetSelected(assetData) {
-      const datasetConfig = {
-        domain: assetData.domain,
-        datasetUid: assetData.id
-      };
-
-      // Check for the NBE version of the dataset we're choosing
-      const metadataProvider = new MetadataProvider(datasetConfig);
-      metadataProvider.getDatasetMetadata().
-        then((datasetView) => {
-          if (_.get(datasetView, 'newBackend', false)) {
-            return datasetView;
-          } else {
-            return metadataProvider.getDatasetMigrationMetadata().
-              then((migrationMetadata) => {
-                // get the nbe dataset view
-                return new MetadataProvider({
-                  domain: datasetConfig.domain,
-                  datasetUid: migrationMetadata.nbeId
-                }).getDatasetMetadata();
-              }).
-              catch((error) => {
-                // if we don't have migration data for filtered or grouped views AND we're using this asset
-                // to render a table, we can still try to render the obe dataset
-                if (
-                  assetSelectorStore.getComponentType() === 'socrata.visualization.table' &&
-                  assetData.displayType === 'filter'
-                ) {
-                  return datasetView;
-                } else {
-                  console.error(`Error getting migrated view for ${JSON.stringify(assetData)}`, error);
-                  return Promise.reject(error);
-                }
-              });
-          }
-        }).
-        then((nbeViewData) => {
-          // EN-7322 - No response on choosing some datasets
-          //
-          // Do not assume that we have view data. If the request for
-          // /api/migrations/four-four.json returned 404 it means that there
-          // is no corresponding NBE version of this dataset.
-          //
-          // We do some additional handling of missing migration data for filtered
-          // and grouped views above so we can safely ignore the missing `newBackend`
-          // value below
-          if (_.isPlainObject(nbeViewData)) {
-            if (assetData.displayType !== 'filter') {
-              // We should be able to handle all NBE datasets.
-              assert(
-                _.get(nbeViewData, 'newBackend'),
-                'All versions of this dataset deemed unfit for visualization!'
-              );
-            }
-
-            // Retcon the domain into the view data.
-            // We'd have to pass it around like 5 methods otherwise. (still true?)
-            nbeViewData.domain = datasetConfig.domain;
-
-            // This dataset view is fit for visualization!
-            dispatcher.dispatch({
-              action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
-              viewData: nbeViewData
-            });
-
-            closeModal();
-          } else {
-            // No migration. Give up.
-            return Promise.reject(null);
-          }
-        }).
-        catch((error) => {
-          // EN-7322 - No response on choosing some datasets
-          //
-          // If the user attempts to add a chart using an OBE dataset that has
-          // no corresponding migrated NBE dataset, this promise chain is
-          // expected to fail. As such, we probably don't want to notify
-          // Airbrake.
-          //
-          // TODO: Consider consolidating the user messaging for different
-          // expected error cases here and not in their upstream functions.
-          if (!_.isNull(error)) {
-            alert(I18n.t('editor.asset_selector.visualization.choose_dataset_unsupported_error')); // eslint-disable-line no-alert
-
-            if (window.console && console.error) {
-              console.error('Error selecting dataset: ', error);
-            }
-
-            // TODO do we want to skip airbraking for this, mixpanel/pendo instead?
-            exceptionNotifier.notify(error);
-          }
-        });
+      _closeAssetSelectorModal();
     }
 
     const modalFooterChildren = (
@@ -2330,28 +2226,124 @@ export default function AssetSelectorRenderer(options) {
       </div>
     );
 
-    // TODO there's a problem when you go from table back to create new viz... the ax no longer works
-
-    const assetSelectorProps = {
-      baseFilters: {
-        assetTypes,
-        published: true
-      },
+    const defaultAssetSelectorProps = {
       closeOnSelect: false,
       modalFooterChildren,
-      onAssetSelected: handleAssetSelected,
       onClose: handleClose,
       resultsPerPage: 6,
-      title: I18n.t('editor.asset_selector.visualization.choose_dataset_heading'),
       showBackButton: false
     };
 
+    const assetSelectorProps = _.extend({}, defaultAssetSelectorProps, props);
     return ReactDOM.render(<AssetSelector {...assetSelectorProps} />, element);
+  }
+
+  function _handleDatasetAssetSelected(assetData) {
+    const datasetConfig = {
+      domain: assetData.domain,
+      datasetUid: assetData.id
+    };
+
+    // Check for the NBE version of the dataset we're choosing
+    const metadataProvider = new MetadataProvider(datasetConfig);
+    metadataProvider.getDatasetMetadata().
+      then((datasetView) => {
+        if (_.get(datasetView, 'newBackend', false)) {
+          return datasetView;
+        } else {
+          return metadataProvider.getDatasetMigrationMetadata().
+            then((migrationMetadata) => {
+              // get the nbe dataset view
+              return new MetadataProvider({
+                domain: datasetConfig.domain,
+                datasetUid: migrationMetadata.nbeId
+              }).getDatasetMetadata();
+            }).
+            catch((error) => {
+              // if we don't have migration data for filtered or grouped views AND we're using this asset
+              // to render a table, we can still try to render the obe dataset
+              if (
+                assetSelectorStore.getComponentType() === 'socrata.visualization.table' &&
+                assetData.displayType === 'filter'
+              ) {
+                return datasetView;
+              } else {
+                console.error(`Error getting migrated view for ${JSON.stringify(assetData)}`, error);
+                return Promise.reject(error);
+              }
+            });
+        }
+      }).
+      then((nbeViewData) => {
+        // EN-7322 - No response on choosing some datasets
+        //
+        // Do not assume that we have view data. If the request for
+        // /api/migrations/four-four.json returned 404 it means that there
+        // is no corresponding NBE version of this dataset.
+        //
+        // We do some additional handling of missing migration data for filtered
+        // and grouped views above so we can safely ignore the missing `newBackend`
+        // value below
+        if (_.isPlainObject(nbeViewData)) {
+          if (assetData.displayType !== 'filter') {
+            // We should be able to handle all NBE datasets.
+            assert(
+              _.get(nbeViewData, 'newBackend'),
+              'All versions of this dataset deemed unfit for visualization!'
+            );
+          }
+
+          // Retcon the domain into the view data.
+          // We'd have to pass it around like 5 methods otherwise. (still true?)
+          nbeViewData.domain = datasetConfig.domain;
+
+          // This dataset view is fit for visualization!
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+            viewData: nbeViewData
+          });
+
+          _closeAssetSelectorModal();
+        } else {
+          // No migration. Give up.
+          return Promise.reject(null);
+        }
+      }).
+      catch((error) => {
+        // EN-7322 - No response on choosing some datasets
+        //
+        // If the user attempts to add a chart using an OBE dataset that has
+        // no corresponding migrated NBE dataset, this promise chain is
+        // expected to fail. As such, we probably don't want to notify
+        // Airbrake.
+        //
+        // TODO: Consider consolidating the user messaging for different
+        // expected error cases here and not in their upstream functions.
+        if (!_.isNull(error)) {
+          alert(I18n.t('editor.asset_selector.visualization.choose_dataset_unsupported_error')); // eslint-disable-line no-alert
+
+          if (window.console && console.error) {
+            console.error('Error selecting dataset: ', error);
+          }
+
+          // TODO do we want to skip airbraking for this, mixpanel/pendo instead?
+          exceptionNotifier.notify(error);
+        }
+      });
   }
 
   function _renderChooseDatasetForVisualizationTemplate() {
     // We currently only support plain-old datasets for visualizations.
-    return _renderAssetSelectorTemplate('datasets');
+    const assetSelectorProps = {
+      baseFilters: {
+        assetTypes: 'datasets',
+        published: true
+      },
+      onAssetSelected: _handleDatasetAssetSelected,
+      title: I18n.t('editor.asset_selector.visualization.choose_dataset_heading')
+    };
+
+    return _renderAssetSelectorTemplate(assetSelectorProps);
   }
 
   function _renderChooseTableTemplate() {
@@ -2360,38 +2352,56 @@ export default function AssetSelectorRenderer(options) {
       assetTypes.push('filters');
     }
 
-    return _renderAssetSelectorTemplate(assetTypes.join(','));
+    const assetSelectorProps = {
+      baseFilters: {
+        assetTypes: assetTypes.join(','),
+        published: true
+      },
+      onAssetSelected: _handleDatasetAssetSelected,
+      title: I18n.t('editor.asset_selector.visualization.choose_dataset_heading')
+    };
+
+    return _renderAssetSelectorTemplate(assetSelectorProps);
+  }
+
+  function _handleVisualizationAssetSelected(assetData) {
+    const visualizationConfig = {
+      domain: assetData.domain,
+      datasetUid: assetData.id
+    };
+
+    const metadataProvider = new MetadataProvider(visualizationConfig);
+    metadataProvider.getDatasetMetadata().
+      then((viewData) => {
+        // Retcon the domain into the view data.
+        // We'd have to pass it around like 5 methods otherwise. (still true?)
+        viewData.domain = assetData.domain;
+
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
+          domain: assetData.domain,
+          mapOrChartUid: assetData.id,
+          viewData
+        });
+
+        _closeAssetSelectorModal();
+      }).
+      catch((error) => {
+        console.error('Encountered a problem when getting view for visualization:', error);
+      });
   }
 
   function _renderChooseMapOrChartTemplate() {
-    const backButton = _renderModalBackButton(WIZARD_STEP.SELECT_VISUALIZATION_OPTION);
-
-    const mapOrChartChooserIframe = $(
-      '<iframe>',
-      {
-        'class': 'asset-selector-mapOrChart-chooser-iframe asset-selector-full-width-iframe',
-        'src': _mapOrChartChooserUrl()
-      }
-    );
-
-    const loadingButton = $('<button>', {
-      'class': 'btn btn-transparent btn-busy visualization-busy',
-      'disabled': true
-    }).append($('<span>'));
-
-    const buttonGroup = $('<div>', {
-      'class': 'modal-button-group r-to-l'
-    }).append([ backButton ]);
-
-    mapOrChartChooserIframe[0].onDatasetSelected = function(mapOrChartObj) {
-      $(this).trigger('mapOrChartSelected', mapOrChartObj);
+    const assetSelectorProps = {
+      baseFilters: {
+        assetTypes: 'charts,maps',
+        published: true
+      },
+      onAssetSelected: _handleVisualizationAssetSelected,
+      title: I18n.t('editor.asset_selector.visualization.choose_map_or_chart_heading')
     };
 
-    mapOrChartChooserIframe.one('load', function() {
-      loadingButton.addClass('hidden');
-    });
-
-    return [ loadingButton, mapOrChartChooserIframe, buttonGroup ];
+    return _renderAssetSelectorTemplate(assetSelectorProps);
   }
 
   function _renderAuthorVisualizationTemplate() {
@@ -2534,31 +2544,48 @@ export default function AssetSelectorRenderer(options) {
     table.componentSocrataVisualizationTable(props);
   }
 
-
-  function _renderConfigureMapOrChartTemplate() {
-    const configureMapOrChartIframe = $(
+  function _chartOrMapIFrameContainer() {
+    return $(
       '<iframe>',
       {
         'class': 'asset-selector-configure-mapchart-iframe asset-selector-full-width-iframe',
         'src': ''
       }
     );
+  }
+
+  function _chartOrMapVizCanvasContainer() {
+    return $('<div class="asset-selector-configure-chartmap-vizcanvas asset-selector-full-width"></div>');
+  }
+
+  function _renderConfigureMapOrChartTemplate() {
+    const isVizCanvasVisualization = !_.isUndefined(_.get(assetSelectorStore.getComponentValue(), 'dataset.vifId'));
+    let chartOrMapContainer;
+
+    if (isVizCanvasVisualization) {
+      chartOrMapContainer = _chartOrMapVizCanvasContainer();
+    } else {
+      chartOrMapContainer = _chartOrMapIFrameContainer();
+    }
 
     const backButton = _renderModalBackButton(WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG);
 
-    const loadingButton = $('<button>', {
-      'class': 'btn btn-transparent btn-busy visualization-busy',
-      'disabled': true
-    }).append($('<span>'));
+    let loadingButton;
+    if (!isVizCanvasVisualization) {
+      loadingButton = $('<button>', {
+        'class': 'btn btn-transparent btn-busy visualization-busy',
+        'disabled': true
+      }).append($('<span>'));
+    }
 
     const buttonGroup = $('<div>', {
       'class': 'modal-button-group r-to-l'
     }).append([ backButton, _renderModalInsertButton({ disabled: true }) ]);
 
-    return [ loadingButton, configureMapOrChartIframe, buttonGroup ];
+    return [ loadingButton, chartOrMapContainer, buttonGroup ];
   }
 
-  function _renderConfigureMapOrChartData(componentType, componentProperties) {
+  function _renderConfigureMapOrChartIframeData(componentType, componentProperties) {
     const insertButton = _container.find('.btn-apply');
     const mapChartIframe = _container.find('.asset-selector-configure-mapchart-iframe');
     const assetSelectorStoreDataset = assetSelectorStore.getDataset();
@@ -2635,22 +2662,95 @@ export default function AssetSelectorRenderer(options) {
     }
   }
 
+  function _renderConfigureMapOrChartVizCanvasData(componentType, componentProperties) {
+    const insertButton = _container.find('.btn-apply');
+    // const vizContainer = _container.find('.asset-selector-configure-chartmap-vizcanvas');
+    // const assetSelectorStoreDataset = assetSelectorStore.getDataset();
+    // const savedDatasetMatchesSelectedDataset = (
+    //   assetSelectorStoreDataset &&
+    //   componentProperties.visualization &&
+    //   componentProperties.visualization.id === assetSelectorStoreDataset.id
+    // );
+    // const isEditingWithoutSavedDataset = !assetSelectorStoreDataset && assetSelectorStore.isEditingExisting();
+    const visualization = {
+      domain: componentProperties.dataset.domain,
+      datasetUid: componentProperties.dataset.datasetUid,
+      vifId: componentProperties.dataset.vifId
+    };
+    // let dataset;
+
+    if (componentProperties.dataset && _container.find('.component-socrata-visualization-viz-canvas').length === 0) {
+
+      // TODO I'm not sure this is really necessary
+      // if (savedDatasetMatchesSelectedDataset || isEditingWithoutSavedDataset) {
+      //   dataset = componentProperties.visualization;
+      //   if (dataset === null) {
+      //     return exceptionNotifier.notify(
+      //       'componentProperties.visualization was unexpectedly null'
+      //     );
+      //   }
+      // } else {
+      //   dataset = JSON.parse(JSON.stringify(assetSelectorStoreDataset));
+      //   if (dataset === null) {
+      //     return exceptionNotifier.notify(
+      //       'assetSelectorStoreDataset was unexpectedly null'
+      //     );
+      //   }
+      // }
+
+      const componentContainer = $(
+        '<div>',
+        {
+          'class': 'asset-selector-component-container'
+        }
+      );
+
+      _container.
+        find('.modal-content').
+        prepend(componentContainer);
+
+      componentContainer.componentSocrataVisualizationVizCanvas({
+        blockId: assetSelectorStore.getBlockId(),
+        componentIndex: assetSelectorStore.getComponentIndex(),
+        componentData: {
+          type: 'socrata.visualization.vizCanvas',
+          value: {
+            dataset: visualization
+          }
+        },
+        theme: null,
+        resizeSupported: false
+      });
+
+      // can't dispatch in the middle of a dispatch
+      _.defer(() => {
+        insertButton.prop('disabled', false);
+
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
+          visualization: {
+            data: visualization,
+            format: 'vizCanvas'
+          }
+        });
+      });
+
+      insertButton.prop('disabled', true);
+    }
+  }
+
+  function _renderConfigureMapOrChartData(componentType, componentProperties) {
+    const isVizCanvasVisualization = !_.isUndefined(_.get(componentProperties, 'dataset.vifId'));
+    if (isVizCanvasVisualization) {
+      _renderConfigureMapOrChartVizCanvasData(componentType, componentProperties);
+    } else {
+      _renderConfigureMapOrChartIframeData(componentType, componentProperties);
+    }
+  }
+
   /**
    * Small helper functions
    */
-
-  function _mapOrChartChooserUrl() {
-    // remove suppressed_facets param upon frontend release to show 'view types' menu
-    //
-    // cetera_search must be set to false until multiple limitTo parameters are enabled for cetera
-    // limitTo array parameter currently only works with clytemnestra
-    return encodeURI(
-      StorytellerUtils.format(
-        '{0}/browse/select_dataset?filtered_types[]=maps&filtered_types[]=charts&limitTo[]=charts&limitTo[]=maps&limitTo[]=blob&cetera_search=false',
-        window.location.protocol + '//' + window.location.hostname
-      )
-    );
-  }
 
   function _renderChooseEmbedCodeTemplate() {
     const loadingButton = $('<button>', {

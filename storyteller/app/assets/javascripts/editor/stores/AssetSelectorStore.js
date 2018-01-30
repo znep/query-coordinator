@@ -240,14 +240,16 @@ export default function AssetSelectorStore() {
   // Returns:
   // {
   //   id: <4x4>,
-  //   domain: <dataset domain>
+  //   domain: <dataset domain>,
+  //   vifId: <vif within vizCanvas> [optional]
   // }
   this.getDatasetUserSelectedFromList = () => {
     const value = this.getComponentValue();
     const id = _.get(value, 'dataset.datasetUid');
     const domain = _.get(value, 'dataset.domain');
+    const vifId = _.get(value, 'dataset.vifId');
     if (domain && id) {
-      return { domain, id };
+      return { domain, id, vifId };
     } else {
       return null;
     }
@@ -691,6 +693,7 @@ export default function AssetSelectorStore() {
       case 'author': return WIZARD_STEP.IMAGE_PREVIEW; // Author blocks act like an image embed + RTE blurb.
       case 'socrata.visualization.table': return WIZARD_STEP.TABLE_PREVIEW;
       case 'socrata.visualization.classic': return WIZARD_STEP.CONFIGURE_MAP_OR_CHART;
+      case 'socrata.visualization.vizCanvas': return WIZARD_STEP.CONFIGURE_MAP_OR_CHART;
     }
 
     if (type.indexOf('socrata.visualization.') === 0) {
@@ -747,7 +750,9 @@ export default function AssetSelectorStore() {
     }
 
     const dataset = self.getDatasetUserSelectedFromList() || self.getDatasetInVif();
-    if (dataset) {
+    // Skip vizCanvas components because we've already retrieved the view by this point
+    // and we don't store the whole view in the component.
+    if (component.type !== 'socrata.visualization.vizCanvas' && dataset) {
       // Fetch additional data needed for UI.
       _getView(dataset.domain, dataset.id).
         then(_setComponentPropertiesFromViewData).
@@ -847,30 +852,45 @@ export default function AssetSelectorStore() {
   function _chooseVisualizationMapOrChart(payload) {
     _state.step = WIZARD_STEP.CONFIGURE_MAP_OR_CHART;
 
-    assertIsOneOfTypes(payload.domain, 'string');
+    assertIsOneOfTypes(payload.domain, 'string', 'Payload must include "domain"');
+    assertIsOneOfTypes(payload.mapOrChartUid, 'string', 'Payload must include "mapOrChartUid"');
+    assertIsOneOfTypes(payload.viewData, 'object', 'Payload must include "viewData"');
 
     const mapChartError = () => {
       alert(t('visualization.choose_map_or_chart_error')); // eslint-disable-line no-alert
     };
 
-    _getView(payload.domain, payload.mapOrChartUid).
-      then((viewData) => {
-        const isChartOrMapView = (
-          _.isPlainObject(viewData) &&
-          (
-            viewData.displayType === 'chart' ||
-            viewData.displayType === 'map'
-          )
-        );
+    const { viewData } = payload;
+    let vifId;
 
-        if (isChartOrMapView) {
-          _setComponentPropertiesFromViewData(viewData);
-          self._emitChange();
-        } else {
-          mapChartError();
-        }
-      }).
-      catch(mapChartError);
+    const isChartOrMapView = (
+      _.isPlainObject(viewData) &&
+      (
+        viewData.displayType === 'chart' ||
+        viewData.displayType === 'map' ||
+        viewData.displayType === 'visualization'
+      )
+    );
+
+    // is this a viz-canvas or a classic chart/map?
+    // classic viz will not have a vifId
+    if (viewData.displayType === 'visualization') {
+      // For now, while we only have one visualization per canvas, we're going to default to the first one
+      vifId = viewData.displayFormat.visualizationCanvasMetadata.vifs[0].id;
+    }
+
+    if (isChartOrMapView) {
+      _setComponentPropertiesFromViewData(viewData);
+      if (viewData.displayType === 'visualization' && vifId) {
+        const vizProps = {
+          vifId
+        };
+        _setComponentPropertiesFromVizCanvasVisualization(vizProps);
+      }
+      self._emitChange();
+    } else {
+      mapChartError();
+    }
   }
 
   function _setUpTableFromSelectedDataset() {
@@ -951,6 +971,15 @@ export default function AssetSelectorStore() {
     _state.dataset = _.cloneDeep(viewData);
   }
 
+  // Sets componentProperties.visualization for viz-canvas visualizations
+  function _setComponentPropertiesFromVizCanvasVisualization(vizProps) {
+    assertIsOneOfTypes(vizProps, 'object');
+    assertHasProperty(vizProps, 'vifId');
+
+    _state.componentProperties = _state.componentProperties || {};
+    _.extend(_state.componentProperties.dataset, vizProps);
+  }
+
   function _getView(domain, uid) {
     // Fetch the view info.
     // NOTE: Beware that view.metadata is not sync'd across to the NBE
@@ -992,6 +1021,13 @@ export default function AssetSelectorStore() {
     if (_.isEmpty(visualization)) {
 
       _state.componentType = null;
+      _state.componentProperties = {
+        dataset: _state.componentProperties.dataset
+      };
+
+      self._emitChange();
+    } else if (format === 'vizCanvas') {
+      _state.componentType = 'socrata.visualization.vizCanvas';
       _state.componentProperties = {
         dataset: _state.componentProperties.dataset
       };

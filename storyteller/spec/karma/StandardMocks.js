@@ -7,5 +7,9 @@ export default {
   validBlockData1: DataGenerators.generateBlockData(),
   firstBlockId: 'rawr-rawr',
   secondBlockId: 'like-your',
-  vifBlockId: 'viff-iess'
+  vifBlockId: 'viff-iess',
+  classicChartId: 'beca-use0',
+  vizCanvasId: 'its0-sexy',
+  vizCanvasChartId: 'its-kinda-like-a-uuid',
+  validDatasetUid: 'but3-not9'
 };

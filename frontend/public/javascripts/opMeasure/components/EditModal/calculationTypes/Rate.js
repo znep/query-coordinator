@@ -176,6 +176,7 @@ export class Rate extends Component {
         value: CalculationTypeNames.SUM
       }],
       value: aggregationType,
+      showOptionsBelowHandle: true,
       id: 'aggregation'
     };
 

@@ -1,6 +1,7 @@
-import TestUtils from 'react-dom/test-utils';
-import React, { Component } from 'react';
+import _ from 'lodash';
 import { mount } from 'enzyme';
+import React, { Component } from 'react';
+import TestUtils from 'react-dom/test-utils';
 
 import Tabs from 'common/notifications/components/AlertSettingModal/Tabs';
 
@@ -31,8 +32,7 @@ describe('Tabs', () => {
   });
 
   it('should hide my alerts tab if showMyAlertsTab props is false', () => {
-    const spy = sinon.spy();
-    const props = { showMyAlertsTab: false, selectedTab: 'notification', onTabChange: spy };
+    const props = { showMyAlertsTab: false, selectedTab: 'notification', onTabChange: _.noop };
     const element = mount(<Tabs {...props} />);
     const liTabs = element.find('li');
 

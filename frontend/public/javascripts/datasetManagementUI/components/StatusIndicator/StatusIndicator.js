@@ -6,29 +6,28 @@ import {
   ERRORED,
   INITIALIZED
 } from 'datasetManagementUI/components/ManageMetadata/ManageMetadata';
-import styles from './StatusIndicator.module.scss';
 
 const StatusIndicator = ({ formStatus }) => {
-  let colorClass;
+  let colorClass = 'dsmp-status-base';
 
   switch (formStatus) {
     case INITIALIZED:
-      colorClass = styles.base;
+      colorClass += ' dsmp-status-initialized';
       break;
     case SAVED:
-      colorClass = styles.saved;
+      colorClass += ' dsmp-status-saved';
       break;
     case UNSAVED:
-      colorClass = styles.unsaved;
+      colorClass += ' dsmp-status-unsaved';
       break;
     case ERRORED:
-      colorClass = styles.errored;
+      colorClass += ' dsmp-status-errored';
       break;
     default:
-      colorClass = styles.base;
+      colorClass += ' dsmp-status-initialized';
   }
 
-  return <span className={colorClass}> </span>;
+  return <span className={colorClass} />;
 };
 
 StatusIndicator.propTypes = {

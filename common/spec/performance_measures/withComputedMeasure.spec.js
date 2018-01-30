@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import { assert } from 'chai';
 import sinon from 'sinon';
 
-import withComputedMeasure from 'opMeasure/components/withComputedMeasure';
+import withComputedMeasure from 'common/performance_measures/components/withComputedMeasure';
 
 describe('withComputedMeasure', () => {
   const MockComponent = () => <div />;
@@ -153,8 +153,8 @@ describe('withComputedMeasure', () => {
         return [
           ['2001-01-01T00:00:00.000', '10'],
           ['2001-02-01T00:00:00.000', '20']
-        ]
-      }
+        ];
+      };
 
       const props = { measure };
       const Wrapped = withComputedMeasure(includeSeries, calculateMeasure, calculateSeries)(MockComponent);

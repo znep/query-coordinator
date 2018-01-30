@@ -322,5 +322,6 @@ visualizations:
 authoring-workflow:
 - authoring-workflow-import-shim
 component_example_pages:
+- demos/measure-result-card
 - demos/components
 - demos/color_list

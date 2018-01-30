@@ -1,5 +1,15 @@
 en:
   shared:
+    performance_measures:
+      no_calculation: Metric calculation has not been configured
+      no_dataset: Dataset has not been connected
+      no_reporting_period: Reporting period has not been configured
+      no_visualization: Metric calculation not available
+      not_enough_data: Not enough data for current reporting period
+      measure:
+        as_of_last: as of last closed reporting period
+        as_of_today: as of today
+        dividing_by_zero: PLACEHOLDER - Division by zero
     asset_browser:
       alert_messages:
         resource_approved:

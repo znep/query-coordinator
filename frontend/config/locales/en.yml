@@ -3181,10 +3181,7 @@ en:
     exit_preview_mode: Exit Preview Mode
     measure:
       about_this_measure: About This Measure
-      as_of_today: as of today
-      as_of_last: as of last closed reporting period
       calculation_type: Calculation Type
-      dividing_by_zero: PLACEHOLDER - Division by zero
       edit_modal:
         accept: Accept
         cancel: Cancel
@@ -3303,11 +3300,6 @@ en:
       reporting_period: Reporting Period
     measure_visualization: Measure visualization
     metric: Metric
-    no_calculation: Metric calculation has not been configured
-    no_dataset: Dataset has not been connected
-    no_reporting_period: Reporting period has not been configured
-    no_visualization: Metric calculation not available
-    not_enough_data: Not enough data for current reporting period
     preview: Preview
     render_error: There was a problem rendering this page.
     save: Save

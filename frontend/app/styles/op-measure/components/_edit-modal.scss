@@ -274,6 +274,11 @@ $large: 769px;
           float: left;
           margin-right: 50px;
         }
+
+        .measure-result-big-number {
+          color: $dark-grey-2;
+          font-size: 42px;
+        }
       }
 
       .metric-display-options {

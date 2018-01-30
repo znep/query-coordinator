@@ -19,12 +19,17 @@ export function getShapeLineColor(colorByCategories) {
 }
 
 export function getShapeFillColor(colorByColumnAlias, colorByCategories) {
-  if (colorByCategories == null) {
+  if (_.isNull(colorByCategories)) {
     return NO_COLOR;
   }
 
   // +1 for 'other' category
   const colorPalette = this.getColorPalette(colorByCategories.length + 1);
+
+  if (_.isEmpty(colorByCategories)) {
+    return colorPalette[0];
+  }
+
   const stops = _.map(colorByCategories, (colorByCategory, index) => [colorByCategory, colorPalette[index]]);
 
   return {

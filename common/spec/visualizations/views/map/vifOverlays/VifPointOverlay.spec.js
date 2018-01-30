@@ -122,8 +122,9 @@ describe('VifPointOverlay', () => {
       vif = mapMockVif({});
       vif.series[0].mapOptions.colorPointsBy = 'brokerType';
 
+
       const query = 'https://example.com/api/id/r6t9-rak2.json\?$query=' +
-        'SELECT%20brokerType%20as%20__color_by_category__%2Ccount\\(\\*\\)%20as%20__count__%20' +
+        'SELECT%20brokerType%7C%7C\'\'%20as%20__color_by_category__%2Ccount\\(\\*\\)%20as%20__count__%20' +
         'GROUP%20BY%20brokerType%20' +
         'ORDER%20BY%20__count__%20desc%20' +
         'LIMIT%205' +
@@ -144,7 +145,8 @@ describe('VifPointOverlay', () => {
       it('should setup with colorPointsBy renderOptions', () => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: sinon.match(['It', 'Cat2']),
-          dataUrl: sinon.match("CASE(brokerType in ('It','Cat2'),brokerType||'',true,'__$$other$$__') as __color_by_category__"),
+
+          dataUrl: sinon.match("CASE(brokerType||'' in ('It','Cat2'),brokerType||'',true,'__$$other$$__') as __color_by_category__"),
           colorBy: '__color_by_category__'
         });
 
@@ -167,7 +169,7 @@ describe('VifPointOverlay', () => {
       it('should setup with colorPointsBy renderOptions', () => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: sinon.match(['It', 'Cat2']),
-          dataUrl: sinon.match("CASE(brokerType in ('It','Cat2'),brokerType||'',true,'__$$other$$__') as __color_by_category__"),
+          dataUrl: sinon.match("CASE(brokerType||'' in ('It','Cat2'),brokerType||'',true,'__$$other$$__') as __color_by_category__"),
           colorBy: '__color_by_category__'
         });
 

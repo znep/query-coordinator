@@ -80,7 +80,7 @@ describe('VifShapeOverlay', () => {
       vif = mapMockVif({});
       vif.series[0].mapOptions.colorBoundariesBy = 'countyType';
       const query = 'https://example.com/api/id/r6t9-rak2.json\?$query=' +
-        'SELECT%20countyType%20as%20__color_by_category__%2Ccount\\(\\*\\)%20as%20__count__%20' +
+        'SELECT%20countyType%7C%7C\'\'%20as%20__color_by_category__%2Ccount\\(\\*\\)%20as%20__count__%20' +
         'GROUP%20BY%20countyType%20' +
         'ORDER%20BY%20__count__%20desc%20' +
         'LIMIT%205' +
@@ -102,7 +102,7 @@ describe('VifShapeOverlay', () => {
       it('should setup with colorBoundariesBy renderOptions', async() => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: ['Street', 'County'],
-          dataUrl: sinon.match("CASE(countyType in ('Street','County'),countyType||'',true,'__$$other$$__') as __color_by_category__"),
+          dataUrl: sinon.match("CASE(countyType||'' in ('Street','County'),countyType||'',true,'__$$other$$__') as __color_by_category__"),
           colorBy: '__color_by_category__'
         });
 
@@ -124,7 +124,7 @@ describe('VifShapeOverlay', () => {
       it('should update with colorBoundariesBy renderOptions', async() => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: ['Street', 'County'],
-          dataUrl: sinon.match("CASE(countyType in ('Street','County'),countyType||'',true,'__$$other$$__') as __color_by_category__"),
+          dataUrl: sinon.match("CASE(countyType||'' in ('Street','County'),countyType||'',true,'__$$other$$__') as __color_by_category__"),
           colorBy: '__color_by_category__'
         });
 

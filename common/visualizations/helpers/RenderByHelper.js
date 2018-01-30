@@ -14,7 +14,7 @@ export default class RenderByHelper {
       return null;
     }
 
-    const query = `SELECT ${colorByColumn} as ${COLOR_BY_CATEGORY_ALIAS},count(*) as ${COUNT_ALIAS} ` +
+    const query = `SELECT ${colorByColumn}||'' as ${COLOR_BY_CATEGORY_ALIAS},count(*) as ${COUNT_ALIAS} ` +
       `GROUP BY ${colorByColumn} ` +
       `ORDER BY ${COUNT_ALIAS} desc ` +
       `LIMIT ${COLOR_BY_BUCKETS_COUNT}`;

@@ -12,7 +12,6 @@ import SaveButtons from './SaveButtons';
 import * as FormActions from 'datasetManagementUI/reduxStuff/actions/forms';
 import * as Links from 'datasetManagementUI/links/links';
 import * as Selectors from 'datasetManagementUI/selectors';
-import styles from './ShowSource.module.scss';
 
 export const ShowSource = ({
   inProgress,
@@ -23,16 +22,16 @@ export const ShowSource = ({
   saveHrefForm,
   hrefFormDirty
 }) => (
-  <div className={styles.showUpload}>
+  <div id="show-source">
     <Modal fullScreen onDismiss={goHome}>
       <ModalHeader onDismiss={goHome}>
         <SourceBreadcrumbs atShowSource />
       </ModalHeader>
-      <ModalContent className={styles.modalContent}>
+      <ModalContent className="dsmp-modal-content">
         <SourceSidebar />
         {inProgress ? (
-          <div className={styles.centeredContainer}>
-            <span className={styles.spinner} />
+          <div className="dsmp-centered-container">
+            <span className="spinner-default spinner-large" />
             <p>{I18n.show_uploads.in_progress}</p>
           </div>
         ) : (

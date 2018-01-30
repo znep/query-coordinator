@@ -37,6 +37,7 @@ html {
   @import 'frontend/public/javascripts/datasetManagementUI/components/ColumnHeader/ColumnHeader';
   @import 'frontend/public/javascripts/datasetManagementUI/pages/ShowOutputSchema/_ShowOutputSchema';
   @import 'frontend/public/javascripts/datasetManagementUI/pages/ShowRevision/ShowRevision';
+  @import 'frontend/public/javascripts/datasetManagementUI/pages/ShowSource/ShowSource.scss';
   @import 'frontend/public/javascripts/datasetManagementUI/components/AddColForm/AddColForm.scss';
   @import 'frontend/public/javascripts/datasetManagementUI/components/ApiCallButton/ApiCallButton.scss';
   @import 'frontend/public/javascripts/datasetManagementUI/components/AppBar/AppBar.scss';
@@ -49,6 +50,6 @@ html {
   @import 'frontend/public/javascripts/datasetManagementUI/components/Fieldset/Fieldset.scss';
   @import 'frontend/public/javascripts/datasetManagementUI/components/WithFlash/WithFlash.scss';
   @import 'frontend/public/javascripts/datasetManagementUI/components/ManageMetadataModal/ManageMetadataModal.scss';
-  @import 'frontend/public/javascripts/datasetManagementUI/components/StatusIndicator/StatusIndicator.scss';
+  @import 'frontend/public/javascripts/datasetManagementUI/components/ManageMetadata/ManageMetadata.scss';
   @import 'frontend/app/styles/leaflet.scss';
 }

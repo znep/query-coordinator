@@ -291,9 +291,8 @@ class CreateAlertModal extends Component {
         isLoading={isLoading} />
     );
   }
-  
-  renderAdvanceTabContent() {
 
+  renderAdvanceTabContent() {
     const { rawSoqlQuery } = this.state;
     const alertTitle = I18n.t('alert_title', { scope: 'shared.components.create_alert_modal.advanced_search' });
     const description = I18n.t('description', { scope: 'shared.components.create_alert_modal.advanced_search' });

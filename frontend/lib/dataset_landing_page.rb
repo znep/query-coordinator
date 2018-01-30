@@ -367,11 +367,7 @@ class DatasetLandingPage
 
       bootstrap_id = view.newBackend? ? view.id : migrations['nbeId']
 
-      if enable_visualization_canvas?(view, request)
-        create_visualization_canvas_path(id: bootstrap_id)
-      else
-        new_data_lens_path(id: bootstrap_id)
-      end
+      create_visualization_canvas_path(id: bootstrap_id)
     end
 
     def edit_metadata_url(view)
@@ -417,10 +413,6 @@ class DatasetLandingPage
 
     def disable_contact_dataset_owner(view)
       CurrentDomain.feature?(:disable_contact_dataset_owner)
-    end
-
-    def enable_visualization_canvas?(view, request)
-      enable_visualization_canvas = FeatureFlags.derive(view, request).enable_visualization_canvas
     end
   end
 end

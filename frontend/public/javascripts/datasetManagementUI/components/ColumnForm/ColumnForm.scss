@@ -1,0 +1,66 @@
+#column-form {
+  .dsmp-form {
+    padding: 1.3rem 0 0 1.3rem;
+  }
+
+  .dsmp-hidden {
+    display: none;
+  }
+
+  .dsmp-row {
+    margin-bottom: 1em;
+    overflow: hidden;
+    clear: both;
+
+    label {
+      display: none;
+    }
+
+    input {
+      line-height: 20px;
+      padding: 5px 10px;
+      min-height: 32px;
+      font-size: 12px;
+    }
+  }
+
+  .dsmp-row > * {
+    width: 250px;
+    margin-right: 1em;
+    float: left;
+  }
+
+  .dsmp-row > *:last-child {
+    margin-right: 0;
+  }
+
+  .dsmp-row:nth-child(3) {
+    label {
+      display: inline;
+    }
+  }
+
+  .dsmp-row > *:nth-child(2) {
+    width: calc(100% - 500px - 2em);
+  }
+
+  @media all and (max-width: 1100px) {
+    .dsmp-row {
+      margin-bottom: 2em;
+
+      label {
+        display: inline;
+      }
+    }
+
+    .dsmp-row > * {
+      float: none;
+      width: 100%;
+      margin-bottom: 0.8em;
+    }
+
+    .dsmp-row > *:nth-child(2) {
+      width: 100%;
+    }
+  }
+}

@@ -13,19 +13,24 @@ export function getLineWeighByColumn() {
 }
 
 export function getLineColor(colorByColumnAlias, colorByCategories) {
-  const colorPallete = this.getColorPalette();
-
-  if (colorByCategories == null) {
+  if (_.isNull(colorByCategories)) {
     return _.get(this, 'series[0].color.primary', '#ff00ff');
   }
 
-  const stops = _.map(colorByCategories, (colorByCategory, index) => [colorByCategory, colorPallete[index]]);
+  // +1 for 'other' category
+  const colorPalette = this.getColorPalette(colorByCategories.length + 1);
+
+  if (_.isEmpty(colorByCategories)) {
+    return colorPalette[0];
+  }
+
+  const stops = _.map(colorByCategories, (colorByCategory, index) => [colorByCategory, colorPalette[index]]);
 
   return {
     property: colorByColumnAlias,
     type: 'categorical',
     stops,
-    default: colorPallete[stops.length]
+    default: colorPalette[stops.length]
   };
 }
 
@@ -36,25 +41,8 @@ export function getLineWidth(aggregateAndResizeBy, resizeByRange) {
 
   const minWidth = _.get(this, 'series[0].mapOptions.minimumLineWeight', 3);
   const maxWidth = _.get(this, 'series[0].mapOptions.maximumLineWeight', 7);
-  const numberOfDataClasses = _.get(this, 'series[0].mapOptions.numberOfDataClasses', 5);
+  const dataClasses = _.get(this, 'series[0].mapOptions.numberOfDataClasses', 5);
 
-  if (minWidth === maxWidth) {
-    return minWidth;
-  }
-  if (resizeByRange.min === resizeByRange.max) {
-    return (minWidth + maxWidth) / 2;
-  }
-
-  const widthStep = (maxWidth - minWidth) / numberOfDataClasses;
-  const resizeStep = (resizeByRange.max - resizeByRange.min) / numberOfDataClasses;
-
-  const widthStops = _.range(minWidth, maxWidth, widthStep);
-  const resizeStops = _.range(resizeByRange.min, resizeByRange.max, resizeStep);
-
-  return {
-    type: 'interval',
-    property: aggregateAndResizeBy,
-    stops: _.zip(resizeStops, widthStops),
-    'default': minWidth
-  };
+  return this.getResizeByRangeBuckets(aggregateAndResizeBy, resizeByRange,
+    minWidth, maxWidth, dataClasses, 'interval');
 }

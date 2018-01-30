@@ -63,7 +63,7 @@ describe('reducers', () => {
         collapsed: true,
         focusedResult: undefined,
         query: undefined,
-        resultsVisible: true,
+        resultsVisible: false,
         searchResults: { resultSetSize: 0, results: [], timings: {} }
       }
     });

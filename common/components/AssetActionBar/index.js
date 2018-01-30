@@ -69,16 +69,15 @@ class AssetActionBar extends Component {
 
   comprehendPublicationState() {
     const currentView = this.currentView;
-    const currentViewUid = currentView.id;
     const publishedViewUid = currentView.publishedViewUid;
 
     if (currentView.publicationStage === 'unpublished') {
-      return { currentViewUid, publicationState: 'draft', publishedViewUid };
+      return { publicationState: 'draft', publishedViewUid };
     } else if (currentView.publicationStage === 'published') {
       if (_.get(currentView, 'approvals.0.state') === 'pending') {
-        return { currentViewUid, publicationState: 'pending', publishedViewUid };
+        return { publicationState: 'pending', publishedViewUid };
       }
-      return { currentViewUid, publicationState: 'published' };
+      return { publicationState: 'published' };
     }
   }
 
@@ -94,6 +93,9 @@ class AssetActionBar extends Component {
         <PublicationAction
           key="publication-action"
           {...publicationState}
+          currentViewName={assetName}
+          currentViewType={this.currentView.viewType}
+          currentViewUid={this.currentView.id}
           allowedTo={this.grantedPermissionTo} />
       );
     }

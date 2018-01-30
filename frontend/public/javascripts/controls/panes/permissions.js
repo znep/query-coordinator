@@ -29,14 +29,23 @@
           callback: function($formElem) {
             // If the publicness is inherited from the parent dataset,
             // they can't make it private
-            var publicGrant = _.detect(cpObj._view.grants || [], function(grant) {
+            var publicGrant = _.detect(
+              cpObj._view.grants || [], function(grant) {
                 return _.include(grant.flags || [], 'public');
-              }),
-              $publicText = $formElem.find('.datasetPublicText'),
-              $toggleForm = $formElem.find('.togglePermissionsForm'),
-              $toggleRadios = $toggleForm.find('.toggleDatasetPermissions');
+              }
+            );
+            var $publicText = $formElem.find('.datasetPublicText');
+            var $toggleForm = $formElem.find('.togglePermissionsForm');
+            var $toggleRadios = $toggleForm.find('.toggleDatasetPermissions');
 
-            $publicText.text(cpObj._view.isPublic() ? $.t('core.visibility.public').capitalize() : $.t('core.visibility.private').capitalize());
+            $publicText.text(
+              cpObj._view.isPublic() ?
+                $.t('core.visibility.public').capitalize() :
+                $.t('core.visibility.private').capitalize()
+            );
+
+            $formElem.find('.datasetTypeName').text(this._view.displayName);
+            $formElem.find('.datasetTypeNameUpcase').text(this._view.displayName.capitalize());
 
             // Only owned, parent-public datasets can be toggled
             if (cpObj._view.hasRight(blist.rights.view.UPDATE_VIEW) &&
@@ -44,8 +53,11 @@
               $toggleRadios.change(function(event) {
                 var $radio = $(event.target);
                 cpObj._view[$radio.val()](function() {
-                    $publicText.text(cpObj._view.isPublic() ?
-                      $.t('core.visibility.public').capitalize() : $.t('core.visibility.private').capitalize());
+                    $publicText.text(
+                      cpObj._view.isPublic() ?
+                        $.t('core.visibility.public').capitalize() :
+                        $.t('core.visibility.private').capitalize()
+                    );
                     $radio.socrataAlert({
                       message: $.t('screens.ds.grid_sidebar.permissions.success'),
                       overlay: true
@@ -60,13 +72,35 @@
               _.defer(function() {
                 $toggleRadios.uniform();
               });
+
+              var pendingApproval = _.get(blist, 'dataset.approvals.0.outcome') === 'publicize' && cpObj._view.isPublic();
+
+              if (pendingApproval) {
+                $publicText.html($.t('core.visibility.awaiting_approval_html'));
+                var $sectionContent = $(cpObj.currentDom).find('.sectionContent.togglePermissionsForm');
+                var $withdrawApprovalRequestButton = $(
+                  '<a href="#" class="button" id="withdraw_approval_request">' +
+                    $.t('screens.ds.grid_sidebar.permissions.withdraw_approval_request') +
+                  '</a>'
+                );
+
+                $withdrawApprovalRequestButton.on('click', function() {
+                  cpObj._view.makePrivate(
+                    function() { location.reload(); },
+                    function() {
+                      cpObj.$dom().find('.sharingFlash').addClass('error').
+                        text($.t('screens.ds.grid_sidebar.permissions.error'));
+                    });
+                  cpObj._finish();
+                });
+
+                $sectionContent.find('.line').hide(); // Hide radio buttons
+                cpObj.$dom().find('.finishButtons li a.submit').hide(); // Hide update/submit button
+                $sectionContent.append($withdrawApprovalRequestButton);
+              }
             } else {
               $toggleForm.hide();
             }
-
-            $formElem.find('.datasetTypeName').text(this._view.displayName);
-            $formElem.find('.datasetTypeNameUpcase').
-              text(this._view.displayName.capitalize());
           }
         }
       }];
@@ -100,6 +134,7 @@
           if (_.isFunction(finalCallback)) {
             finalCallback();
           }
+          location.reload();
         },
         function() {
           cpObj.find$('.sharingFlash').addClass('error').

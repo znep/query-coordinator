@@ -52,7 +52,7 @@ class Footer extends Component {
 const mapStateToProps = state => ({
   cancelButtonText: state.ui.footer.cancelButtonText,
   showCancelButton: state.ui.footer.showCancelButton,
-  confirmButtonBusy: state.ui.saveInProgress
+  confirmButtonBusy: state.ui.footer.confirmButtonBusy
 });
 
 const mapDispatchToProps = dispatch => ({

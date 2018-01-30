@@ -9,6 +9,6 @@ All below boxes should be checked before merging:
   Ask for help in [#frontend](https://socrata.slack.com/archives/C02KAPT7N) if you need help verifying a change.
 
 Check one of the below:
-- [ ] Obtained design review via `snu cr designFE <pr>` for changes to `common/`.
+- [ ] Obtained design review via `snu cr designFE <pr>` for changes to `common/` and updated demo pages.
   Please also roll a main code reviewer using your team-specific CR group.
 - [ ] This PR does not include changes to `common/`.

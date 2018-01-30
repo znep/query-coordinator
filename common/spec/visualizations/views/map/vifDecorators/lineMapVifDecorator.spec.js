@@ -56,8 +56,8 @@ describe('lineMapVifDecorator', () => {
           let expectedResult = {
             type: 'interval',
             property: '__count__',
-            'default': 10,
-            stops: [[20, 10], [60, 12], [100, 14], [140, 16]]
+            default: 10,
+            stops: [[20, 10], [60, 12], [100, 14], [140, 16], [180, 18]]
           };
           let resizeRangeBy = { min: 20, avg: 1, max: 180 };
           let decoratedVif = _.merge({}, lineMapVifDecorator, vif);
@@ -75,28 +75,45 @@ describe('lineMapVifDecorator', () => {
       vif = mapMockVif({});
     });
 
-    it('should return default lineColor if colorCategories are null', () => {
-      let decoratedVif = _.merge({}, lineMapVifDecorator, vif);
+    describe('if colorCategories are null', () => {
+      it('should return default lineColor', () => {
+        const decoratedVif = _.merge({}, lineMapVifDecorator, vif);
 
-      let lineColor = decoratedVif.getLineColor();
-      assert.equal(lineColor, '#eb6900');
+        assert.equal(
+          decoratedVif.getLineColor('__color_by__', null),
+          '#eb6900'
+        );
+      });
     });
 
-    it('should return lineColor Buckets if colorCategories are not Null', () => {
-      vif.series[0].color.palette = 'categorical';
-      let decoratedVif = _.merge({}, lineMapVifDecorator, vif);
+    describe('if colorCategories are empty', () => {
+      it('should return first color of color palette ', () => {
+        const decoratedVif = _.merge({}, lineMapVifDecorator, vif);
 
-      let lineColor = decoratedVif.getLineColor('__color_by__', ['police', 'county', 'city', 'bus']);
-      let expectedResult = {
-        property: '__color_by__',
-        type: 'categorical',
-        stops: [['police', '#a6cee3'],
+        assert.equal(
+          decoratedVif.getLineColor('__color_by__', []),
+          '#e41a1c'
+        );
+      });
+    });
+
+    describe('if colorCategories are not null', () => {
+      it('should return lineColor Buckets ', () => {
+        vif.series[0].color.palette = 'categorical';
+        const decoratedVif = _.merge({}, lineMapVifDecorator, vif);
+
+        const lineColor = decoratedVif.getLineColor('__color_by__', ['police', 'county', 'city', 'bus']);
+        const expectedResult = {
+          property: '__color_by__',
+          type: 'categorical',
+          stops: [['police', '#a6cee3'],
           ['county', '#5b9ec9'],
           ['city', '#2d82af'],
           ['bus', '#7eba98']],
-        default: '#98d277'
-      };
-      assert.deepEqual(lineColor, expectedResult);
+          default: '#98d277'
+        };
+        assert.deepEqual(lineColor, expectedResult);
+      });
     });
   });
 });

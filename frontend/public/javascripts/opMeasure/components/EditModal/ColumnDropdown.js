@@ -6,7 +6,7 @@ import I18n from 'common/i18n';
 import { Dropdown, SocrataIcon } from 'common/components';
 import { getIconForDataType } from 'common/icons';
 
-import { isColumnUsableWithMeasureArgument } from '../../measureCalculator';
+import { isColumnUsableWithMeasureArgument } from 'common/performance_measures/measureCalculator';
 
 // A dropdown list of columns, automatically filtered for relevance to the a given measure
 // argument (i.e., only date columns are displayed for Recent Value's dateColumn argument).
@@ -38,6 +38,7 @@ export default class ColumnDropdown extends Component {
       })),
       value: columnFieldName,
       id,
+      showOptionsBelowHandle: true,
       labelledBy
     };
 

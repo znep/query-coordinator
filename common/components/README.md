@@ -176,9 +176,14 @@ add-blink-tag:
 
 ## Contributing
 
-The easiest way to develop changes to `components` is to use a real application (such as frontend) as a test host for
-your changes. A project to prepare the [styleguide sample app](https://github.com/socrata/platform-ui/blob/master/styleguide-sample-app/README.md)
-for usage as a test host is underway but is not ready for use.
+At a bare minimum, any components should have:
+
+1. A set of tests in `common/spec`.
+2. A demo page in frontend [HOWTO](https://github.com/socrata/platform-ui/blob/master/frontend/app/views/demos/README.md).
+
+See the [common top-level readme](https://github.com/socrata/platform-ui/blob/master/common/README.md)
+for general guidelines.
+
 
 ### Testing
 

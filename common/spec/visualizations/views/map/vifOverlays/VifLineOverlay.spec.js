@@ -135,7 +135,7 @@ describe('VifLineOverlay', () => {
       it('should setup with colorLinesBy renderOptions', async() => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: sinon.match(['Place', 'City']),
-          dataUrl: sinon.match("CASE(agentType in ('Place','City'),agentType||'',true,'__$$other$$__') as __color_by_category__,count(*) as __count__ "),
+          dataUrl: sinon.match("CASE(agentType||'' in ('Place','City'),agentType||'',true,'__$$other$$__') as __color_by_category__,count(*) as __count__ "),
           colorBy: '__color_by_category__'
         });
 
@@ -157,7 +157,7 @@ describe('VifLineOverlay', () => {
       it('should setup with colorLinesBy renderOptions', async() => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: sinon.match(['Place', 'City']),
-          dataUrl: sinon.match("CASE(agentType in ('Place','City'),agentType||'',true,'__$$other$$__') as __color_by_category__,count(*) as __count__"),
+          dataUrl: sinon.match("CASE(agentType||'' in ('Place','City'),agentType||'',true,'__$$other$$__') as __color_by_category__,count(*) as __count__"),
           colorBy: '__color_by_category__',
           aggregateAndResizeBy: '__count__'
         });

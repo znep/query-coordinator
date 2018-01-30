@@ -968,10 +968,7 @@ function SvgTimelineChart($element, vif, options) {
             }
           }).
           y((d) => {
-            const value = (maxYValue) ?
-              _.min([maxYValue, d[seriesMeasureIndex]]) :
-              d[seriesMeasureIndex];
-
+            const value = _.clamp(d[seriesMeasureIndex], minYValue, maxYValue);
             return d3YScale(value);
           });
       });
@@ -999,11 +996,7 @@ function SvgTimelineChart($element, vif, options) {
           defined((d) => !_.isNull(d[seriesMeasureIndex])).
           x((d) => d3XScale(d[seriesDimensionIndex]) + halfBandWidth).
           y((d) => {
-
-            const value = (maxYValue) ?
-              _.min([maxYValue, d[seriesMeasureIndex]]) :
-              d[seriesMeasureIndex];
-
+            const value = _.clamp(d[seriesMeasureIndex], minYValue, maxYValue);
             return d3YScale(value);
           });
       });
@@ -1656,8 +1649,10 @@ function SvgTimelineChart($element, vif, options) {
 
     // Note: d3.max will return undefined if passed an array of non-numbers
     // (such as when we try to show a flyout for a null value).
-    const maxFlyoutValue = d3.max(
-      data.map((datum) => datum.value)
+    const maxFlyoutValue = _.clamp(
+      d3.max(data.map((datum) => datum.value)),
+      minYValue,
+      maxYValue
     );
 
     let maxFlyoutValueOffset;

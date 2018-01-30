@@ -192,46 +192,28 @@ describe DatasetsController do
         allow(view).to receive(:parent_view).and_return(double)
       end
 
-      context 'when feature flag is enabled' do
-        before(:each) do
-          allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
-        end
-
-        it 'is success' do
-          get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
-          expect(response).to have_http_status(:success)
-        end
-
-        it 'renders visualization_canvas' do
-          get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
-          expect(response).to render_template(:visualization_canvas)
-        end
-
-        context 'when not using canonical_url' do
-          let(:canonical_path) { 'the_canonical_path' }
-
-          before(:each) do
-            allow(subject).to receive(:using_canonical_url?).and_return(false)
-            allow(subject).to receive(:canonical_path).and_return(canonical_path)
-          end
-
-          it 'redirects to canonical path' do
-            get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
-            expect(response).to redirect_to(canonical_path)
-          end
-        end
+      it 'is success' do
+        get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+        expect(response).to have_http_status(:success)
       end
 
-      context 'when feature flag is not enabled' do
+      it 'renders visualization_canvas' do
+        get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+        expect(response).to render_template(:visualization_canvas)
+      end
+
+      context 'when not using canonical_url' do
+        let(:canonical_path) { 'the_canonical_path' }
+
         before(:each) do
-          allow(subject).to receive(:visualization_canvas_enabled?).and_return(false)
+          allow(subject).to receive(:using_canonical_url?).and_return(false)
+          allow(subject).to receive(:canonical_path).and_return(canonical_path)
         end
 
-        it 'is not found' do
+        it 'redirects to canonical path' do
           get :show, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
-          expect(response).to have_http_status(:not_found)
+          expect(response).to redirect_to(canonical_path)
         end
-
       end
     end
 
@@ -341,90 +323,12 @@ describe DatasetsController do
       allow(view).to receive(:new_backend?).and_return(true)
     end
 
-    context 'when feature flag is enabled' do
+    context 'when user is logged in' do
       before(:each) do
-        allow(subject).to receive(:visualization_canvas_enabled?).and_return(true)
+        login
       end
 
-      context 'when user is logged in' do
-        before(:each) do
-          login
-        end
-
-        describe '#create_visualization_canvas' do
-          it 'is success' do
-            get_request
-            expect(response).to have_http_status(:success)
-          end
-
-          it 'renders template' do
-            get_request
-            expect(response).to render_template(:visualization_canvas)
-          end
-
-          it 'renders styleguide layout' do
-            get_request
-            expect(response).to render_template(:styleguide)
-          end
-
-          it 'assigns display_placeholder_edit_bar' do
-            get_request
-            expect(assigns[:display_placeholder_edit_bar]).to eq(true)
-          end
-        end
-
-        describe '#edit' do
-          it 'is success' do
-            edit_request
-            expect(response).to have_http_status(:success)
-          end
-
-          it 'renders template' do
-            edit_request
-            expect(response).to render_template(:visualization_canvas)
-          end
-
-          it 'renders styleguide layout' do
-            get_request
-            expect(response).to render_template(:styleguide)
-          end
-
-          it 'assigns site_chrome_admin_header_options' do
-            edit_request
-            expect(assigns[:site_chrome_admin_header_options]).to eq({size: 'small'})
-          end
-
-          it 'assigns body classes' do
-            edit_request
-            expect(assigns[:body_classes]).to eq('hide-site-chrome')
-          end
-
-          it 'assigns display_placeholder_edit_bar' do
-            edit_request
-            expect(assigns[:display_placeholder_edit_bar]).to eq(false)
-          end
-
-          context 'when not using canonical_url' do
-            let(:canonical_path) { 'the_canonical_path' }
-
-            before(:each) do
-              allow(subject).to receive(:using_canonical_url?).and_return(false)
-              allow(subject).to receive(:canonical_path).and_return(canonical_path)
-            end
-
-            it 'redirects' do
-              edit_request
-              expect(response).to redirect_to("#{canonical_path}/edit")
-            end
-          end
-        end
-      end
-
-      context 'when user is not logged in' do
-        before(:each) do
-          allow(subject).to receive(:current_user).and_return(nil)
-        end
-
+      describe '#create_visualization_canvas' do
         it 'is success' do
           get_request
           expect(response).to have_http_status(:success)
@@ -434,65 +338,116 @@ describe DatasetsController do
           get_request
           expect(response).to render_template(:visualization_canvas)
         end
-      end
 
-      context 'when view is not a dataset' do
-        before(:each) do
-          allow(subject).to receive(:get_view).and_return(derived_view)
-        end
-
-        it 'is not found' do
+        it 'renders styleguide layout' do
           get_request
-          expect(response).to have_http_status(:not_found)
-        end
-      end
-
-      context 'when id is OBE 4x4' do
-        before(:each) do
-          allow(view).to receive(:new_backend?).and_return(false)
+          expect(response).to render_template(:styleguide)
         end
 
-        describe '#create_visualization_canvas' do
-          it 'redirects' do
-            get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => obe_uid
-            expect(response).to have_http_status(:redirect)
-            expect(response).to redirect_to("http://test.host/d/#{nbe_uid}/visualization")
-          end
-
-          context 'when migration does not exist' do
-            before(:each) do
-              allow(view).to receive(:nbe_view).and_return(nil)
-            end
-
-            it 'is internal server error' do
-              get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
-              expect(response).to have_http_status(:internal_server_error)
-            end
-          end
-        end
-      end
-    end
-
-    context 'when feature flag is not enabled' do
-      before(:each) do
-        allow(subject).to receive(:visualization_canvas_enabled?).and_return(false)
-      end
-
-      describe '#create_visualization_canvas' do
-        it 'is not found' do
+        it 'assigns display_placeholder_edit_bar' do
           get_request
-          expect(response).to have_http_status(:not_found)
+          expect(assigns[:display_placeholder_edit_bar]).to eq(true)
         end
       end
 
       describe '#edit' do
-        it 'is not found' do
+        it 'is success' do
           edit_request
-          expect(response).to have_http_status(:not_found)
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'renders template' do
+          edit_request
+          expect(response).to render_template(:visualization_canvas)
+        end
+
+        it 'renders styleguide layout' do
+          get_request
+          expect(response).to render_template(:styleguide)
+        end
+
+        it 'assigns site_chrome_admin_header_options' do
+          edit_request
+          expect(assigns[:site_chrome_admin_header_options]).to eq({size: 'small'})
+        end
+
+        it 'assigns body classes' do
+          edit_request
+          expect(assigns[:body_classes]).to eq('hide-site-chrome')
+        end
+
+        it 'assigns display_placeholder_edit_bar' do
+          edit_request
+          expect(assigns[:display_placeholder_edit_bar]).to eq(false)
+        end
+
+        context 'when not using canonical_url' do
+          let(:canonical_path) { 'the_canonical_path' }
+
+          before(:each) do
+            allow(subject).to receive(:using_canonical_url?).and_return(false)
+            allow(subject).to receive(:canonical_path).and_return(canonical_path)
+          end
+
+          it 'redirects' do
+            edit_request
+            expect(response).to redirect_to("#{canonical_path}/edit")
+          end
         end
       end
     end
 
+    context 'when user is not logged in' do
+      before(:each) do
+        allow(subject).to receive(:current_user).and_return(nil)
+      end
+
+      it 'is success' do
+        get_request
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'renders template' do
+        get_request
+        expect(response).to render_template(:visualization_canvas)
+      end
+    end
+
+    context 'when view is not a dataset' do
+      before(:each) do
+        allow(subject).to receive(:get_view).and_return(derived_view)
+      end
+
+      it 'is not found' do
+        get_request
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'when id is OBE 4x4' do
+      before(:each) do
+        allow(view).to receive(:new_backend?).and_return(false)
+      end
+
+      describe '#create_visualization_canvas' do
+        it 'redirects' do
+          get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => obe_uid
+          expect(response).to have_http_status(:redirect)
+          expect(response).to redirect_to("http://test.host/d/#{nbe_uid}/visualization")
+        end
+
+        context 'when migration does not exist' do
+          before(:each) do
+            allow(view).to receive(:nbe_view).and_return(nil)
+          end
+
+          it 'is internal server error' do
+            get :create_visualization_canvas, :category => 'Personal', :view_name => 'Test-Data', :id => 'test-data'
+            expect(response).to have_http_status(:internal_server_error)
+          end
+        end
+      end
+    end
   end
 
   describe 'email dataset' do
@@ -594,7 +549,8 @@ describe DatasetsController do
           stub_user(subject)
           allow(subject).to receive(:get_view).and_return(view)
           get :edit_metadata, :category => view.category, :view_name => view.view, :id => view.id
-          expect(response.body).to match(%r(<label class="false" for="view_metadata_custom_fields_Common_Core_Described_By">Data Dictionary</label>))
+          expect(response.body).to include('view_metadata_custom_fields_Common_Core_Described_By')
+          expect(response.body).to include('Data Dictionary')
         end
       end
     end

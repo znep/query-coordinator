@@ -74,6 +74,7 @@
   .component-socrata-visualization-table,
   .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-pie-chart,
+  .component-socrata-visualization-viz-canvas,
   .component-story-tile,
   .component-story-widget,
   .component-goal-tile,
@@ -103,6 +104,7 @@
 .component-socrata-visualization-table,
 .component-socrata-visualization-timeline-chart,
 .component-socrata-visualization-pie-chart,
+.component-socrata-visualization-viz-canvas,
 .component-story-tile,
 .component-story-widget,
 .component-goal-tile,
@@ -222,6 +224,7 @@
   .component-socrata-visualization-map,
   .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-pie-chart,
+  .component-socrata-visualization-viz-canvas,
   .component-youtube-video {
     $small-height: $col4-block-edit-content-width-small * (4/5);
     $medium-height: $col4-block-edit-content-width-medium * (3/4);
@@ -258,6 +261,7 @@
     .component-socrata-visualization-map,
     .component-socrata-visualization-timeline-chart,
     .component-socrata-visualization-pie-chart,
+    .component-socrata-visualization-viz-canvas,
     .component-youtube-video {
       @include media-query-property(
         'height',
@@ -281,6 +285,7 @@
   .component-socrata-visualization-map,
   .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-pie-chart,
+  .component-socrata-visualization-viz-canvas,
   .component-youtube-video {
     @include media-query-property(
       'height',
@@ -320,6 +325,7 @@
   .component-socrata-visualization-map,
   .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-pie-chart,
+  .component-socrata-visualization-viz-canvas,
   .component-youtube-video {
     @include media-query-property(
       'height',
@@ -360,6 +366,7 @@
   .component-socrata-visualization-map,
   .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-pie-chart,
+  .component-socrata-visualization-viz-canvas,
   .component-youtube-video {
     @include media-query-property(
       'height',

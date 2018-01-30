@@ -20,3 +20,24 @@
     box-shadow: inset 0 0 16px -2px rgba(0,0,0,0.35);
   }
 }
+
+// Default styleguide button spinner is really tiny without this override
+.btn .spinner-default {
+  height: 2rem;
+  width: 2rem;
+  border-width: 3px;
+}
+
+// The only buttons this style should affect is in the settings panel for publication
+// hacking this in for now because we don't want to invest in the settings panel
+// since it is likely Going Away In The Near Future™ (SR 1/18/2018)
+.btn-legacy {
+  &.btn-busy {
+    padding-top: 0 !important;
+    padding-bottom: 7px !important;
+
+    > span {
+      font-size: 0;
+    }
+  }
+}

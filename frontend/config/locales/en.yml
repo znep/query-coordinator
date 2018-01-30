@@ -665,7 +665,7 @@ en:
       dataset_owner: Dataset Owner
       data_asset_owner: Data Asset Owner
       downloads: Downloads
-      edit_metadata: Edit Metadata
+      edit_metadata: Edit Dataset Metadata
       license: License
       licensing: Licensing and Attribution
       metadata_last_updated: Metadata Last Updated
@@ -1836,6 +1836,8 @@ en:
       map: Maps
       measure: Measures
     visibility:
+      pending_approval_html: <strong>Private</strong> and <strong>pending approval</strong>
+      awaiting_approval_html: <strong>Private</strong> and <strong>awaiting approval</strong>
       private: private
       public: public
   data_lens:
@@ -2174,7 +2176,7 @@ en:
       apply_update: Apply Update
       being_processed: Your data is being processed!
       being_processed_detail: It'll show here as soon as it is done. No need to wait around, we can let you know when it's ready.
-      column_metadata_manage_button: Manage Column Metadata
+      column_metadata_edit_button: Edit Column Metadata
       data: Choose Data Source
       data_blurb: Add a data file and enable visualizations and mapping.
       data_manage_button: Manage Data
@@ -3179,10 +3181,7 @@ en:
     exit_preview_mode: Exit Preview Mode
     measure:
       about_this_measure: About This Measure
-      as_of_today: as of today
-      as_of_last: as of last closed reporting period
       calculation_type: Calculation Type
-      dividing_by_zero: PLACEHOLDER - Division by zero
       edit_modal:
         accept: Accept
         cancel: Cancel
@@ -3301,11 +3300,6 @@ en:
       reporting_period: Reporting Period
     measure_visualization: Measure visualization
     metric: Metric
-    no_calculation: Metric calculation has not been configured
-    no_dataset: Dataset has not been connected
-    no_reporting_period: Reporting period has not been configured
-    no_visualization: Metric calculation not available
-    not_enough_data: Not enough data for current reporting period
     preview: Preview
     render_error: There was a problem rendering this page.
     save: Save
@@ -3420,6 +3414,8 @@ en:
         name: Publisher
       publisher_stories:
         name: Publisher (Perspectives)
+      site_member:
+        name: Site Member
       viewer:
         name: Viewer
     right_categories:
@@ -3832,6 +3828,7 @@ en:
               approval_changed: Approval Changed
               asset_created: Asset Created
               asset_deleted: Asset Deleted
+              asset_restored: Asset Restored
               asset_metadata_changed: Asset Metadata Changed
               asset_owner_changed: Asset Owner Changed
               asset_permissions_changed: Asset Permissions Changed
@@ -6211,6 +6208,7 @@ en:
           title: Permissions
           validation:
             valid_saved: This view must be valid and saved
+          withdraw_approval_request: Withdraw approval request
         print:
           margins:
             bottom: 'Bottom:'
@@ -6398,9 +6396,12 @@ en:
       brief_description: Brief Description
       brief_description_prompt: Enter a description
       cancel: Cancel
+      cancel_warning: Closing this modal will lose unsaved changes.
+      cancel_warning_2: Do you still want to close?
       category: Category
       contact_email: Contact Email
       contact_information: Contact Information
+      close: Close
       custom: Custom
       custom_error: Custom semantic class must be url.
       data_provided_by: Data Provided By

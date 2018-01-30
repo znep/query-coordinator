@@ -2,10 +2,10 @@ var karmaConfig = require('../helpers/karma_config');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
   'shared.config.js',
   [ 'karma/datasetLandingPage', 'karma/helpers' ],
-  [ 'datasetLandingPageMain', 'datasetLandingPageColocate' ]
+  [ 'datasetLandingPageMain', 'datasetLandingPageCollocate' ]
 );
 
-module.exports = function (karma) {
+module.exports = function(karma) {
   karma.set(karmaConfig({
     files: [
       'public/javascripts/jquery-2.2.4.js',

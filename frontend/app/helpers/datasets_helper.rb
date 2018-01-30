@@ -462,7 +462,7 @@ module DatasetsHelper
 
   def hide_redirect?
     return false if force_editable?
-    return true if FeatureFlags.derive(view, request).enable_asset_action_bar
+    return true if FeatureFlags.derive(view, request).enable_new_dataset_sharing_ux
 
     [
       !view.is_published?,
@@ -644,6 +644,8 @@ module DatasetsHelper
 
   def hide_permissions?
     [
+      # when this flag is on, sharing is done via the access manager modal
+      FeatureFlags.derive(nil, request).enable_new_dataset_sharing_ux,
       view.is_snapshotted?,
       !view.has_rights?(ViewRights::UPDATE_VIEW),
       view.geoParent.present?,

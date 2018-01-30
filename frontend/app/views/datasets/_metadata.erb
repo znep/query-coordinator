@@ -25,7 +25,9 @@
         -%>
           <%# For most labels, the I18n.t() call does nothing, but for the specific case of "described_by" %>
           <%# we translate that to "Data Dictionary" to make certain customers (cough USAID) less sad. %>
-          <%= label_tag(form_name, t("screens.edit_metadata.#{field.name.gsub(' ', '_').underscore}"), class: required && 'required') %>
+          <label class="<%= required && 'required'%>" for="<%= form_name %>">
+            <%= t("screens.edit_metadata.#{field.name.gsub(' ', '_').underscore}", default: field.name) %>
+          </label>
 
           <%- if type == 'fixed' -%>
             <%- options  = (['']+field['options']+[existing_value]).uniq

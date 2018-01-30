@@ -213,7 +213,7 @@ const handleCancelAddTeamMembersModal = state => ({
 
 const handleDeleteTeamSuccess = (state, { id }) => ({
   ...state,
-  teams: getTeamsList(state).filter(t => t.id === id)
+  teams: getTeamsList(state).filter(t => t.id !== id)
 });
 
 const reducer = (state = initialState, { type, payload }) => {

@@ -6,6 +6,7 @@ import { Link, browserHistory, withRouter } from 'react-router';
 import { createViewSource } from 'datasetManagementUI/reduxStuff/actions/createSource';
 import { getRevision } from 'datasetManagementUI/reduxStuff/actions/loadRevision';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';
+import SocrataIcon from 'common/components/SocrataIcon';
 import styles from 'datasetManagementUI/styles/SchemaPreview.module.scss';
 
 const mapStateToProps = ({ entities }, { params }) => ({
@@ -34,7 +35,8 @@ const mergeProps = (stateProps, { dispatch }, { params }) => {
     headerButton: (
       <Link className={styles.btnWrapper} onClick={clickHandler}>
         <button className={styles.schemaBtn} tabIndex="-1">
-          {I18n.home_pane.column_metadata_manage_button}
+          <SocrataIcon name="edit" isBtnIcon />
+          {I18n.home_pane.column_metadata_edit_button}
         </button>
       </Link>
     )

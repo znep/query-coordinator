@@ -134,7 +134,7 @@ describe DatasetsHelper do
 
       it 'disallows edit/create working copy when the asset action bar is enabled' do
         allow(FeatureFlags).to receive(:derive).and_return(
-            OpenStruct.new(:properties => OpenStruct.new(:enable_asset_action_bar => true))
+            OpenStruct.new(:properties => OpenStruct.new(:enable_new_dataset_sharing_ux => true))
         )
         expect(helper.hide_redirect?).to eq(true)
       end

@@ -26,7 +26,9 @@ export function getPointResizeByColumn() {
 }
 
 export function getPointOpacity() {
-  return _.get(this, 'configuration.pointOpacity', 1);
+// Point opacity in vif has a range of 0 to 100.
+// Converting it to 0-1 for using in the paint property
+  return _.get(this, 'configuration.pointOpacity', 100) / 100;
 }
 
 export function getClusterCircleRadius(resizeByRange, aggregateAndResizeBy) {
@@ -53,31 +55,26 @@ export function getPointCircleRadius(resizeByRange, aggregateAndResizeBy) {
   const maxRadius = _.get(this, 'series[0].mapOptions.maximumPointSize', 18) / 2;
   const dataClasses = _.get(this, 'series[0].mapOptions.numberOfDataClasses', 5);
 
-  const radiusStep = (maxRadius - minRadius) / dataClasses;
-  const resizeStep = (resizeByRange.max - resizeByRange.min) / dataClasses;
-
-  const radiusStops = _.range(minRadius, maxRadius, radiusStep);
-  const resizeStops = _.range(resizeByRange.min, resizeByRange.max, resizeStep);
-
-  return {
-    type: 'exponential',
-    property: aggregateAndResizeBy,
-    stops: _.zip(resizeStops, radiusStops),
-    'default': minRadius
-  };
+  return this.getResizeByRangeBuckets(aggregateAndResizeBy, resizeByRange,
+    minRadius, maxRadius, dataClasses, 'exponential');
 }
 
 // If 'colorByColumn' not configured
 //    returns the configured point color.
 // If 'colorByColumn' configured and categories present
-//    We set stops with one color for each category from the configured pallete.
-//    And set the next available color in the pallete as default
+//    We set stops with one color for each category from the configured palette.
+//    And set the next available color in the palette as default
 //    for the remaining categories.
 export function getPointColor(colorByColumnAlias, colorByCategories) {
-  const colorPalette = this.getColorPalette();
-
-  if (colorByCategories == null) {
+  if (_.isNull(colorByCategories)) {
     return _.get(this, 'series[0].color.primary', '#ff00ff');
+  }
+
+  // +1 for 'other' category
+  const colorPalette = this.getColorPalette(colorByCategories.length + 1);
+
+  if (_.isEmpty(colorByCategories)) {
+    return colorPalette[0];
   }
 
   const stops = _.map(colorByCategories, (colorByCategory, index) => [colorByCategory, colorPalette[index]]);

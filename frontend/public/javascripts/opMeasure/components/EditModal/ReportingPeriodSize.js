@@ -19,6 +19,7 @@ export class ReportingPeriodSize extends Component {
     const dropdownAttributes = {
       options,
       placeholder,
+      showOptionsBelowHandle: true,
       onSelection: onOptionSelected,
       disabled: collapsible
     };

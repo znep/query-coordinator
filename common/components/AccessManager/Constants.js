@@ -9,6 +9,12 @@ export const ACCESS_LEVELS = {
   VIEWER: 'viewer'
 };
 
+export const AUDIENCE_SCOPES = {
+  PRIVATE: 'private',
+  PUBLIC: 'public',
+  ORGANIZATION: 'organization'
+};
+
 export const CATALOG_SEARCH_DEBOUNCE_MILLISECONDS = 250;
 export const TOAST_NOTIFICATION_MILLISECONDS = 3000;
 

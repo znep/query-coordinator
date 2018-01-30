@@ -7,17 +7,16 @@ import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
 import { DatePicker } from 'common/components/DatePicker';
+import {
+  PeriodTypes,
+  PeriodSizes
+} from 'common/performance_measures/lib/constants';
 
 import {
   setStartDate,
   setPeriodType,
   setPeriodSize
 } from '../../actions/editor';
-
-import {
-  PeriodTypes,
-  PeriodSizes
-} from '../../lib/constants';
 
 import ReportingPeriodSize from './ReportingPeriodSize';
 

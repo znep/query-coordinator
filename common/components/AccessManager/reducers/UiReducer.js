@@ -1,6 +1,10 @@
 import I18n from 'common/i18n';
 
-import { confirmButtonDisabledByDefault } from 'common/components/AccessManager/Util';
+import {
+  confirmButtonDisabledByDefault,
+  confirmButtonBusyByDefault
+} from 'common/components/AccessManager/Util';
+import { AUDIENCE_SCOPES } from 'common/components/AccessManager/Constants';
 
 import * as uiActions from 'common/components/AccessManager/actions/UiActions';
 import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
@@ -12,7 +16,13 @@ const cancelButtonClicked = (state) => ({
 });
 
 // see the saga for the calls this action actually does
-const saveButtonClicked = state => ({ ...state, saveInProgress: true });
+const saveButtonClicked = state => ({
+  ...state,
+  footer: {
+    ...state.footer,
+    confirmButtonBusy: true
+  }
+});
 
 const setConfirmButtonDisabled = (state, action) => ({
   ...state,
@@ -35,7 +45,8 @@ const showAccessManager = (state, action) => {
 
     footer: {
       ...state.footer,
-      confirmButtonDisabled: confirmButtonDisabledByDefault(action.mode)
+      confirmButtonDisabled: confirmButtonDisabledByDefault(action.mode),
+      confirmButtonBusy: confirmButtonBusyByDefault(action.mode)
     }
   };
 };
@@ -56,7 +67,7 @@ const saveSuccess = (state) => {
   // else show a toast
   return {
     ...state,
-    saveInProgress: false,
+    confirmButtonBusy: false,
     visible: false,
 
     // see UiSagas for where this notification gets automatically dismissed
@@ -70,7 +81,7 @@ const saveFail = (state, action) => {
   console.error('Save failed', action.error);
   return {
     ...state,
-    saveInProgress: false,
+    confirmButtonBusy: false,
     errors: [...state.errors, action.error.message]
   };
 };
@@ -97,6 +108,33 @@ const redirectTo = (state, action) => {
   return state;
 };
 
+const showApprovalMessageChanged = (state, action) => ({
+  ...state,
+  showApprovalMessage: action.showApprovalMessage,
+  footer: {
+    ...state.footer,
+    confirmButtonDisabled: false,
+    confirmButtonBusy: false
+  }
+});
+
+const changeAudienceScope = (state, action) => {
+  const { scope } = action;
+
+  return {
+    ...state,
+    showApprovalMessage: false,
+    footer: {
+      ...state.footer,
+
+      // we disable the confirm button until we know if the asset will go
+      // through approvals or not (see UiSagas)
+      confirmButtonDisabled: scope === AUDIENCE_SCOPES.PUBLIC,
+      confirmButtonBusy: scope === AUDIENCE_SCOPES.PUBLIC
+    }
+  };
+};
+
 export default (state = {}, action) => {
   switch (action.type) {
     // uiActions
@@ -112,6 +150,8 @@ export default (state = {}, action) => {
       return redirectTo(state, action);
     case uiActions.SET_CONFIRM_BUTTON_DISABLED:
       return setConfirmButtonDisabled(state, action);
+    case uiActions.SHOW_APPROVAL_MESSAGE_CHANGED:
+      return showApprovalMessageChanged(state, action);
 
     // permissionsActions
     case permissionsActions.SAVE_SUCCESS:
@@ -120,6 +160,8 @@ export default (state = {}, action) => {
       return saveFail(state, action);
     case permissionsActions.FETCH_PERMISSIONS_FAIL:
       return fetchPermissionsFail(state, action);
+    case permissionsActions.CHANGE_AUDIENCE_SCOPE:
+      return changeAudienceScope(state, action);
 
     default:
       return state;

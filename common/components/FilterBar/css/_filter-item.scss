@@ -1,9 +1,8 @@
 $filter-z-index: 70000; // Needs to be higher than flyouts
-$max-filter-width: 130px;
+$max-filter-width: 155px;
 
 .filter-bar-filter {
   margin-right: 8px;
-  height: 31px;
   color: $dark-grey-2;
   display: inline-block;
   vertical-align: top;
@@ -18,6 +17,16 @@ $max-filter-width: 130px;
 
   form {
     margin: 0;
+  }
+
+  .filter-control-label {
+    display: block;
+    font-size: 11px;
+    height: 18px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: $max-filter-width;
   }
 
   .filter-controls {

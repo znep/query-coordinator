@@ -1,5 +1,10 @@
 import isEmail from 'validator/lib/isEmail';
-import { fetchJsonWithDefaulHeaders } from 'common/http';
+import { put } from 'redux-saga/effects';
+
+import { assetWillEnterApprovalsQueueOnPublish } from 'common/asset/utils';
+
+import * as uiActions from 'common/components/AccessManager/actions/UiActions';
+import { AUDIENCE_SCOPES } from 'common/components/AccessManager/Constants';
 
 import { DOMAIN_RIGHTS, MODES } from './Constants';
 import { fetchJsonWithDefaultHeaders } from '../../http';
@@ -143,7 +148,26 @@ export const shouldPublishOnSave = (mode) => mode === MODES.PUBLISH;
  * when the access manager opens up with the given mode
  * @param {string} mode Current mode of access manager
  */
-export const confirmButtonDisabledByDefault = (mode) => mode === MODES.CHANGE_OWNER;
+export const confirmButtonDisabledByDefault = (mode) =>
+  mode === MODES.CHANGE_OWNER ||
+
+  // if changing audience or publishing,
+  // a saga will check if the asset will go into approvals
+  // and then set the status of the button afterwards (see uiReducer/sagas)
+  mode === MODES.CHANGE_AUDIENCE ||
+  mode === MODES.PUBLISH;
+
+/**
+ * Whether or not the "Confirm" button in the footer should default to busy
+ * when the access manager comes up in the given mode
+ * @param {string} mode  Current mode of access manager
+ */
+export const confirmButtonBusyByDefault = (mode) =>
+  // if changing audience or publishing,
+  // a saga will check if the asset will go into approvals
+  // and then set the status of the button afterwards (see uiReducer/sagas)
+  mode === MODES.CHANGE_AUDIENCE ||
+  mode === MODES.PUBLISH;
 
 /**
  * Returns a promise of a fetch call with the given url and options,
@@ -158,3 +182,22 @@ export const fetchJsonWithDefaults = (url, options = {}) => fetchJsonWithDefault
     ...options
   }
 );
+
+/**
+ * Intended to be yield-ed in a saga; will end in a put with an action
+ * that will determine if the approval message should be shown
+ * @param {object} coreView View object
+ * @param {string} scope Scope view will have
+ */
+export function* checkWillEnterApprovalQueue(coreView, scope) {
+  // if the scope it changing to "Public" then we want to check if we should
+  // show the approval message
+  if (scope === AUDIENCE_SCOPES.PUBLIC) {
+    const showApprovalMessage =
+      yield assetWillEnterApprovalsQueueOnPublish({ coreView, assetWillBePublic: true });
+
+    yield put(uiActions.showApprovalMessageChanged(showApprovalMessage));
+  } else {
+    yield put(uiActions.showApprovalMessageChanged(false));
+  }
+}

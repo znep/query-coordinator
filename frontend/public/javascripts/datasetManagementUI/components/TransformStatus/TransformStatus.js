@@ -82,18 +82,25 @@ export class TransformStatus extends Component {
   }
 
   toggleMap(e) {
-    const sidebarWidth = 258;
-    const mapWidth = 500;
-    const left = e.target.getBoundingClientRect().left;
+    if (this.state.isMapShowing) {
+      this.setState({
+        isMapShowing: !this.state.isMapShowing,
+        mapPosition: 0
+      });
+    } else {
+      const sidebarWidth = 258;
+      const mapWidth = 500;
+      const left = e.target.getBoundingClientRect().left;
 
-    var posn = -250;
-    posn = Math.max(posn, sidebarWidth - left);
-    posn = Math.min(posn, window.innerWidth - mapWidth);
+      var posn = -250;
+      posn = Math.max(posn, sidebarWidth - left);
+      posn = Math.min(posn, window.innerWidth - mapWidth);
 
-    this.setState({
-      isMapShowing: !this.state.isMapShowing,
-      mapPosition: posn
-    });
+      this.setState({
+        isMapShowing: !this.state.isMapShowing,
+        mapPosition: posn
+      });
+    }
   }
 
 
@@ -212,7 +219,8 @@ export class TransformStatus extends Component {
             transform={transform}
             params={params}
             displayState={this.props.displayState}
-            left={this.state.mapPosition} />}
+            left={this.state.mapPosition}
+            onClose={this.toggleMap} />}
           {hasErrors ? (
             <Link
               className={classNames(styles.statusText, { [styles.transformStatusSelected]: inErrorMode })}

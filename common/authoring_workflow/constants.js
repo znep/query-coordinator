@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import I18n from 'common/i18n';
 
 let inputDebounceMs = 700;
@@ -269,6 +271,17 @@ export const COLOR_PALETTES = [
   }
 ];
 
+export const COLOR_PALETTES_FOR_MAPS = _.concat(COLOR_PALETTES, [
+  {
+    title: I18n.t('shared.visualizations.color_palettes.sequential1'),
+    value: 'sequential1'
+  },
+  {
+    title: I18n.t('shared.visualizations.color_palettes.sequential2'),
+    value: 'sequential2'
+  }
+]);
+
 export const COLOR_PALETTE_VALUES = {
   categorical: ['#a6cee3', '#5b9ec9', '#2d82af', '#7eba98', '#98d277', '#52af43', '#6f9e4c', '#dc9a88', '#f16666', '#e42022', '#f06c45', '#fdbb69', '#fe982c', '#f78620', '#d9a295', '#b294c7', '#7d54a6', '#9e8099', '#f0eb99', '#dbb466'],
   categorical2: ['#5b9ec9', '#98d277', '#f16666', '#fdbb69', '#b294c7', '#f0eb99', '#2d82af', '#52af43', '#dc9a88', '#fe982c', '#7d54a6', '#dbb466', '#a6cee3', '#6f9e4c', '#f06c45', '#9e8099', '#7eba98', '#e42022', '#d9a295', '#f78620'],
@@ -276,6 +289,71 @@ export const COLOR_PALETTE_VALUES = {
   alternate2: ['#66c2a5', '#9aaf8d', '#cf9c76', '#f68d67', '#cf948c', '#a89bb0', '#969dca', '#b596c7', '#d58ec4', '#dd95b2', '#c6b18b', '#afcc64', '#b7d84c', '#d6d83f', '#f6d832', '#f8d348', '#efcc6b', '#e6c58e', '#d5be9d', '#c4b8a8'],
   accent: ['#7fc97f', '#96bf9e', '#adb5bd', '#c4afcb', '#dbb6af', '#f3bd92', '#fdcd8a', '#fee491', '#fefb98', '#c0d0a0', '#769aa8', '#4166ad', '#853f9b', '#c91889', '#e8106e', '#d63048', '#c45121', '#a75d2b', '#866148', '#666666'],
   dark: ['#1b9e77', '#5d874e', '#a07125', '#d45f0a', '#b16548', '#8e6b86', '#8068ae', '#a850a0', '#d03792', '#d33b79', '#a66753', '#79932e', '#7fa718', '#aca80e', '#d9aa04', '#d69d08', '#bf8b12', '#a9781b', '#927132', '#7c6b4c']
+};
+
+export const SEQUENTIAL1_COLOR_BUCKETS = {
+  2: ['#e5f5f9', '#2ca25f'],
+  3: ['#e5f5f9', '#99d8c9', '#2ca25f'],
+  4: ['#edf8fb', '#b2e2e2', '#66c2a4', '#238b45'],
+  5: ['#edf8fb', '#b2e2e2', '#66c2a4', '#2ca25f', '#006d2c'],
+  6: ['#edf8fb', '#ccece6', '#99d8c9', '#66c2a4', '#2ca25f', '#006d2c'],
+  7: ['#edf8fb', '#ccece6', '#99d8c9', '#66c2a4', '#41ae76', '#238b45', '#005824'],
+  8: ['#f7fcfd', '#e5f5f9', '#ccece6', '#99d8c9', '#66c2a4', '#41ae76', '#238b45', '#005824']
+};
+
+export const SEQUENTIAL2_COLOR_BUCKETS = {
+  2: ['#fee8c8', '#e34a33'],
+  3: ['#fee8c8', '#fdbb84', '#e34a33'],
+  4: ['#fef0d9', '#fdcc8a', '#fc8d59', '#d7301f'],
+  5: ['#fef0d9', '#fdcc8a', '#fc8d59', '#e34a33', '#b30000'],
+  6: ['#fef0d9', '#fdd49e', '#fdbb84', '#fc8d59', '#e34a33', '#b30000'],
+  7: ['#fef0d9', '#fdd49e', '#fdbb84', '#fc8d59', '#ef6548', '#d7301f', '#990000'],
+  8: ['#fff7ec', '#fee8c8', '#fdd49e', '#fdbb84', '#fc8d59', '#ef6548', '#d7301f', '#990000']
+};
+
+export const COLOR_PALETTE_VALUES_FOR_MAPS = {
+  categorical: (count = 20) => {
+    return _.take(
+      COLOR_PALETTE_VALUES.categorical,
+       _.clamp(count, 1, COLOR_PALETTE_VALUES.categorical.length)
+      );
+  },
+  categorical2: (count = 20) => {
+    return _.take(
+      COLOR_PALETTE_VALUES.categorical2,
+      _.clamp(count, 1, COLOR_PALETTE_VALUES.categorical2.length)
+      );
+  },
+  alternate1: (count = 20) => {
+    return _.take(
+      COLOR_PALETTE_VALUES.alternate1,
+       _.clamp(count, 1, COLOR_PALETTE_VALUES.alternate1.length)
+       );
+  },
+  alternate2: (count = 20) => {
+    return _.take(
+      COLOR_PALETTE_VALUES.alternate2,
+       _.clamp(count, 1, COLOR_PALETTE_VALUES.alternate2.length)
+      );
+  },
+  accent: (count = 20) => {
+    return _.take(
+      COLOR_PALETTE_VALUES.accent,
+      _.clamp(count, 1, COLOR_PALETTE_VALUES.accent.length)
+      );
+  },
+  dark: (count = 20) => {
+    return _.take(
+      COLOR_PALETTE_VALUES.dark,
+      _.clamp(count, 1, COLOR_PALETTE_VALUES.dark.length)
+      );
+  },
+  sequential1: (count = 9) => {
+    return SEQUENTIAL1_COLOR_BUCKETS[_.clamp(count, 2, 8)];
+  },
+  sequential2: (count = 9) => {
+    return SEQUENTIAL2_COLOR_BUCKETS[_.clamp(count, 2, 8)];
+  }
 };
 
 export const COLORS = [

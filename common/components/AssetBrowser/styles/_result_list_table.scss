@@ -138,6 +138,7 @@ $result_list_row_bg_hover_color: $primary-light;
           }
 
           .visibility-description {
+            white-space: nowrap;
             color: $light-grey-1;
           }
         }

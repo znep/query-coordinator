@@ -1,0 +1,27 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+.transform-status-flyout {
+  font-size: 13px;
+  line-height: 20px;
+  white-space: normal;
+  color: $dark-grey-2;
+  max-width: 190px;
+  text-align: left;
+
+  .click-to-view {
+    font-size: 10px;
+    color: $grey;
+  }
+
+  .type-icon {
+    padding-left: 4px;
+    font-size: 15px;
+    vertical-align: text-top;
+  }
+
+  .flyout-content {
+    padding: 0.9rem;
+  }
+}
+

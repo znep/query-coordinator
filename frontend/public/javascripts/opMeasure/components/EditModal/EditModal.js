@@ -7,9 +7,9 @@ import { connect } from 'react-redux';
 
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import I18n from 'common/i18n';
+import { EditTabs } from 'common/performance_measures/lib/constants';
 
 import { cancelEditModal, acceptEditModalChanges, setActivePanel } from '../../actions/editor';
-import { EditTabs } from '../../lib/constants';
 import EditModalTab from './EditModalTab';
 import EditModalPanel from './EditModalPanel';
 import GeneralPanel from './GeneralPanel';
@@ -149,25 +149,25 @@ EditModal.defaultProps = {
     icon: 'info-inverse',
     panelComponent: GeneralPanel
   }, {
-    id: EditTabs.DATA_SOURCE,
-    title: I18n.t('open_performance.measure.edit_modal.data_source.tab_title'),
-    icon: 'data',
-    panelComponent: DataPanel
-  }, {
     id: EditTabs.METHODS_AND_ANALYSIS,
     title: I18n.t('open_performance.measure.edit_modal.methods_and_analysis.tab_title'),
     icon: 'story',
     panelComponent: MethodsPanel
   }, {
-    id: EditTabs.CALCULATION,
-    title: I18n.t('open_performance.measure.edit_modal.calculation.tab_title'),
-    icon: 'puzzle',
-    panelComponent: CalculationPanel
+    id: EditTabs.DATA_SOURCE,
+    title: I18n.t('open_performance.measure.edit_modal.data_source.tab_title'),
+    icon: 'data',
+    panelComponent: DataPanel
   }, {
     id: EditTabs.REPORTING_PERIOD,
     title: I18n.t('open_performance.measure.edit_modal.reporting_period.tab_title'),
     icon: 'date',
     panelComponent: ReportingPeriodPanel
+  }, {
+    id: EditTabs.CALCULATION,
+    title: I18n.t('open_performance.measure.edit_modal.calculation.tab_title'),
+    icon: 'puzzle',
+    panelComponent: CalculationPanel
   }],
   onCancel: _.noop,
   onComplete: _.noop

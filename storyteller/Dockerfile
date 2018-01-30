@@ -1,4 +1,4 @@
-FROM socrata/runit-ruby-2.3
+FROM socrata/runit-ruby-2.3.5
 MAINTAINER Socrata <sysadmin@socrata.com>
 
 ENV TIMECMD="/usr/bin/time -p"
@@ -17,8 +17,8 @@ ENV PLATFORM_UI_DIR=/opt/socrata/platform-ui \
 # Install additional packages for building our gems
 RUN DEBIAN_FRONTEND=noninteractive && \
   apt-get update -q && \
-  apt-get install -y time ruby2.3-dev build-essential libxml2-dev \
-    zlib1g-dev libxslt1-dev libpq-dev nodejs npm git imagemagick && \
+  apt-get install -y time zlib1g-dev libxslt1-dev \
+    libpq-dev nodejs npm git imagemagick && \
   apt-get purge -y --auto-remove software-properties-common && \
   rm -rf /var/lib/apt/lists/*
 

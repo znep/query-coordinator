@@ -5,6 +5,7 @@ import { Link, withRouter } from 'react-router';
 import * as Links from 'datasetManagementUI/links/links';
 import * as Selectors from 'datasetManagementUI/selectors';
 import CommonSchemaPreview from '../../common/components/SchemaPreview';
+import SocrataIcon from 'common/components/SocrataIcon';
 import styles from 'datasetManagementUI/styles/SchemaPreview.module.scss';
 
 const calcColumns = (entities, os) => {
@@ -28,7 +29,8 @@ const makeHeaderButton = (params, os) => {
     return (
       <Link className={styles.btnWrapper} to={Links.columnMetadataForm(params, os.id)}>
         <button className={styles.schemaBtn} tabIndex="-1">
-          {I18n.home_pane.column_metadata_manage_button}
+          <SocrataIcon name="edit" isBtnIcon />
+          {I18n.home_pane.column_metadata_edit_button}
         </button>
       </Link>
     );

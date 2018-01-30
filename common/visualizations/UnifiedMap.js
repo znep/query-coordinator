@@ -44,7 +44,7 @@ const attachEvents = function($element, unifiedMapInstance) {
   // $element.on('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
   // $element.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
   // $element.on('SOCRATA_VISUALIZATION_FEATURE_MAP_CENTER_AND_ZOOM_CHANGE', handleMapCenterAndZoomChange);
-  // $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+  $element.on('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', unifiedMapInstance.invalidateSize);
   $element.on('SOCRATA_VISUALIZATION_RENDER_VIF', unifiedMapInstance.onUpdateEvent);
 };
 
@@ -54,7 +54,7 @@ const detachEvents = function($element, unifiedMapInstance) {
   // $element.off('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
   // $element.off('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
   // $element.off('SOCRATA_VISUALIZATION_FEATURE_MAP_CENTER_AND_ZOOM_CHANGE', handleMapCenterAndZoomChange);
-  // $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', visualization.invalidateSize);
+  $element.off('SOCRATA_VISUALIZATION_INVALIDATE_SIZE', unifiedMapInstance.invalidateSize);
   $element.off('SOCRATA_VISUALIZATION_RENDER_VIF', unifiedMapInstance.onUpdateEvent);
 };
 

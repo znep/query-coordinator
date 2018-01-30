@@ -529,8 +529,7 @@ module.exports = function(options) {
             '<div id="convert-column-data-type-status-' + columnId + '" class="convert-column-data-type-status">' +
               '<span class="spinner"></span>' +
               '<span class="convert-column-data-type-status-text"></span>' +
-            '</div>' +
-          '</div>'
+            '</div>'
           );
         }
 

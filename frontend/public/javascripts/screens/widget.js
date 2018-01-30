@@ -648,7 +648,7 @@ $(function() {
   $.templates.downloadsTable.postRender($('.widgetContent_downloads'));
 
   // This is duplicated from controls/panes/download-dataset.js
-  if (blist.dataset.isGeoDataset()) {
+  if (GeoHelpers.isGeoDataset(blist.dataset)) {
     $('.widgetContent_downloads').addClass('geoDataset');
 
     blist.dataset.getChildOptionsForType('table', function(views) {

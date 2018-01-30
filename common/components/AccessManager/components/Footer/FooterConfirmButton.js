@@ -24,14 +24,16 @@ class FooterConfirmButton extends Component {
     confirmButtonBusy: PropTypes.bool,
     confirmButtonText: PropTypes.string,
     mode: ModePropType,
-    selectedOwner: UserPropType
+    selectedOwner: UserPropType,
+    showApprovalMessage: PropTypes.bool
   }
 
   static defaultProps = {
     confirmButtonText: I18n.t('shared.site_chrome.access_manager.save'),
     confirmButtonDisabled: false,
     confirmButtonBusy: false,
-    selectedOwner: null
+    selectedOwner: null,
+    showApprovalMessage: false
   }
 
   onClick = () => {
@@ -57,9 +59,18 @@ class FooterConfirmButton extends Component {
   }
 
   getText = () => {
-    const { mode } = this.props;
+    const { mode, showApprovalMessage } = this.props;
 
     if (mode) {
+      // if the approval message is being shown, and we're in a mode that
+      // cares about scope, show a message about approval instead
+      if (
+        showApprovalMessage &&
+        (mode === MODES.PUBLISH || mode === MODES.CHANGE_AUDIENCE)
+      ) {
+        return I18n.t('shared.site_chrome.access_manager.submit_for_approval');
+      }
+
       switch (mode) {
         case MODES.PUBLISH:
           return I18n.t('shared.site_chrome.access_manager.publish_button');
@@ -97,11 +108,12 @@ class FooterConfirmButton extends Component {
 
 const mapStateToProps = state => ({
   mode: state.ui.mode,
-  confirmButtonBusy: state.ui.saveInProgress,
+  confirmButtonBusy: state.ui.footer.confirmButtonBusy,
   confirmButtonText: state.ui.footer.confirmButtonText,
   confirmButtonDisabled: state.ui.footer.confirmButtonDisabled,
   showCancelButton: state.ui.footer.showCancelButton,
-  selectedOwner: state.changeOwner.selectedOwner ? state.changeOwner.selectedOwner[0] : null
+  selectedOwner: state.changeOwner.selectedOwner ? state.changeOwner.selectedOwner[0] : null,
+  showApprovalMessage: state.ui.showApprovalMessage
 });
 
 const mapDispatchToProps = dispatch => ({

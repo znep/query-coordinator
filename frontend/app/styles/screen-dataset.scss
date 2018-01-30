@@ -424,7 +424,7 @@ body.grid-view-2017-refresh {
       padding-left: 0;
     }
   }
-  
+
   .emailDatasetDialog .textWrapper {
     box-sizing: border-box;
   }
@@ -583,6 +583,13 @@ body.grid-view-2017-refresh {
         }
       }
 
+      // EN-21601: temporary approval message until AssetActionBar is rolled out
+      #derived-view-approval-message {
+        display: none; // displayed in `grid_view_socrata_visualizations/main.js`
+        padding: 0.5rem 0;
+        font-weight: 100;
+      }
+
       .snapshotted {
         font-size: 13px;
         font-weight: 400;
@@ -637,7 +644,7 @@ body.grid-view-2017-refresh {
       }
 
       #publishedLink {
-        display: block;
+        display: inline-block;
         margin: 0 0 15px 0;
         color: #2279a6;
         font-size: 15px;

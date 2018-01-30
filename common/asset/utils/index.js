@@ -1,14 +1,19 @@
 import _ from 'lodash';
+import { FeatureFlags } from 'common/feature_flags';
 import * as helpers from './helpers';
 
 // EN-21106: Returns Promise of whether the given asset will enter the approvals queue when it is published.
 // TODO: ideally this logic would just be done within Core and included in the asset's coreView.
 export const assetWillEnterApprovalsQueueOnPublish = ({ coreView, assetWillBePublic }) => {
-  const getResult = (assetIsAutoApproved) => (
+  if (!FeatureFlags.value('use_fontana_approvals')) {
+    return false;
+  }
+
+  const getResult = (assetIsAutoApproved) => !!(
     !assetIsAutoApproved &&
     helpers.currentUserHasRights() &&
     (helpers.assetIsPublic(coreView) || assetWillBePublic) &&
-    helpers.manualApprovalRequiredForView(coreView)
+    helpers.manualApprovalRequiredForProvenanceType(coreView)
   );
 
   if (coreView.publishedViewUid) {

@@ -32,13 +32,13 @@ describe('<InternalAssetManager />', () => {
 
   beforeEach(() => {
     useTestTranslations(sharedTranslations.en);
-    window.serverConfig = { approvalSettings: { official: 'automatic', community: 'manual' } };
+    window.socrata.approvals = { settings: { official: 'automatic', community: 'manual' } };
     FeatureFlags.useTestFixture(mockFeatureFlags);
     ceteraStub = sinon.stub(window, 'fetch').resolves(mockCeteraFetchResponse);
   });
 
   afterEach(() => {
-    delete window.serverConfig;
+    delete window.socrata.approvals;
     ceteraStub.restore();
   });
 

@@ -176,6 +176,15 @@
       });
     },
 
+    isPendingPublic: function() {
+      var ds = this;
+      return _.any(this.pendingGrants || [], function(grant) {
+        return _.include(grant.flags || [], 'public') &&
+          ((ds.type == 'form' && grant.type == 'contributor') ||
+            ds.type != 'form');
+      });
+    },
+
     isAnonymous: function(isAnon) {
       if (!$.isBlank(isAnon)) {
         this._isAnon = isAnon;

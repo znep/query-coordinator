@@ -5506,6 +5506,7 @@ en:
         line_2: It is possible to change column types later, but it is a process that takes some time, so it's best to set it all properly up front.
     ds:
       bar:
+        approval_message: Publishing to the public requires approval
         api_unsavable: API views cannot be modified
         based_on_html: Based on <a class="revertLink currentViewName" href="#revert">%{name}</a>
         based_on_layer_html: A layer from the geospatial dataset <a href="%{href}" class="parentName">%{name}</a>

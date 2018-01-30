@@ -73,6 +73,9 @@
       <%- end -%>
     </div>
 
+    <%# EN-21601: Hidden by default. Conditionally shown in grid_view_socrata_visualizations/main.js %>
+    <div id="derived-view-approval-message"><%= t('screens.ds.bar.approval_message') %></div>
+
     <%- if !@view.is_published? -%>
       <%- unless render_asset_action_bar? %>
         <a id="publishedLink"><%= t('screens.ds.bar.view_published_html') %></a>

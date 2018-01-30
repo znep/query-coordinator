@@ -81,7 +81,13 @@ function renderDateInputLine(column, value) {
         '-utc-offset" class="value utc-offset" type="text" />'
     );
   } else {
-    valueAsISOString = new Date(value).toISOString();
+    // EN-21844 - Row Editor adds local timezone offset to UTC Date
+    //
+    // Note the ` + 'Z'`, which causes the date object's constructor
+    // to treat the string as a UTC date. This is what we want for the
+    // 'calendar_date' type, which stores values in ISO-8601 format but
+    // lacking the 'Z' that would make it explicitly in UTC.
+    valueAsISOString = new Date(value + 'Z').toISOString();
   }
 
   var $inputLine = $(

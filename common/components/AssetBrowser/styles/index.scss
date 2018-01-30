@@ -54,7 +54,7 @@ body {
 
   .header {
     margin: 0 $horizontal_margin;
-    min-height: 7.5rem;
+    min-height: 5.5rem;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -94,7 +94,6 @@ body {
     }
 
     .asset-tabs {
-      margin-top: 5.5rem;
 
       a.asset-tab {
         color: $light-grey-2;
@@ -169,14 +168,6 @@ body {
 
     .catalog-results .socrata-icon-search {
       top: -3px !important;
-    }
-  }
-}
-
-#profile {
-  .asset-browser {
-    .asset-tabs {
-      margin-top: 0;
     }
   }
 }

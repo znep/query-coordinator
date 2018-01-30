@@ -1,11 +1,11 @@
-class InternalAssetManagerController < ApplicationController
+class Administration::InternalAssetManagerController < ApplicationController
 
   include ApplicationHelper
   include AssetBrowserHelper
 
   before_filter :require_roled_user
 
-  layout 'styleguide'
+  layout 'administration'
 
   def disable_site_chrome?
     true

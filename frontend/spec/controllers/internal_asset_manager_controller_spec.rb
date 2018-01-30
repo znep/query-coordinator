@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe InternalAssetManagerController do
+describe Administration::InternalAssetManagerController do
   include TestHelperMethods
 
   describe 'show' do

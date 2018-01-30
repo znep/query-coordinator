@@ -67,7 +67,9 @@ function getOutput(identifier) {
     publicPath: isProduction ? '/javascripts/build/' + identifier + '/' : '/javascripts/webpack/',
     // jsonpFunction namespace is needed in conjunction with use of CommonsChunkPlugin since the plugin
     // registers and uses a global function window.webpackJsonp. The namespace here will ensure that
-    // multiple instances of webpack can play happily together on the same page
+    // multiple instances of webpack can play happily together on the same page.
+    // If you see an error about socrataFrontendWebpackJsonp being undefined, you probably need to:
+    // <%= include_webpack_bundle 'shared/common' %> in your view/layout.
     jsonpFunction: 'socrataFrontendWebpackJsonp'
   };
 }

@@ -291,6 +291,32 @@ class CreateAlertModal extends Component {
         isLoading={isLoading} />
     );
   }
+  
+  renderAdvanceTabContent() {
+
+    const { rawSoqlQuery } = this.state;
+    const alertTitle = I18n.t('alert_title', { scope: 'shared.components.create_alert_modal.advanced_search' });
+    const description = I18n.t('description', { scope: 'shared.components.create_alert_modal.advanced_search' });
+
+    return (
+      <div styleName="advance-alert-section">
+        {this.renderAlertInfo()}
+        <div styleName="advance-alert-content">
+          <div styleName="advance-alert-title">{alertTitle}</div>
+          <div styleName="advance-alert-description">{description}</div>
+        </div>
+
+        <div>
+          <label styleName="raw-query-title">
+            {I18n.t('text_box_description', { scope: 'shared.components.create_alert_modal.advanced_search' })}
+          </label>
+          <textarea
+            value={rawSoqlQuery}
+            onChange={this.onRawSoqlQueryChange} />
+        </div>
+      </div>
+    );
+  }
 
   renderModalFooter() {
     const { editMode } = this.props;

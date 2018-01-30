@@ -422,14 +422,14 @@ en:
       create_alert:
         title: Create Alert
       create_alert_modal:
+        advanced_search:
+          alert_title: Create your own alert
+          description: Please enter your SoQL statement. An alert will be sent when the dataset is updated and the SoQL statement returns one or more rows.
+          text_box_description: Enter your SoQL statement      
         alert_name_label: Name
         alert_name_placeholder: Name this Alert
         edit_mode_title: Manage Alerts
         title: Create Alert for this Dataset
-        advance_search:
-          alert_title: Create your own alert
-          description: SoQL. An alert will be sent each time the dataset is updated and the parameters are met
-          text_box_description: Enter your SOQL
         delete_view:
           description: Once an alert is deleted, it cannot be recovered.
           title: Are you sure you want to delete your alert?

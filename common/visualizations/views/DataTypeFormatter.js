@@ -258,6 +258,9 @@ function renderCellHTML(cellContent, column, domain, datasetUid) {
 
       // TODO: Remove these types once we no longer support OBE datasets
       // OBE types that are deprecated post-NBE migration:
+      case 'stars':
+        cellHTML = renderNumberCellHTML(cellContent, column);
+        break;
       case 'date':
         cellHTML = renderTimestampCellHTML(cellContent, column);
         break;
@@ -827,7 +830,7 @@ function getCellAlignment(column) {
     case 'number':
     case 'money':
     case 'percent':
-    case 'star':
+    case 'stars':
       return 'right';
 
     case 'checkbox':

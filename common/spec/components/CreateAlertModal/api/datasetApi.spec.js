@@ -293,6 +293,13 @@ describe('datasetApi', () => {
           geoSearchStub.restore();
         });
       });
+
+      it('should retrun empty array if access token is undefined', () => {
+        return datasetApi.geoSearch('test', null).then((res) => {
+          assert.deepEqual(res, []);
+          geoSearchStub.restore();
+        });
+      });
     });
 
     describe('unsuccessful response', () => {
@@ -322,5 +329,4 @@ describe('datasetApi', () => {
       });
     });
   });
-
 });

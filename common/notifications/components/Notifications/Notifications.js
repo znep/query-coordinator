@@ -317,14 +317,14 @@ class Notifications extends Component {
 
     if (showNotificationPanel) {
       const {
-        showProductNotifications,
-        showUserNotifications,
-        currentUserRole,
-        isSuperAdmin,
         currentDomainFeatures,
-        showMyAlertPreference,
+        currentUserRole,
         inProductTransientNotificationsEnabled,
-        mapboxAccessToken
+        isSuperAdmin,
+        mapboxAccessToken,
+        showMyAlertPreference,
+        showProductNotifications,
+        showUserNotifications
       } = this.props.options;
       const {
         areNotificationsLoading,

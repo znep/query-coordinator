@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { mount } from 'enzyme';
 import React, { Component } from 'react';
 import TestUtils from 'react-dom/test-utils';
@@ -31,8 +32,7 @@ describe('Tabs', () => {
   });
 
   it('should hide non active tab in edit mode', () => {
-    const spy = sinon.spy();
-    const props = { editMode: true, selectedTab: 'customAlert', onTabChange: spy };
+    const props = { editMode: true, selectedTab: 'customAlert', onTabChange: _.noop };
     const element = mount(<Tabs {...props} />);
     const liTabs = element.find('li');
 

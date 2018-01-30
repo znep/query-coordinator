@@ -36,9 +36,10 @@ describe('AdvancedAlertFooter', () => {
     it('should call onSave props function on click', () => {
       const spy = sinon.spy();
       const props = {
-        onSave: spy,
-        enableSaveButton: true,
         alertName: 'test',
+        enableSaveButton: true,
+        onAlertNameChange: spy,
+        onSave: spy,
         onValidate: spy
       };
       const element = mount(<AdvancedAlertFooter {...props} />);

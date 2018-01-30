@@ -43,12 +43,12 @@ _.each(NUMBER_COLUMN_TYPES, function(columnType) {
   aggregateOptionsHash[columnType] = numberOptions;
 });
 
-_.each(LOCATION_COLUMN_TYPES, function(locationType) {
-  aggregateOptionsHash[locationType] = locationOptions;
+_.each(LOCATION_COLUMN_TYPES, function(columnType) {
+  aggregateOptionsHash[columnType] = locationOptions;
 });
 
-_.each(DATE_COLUMN_TYPES, function(locationType) {
-  aggregateOptionsHash[locationType] = dateOptions;
+_.each(DATE_COLUMN_TYPES, function(columnType) {
+  aggregateOptionsHash[columnType] = dateOptions;
 });
 
 export const aggregateOptions = (selectedDatasetColumn) => {

@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 
 import I18n from 'common/i18n';
 
+import SocrataIcon from 'common/components/SocrataIcon';
 import styles from './index.module.scss';
 
 /**
@@ -27,7 +28,7 @@ class AlertInfo extends Component {
     } else if (isInvalidQuery) {
       return (
         <div styleName="alert-info error-info" className="invalid-query">
-          <span styleName="info-icon" className="socrata-icon-close" />
+          <SocrataIcon name="close" styleName="info-icon" />
           {I18n.t('invalid_query', { scope: this.translationScope })}
         </div>
       );
@@ -35,7 +36,7 @@ class AlertInfo extends Component {
 
     return (
       <div styleName="alert-info success-info" className="valid-query">
-        <span styleName="info-icon" className="socrata-icon-check" />
+        <SocrataIcon name="check" styleName="info-icon" />
         {I18n.t('valid_query', { scope: this.translationScope })}
       </div>
     );

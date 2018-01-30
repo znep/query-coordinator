@@ -9,14 +9,14 @@ import InputDropDown from 'common/components/CreateAlertModal/components/InputDr
 
 describe('DatasetColumnValueTypeahead', () => {
   let onSelectSpy;
-  let getColumnValuesPromise;
-  let getTopValuesByColumnPromise;
+  let stubMatchingColumnValuesPromise;
+  let stubTopValuesByColumnPromise;
 
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       column: 'test',
       haveNbeView: false,
-      typeheadWaitTime: 0,
+      typeaheadWaitTime: 0,
       viewId: 'test',
       onSelect: onSelectSpy
     });
@@ -24,15 +24,15 @@ describe('DatasetColumnValueTypeahead', () => {
 
   beforeEach(() => {
     onSelectSpy = sinon.spy();
-    getColumnValuesPromise = sinon.stub(datasetApi, 'getMatchingColumnValues')
+    stubMatchingColumnValuesPromise = sinon.stub(datasetApi, 'getMatchingColumnValues')
       .returns(Promise.resolve([]));
-    getTopValuesByColumnPromise = sinon.stub(datasetApi, 'getTopValuesByColumn')
+    stubTopValuesByColumnPromise = sinon.stub(datasetApi, 'getTopValuesByColumn')
       .returns(Promise.resolve([]));
   });
 
   afterEach(() => {
-    getColumnValuesPromise.restore();
-    getTopValuesByColumnPromise.restore();
+    stubMatchingColumnValuesPromise.restore();
+    stubTopValuesByColumnPromise.restore();
   });
 
   it('renders an element', () => {
@@ -63,14 +63,14 @@ describe('DatasetColumnValueTypeahead', () => {
     const props = getProps({ haveNbeView: false });
     const element = mount(<DatasetColumnValueTypeahead {...props } />);
 
-    sinon.assert.calledOnce(getTopValuesByColumnPromise);
+    sinon.assert.calledOnce(stubTopValuesByColumnPromise);
   });
 
   it('on load it should not call getTopValuesByColumn query if dataset is NBE', () => {
     const props = getProps({ haveNbeView: true });
     const element = mount(<DatasetColumnValueTypeahead {...props } />);
 
-    sinon.assert.notCalled(getTopValuesByColumnPromise);
+    sinon.assert.notCalled(stubTopValuesByColumnPromise);
   });
 
   it('on input change it should call getColumnValues query if dataset is NBE', (done) => {
@@ -81,7 +81,7 @@ describe('DatasetColumnValueTypeahead', () => {
     inputDropDown.props().onInputChange('abc');
 
     setTimeout(function() {
-      sinon.assert.calledOnce(getColumnValuesPromise);
+      sinon.assert.calledOnce(stubMatchingColumnValuesPromise);
       done();
     }, 0);
   });
@@ -94,6 +94,6 @@ describe('DatasetColumnValueTypeahead', () => {
 
     inputDropDown.props().onInputChange('abc');
 
-    sinon.assert.notCalled(getColumnValuesPromise);
+    sinon.assert.notCalled(stubMatchingColumnValuesPromise);
   });
 });

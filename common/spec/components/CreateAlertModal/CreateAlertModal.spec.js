@@ -9,18 +9,18 @@ import DeleteAlert from 'common/components/CreateAlertModal/DeleteAlert';
 import datasetApi from 'common/components/CreateAlertModal/api/datasetApi';
 import Tabs from 'common/components/CreateAlertModal/components/Tabs';
 
-
 describe('CreateAlertModal', () => {
   let getColumnsPromise;
   let getMigrationPromise;
-  window.serverConfig.mapboxAccessToken = 'Mapbox-Access-Token';
 
   beforeEach(() => {
+    window.serverConfig.mapboxAccessToken = 'Mapbox-Access-Token';
     getColumnsPromise = sinon.stub(datasetApi, 'getColumns').returns(Promise.resolve({ status: 200 }));
     getMigrationPromise = sinon.stub(datasetApi, 'getMigration').returns(Promise.resolve({ status: 200 }));
   });
 
   afterEach(() => {
+    window.serverConfig.mapboxAccessToken = null;
     getColumnsPromise.restore();
     getMigrationPromise.restore();
   });

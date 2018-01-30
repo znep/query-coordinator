@@ -44,7 +44,7 @@ class GeocoderTypeahead extends Component {
     }).catch(() => {
       this.setState({ isDataLoading: false });
     });
-  }, this.props.typeheadWaitTime, { leading: false, trailing: true });
+  }, this.props.typeaheadWaitTime, { leading: false, trailing: true });
 
   translationsScope = 'shared.components.create_alert_modal.custom_alert';
 
@@ -69,7 +69,7 @@ class GeocoderTypeahead extends Component {
 }
 
 GeocoderTypeahead.defaultProps = {
-  typeheadWaitTime: 400,
+  typeaheadWaitTime: 400,
   value: ''
 };
 
@@ -88,7 +88,7 @@ GeocoderTypeahead.propTypes = {
   //     Object:{
   //       title: 'United Sta'
   //      }
-  typeheadWaitTime: PropTypes.number,
+  typeaheadWaitTime: PropTypes.number,
   value: PropTypes.string
 };
 

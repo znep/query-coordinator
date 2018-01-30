@@ -156,7 +156,7 @@ describe('CreateAlertApi', () => {
             assert.equal(error.toString(), 'Error');
             validateCustomAlertApiStub.restore();
           }
-          );
+        );
       });
     });
   });
@@ -210,7 +210,7 @@ describe('CreateAlertApi', () => {
     });
   });
 
-  describe('CreateAlertApi.delete', () => {
+  describe('CreateAlertApi.deleteAlert', () => {
     describe('successful response', () => {
       const mockResponse = new Response(JSON.stringify({}), { status: 200 });
 
@@ -223,7 +223,7 @@ describe('CreateAlertApi', () => {
       });
 
       it('should hit alert create url as post method', () => {
-        CreateAlertApi.delete('1');
+        CreateAlertApi.deleteAlert('1');
 
         const request = window.fetch.args[0][1];
         assert.equal(request.method, 'DELETE');
@@ -246,7 +246,7 @@ describe('CreateAlertApi', () => {
       });
 
       it('throws a connection error', () => {
-        return CreateAlertApi.delete('1').then(
+        return CreateAlertApi.deleteAlert('1').then(
           () => {
             throw new Error('Unexpected resolution');
           },

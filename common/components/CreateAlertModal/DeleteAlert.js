@@ -15,50 +15,44 @@ import styles from './index.module.scss';
    'cancel' :  will cancel the delelte operation
 */
 class DeleteAlert extends Component {
-  constructor() {
-    super();
 
-    _.bindAll(this,
-      'deleteAlert'
-    );
-  }
-
-  deleteAlert() {
+  onDeleteAlertClick = () => {
     const { alert, onDeleteSuccess } = this.props;
-
-    CreateAlertApi.delete(alert.id).then((response) => {
+    CreateAlertApi.deleteAlert(alert.id).then((response) => {
       onDeleteSuccess();
     }).catch((error) => {
       console.log(error);
     });
-  }
+  };
+
+  translationScope = 'shared.components.create_alert_modal.delete_view';
 
   render() {
     const { onCancel } = this.props;
-    const translationScope = 'shared.components.create_alert_modal.delete_view';
+
     return (
       <div styleName="delete-view" className="delete-page">
         <hr />
         <div styleName="title">
           <h4>
-            {I18n.t('title', { scope: translationScope })}
+            {I18n.t('title', { scope: this.translationScope })}
           </h4>
         </div>
         <div>
-            {I18n.t('description', { scope: translationScope })}
+          {I18n.t('description', { scope: this.translationScope })}
         </div>
         <div styleName="delete-options">
           <button
             styleName="btn btn-yes"
             className="yes-button"
-            onClick={this.deleteAlert}>
-            {I18n.t('button.delete', { scope: translationScope })}
+            onClick={this.onDeleteAlertClick}>
+            {I18n.t('button.delete', { scope: this.translationScope })}
           </button>
           <button
             styleName="btn btn-no"
             className="cancel-button"
             onClick={onCancel}>
-            {I18n.t('button.cancel', { scope: translationScope })}
+            {I18n.t('button.cancel', { scope: this.translationScope })}
           </button>
         </div>
       </div>

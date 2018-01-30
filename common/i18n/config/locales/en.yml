@@ -441,11 +441,11 @@ en:
           alert_type_description: Set parameters for the condition you need to be alerted when new rows are created in the dataset.
           alert_param_page_description: Set parameters for the condition you need to be alerted when new rows are created in the dataset. An alert will be sent each time the parameters are met.
           radius_text: Mile Radius
-          rolling_title: Rolling
           rolling_description: Rolling queries will execute every time the dataset updates and the alert condition is met. For example, if you want to be alerted when the row count exceeds 100, you will be alerted when rows exceed 100, 101, 102, etc.
-          title: My Alert
+          rolling_title: Rolling
           threshold_title: Threshold Alert
           threshold_description: Triggers when a threshold is reached in the dataset
+          title: My Alert
           trigger_page_description: Select how you want to be alerted.
           aggregation:
             and: AND
@@ -453,10 +453,10 @@ en:
             is: IS
             is_not: IS NOT
             is_within: IS WITHIN
-            min: Min
             max: Max
-            not_within: NOT WITHIN
+            min: Min
             near: NEAR
+            not_within: NOT WITHIN
             or: OR
             sum: Sum
           breadcrumb:

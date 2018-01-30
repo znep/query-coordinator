@@ -70,7 +70,7 @@ class SoqlBuilder extends Component {
     if (!_.isEmpty(soqlSlices)) {
       soqlSlices.push({ logical_operator: 'and' });
     } else {
-      soqlSlices.push({});
+      soqlSlices.push({ column: '', operator: '=', value: '' });
     }
     onSoqlChange(soqlSlices);
   };
@@ -90,15 +90,15 @@ class SoqlBuilder extends Component {
 
     const slicesContent = soqlSlices.map((slice, index) =>
       <SoqlSliceBuilder
+        datasetColumns={datasetColumns}
+        haveNbeView={haveNbeView}
+        key={index}
+        mapboxAccessToken={mapboxAccessToken}
         slice={slice}
         sliceIndex={index}
         viewId={viewId}
-        datasetColumns={datasetColumns}
-        mapboxAccessToken={mapboxAccessToken}
-        key={index}
-        haveNbeView={haveNbeView}
-        removeSliceEntry={this.removeSoqlSlice}
-        onSliceValueChange={this.onSoqlSliceChange} />
+        onSliceValueChange={this.onSoqlSliceChange}
+        removeSliceEntry={this.removeSoqlSlice} />
     );
 
     return (
@@ -107,9 +107,9 @@ class SoqlBuilder extends Component {
           {slicesContent}
         </div>
         <button
-          styleName="add-soql-slice-button"
           className="btn btn-primary add-parameter-button"
-          onClick={this.addSoqlSlice}>
+          onClick={this.addSoqlSlice}
+          styleName="add-soql-slice-button">
           + {I18n.t('add_params', { scope: 'shared.components.create_alert_modal.button' })}
         </button>
       </div>

@@ -13,7 +13,7 @@ describe('GeocoderTypeahead', () => {
   function getProps(props) {
     return _.defaultsDeep({}, props, {
       mapboxAccessToken: 'TEST_MAPBOX_ACCESS_TOKEN',
-      typeheadWaitTime: 0,
+      typeaheadWaitTime: 0,
       onSelect: onSelectSpy
     });
   }

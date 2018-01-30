@@ -69,7 +69,7 @@ class MyAlerts extends Component {
   formatDatasetName(datasetName) {
     // sometimes datesetName may be null
     let name = (datasetName || '');
-    name = name.replace(/[\W\s]/g, '-').replace(/\-+/g, '-');
+    name = name.replace(/[\W]/g, '-').replace(/\-+/g, '-');
 
     if (name.length < 1) {
       name = '-';
@@ -135,11 +135,11 @@ class MyAlerts extends Component {
     let editAlertType = _.get(currentSelectedAlert, 'query_type', 'raw');
     const createAlertModal = (
       <CreateAlertModal
-        editMode={showEditAlertModal}
-        onClose={this.onCloseAlertModal}
+        alert={currentSelectedAlert}
         editAlertType={editAlertType}
+        editMode={showEditAlertModal}
         mapboxAccessToken={mapboxAccessToken}
-        alert={currentSelectedAlert} />
+        onClose={this.onCloseAlertModal} />
     );
     return (
       <div styleName="my-alert-tab">

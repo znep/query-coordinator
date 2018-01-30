@@ -29,7 +29,7 @@ class DatasetColumnValueTypeahead extends Component {
 
   componentWillMount = () => {
     const { column, haveNbeView, viewId } = this.props;
-    const params = { viewId, column };
+    const params = { column, viewId };
 
     if (!haveNbeView) {
       this.setState({ isDataLoading: true });
@@ -77,7 +77,7 @@ class DatasetColumnValueTypeahead extends Component {
       console.error(error);
       this.setState({ isDataLoading: false });
     });
-  }, this.props.typeheadWaitTime, { leading: false, trailing: true });
+  }, this.props.typeaheadWaitTime, { leading: false, trailing: true });
 
   render() {
     const { value, onSelect } = this.props;
@@ -97,14 +97,14 @@ class DatasetColumnValueTypeahead extends Component {
 }
 
 DatasetColumnValueTypeahead.defaultProps = {
-  typeheadWaitTime: 400,
+  typeaheadWaitTime: 400,
   value: ''
 };
 
 DatasetColumnValueTypeahead.propTypes = {
   column: PropTypes.string.isRequired,
   haveNbeView: PropTypes.bool.isRequired,
-  typeheadWaitTime: PropTypes.number,
+  typeaheadWaitTime: PropTypes.number,
   value: PropTypes.string,
   viewId: PropTypes.string.isRequired,
   onSelect: PropTypes.func.isRequired

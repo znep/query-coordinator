@@ -111,12 +111,12 @@ class InputDropDownMenu extends Component {
     const { listId, options } = this.props;
     const { selectedOption, showDropDown } = this.state;
     const picklistProps = {
+      id: listId,
       options: options,
-      ref: ref => this.picklistRef = ref,
-      value: selectedOption,
       onSelection: this.onOptionSelect,
+      ref: ref => this.picklistRef = ref,
       size: 'small',
-      id: listId
+      value: selectedOption
     };
 
     const classes = classNames(
@@ -165,8 +165,8 @@ InputDropDownMenu.propTypes = {
   options: PropTypes.array,
   placeholder: PropTypes.string,
   value: PropTypes.string,
-  onInputChange: PropTypes.func,
-  onSelect: PropTypes.func
+  onInputChange: PropTypes.func.isRequired,
+  onSelect: PropTypes.func.isRequired
 };
 
 export default cssModules(InputDropDownMenu, styles, { allowMultiple: true });

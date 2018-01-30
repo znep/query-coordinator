@@ -28,7 +28,7 @@ describe('CustomAlertFooter', () => {
     assert.isNotNull(element.find('.create-button'));
   });
 
-  describe('name filed change', () => {
+  describe('name field change', () => {
     it('should call onAlertNameChange function on alert name change', () => {
       const nameChangeSpy = sinon.spy();
       const element = mount(<CustomAlertFooter onAlertNameChange={nameChangeSpy} />);

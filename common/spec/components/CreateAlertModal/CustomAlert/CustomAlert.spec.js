@@ -48,14 +48,15 @@ describe('CustomAlert', () => {
   describe('Alert Parameter Page', () => {
     let getColumnsPromise;
     let getMigrationPromise;
-    window.serverConfig.mapboxAccessToken = 'Mapbox-Access-Token';
 
     beforeEach(() => {
+      window.serverConfig.mapboxAccessToken = 'Mapbox-Access-Token';
       getColumnsPromise = sinon.stub(datasetApi, 'getColumns').returns(Promise.resolve({ status: 200 }));
       getMigrationPromise = sinon.stub(datasetApi, 'getMigration').returns(Promise.resolve({ status: 200 }));
     });
 
     afterEach(() => {
+      window.serverConfig.mapboxAccessToken = null;
       getColumnsPromise.restore();
       getMigrationPromise.restore();
     });

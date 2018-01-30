@@ -24,14 +24,14 @@ describe('DeleteAlert', () => {
 
   it('should call delete alert promise on yes button click', () => {
     const spy = sinon.spy();
-    const createAlertPromise = sinon.stub(CreateAlertApi, 'delete').returns(Promise.resolve({ status: 200 }));
+    const deleteAlertPromise = sinon.stub(CreateAlertApi, 'deleteAlert').returns(Promise.resolve({ status: 200 }));
     const element = renderComponent(DeleteAlert, { onCancel: spy, alert: {} });
     const yesButton = element.querySelector('.yes-button');
 
     TestUtils.Simulate.click(yesButton);
 
-    sinon.assert.calledOnce(createAlertPromise);
-    createAlertPromise.restore();
+    sinon.assert.calledOnce(deleteAlertPromise);
+    deleteAlertPromise.restore();
   });
 
   it('should call onCancel function on cancel button click', () => {

@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 
 import I18n from 'common/i18n';
 import Slider from 'common/components/Slider';
+import SocrataIcon from 'common/components/SocrataIcon';
 
 import styles from './index.module.scss';
 
@@ -40,11 +41,11 @@ class RadiusSlider extends Component {
   renderStepUpDownArrows() {
     return (
       <div styleName="section icon-section">
-        <span>
-          <i className="socrata-icon-arrow-up" onClick={this.onStepUp} />
+        <span className="icon-step-up" onClick={this.onStepUp}>
+          <SocrataIcon name="arrow-up" />
         </span>
-        <span>
-          <i className="socrata-icon-arrow-down" onClick={this.onStepDown} />
+        <span className="icon-step-down" onClick={this.onStepDown}>
+          <SocrataIcon name="arrow-down" />
         </span>
       </div>
     );
@@ -53,10 +54,10 @@ class RadiusSlider extends Component {
   render() {
     const { value } = this.props;
     const sliderProps = {
-      rangeMin: MIN_VALUE,
-      rangeMax: MAX_VALUE,
-      step: STEP,
       onChange: this.onChange,
+      rangeMax: MAX_VALUE,
+      rangeMin: MIN_VALUE,
+      step: STEP,
       value: value
     };
 

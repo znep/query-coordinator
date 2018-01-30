@@ -26,7 +26,7 @@ describe('RadiusSlider', () => {
       const upArrowSpy = sinon.spy();
       const element = mount(<RadiusSlider onChange={upArrowSpy} />);
 
-      element.find('.socrata-icon-arrow-up').simulate('click');
+      element.find('.icon-step-up').simulate('click');
 
       sinon.assert.calledOnce(upArrowSpy);
     });
@@ -35,7 +35,7 @@ describe('RadiusSlider', () => {
       const downArrowSpy = sinon.spy();
       const element = mount(<RadiusSlider onChange={downArrowSpy} />);
 
-      element.find('.socrata-icon-arrow-down').simulate('click');
+      element.find('.icon-step-down').simulate('click');
 
       sinon.assert.calledOnce(downArrowSpy);
     });

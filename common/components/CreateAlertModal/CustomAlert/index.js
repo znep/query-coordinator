@@ -9,7 +9,6 @@ import SocrataIcon from 'common/components/SocrataIcon';
 import Spinner from 'common/components/Spinner';
 
 import styles from './index.module.scss';
-import datasetApi from '../api/datasetApi';
 import SoqlBuilder from '../components/SoqlBuilder';
 
 /**

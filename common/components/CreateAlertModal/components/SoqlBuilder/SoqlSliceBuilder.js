@@ -12,6 +12,7 @@ import {
   AGGREGATION_TYPES,
   DATE_COLUMN_TYPES,
   LOCATION_COLUMN_TYPES,
+  NUMBER_COLUMN_TYPES,
   STRING_COLUMN_TYPES
 } from 'common/components/CreateAlertModal/constants';
 import { aggregateOptions } from './helpers';
@@ -20,6 +21,8 @@ import InputDropDown from '../InputDropDown';
 import GeocoderTypeahead from '../GeocoderTypeahead';
 import RadiusSlider from '../RadiusSlider';
 import styles from '../components.module.scss';
+import SoqlSliceBuilderPropType from './SoqlSliceBuilderPropType';
+
 
 /**
  @prop slice - object represent slice values
@@ -61,9 +64,9 @@ import styles from '../components.module.scss';
  [
    {column: 'rowcount', operator: '>', 'value': 10},
    {column: 'number', operator: '>', value: '10', logical_operator: 'and'},
-   {column: 'number', aggregation: 'sum', operator: '>', start_date: '1/29/2017'},
+   {column: 'date', operator: 'within', start_date: '1/29/2017', end_date: '3/29/2017},
    {column: 'text', '=', value: 'abc', logical_operator: 'no'},
-   {column: 'loaction', 'with in', location: 'abc' lat: '10.344', lat: '23.2323', radius: 5},
+   {column: 'loaction', 'with in', location: 'abc' lat: '10.344', lng: '23.2323', radius: 5},
    {column: 'group', operator: 'department'},
  ]
 
@@ -79,16 +82,12 @@ import styles from '../components.module.scss';
  |   and            |    date                  |           |           |        with in              |       |          |     |      |24/3/2016  |20/9/2017|
 */
 class SoqlSliceBuilder extends Component {
-  state = {
-    selectedDatasetColumn: {},
-    selectedColumnValues: []
-  };
-
-  // sometimes components will mount with props(edit mode)
-  componentWillMount() {
-    this.setState({
-      selectedDatasetColumn: this.getSelectedOption(this.props)
-    });
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedColumnValues: [],
+      selectedDatasetColumn: this.getSelectedOption(props)
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -96,7 +95,6 @@ class SoqlSliceBuilder extends Component {
       selectedDatasetColumn: this.getSelectedOption(nextProps)
     });
   }
-
 
   onSliceColumnChange = (newSlice) => {
     const { slice, sliceIndex, onSliceValueChange } = this.props;
@@ -213,12 +211,13 @@ class SoqlSliceBuilder extends Component {
     const { slice } = this.props;
     const { selectedDatasetColumn } = this.state;
     const columnType = _.get(selectedDatasetColumn, 'column_type');
+    const otherInputTypes = _.concat(NUMBER_COLUMN_TYPES, ['row_identifier']);
     const showAggregationInput = _.includes(AGGREGATION_TYPES, aggregation);
     const placeHolder = I18n.t('placeholder.value', { scope: this.translationScope });
     const showValueInput = (showAggregationInput && !_.isEmpty(function_operator)) ||
       (!_.isEmpty(operator) && !showAggregationInput);
 
-    if (showValueInput && _.includes(['number', 'money', 'amount', 'row_identifier'], columnType)) {
+    if (showValueInput && _.includes(otherInputTypes, columnType)) {
       return (
         <div styleName="field-selector" className="value-field">
           <input
@@ -448,7 +447,7 @@ class SoqlSliceBuilder extends Component {
 SoqlSliceBuilder.propTypes = {
   datasetColumns: PropTypes.array,
   haveNbeView: PropTypes.bool,
-  slice: PropTypes.object.isRequired,
+  slice: SoqlSliceBuilderPropType.isRequired,
   sliceIndex: PropTypes.number,
   onSliceValueChange: PropTypes.func,
   removeSliceEntry: PropTypes.func

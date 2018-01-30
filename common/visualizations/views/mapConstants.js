@@ -88,6 +88,9 @@ export const TILE_URL_OPTIONS = Object.freeze({
     13: 13,
     14: 14,
     15: 15,
-    16: 16
+    16: 16,
+    17: 17,
+    18: 18
   })
 });
+

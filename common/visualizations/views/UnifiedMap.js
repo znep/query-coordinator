@@ -4,6 +4,8 @@ import SvgVisualization from './SvgVisualization';
 import { MAP_TYPES, POINT_AGGREATIONS } from './mapConstants';
 
 import MapFactory from './map/MapFactory';
+import MouseInteractionHandler from './map/handlers/MouseInteractionHandler';
+import PopupHandler from './map/handlers/PopupHandler';
 import VifBaseMap from './map/VifBaseMap';
 import VifMapControls from './map/VifMapControls';
 import VifMapInteractionHandler from './map/VifMapInteractionHandler';
@@ -32,6 +34,9 @@ export default class UnifiedMap extends SvgVisualization {
       this._vifMapInteractionHandler = new VifMapInteractionHandler(this._map);
       this._vifMapInteractionHandler.initialize(vif);
 
+      this._popupHandler = new PopupHandler(map);
+      this._mouseInteractionHandler = new MouseInteractionHandler(map, this._popupHandler);
+
       this._currentOverlay = this._getOverlay(vif);
       this._currentOverlay.loadVif(vif);
       // Adding Map object to visualization DOM element,
@@ -50,6 +55,13 @@ export default class UnifiedMap extends SvgVisualization {
       this.update(newVif);
     };
     this._existingVif = vif;
+  }
+
+  destroy() {
+    if (this._map) {
+      this._map.remove();
+      this._map = null;
+    }
   }
 
   async update(newVif) {
@@ -99,7 +111,7 @@ export default class UnifiedMap extends SvgVisualization {
       } else if (vif.isRegionMap()) {
         return new VifRegionOverlay(this._map, this._element);
       } else {
-        return new VifPointOverlay(this._map, this._element);
+        return new VifPointOverlay(this._map, this._element, this._mouseInteractionHandler);
       }
     } else if (newMapType === MAP_TYPES.LINE_MAP) {
       return new VifLineOverlay(this._map, this._element);

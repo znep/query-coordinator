@@ -1,4 +1,5 @@
 @import 'animations';
+@import 'common';
 
 $title-height: 44px;
 $description-height: 26px;
@@ -255,12 +256,11 @@ $axis-padding: 42px;
 
     .socrata-visualization-busy-indicator {
       display: inline-block;
-      width: $busy-indicator-width-height;
-      height: $busy-indicator-width-height;
-      border: 3px solid $busy-indicator-primary-color;
-      border-right-color: $busy-indicator-secondary-color;
-      border-radius: 50%;
-      box-sizing: border-box;
+      @include loading-spinner(
+        $busy-indicator-width-height,
+        $busy-indicator-primary-color,
+        $busy-indicator-secondary-color
+      );
       @include spin;
     }
   }

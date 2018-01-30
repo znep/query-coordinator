@@ -1,7 +1,13 @@
 import _ from 'lodash';
 import d3 from 'd3';
 
+import I18n from 'common/i18n';
+import MetadataProvider from 'common/visualizations/dataProviders/MetadataProvider';
+import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
+
+import { OTHER_COLOR_BY_CATEGORY } from '../vifOverlays/VifPointOverlay';
 import { COLOR_PALETTE_VALUES_FOR_MAPS } from 'common/authoring_workflow/constants';
+
 
 export function getDomain() {
   return _.get(this, 'series[0].dataSource.domain');
@@ -29,6 +35,30 @@ export function getColorPalette(count) {
   return colorPaletteGetter(count);
 }
 
+export async function getDatasetMetadata() {
+  const datasetConfig = {
+    domain: this.getDomain(),
+    datasetUid: this.getDatasetUid()
+  };
+
+  return new MetadataProvider(datasetConfig, true).getDatasetMetadata();
+}
+
+export function getFlyoutTitleColumn() {
+  return _.get(this, 'series[0].mapOptions.mapFlyoutTitleColumnName');
+}
+
+export function getFlyoutAdditionalColumns() {
+  return _.get(this, 'series[0].mapOptions.additionalFlyoutColumns');
+}
+
+export function getAllFlyoutColumns() {
+  return _.chain([this.getFlyoutTitleColumn()].concat(this.getFlyoutAdditionalColumns())).
+    uniq().
+    compact().
+    value();
+}
+
 export function getMapType() {
   return _.get(this, 'series[0].mapOptions.mapType');
 }
@@ -43,6 +73,13 @@ export function getShapeDatasetUid() {
 
 export function getShapeDatasetPrimaryKey() {
   return _.get(this, 'configuration.shapefile.primaryKey');
+}
+
+export function getDatasetSoqlDataProvider(cache = true) {
+  return new SoqlDataProvider({
+    domain: this.getDomain(),
+    datasetUid: this.getDatasetUid()
+  }, cache);
 }
 
 export function getMeasureColumn() {
@@ -124,11 +161,28 @@ export function getColorByBuckets(colorByCategories) {
   const colors = this.getColorPalette(colorByCategories.length + 1);
 
   return _.chain(colorByCategories).
-    zipWith(colors, (category, color) => ({ category, color })).
+    zipWith(colors, (category, color) => ({ category, id: category, color })).
     take(colorByCategories.length).
     concat({
       category: 'Other',
+      id: OTHER_COLOR_BY_CATEGORY,
       color: colors[colorByCategories.length]
     }).
     value();
+}
+
+export function getUnits(count) {
+  const singular = _.get(this, 'series[0].unit.one');
+  const plural = _.get(this, 'series[0].unit.other');
+
+  // If singular/plural are empty strings, we should use the respective defaults.
+  if (Math.abs(count) === 1) {
+    return _.isEmpty(singular) ?
+      I18n.t('shared.visualizations.charts.common.unit.one') :
+      singular;
+  } else {
+    return _.isEmpty(plural) ?
+      I18n.t('shared.visualizations.charts.common.unit.other') :
+      plural;
+  }
 }

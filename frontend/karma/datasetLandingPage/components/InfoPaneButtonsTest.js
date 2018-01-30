@@ -15,7 +15,6 @@ describe('components/InfoPaneButtons', () => {
 
   beforeEach(() => {
     FeatureFlags.useTestFixture({
-      enable_visualization_canvas: true,
       enable_external_data_integrations: true,
       enable_user_notifications: true,
       usaid_features_enabled: false
@@ -43,12 +42,10 @@ describe('components/InfoPaneButtons', () => {
     describe('visualize link', () => {
       beforeEach(() =>  {
         window.serverConfig.currentUser = { roleName: 'anything' };
-        FeatureFlags.updateTestFixture({ enable_visualization_canvas: true });
       });
 
       afterEach(() => {
         window.serverConfig.currentUser = null;
-        FeatureFlags.updateTestFixture({ enable_visualization_canvas: false });
       });
 
       it('exists if the bootstrapUrl is defined', () => {
@@ -63,12 +60,6 @@ describe('components/InfoPaneButtons', () => {
           }
         }));
 
-        assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
-      });
-
-      it('does not exist if the feature flag is disabled', () => {
-        FeatureFlags.updateTestFixture({ enable_visualization_canvas: false });
-        const element = renderComponent(InfoPaneButtons, getProps());
         assert.isNull(element.querySelector('a[href="bootstrapUrl"]'));
       });
 

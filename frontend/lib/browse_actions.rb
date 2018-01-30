@@ -372,7 +372,7 @@ module BrowseActions
     if browse_options[:limitTo].present?
       case browse_options[:limitTo]
         when 'new_view'
-          if visualization_canvas_enabled? && using_cetera?
+          if using_cetera?
             search_options[:limitTo] = ['new_view', 'visualization']
           end
         when 'unpublished'
@@ -415,7 +415,7 @@ module BrowseActions
     # instead of doing it the same way we add other conditional facets, because
     # we have to key off the presence of limitTo[]=visualizations.
     actual_view_types_facet = view_types_facet
-    if browse_options[:limitTo].try(:include?, 'visualization') && visualization_canvas_enabled?
+    if browse_options[:limitTo].try(:include?, 'visualization')
       actual_view_types_facet[:options] << visualization_view_type
     end
 

@@ -784,8 +784,6 @@ class DatasetsController < ApplicationController
   end
 
   def create_visualization_canvas
-    return render_404 unless visualization_canvas_enabled?
-
     @parent_view = get_view(params[:id])
     return if @parent_view.nil? # this will do an implicit render, apparently :(
     return render_404 unless @parent_view.blist_or_derived_view_but_not_data_lens?
@@ -1319,7 +1317,7 @@ class DatasetsController < ApplicationController
       @body_classes = "hide-site-chrome"
     end
 
-    if visualization_canvas_enabled? && @view.visualization_canvas?
+    if @view.visualization_canvas?
       # See if the user is accessing the canonical URL; if not, redirect
       unless using_canonical_url?
         if as_edit
@@ -1337,10 +1335,6 @@ class DatasetsController < ApplicationController
       @display_placeholder_edit_bar = false
 
       render 'visualization_canvas', :layout => 'styleguide'
-      true
-    elsif !visualization_canvas_enabled? && @view.visualization_canvas?
-      # Return a 404 if they're trying to reach a visualization canvas and the feature flag is off
-      render_404
       true
     else
       false

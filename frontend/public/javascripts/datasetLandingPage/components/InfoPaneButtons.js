@@ -62,11 +62,7 @@ export default class InfoPaneButtons extends Component {
     const { view, onClickVisualizeAndFilter } = this.props;
     const isBlobbyOrHref = view.isBlobby || view.isHref;
 
-    const vizCanvasEnabled = FeatureFlags.value('enable_visualization_canvas');
-    const canCreateVisualizationCanvas = vizCanvasEnabled &&
-      _.isString(view.bootstrapUrl);
-
-    if (isBlobbyOrHref || !canCreateVisualizationCanvas) {
+    if (isBlobbyOrHref || !_.isString(view.bootstrapUrl)) {
       return null;
     }
 

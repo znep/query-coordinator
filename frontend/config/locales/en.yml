@@ -2286,6 +2286,10 @@ en:
       previous: Previous uploads
       table_preview: Table Preview
     metadata_manage:
+      status_no_change: No changes
+      status_saved: Saved changes
+      status_error: Error
+      status_unsaved_changes: Unsaved changes
       column_metadata_label: Column Descriptions
       column_tab:
         description: Column Description

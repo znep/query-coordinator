@@ -17,19 +17,19 @@ const FormStatusText = ({ formStatus }) => {
 
   switch (formStatus) {
     case INITIALIZED:
-      statusText = 'No changes';
+      statusText = I18n.metadata_manage.status_no_change;
       break;
     case SAVED:
-      statusText = 'Saved changes';
+      statusText = I18n.metadata_manage.status_saved;
       break;
     case UNSAVED:
-      statusText = 'Unsaved changes';
+      statusText = I18n.metadata_manage.status_unsaved_changes;
       break;
     case ERRORED:
-      statusText = 'Error';
+      statusText = I18n.metadata_manage.status_error;
       break;
     default:
-      statusText = '';
+      statusText = '&nbsp;';
   }
 
   return (
@@ -81,6 +81,8 @@ const ManageMetadataSidebar = ({
       ) : (
         <span className="dsmp-tab disabled" title={I18n.home_pane.sidebar.no_columns_msg}>
           {I18n.metadata_manage.column_metadata_label}
+          <br />
+          <span>&nbsp;</span>
         </span>
       )}
     </div>

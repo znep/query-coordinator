@@ -133,3 +133,10 @@ Notifications:
 
 CreateAlertModal:
 102 Input drop down box
+
+Maps:
+2 mapboxgl-ctrl-top-left
+2 mapboxgl-ctrl-top-right
+2 mapboxgl-ctrl-bottom-left
+2 mapboxgl-ctrl-bottom-right
+3 mapboxgl-popup

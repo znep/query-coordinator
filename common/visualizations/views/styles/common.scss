@@ -1,0 +1,14 @@
+@mixin loading-spinner($size, $primary-color, $secondary-color) {
+  width: $size;
+  height: $size;
+  border: 3px solid $primary-color;
+  border-right-color: $secondary-color;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+@mixin text-ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

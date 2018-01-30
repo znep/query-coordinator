@@ -36,6 +36,7 @@ export default $.fn.socrataUnifiedMap = function(vif, options) {
 
 const attachEvents = function($element, unifiedMapInstance) {
   $element.one('SOCRATA_VISUALIZATION_DESTROY', function() {
+    unifiedMapInstance.destroy();
     detachEvents($element, unifiedMapInstance);
   });
 

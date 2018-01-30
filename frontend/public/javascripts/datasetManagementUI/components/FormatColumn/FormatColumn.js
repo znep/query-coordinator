@@ -16,7 +16,7 @@ class FormatColumn extends Component {
     this.state = {
       format: {}
     };
-    _.bindAll(this, ['onUpdateFormat', 'onRemoveFormat']);
+    _.bindAll(this, ['onUpdateFormat', 'onRemoveFormat', 'captureEscKey']);
   }
 
   componentWillMount() {
@@ -27,6 +27,14 @@ class FormatColumn extends Component {
     this.setState({
       format: this.props.outputColumn.format || {} // hack until dsmapi fills in true defaults,
     });
+  }
+
+  componentDidMount() {
+    document.addEventListener('keyup', this.captureEscKey, true);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keyup', this.captureEscKey, true);
   }
 
   onUpdateFormat(change) {
@@ -69,6 +77,16 @@ class FormatColumn extends Component {
             onRemoveFormat={this.onRemoveFormat}
             onUpdateFormat={this.onUpdateFormat} />
         );
+    }
+  }
+
+  captureEscKey(event) {
+    const { onDismiss } = this.props;
+    const escapeKeyCode = 27;
+    if (event.keyCode === escapeKeyCode) {
+      // we need to stop the event from propagating so that the parent modal doesn't also close
+      event.stopPropagation();
+      onDismiss();
     }
   }
 

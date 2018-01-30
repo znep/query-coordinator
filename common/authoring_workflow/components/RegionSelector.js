@@ -33,6 +33,8 @@ import {
 } from '../selectors/metadata';
 import { FeatureFlags } from 'common/feature_flags';
 
+const scope = 'shared.visualizations.panes.data.fields';
+
 export class RegionSelector extends Component {
   onSelectRegion = ({ computedColumn, curatedRegion, domain }) => {
     var {
@@ -61,18 +63,18 @@ export class RegionSelector extends Component {
       regionCodingLastChecked
     } = this.props.vifAuthoring.authoring;
 
-    var lastCheckedMessage = I18n.t('shared.visualizations.panes.data.fields.region.last_checked');
+    var lastCheckedMessage = I18n.t('region.last_checked', { scope });
 
     lastCheckedMessage += regionCodingLastChecked ?
       ` ${regionCodingLastChecked}` :
-      ` ${I18n.t('shared.visualizations.panes.data.fields.region.never')}`;
+      ` ${I18n.t('region.never', { scope })}`;
 
     if (showRegionCodingProcessingMessage) {
       return (
         <div className="region-processing-info alert warning">
-          <p>{I18n.t('shared.visualizations.panes.data.fields.region.selected_region_processing')}</p>
-          <p>{I18n.t('shared.visualizations.panes.data.fields.region.region_coding_duration')}</p>
-          <p>{I18n.t('shared.visualizations.panes.data.fields.region.stay_or_return_later')}</p>
+          <p>{I18n.t('region.selected_region_processing', { scope })}</p>
+          <p>{I18n.t('region.region_coding_duration', { scope })}</p>
+          <p>{I18n.t('region.stay_or_return_later', { scope })}</p>
           <p className="region-processing-info-last-checked"><span className="spinner-default" /> {lastCheckedMessage}</p>
         </div>
       );
@@ -101,7 +103,7 @@ export class RegionSelector extends Component {
       return {
         title: computedColumn.name,
         value: computedColumn.uid,
-        group: I18n.t('shared.visualizations.panes.data.fields.region.groups.ready_to_use'),
+        group: I18n.t('region.groups.ready_to_use', { scope }),
         computedColumn,
         domain
       };
@@ -110,20 +112,18 @@ export class RegionSelector extends Component {
       return {
         title: curatedRegion.name,
         value: curatedRegion.uid,
-        group: I18n.t('shared.visualizations.panes.data.fields.region.groups.requires_processing'),
+        group: I18n.t('region.groups.requires_processing', { scope }),
         curatedRegion
       };
     });
 
     let disabled = !hasRegions(metadata);
-    let placeholder = I18n.t('shared.visualizations.panes.data.fields.region.placeholder');
-    const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
+    let placeholder = I18n.t('region.placeholder', { scope });
+    const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps') && isNewGLMap(vifAuthoring);
 
     if (isNewGLMapEnabled) {
-      disabled = disabled ||
-        isPointMapColumn(metadata, dimension) ||
-        getPointAggregation(vifAuthoring) !== 'region_map';
-      placeholder = I18n.t('shared.visualizations.panes.data.fields.region_map.placeholder');
+      disabled = disabled || getPointAggregation(vifAuthoring) !== 'region_map';
+      placeholder = I18n.t('region_map.placeholder', { scope });
     }
 
     const regionAttributes = {
@@ -134,23 +134,16 @@ export class RegionSelector extends Component {
       value: defaultRegion,
       onSelection: this.onSelectRegion
     };
-
-    if (isNewGLMapEnabled && isNewGLMap(vifAuthoring)) {
-      return (
-        <div className="region-selector-container" ref={reference}>
-          <Dropdown {...regionAttributes} />
-          {this.renderRegionProcessingMessage()}
-          {this.renderRegionProcessingError()}
-        </div>
-      );
-    }
+    const sectionTitle = isNewGLMapEnabled ?
+      null :
+      <BlockLabel
+        htmlFor="region-selection"
+        title={I18n.t('region.title', { scope })}
+        description={I18n.t('region.region_processing', { scope })} />;
 
     return (
       <div className="region-selector-container" ref={reference}>
-        <BlockLabel
-          htmlFor="region-selection"
-          title={I18n.t('shared.visualizations.panes.data.fields.region.title')}
-          description={I18n.t('shared.visualizations.panes.data.fields.region.region_processing')} />
+        {sectionTitle}
         <Dropdown {...regionAttributes} />
         {this.renderRegionProcessingMessage()}
         {this.renderRegionProcessingError()}

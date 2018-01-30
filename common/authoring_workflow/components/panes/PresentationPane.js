@@ -609,8 +609,8 @@ export class PresentationPane extends Component {
     const dataClassesAttributes = {
       disabled,
       id: 'data-classes',
-      options: _.map(_.range(2, 8), i => ({ title: i.toString(), value: parseInt(i) })),
-      value: numberOfDataClasses,
+      options: _.map(_.range(2, 8), i => ({ title: i.toString(), value: i.toString() })),
+      value: numberOfDataClasses.toString(),
       onSelection: (event) => {
         onNumberOfDataClassesChange(event.value);
       }

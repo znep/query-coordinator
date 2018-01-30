@@ -24,6 +24,7 @@ import {
   hasErrorBars,
   isComboChart,
   isFeatureMap,
+  isNewGLMap,
   getPointAggregation,
   getDimension
 } from '../selectors/vifAuthoring';
@@ -99,12 +100,11 @@ export class MeasureSelector extends Component {
   }
 
   shouldRenderMeasureForNewGLMap() {
-    const { vifAuthoring, metadata } = this.props;
-    const dimension = getDimension(vifAuthoring);
+    const { vifAuthoring } = this.props;
     const isNewGLMapEnabled = FeatureFlags.value('enable_new_maps');
 
     return isNewGLMapEnabled &&
-      isPointMapColumn(metadata, dimension) &&
+      isNewGLMap(vifAuthoring) &&
       getPointAggregation(vifAuthoring) !== 'region_map';
   }
 

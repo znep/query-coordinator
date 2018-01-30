@@ -318,8 +318,12 @@ export class LegendsAndFlyoutsPane extends Component {
     const dimension = getDimension(vifAuthoring);
     const isPointMap = isPointMapColumn(metadata, dimension);
 
-    if (isPointMap && selectedPointAggregation !== 'none') {
-      return this.renderEmptyPane();
+    if (isPointMap) {
+      if (selectedPointAggregation === 'region_map') {
+        return this.renderFlyoutUnits();
+      } else if (selectedPointAggregation === 'heat_map') {
+        return this.renderEmptyPane();
+      }
     }
 
     return [this.renderFlyoutUnits(), this.renderFlyoutDetailsForMaps()];

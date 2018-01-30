@@ -10,6 +10,8 @@
 
     .modal-footer {
       z-index: 1000;
+      align-self: flex-end;
+      width: calc(100% - 250px);
     }
   }
 }

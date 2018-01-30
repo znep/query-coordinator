@@ -1,6 +1,16 @@
 @import 'common/styleguide/variables/color_helpers';
 @import 'common/styleguide/variables/colors';
 
+.showUpload {
+  :global {
+    .modal-footer {
+      z-index: 1000;
+      align-self: flex-end;
+      width: calc(100% - 250px);
+    }
+  }
+}
+
 .modalContent {
   display: flex;
 

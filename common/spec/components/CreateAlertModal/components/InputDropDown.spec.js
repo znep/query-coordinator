@@ -18,7 +18,7 @@ describe('InputDropDown', () => {
   }
 
   it('renders an element', () => {
-    const element = mount(<InputDropDown />);
+    const element = mount(<InputDropDown {...getProps()} />);
 
     assert.isDefined(element);
   });

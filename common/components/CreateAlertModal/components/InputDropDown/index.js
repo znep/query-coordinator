@@ -61,7 +61,7 @@ class InputDropDownMenu extends Component {
     document.removeEventListener('wheel', this.handleClickOutside);
   }
 
-  onBlur = (event) => {
+  onBlur = () => {
     this.setState({ showDropDown: false });
   }
 
@@ -80,7 +80,7 @@ class InputDropDownMenu extends Component {
   }
 
   getSelectedOption = (props) => {
-    const { value, options } = props;
+    const { options, value } = props;
     return _.find(options, { value }) || null;
   };
 
@@ -97,13 +97,13 @@ class InputDropDownMenu extends Component {
     const inputValue = _.get(selectedOption, 'title', value);
     return (
       <input
+        placeholder={placeholder}
         styleName="small"
         type="text"
-        placeholder={placeholder}
         value={inputValue}
         onClick={this.onInputClick}
         onChange={(event) => this.onInputValueChange(event.target.value)}
-        onBlur={() => this.onBlur()} />
+        onBlur={this.onBlur} />
     );
   }
 
@@ -155,9 +155,7 @@ InputDropDownMenu.defaultProps = {
   isLoading: false,
   options: [],
   placeholder: '',
-  value: '',
-  onInputChange: _.noop,
-  onSelect: _.noop
+  value: ''
 };
 
 InputDropDownMenu.propTypes = {

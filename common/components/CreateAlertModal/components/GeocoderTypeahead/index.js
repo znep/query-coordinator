@@ -56,13 +56,13 @@ class GeocoderTypeahead extends Component {
     return (
       <div styleName="field-selector">
         <InputDropDown
-          placeholder={placeHolder}
-          onSelect={onSelect}
-          options={geoResults}
-          onInputChange={this.onInputChange}
-          value={value}
+          isLoading={isDataLoading}
           listId="location-list"
-          isLoading={isDataLoading} />
+          onInputChange={this.onInputChange}
+          options={geoResults}
+          onSelect={onSelect}
+          placeholder={placeHolder}
+          value={value} />
       </div>
     );
   }

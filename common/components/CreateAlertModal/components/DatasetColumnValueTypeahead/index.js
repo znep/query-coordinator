@@ -86,12 +86,12 @@ class DatasetColumnValueTypeahead extends Component {
 
     return (
       <InputDropDown
-        placeholder={placeholder}
+        onInputChange={this.onInputChange}
         onSelect={onSelect}
         options={columnValues}
-        onInputChange={this.onInputChange}
-        value={value}
-        isLoading={isDataLoading} />
+        isLoading={isDataLoading}
+        placeholder={placeholder}
+        value={value} />
     );
   }
 }

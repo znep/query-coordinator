@@ -10,10 +10,10 @@ export const dateSlice = PropTypes.shape({
 
 export const locationSlice = PropTypes.shape({
   column: PropTypes.string.isRequired,
-  location: PropTypes.string,
-  logical_operator: PropTypes.string,
   lat: PropTypes.string,
   lng: PropTypes.string,
+  location: PropTypes.string,
+  logical_operator: PropTypes.string,
   operator: PropTypes.string.isRequired
 });
 

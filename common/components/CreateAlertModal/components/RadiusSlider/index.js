@@ -20,20 +20,17 @@ const STEP = 1;
   @prop value      - current value
 */
 class RadiusSlider extends Component {
-  onChange = (value) => {
+  onRadiusChange = (value) => {
     const { onChange } = this.props;
-
     onChange(_.clamp(value, MIN_VALUE, MAX_VALUE));
   };
 
   onStepUp = () => {
-    const { value, onChange } = this.props;
-    onChange(value + STEP);
+    this.onRadiusChange(this.props.value + STEP);
   };
 
   onStepDown = () => {
-    const { value, onChange } = this.props;
-    onChange(value - STEP);
+    this.onRadiusChange(this.props.value - STEP);
   };
 
   translationScope = 'shared.components.create_alert_modal.custom_alert';
@@ -54,7 +51,7 @@ class RadiusSlider extends Component {
   render() {
     const { value } = this.props;
     const sliderProps = {
-      onChange: this.onChange,
+      onChange: this.onRadiusChange,
       rangeMax: MAX_VALUE,
       rangeMin: MIN_VALUE,
       step: STEP,

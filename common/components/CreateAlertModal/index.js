@@ -396,7 +396,7 @@ CreateAlertModal.defaultProps = {
 
 CreateAlertModal.propTypes = {
   alert: PropTypes.shape({
-    abstract_params: PropTypes.object,
+    abstract_params: PropTypes.array,
     changes_on: PropTypes.string,
     dataset_uid: PropTypes.string,
     name: PropTypes.string,

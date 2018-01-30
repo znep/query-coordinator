@@ -145,36 +145,46 @@ class CreateCustomAlert extends Component {
   renderBreadcrumbs() {
     const { customAlertPage, customAlertType, editMode, enableSaveButton } = this.props;
     const disableParamPage = !editMode && _.isEmpty(customAlertType);
+    const crumbs = [
+      {
+        disable: editMode,
+        id: 'alertType',
+        name: I18n.t('breadcrumb.alert_type', { scope: this.translationScope }),
+        onClcik: () => { (!editMode && this.onBreadcrumbClick('alertType')); },
+        showArrowIcon: true
+      },
+      {
+        disable: disableParamPage,
+        id: 'parameters',
+        name: I18n.t('breadcrumb.parameters', { scope: this.translationScope }),
+        onClcik: () => { (!disableParamPage && this.onBreadcrumbClick('parameters')); },
+        showArrowIcon: true
+      },
+      {
+        disable: !enableSaveButton,
+        id: 'trigger',
+        name: I18n.t('breadcrumb.trigger', { scope: this.translationScope }),
+        onClcik: () => { (enableSaveButton && this.onBreadcrumbClick('trigger')); },
+        showArrowIcon: false
+      }
+    ];
+    const breadCrumbsContent = crumbs.map((crumb, index) =>
+      <li
+        key={index}
+        styleName={
+          classNames({ 'active': customAlertPage === crumb.id, 'disable': crumb.disable })
+        }>
+        <span onClick={crumb.onClcik}>
+          {crumb.name}
+        </span>
+        {crumb.showArrowIcon ? <SocrataIcon name="arrow-right" styleName="arrow-icon" /> : null}
+      </li>
+    );
 
     return (
       <div styleName="breadcrumbs" className="alert-breadcrumbs">
         <ul>
-          <li
-            styleName={
-              classNames({ 'active': customAlertPage === 'alertType', 'disable': editMode })
-            }>
-            <span onClick={() => (!editMode && this.onBreadcrumbClick('alertType'))}>
-              {I18n.t('breadcrumb.alert_type', { scope: this.translationScope })}
-            </span>
-            <SocrataIcon name="arrow-right" styleName="arrow-icon" />
-          </li>
-          <li
-            styleName={
-              classNames({ 'active': customAlertPage === 'parameters', 'disable': disableParamPage })
-            }>
-            <span onClick={() => (!disableParamPage && this.onBreadcrumbClick('parameters'))}>
-              {I18n.t('breadcrumb.parameters', { scope: this.translationScope })}
-            </span>
-            <SocrataIcon name="arrow-right" styleName="arrow-icon" />
-          </li>
-          <li
-            styleName={
-              classNames({ 'active': customAlertPage === 'trigger', 'disable': !enableSaveButton })
-            }>
-            <span onClick={() => (enableSaveButton && this.onBreadcrumbClick('trigger'))}>
-              {I18n.t('breadcrumb.trigger', { scope: this.translationScope })}
-            </span>
-          </li>
+          {breadCrumbsContent}
         </ul>
       </div>
     );

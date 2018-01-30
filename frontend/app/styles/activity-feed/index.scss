@@ -46,7 +46,7 @@
 
   .header {
     margin: 0 $horizontal_margin;
-    min-height: 7.5rem;
+    min-height: 5.5rem;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -118,6 +118,7 @@
         .item-name {
           color: $dark-grey-1;
           font-size: 0.9rem;
+          white-space: nowrap;
         }
       }
     }

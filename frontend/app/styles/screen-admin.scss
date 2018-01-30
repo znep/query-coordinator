@@ -1,4 +1,5 @@
 @import 'styleguide-colors';
+@import 'common/styleguide/partials/admin/_breadcrumbs';
 
 .siteInnerWrapper {
   max-width: 100%;
@@ -172,70 +173,5 @@
     .buttonContainer {
       margin-top: 0.8em;
     }
-  }
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-// Styleguide compatibility
-// This mirrors common/styleguide/partials/admin/_breadcrumbs.scss, and should
-// be kept in sync with that file (and vice versa)
-$site-chrome-admin-header-height: 46px;
-.admin-header {
-  margin: $site-chrome-admin-header-height 0 0;
-  min-height: $site-chrome-admin-header-height;
-  padding: 15px 32px 0;
-  border-bottom: 1px solid $light-grey-4;
-  font-family: Open Sans,Helvetica,Arial,sans-serif;
-  box-sizing: border-box;
-  background: $light-grey-6;
-}
-
-.admin-breadcrumb {
-  padding: 0 0 5px 10px;
-
-  h1 {
-    font-weight: 400;
-    font-size: 23px;
-    line-height: normal;
-    margin-bottom: 0;
-
-    .internal-link {
-      display: block;
-      float: right;
-      margin-top: 8px;
-      font-size: 15px;
-      font-weight: normal;
-
-      @media (max-width : 600px) {
-        .internal-link-text {
-          display: none;
-        }
-      }
-
-      &:hover {
-        text-decoration: none;
-
-        span {
-          text-decoration: underline;
-        }
-      }
-    }
-  }
-
-  h1, a {
-    color: $primary-dark;
-  }
-
-  .current-page {
-    color: $dark-grey-1;
-  }
-
-  .separator {
-    color: $light-grey-2;
-    font-weight: 200;
-    font-size: 18px;
   }
 }

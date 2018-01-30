@@ -1,13 +1,13 @@
 import _ from 'lodash';
 import moment from 'moment';
 import { assert } from 'chai';
-import { CalculationTypeNames } from 'opMeasure/lib/constants';
-import DateRange from 'opMeasure/lib/dateRange';
+import { CalculationTypeNames } from 'common/performance_measures/lib/constants';
+import DateRange from 'common/performance_measures/lib/dateRange';
 import {
   calculateMeasure,
   calculateRateMeasure,
   isColumnUsableWithMeasureArgument
-} from 'opMeasure/measureCalculator';
+} from 'common/performance_measures/measureCalculator';
 
 describe('measureCalculator', () => {
   const sampleDateRange = new DateRange(moment('2018-01-10T00:21:27.375Z'), 'day');
@@ -124,7 +124,7 @@ describe('measureCalculator', () => {
               fixedDenominator: '0'
             }
           },
-          dataSourceLensUid: 'test-test',
+          dataSourceLensUid: 'test-test'
         };
 
         const { result, errors } = await calculateRateMeasure(
@@ -235,9 +235,16 @@ describe('measureCalculator', () => {
             'metricConfig.arguments.denominatorIncludeNullValues',
             false
           );
-          assert.throws(() => calculateRateMeasure(
-            {}, sumWithExcludeInDenominator, fakeDateRangeWhereClause, dataProvider)
-          );
+          return calculateRateMeasure({}, sumWithExcludeInDenominator, fakeDateRangeWhereClause, {}).
+            then((resolution) => {
+              throw new Error(`Expected rejection, but resolved with: ${resolution}`);
+            }).
+            catch((error) => {
+              assert.equal(
+                error.message,
+                'Excluding null values from non-count Rate measure numerator is nonsensical'
+              );
+            });
         });
 
         it('returns the fixed denominator in the response', async () => {
@@ -314,8 +321,8 @@ describe('measureCalculator', () => {
           const dataProvider = {
             rawQuery: async (query) => {
               return query.indexOf('denominatorCol') < 0 ?
-                [ { '__measure_count_alias__': '100' } ] : // Numerator
-                [ { '__measure_count_alias__': '50' } ]; // Denominator
+                [{ '__measure_count_alias__': '100' }] : // Numerator
+                [{ '__measure_count_alias__': '50' }]; // Denominator
             }
           };
           const { result } = await calculateRateMeasure(
@@ -354,8 +361,8 @@ describe('measureCalculator', () => {
           const dataProvider = {
             rawQuery: async (query) => {
               return query.indexOf('denominatorCol') < 0 ?
-                [ { '__measure_sum_alias__': '300' } ] : // Numerator
-                [ { '__measure_sum_alias__': '100' } ]; // Denominator
+                [{ '__measure_sum_alias__': '300' }] : // Numerator
+                [{ '__measure_sum_alias__': '100' }]; // Denominator
             }
           };
           const { result } = await calculateRateMeasure(
@@ -494,7 +501,7 @@ describe('measureCalculator', () => {
       it('sets noReportingPeriodConfigured if reportingPeriod is not set', async () => {
         _.unset(measure, 'metricConfig.reportingPeriod');
 
-        const { errors } = await calculateMeasure(measure, undefined)
+        const { errors } = await calculateMeasure(measure, undefined);
         assert.propertyVal(errors, 'noReportingPeriodConfigured', true);
       });
 
@@ -602,7 +609,7 @@ describe('measureCalculator', () => {
       it('does not set calculationNotConfigured if reportingPeriod is not set', async () => {
         _.unset(measure, 'metricConfig.reportingPeriod');
 
-        const { errors } = await calculateMeasure(measure, undefined)
+        const { errors } = await calculateMeasure(measure, undefined);
         assert.propertyVal(errors, 'calculationNotConfigured', false);
       });
     });

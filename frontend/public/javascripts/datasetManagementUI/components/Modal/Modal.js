@@ -8,6 +8,7 @@ import PublishConfirmation from 'datasetManagementUI/containers/PublishConfirmat
 import RowIdentifierError from 'datasetManagementUI/containers/RowIdentifierErrorContainer';
 import SetupAutomation from 'datasetManagementUI/containers/SetupAutomationContainer';
 import FormatColumn from 'datasetManagementUI/containers/FormatColumnContainer';
+import ManageMetadata from 'datasetManagementUI/containers/ManageMetadataModalContainer';
 
 import styles from './Modal.module.scss';
 
@@ -59,6 +60,14 @@ const getModalProps = (props, contentComponentName, payload) => {
             {...payload} />
         ],
         className: styles.setupAutomation
+      };
+
+    case 'ManageMetadata':
+      return {
+        ...props,
+        children: [
+          <ManageMetadata key={1} />
+        ]
       };
 
     default:

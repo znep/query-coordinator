@@ -323,6 +323,7 @@ CatalogResults.defaultProps = {
   fetchingResults: false,
   fetchingResultsError: false,
   initialResultsFetched: false,
+  onClose: _.noop,
   pageNumber: 1,
   pageSize: DEFAULT_RESULTS_PER_PAGE,
   showBackButton: true

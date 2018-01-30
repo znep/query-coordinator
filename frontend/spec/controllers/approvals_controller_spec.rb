@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ApprovalsController do
+describe Administration::ApprovalsController do
   include TestHelperMethods
 
   before do

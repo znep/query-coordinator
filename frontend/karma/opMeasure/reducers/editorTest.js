@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import _ from 'lodash';
 
-import { EditTabs, PeriodTypes, PeriodSizes } from 'opMeasure/lib/constants';
+import { EditTabs, PeriodTypes, PeriodSizes } from 'common/performance_measures/lib/constants';
 import reducer from 'opMeasure/reducers/editor';
 import actions from 'opMeasure/actions';
 

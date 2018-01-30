@@ -100,7 +100,7 @@ const handleAddTeamMemberSuccess = (state, { teamId, newMember }) => ({
       team.id === teamId
         ? {
             ...team,
-            members: [...team.members, newMember]
+            members: [...getMembers(team), newMember]
           }
         : team
   )
@@ -123,7 +123,7 @@ const handleRemoveTeamMemberSuccess = (state, { teamId, userId }) => ({
       team.id === teamId
         ? {
             ...team,
-            members: filter(m => m.id !== userId, team.members)
+            members: filter(m => m.id !== userId, getMembers(team))
           }
         : team
   )
@@ -136,7 +136,7 @@ const handleChangeMemberRoleSuccess = (state, { teamId, userId, roleId }) => ({
       team.id === teamId
         ? {
             ...team,
-            members: team.members.map(
+            members: getMembers(team).map(
               member => (member.id === userId ? { ...member, teamRole: roleId } : member)
             )
           }
@@ -293,7 +293,7 @@ export const isOwner = flow(getTeamRole, eq('owner'));
 // Array[member] => owner
 export const findOwner = find(isOwner);
 // team => Array[member]
-export const getMembers = get('members');
+export const getMembers = getOr([], 'members');
 export const getMemberIds = team => map(getUserId, getMembers(team));
 // member => string
 export const getDisplayName = get('displayName');

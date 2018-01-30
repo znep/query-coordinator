@@ -93,7 +93,17 @@ export default class Legend {
       $bucketDiv.append($bucketValue, $bucketColor);
       $legendContainer.append($bucketDiv);
     });
-    this._visualizationElement.append($legendContainer);
+
+    // socrata-visualization(visualizationElememt)
+    //    |- socrata-visualization-container
+    //        |-  unified-map-instance
+    //        |-  legend-container
+    // socrata-visualization-container has a z-index of 1. So if we append
+    // Appending the Legend to .socrata-visualization-container so that it can
+    // be z-indexed behind the mapbox-gl popups.
+    this._visualizationElement.
+      find('.socrata-visualization-container').
+      append($legendContainer);
   }
 
   _getOrderedBuckets(buckets, type) {

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="<%= I18n.locale %>">
+
+<!--
+Powered by Socrata Publica
+http://www.socrata.com
+-->
+
+  <head>
+    <%# The "X-UA-Compatible" meta tag _must_ precede any <script> tag within the <head> otherwise IE will ignore it :jackie: %>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <%= javascript_polyfills %>
+
+    <%= site_chrome_analytics_tags %>
+    <%= site_chrome_meta_viewport_tag %>
+    <%= site_chrome_stylesheet_tag %>
+
+    <%= rendered_stylesheet_tag 'styleguide-layout' %>
+    <%= google_font_link %>
+
+    <%= render_global_socrata_state %>
+
+    <%= yield :head %>
+
+    <%= get_favicon_tag %>
+
+    <%= include_webpack_bundle 'shared/common' %>
+  </head>
+
+  <%= content_tag :body, :class => @body_classes do %>
+    <%== site_chrome_admin_header(request, response, @site_chrome_admin_header_options || {}) %>
+
+    <div id="noticeContainer">
+      <%= display_styleguide_flashes %>
+    </div>
+
+    <div class="admin-header">
+      <%= render 'administration/admin_breadcrumb' %>
+      <%= yield :admin_header %>
+    </div>
+
+    <div id="access-manager-container"></div>
+
+    <main role="main" id="content" class="administration <%= controller_name %>">
+      <%= yield %>
+    </main>
+
+    <%- if render_site_chrome? -%>
+      <%== site_chrome_footer(request, response) %>
+    <%- end -%>
+
+    <%# Ensure mixpanelConfig is defined before loading other scripts -%>
+    <%= render_mixpanel_config %>
+
+    <%= render_pendo_tracker %>
+
+    <%# dotdotdot and velocity are finicky about jQuery. -%>
+    <%# We made jquery an external, load it here and then bind it to window to be loaded into our Webpack bundle. -%>
+    <%= jquery_include('2.2.4') %>
+    <script type="text/javascript">window.jquery = window.jQuery;</script>
+
+    <%= render_ga_tracking %>
+
+    <%= site_chrome_javascript_tag %>
+
+    <script type="text/javascript">
+      window.translations = <%== json_escape(LocaleCache.render_all_translation_keys(@translation_keys).to_json) %>
+    </script>
+
+    <%= yield :translations %>
+
+    <%= yield :scripts %>
+
+    <%= include_webpack_bundle 'shared/siteWide' %>
+
+    <%= render_admin_qualtrics %>
+  <% end # end of body %>
+</html>

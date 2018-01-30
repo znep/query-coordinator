@@ -1,0 +1,32 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+#manage-metadata-modal {
+  .btn {
+    margin: 0 5px;
+    min-width: 150px;
+    line-height: 20px;
+  }
+
+  .dsmp-modal-footer {
+    margin-bottom: 1.75em;
+
+    .modal-footer-actions {
+      text-align: center;
+    }
+  }
+
+  .modal-content {
+    min-height: 164px;
+    position: relative;
+    text-align: center;
+
+    .dsmp-modal-msg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      transform: translate(-50%, -50%);
+    }
+  }
+}

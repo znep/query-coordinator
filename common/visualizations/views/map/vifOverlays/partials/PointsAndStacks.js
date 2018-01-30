@@ -1,10 +1,10 @@
 import _ from 'lodash';
 
-const SOURCES = Object.freeze({
+export const SOURCES = Object.freeze({
   POINTS_AND_STACKS: 'pointVectorDataSource'
 });
 
-const LAYERS = Object.freeze({
+export const LAYERS = Object.freeze({
   STACK_CIRCLE: 'stack-circle',
   STACK_COUNT_LABEL: 'stack-count-label',
   POINT: 'point'
@@ -126,7 +126,7 @@ export default class PointsAndStacks {
   }
 
   _sourceOptions(vif, renderOptions) {
-    return {
+    const options = {
       'type': 'vector',
       'geojsonTile': true,
       'cluster': true,
@@ -135,6 +135,11 @@ export default class PointsAndStacks {
       'tiles': [renderOptions.dataUrl],
       'minzoom': vif.getMaxClusteringZoomLevel() + 1
     };
+
+    if (_.isString(renderOptions.colorBy)) {
+      options.groupBy = renderOptions.colorBy;
+    }
+    return options;
   }
 
   _destroy() {

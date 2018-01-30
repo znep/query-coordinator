@@ -153,7 +153,7 @@ Rails.application.routes.draw do
       end
     end
 
-    scope :controller => 'internal_asset_manager' do
+    scope :controller => 'administration/internal_asset_manager' do
       get '/admin/assets',
         :action => 'show',
         :constraints => Constraints::InternalAssetManagerBetaConstraint.new
@@ -163,7 +163,7 @@ Rails.application.routes.draw do
         :constraints => FeatureFlags::RoutingConstraint.new(:use_internal_asset_manager)
     end
 
-    scope :controller => 'approvals' do
+    scope :controller => 'administration/approvals' do
       get '/admin/approvals',
         :action => 'show',
         :constraints => FeatureFlags::RoutingConstraint.new(:use_fontana_approvals)

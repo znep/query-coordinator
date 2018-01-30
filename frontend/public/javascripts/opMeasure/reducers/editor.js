@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
 import { assert, assertIsNumber, assertIsString, assertIsOneOfTypes } from 'common/js_utils';
+import { CalculationTypeNames, EditTabs } from 'common/performance_measures/lib/constants';
+import { isColumnUsableWithMeasureArgument } from 'common/performance_measures/measureCalculator';
 
 import validate from './validate';
 import actions from '../actions';
-import { CalculationTypeNames, EditTabs } from '../lib/constants';
-import { isColumnUsableWithMeasureArgument } from '../measureCalculator';
 
 const validateActionRegex = /^VALIDATE_/;
 

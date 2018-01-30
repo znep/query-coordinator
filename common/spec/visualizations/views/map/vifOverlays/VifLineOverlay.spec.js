@@ -125,9 +125,9 @@ describe('VifLineOverlay', () => {
       fakeServer.respondWith(query,
         [200, { 'Content-Type': 'application/json' }, stubResult]);
       expectedBuckets = [
-        { category: 'Place', color: '#e41a1c' },
-        { category: 'City', color: '#9e425a' },
-        { category: 'Other', color: '#596a98' }
+        { category: 'Place', id: 'Place', color: '#e41a1c' },
+        { category: 'City', id: 'City', color: '#9e425a' },
+        { category: 'Other', id: '__$$other$$__', color: '#596a98' }
       ];
     });
 
@@ -135,7 +135,7 @@ describe('VifLineOverlay', () => {
       it('should setup with colorLinesBy renderOptions', async() => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: sinon.match(['Place', 'City']),
-          dataUrl: sinon.match("CASE(agentType in ('Place','City'),agentType||'',true,'__$$other$$__') as __color_by_category__,count(*) as __count__ "),
+          dataUrl: sinon.match("CASE(agentType||'' in ('Place','City'),agentType||'',true,'__$$other$$__') as __color_by_category__,count(*) as __count__ "),
           colorBy: '__color_by_category__'
         });
 
@@ -157,7 +157,7 @@ describe('VifLineOverlay', () => {
       it('should setup with colorLinesBy renderOptions', async() => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: sinon.match(['Place', 'City']),
-          dataUrl: sinon.match("CASE(agentType in ('Place','City'),agentType||'',true,'__$$other$$__') as __color_by_category__,count(*) as __count__"),
+          dataUrl: sinon.match("CASE(agentType||'' in ('Place','City'),agentType||'',true,'__$$other$$__') as __color_by_category__,count(*) as __count__"),
           colorBy: '__color_by_category__',
           aggregateAndResizeBy: '__count__'
         });

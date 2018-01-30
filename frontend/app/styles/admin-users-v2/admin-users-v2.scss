@@ -4,10 +4,6 @@
 @import 'common/visualizations/views/styles/socrata-visualizations';
 @import 'common/styleguide/variables/colors';
 
-.admin-header {
-  border-bottom: 0;
-}
-
 // this is in the erb, so can't move to within react app
 #initial-spinner-container {
   padding-bottom: 10em;
@@ -69,7 +65,7 @@
   }
 
   .nav-bar {
-    background-color: $light-grey-5;
+    background-color: $light-grey-7;
     border-bottom: 1px solid $light-grey-3;
     display: flex;
     justify-content: space-between;
@@ -81,6 +77,10 @@
   }
 
   .nav-tabs {
+    a {
+      padding-bottom: 5px;
+    }
+
     border-bottom: 0;
     display: flex;
     flex-direction: column;
@@ -89,7 +89,7 @@
     padding-bottom: 0;
 
     > ul {
-      height: 2.25em;
+      height: 1.95rem;
       margin: 0;
       padding: 0;
     }

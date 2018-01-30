@@ -1,13 +1,25 @@
+import $ from 'jquery';
+
 import VifPointOverlay from 'common/visualizations/views/map/vifOverlays/VifPointOverlay';
 import { mapMockVif } from 'common/spec/visualizations/mapMockVif';
 import { getBaseMapLayerStyles } from 'common/visualizations/views/map/baseMapStyle';
 
 describe('VifPointOverlay', () => {
-  let vifPointOverlay;
-  let mockMap;
+  const visualizationElement = $('<div>', { 'class': 'socrata-visualization' });
+  let datasetMetadata;
   let fakeServer;
+  let mockMap;
+  let mouseInteractionHandler;
+  let vifPointOverlay;
 
   beforeEach(() => {
+    datasetMetadata = {
+      'columns' : [{
+        'id' : 169840668,
+        'name' : 'ID',
+        'dataTypeName' : 'number'
+      }]
+    };
     mockMap = {
       addSource: sinon.spy(),
       addLayer: sinon.spy(),
@@ -17,7 +29,11 @@ describe('VifPointOverlay', () => {
       setPaintProperty: sinon.spy(),
       style: {}
     };
-    vifPointOverlay = new VifPointOverlay(mockMap);
+    mouseInteractionHandler = {
+      setupOrUpdate: sinon.spy()
+    };
+
+    vifPointOverlay = new VifPointOverlay(mockMap, visualizationElement, mouseInteractionHandler);
     vifPointOverlay._pointsAndStacks = {
       setup: sinon.spy(),
       update: sinon.spy()
@@ -42,17 +58,20 @@ describe('VifPointOverlay', () => {
   describe('colorPointsBy and resizePointsByColumn not configured', () => {
     describe('colorPointsBy', () => {
       let vif;
+
       beforeEach(() => {
-        vif = mapMockVif({});
+        vif = mapMockVif({}, datasetMetadata);
         vif.series[0].mapOptions.colorPointsBy = null;
       });
+
       describe('setUp', () => {
         it('should render points and stacks without colorByCategories column configured', () => {
           const expectedRenderOptions = sinon.match({
             colorByCategories: null,
             aggregateAndResizeBy: '__count__',
             dataUrl: sinon.match("select snap_for_zoom(point,{snap_zoom}),count(*) as __count__ where {{'point' column condition}}"),
-            colorBy: '__color_by_category__'
+            colorBy: '__color_by_category__',
+            datasetMetadata
           });
 
           return vifPointOverlay.setup(vif).then(() => {
@@ -67,7 +86,8 @@ describe('VifPointOverlay', () => {
             colorByCategories: null,
             aggregateAndResizeBy: '__count__',
             dataUrl: sinon.match("select snap_for_zoom(point,{snap_zoom}),count(*) as __count__ where {{'point' column condition}}"),
-            colorBy: '__color_by_category__'
+            colorBy: '__color_by_category__',
+            datasetMetadata
           });
 
           return vifPointOverlay.update(vif).then(() => {
@@ -122,8 +142,9 @@ describe('VifPointOverlay', () => {
       vif = mapMockVif({});
       vif.series[0].mapOptions.colorPointsBy = 'brokerType';
 
+
       const query = 'https://example.com/api/id/r6t9-rak2.json\?$query=' +
-        'SELECT%20brokerType%20as%20__color_by_category__%2Ccount\\(\\*\\)%20as%20__count__%20' +
+        'SELECT%20brokerType%7C%7C\'\'%20as%20__color_by_category__%2Ccount\\(\\*\\)%20as%20__count__%20' +
         'GROUP%20BY%20brokerType%20' +
         'ORDER%20BY%20__count__%20desc%20' +
         'LIMIT%205' +
@@ -144,7 +165,8 @@ describe('VifPointOverlay', () => {
       it('should setup with colorPointsBy renderOptions', () => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: sinon.match(['It', 'Cat2']),
-          dataUrl: sinon.match("CASE(brokerType in ('It','Cat2'),brokerType||'',true,'__$$other$$__') as __color_by_category__"),
+
+          dataUrl: sinon.match("CASE(brokerType||'' in ('It','Cat2'),brokerType||'',true,'__$$other$$__') as __color_by_category__"),
           colorBy: '__color_by_category__'
         });
 
@@ -167,7 +189,7 @@ describe('VifPointOverlay', () => {
       it('should setup with colorPointsBy renderOptions', () => {
         const expectedRenderOptions = sinon.match({
           colorByCategories: sinon.match(['It', 'Cat2']),
-          dataUrl: sinon.match("CASE(brokerType in ('It','Cat2'),brokerType||'',true,'__$$other$$__') as __color_by_category__"),
+          dataUrl: sinon.match("CASE(brokerType||'' in ('It','Cat2'),brokerType||'',true,'__$$other$$__') as __color_by_category__"),
           colorBy: '__color_by_category__'
         });
 

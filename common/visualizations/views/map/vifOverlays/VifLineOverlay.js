@@ -128,10 +128,13 @@ export default class VifLineOverlay extends VifOverlay {
       // We are concatenating empty string to the resizeBy column to convert it to string.
       // Otherwise, depending on whether it is a numeric column or string column, we need to
       // use quotes around values(colorByCategories value) in case statement.
-      const colorByCategoriesString = _.chain(colorByCategories).map(SoqlHelpers.soqlEncodeValue).map(encodeURIComponent).value();
+      const colorByCategoriesString = _.chain(colorByCategories).
+        map(SoqlHelpers.soqlEncodeValue).
+        map(encodeURIComponent).
+        value();
 
       selects.push('CASE(' +
-        `${colorByColumn} in (${colorByCategoriesString}),` + // if Condition
+        `${colorByColumn}||'' in (${colorByCategoriesString}),` + // if Condition
         `${colorByColumn}||'',` + // if value
         'true,' + // else condition
         `'${OTHER_COLOR_BY_CATEGORY}'` + // else value

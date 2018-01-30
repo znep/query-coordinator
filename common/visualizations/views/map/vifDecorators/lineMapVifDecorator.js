@@ -13,12 +13,17 @@ export function getLineWeighByColumn() {
 }
 
 export function getLineColor(colorByColumnAlias, colorByCategories) {
-  if (colorByCategories == null) {
+  if (_.isNull(colorByCategories)) {
     return _.get(this, 'series[0].color.primary', '#ff00ff');
   }
 
   // +1 for 'other' category
   const colorPalette = this.getColorPalette(colorByCategories.length + 1);
+
+  if (_.isEmpty(colorByCategories)) {
+    return colorPalette[0];
+  }
+
   const stops = _.map(colorByCategories, (colorByCategory, index) => [colorByCategory, colorPalette[index]]);
 
   return {

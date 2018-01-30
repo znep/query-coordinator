@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
 import { shallow } from 'enzyme';
 
-import { CalculationTypeNames } from 'opMeasure/lib/constants';
+import { CalculationTypeNames } from 'common/performance_measures/lib/constants';
 import { CalculationPreview, mapStateToProps } from 'opMeasure/components/EditModal/CalculationPreview';
 
 describe('CalculationPreview', () => {

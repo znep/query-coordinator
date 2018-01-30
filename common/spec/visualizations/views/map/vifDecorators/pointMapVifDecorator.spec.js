@@ -40,4 +40,51 @@ describe('pointMapVifDecorator', () => {
       });
     });
   });
+  describe('pointColor', () => {
+    let vif;
+    beforeEach(() => {
+      vif = mapMockVif({});
+    });
+
+    describe('if colorCategories are null', () => {
+      it('should return default pointColor', () => {
+        const decoratedVif = _.merge({}, pointMapVifDecorator, vif);
+
+        assert.equal(
+          decoratedVif.getPointColor('__color_by__', null),
+          '#eb6900'
+        );
+      });
+    });
+
+    describe('if colorCategories are empty', () => {
+      it('should return first color of color palette ', () => {
+        const decoratedVif = _.merge({}, pointMapVifDecorator, vif);
+
+        assert.equal(
+          decoratedVif.getPointColor('__color_by__', []),
+          '#e41a1c'
+        );
+      });
+    });
+
+    describe('if colorCategories are not Null', () => {
+      it('should return pointColor Buckets ', () => {
+        vif.series[0].color.palette = 'categorical';
+        const decoratedVif = _.merge({}, pointMapVifDecorator, vif);
+
+        const pointColor = decoratedVif.getPointColor('__color_by__', ['police', 'county', 'city', 'bus']);
+        const expectedResult = {
+          property: '__color_by__',
+          type: 'categorical',
+          stops: [['police', '#a6cee3'],
+          ['county', '#5b9ec9'],
+          ['city', '#2d82af'],
+          ['bus', '#7eba98']],
+          default: '#98d277'
+        };
+        assert.deepEqual(pointColor, expectedResult);
+      });
+    });
+  });
 });

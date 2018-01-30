@@ -5,10 +5,10 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import I18n from 'common/i18n';
+import MeasureResultCard from 'common/performance_measures/components/MeasureResultCard';
+import MeasureChart from 'common/performance_measures/components/MeasureChart';
 
 import AboutThisMeasure from './AboutThisMeasure';
-import MeasureResultCard from './MeasureResultCard';
-import MeasureChart from './MeasureChart';
 
 // Pane containing the primary visual representations of the metric (value of
 // most recent reporting period + timeline), as well as prose information about

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { assert } from 'chai';
-import DateRange from 'opMeasure/lib/dateRange';
+import DateRange from 'common/performance_measures/lib/dateRange';
 
 import { assertDateRangeIs } from '../testHelpers';
 

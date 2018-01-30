@@ -21,7 +21,7 @@ export class MeasureChart extends Component {
       <div className="measure-result-placeholder">
         <SocrataIcon name="line-chart" />
         <div className="measure-result-placeholder-text">
-          {I18n.t('open_performance.no_visualization')}
+          {I18n.t('shared.performance_measures.no_visualization')}
         </div>
       </div>
     );

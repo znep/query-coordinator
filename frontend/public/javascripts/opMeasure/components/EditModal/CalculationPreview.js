@@ -6,10 +6,10 @@ import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
 import { Checkbox } from 'common/components';
+import MeasureResultCard from 'common/performance_measures/components/MeasureResultCard';
+import { CalculationTypeNames } from 'common/performance_measures/lib/constants';
 
 import { setUnitLabel, setDecimalPlaces, toggleDisplayAsPercent } from '../../actions/editor';
-import { CalculationTypeNames } from '../../lib/constants';
-import MeasureResultCard from '../MeasureResultCard';
 
 // Right hand preview and display options for calculation
 export class CalculationPreview extends Component {

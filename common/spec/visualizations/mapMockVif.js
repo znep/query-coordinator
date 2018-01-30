@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import * as vifDecorator from 'common/visualizations/views/map/vifDecorators/vifDecorator';
 
-export const mapMockVif = (overrides) => {
+export const mapMockVif = (overrides, datasetMetadata = {}) => {
   let base = {
     'configuration': {
       'viewSourceDataLink': false,
@@ -31,7 +31,10 @@ export const mapMockVif = (overrides) => {
       },
       'label': null,
       'type': 'map',
-      'mapOptions': {},
+      'mapOptions': {
+        mapFlyoutTitleColumnName: 'category',
+        additionalFlyoutColumns: []
+      },
       'unit': {
         'one': 'Thing',
         'other': 'Things'
@@ -44,7 +47,10 @@ export const mapMockVif = (overrides) => {
       'version': 2
     },
     'description': 'Description from VIF',
-    'title': 'Title'
+    'title': 'Title',
+    'getDatasetMetadata': async () => {
+      return datasetMetadata;
+    }
   };
 
   return vifDecorator.getDecoratedVif(_.defaultsDeep(overrides, base));

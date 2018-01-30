@@ -43,7 +43,7 @@ export class TeamsTable extends Component {
     return (<Link to={getTeamViewPath(id)}>{screenName}</Link>);
   };
 
-  renderMembersCell = (members, { id }) => {
+  renderMembersCell = (members = [], { id }) => {
     const { getTeamViewPath } = this.props;
     return (<Link to={getTeamViewPath(id)}>{members.length}</Link>);
   };

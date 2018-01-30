@@ -1,23 +1,23 @@
 import _ from 'lodash';
 
-import VifOverlay from './VifOverlay';
+import RenderByHelper from 'common/visualizations/helpers/RenderByHelper';
+import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
+import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
+import { COLOR_BY_BUCKETS_COUNT } from 'common/visualizations/views/mapConstants';
+
+import Clusters from './partials/Clusters';
 import Legend from './partials/Legend';
+import PointsAndStacks from './partials/PointsAndStacks';
+import VifOverlay from './VifOverlay';
 import { getBaseMapLayerStyles } from '../baseMapStyle';
 
-import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
-import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
-import PointsAndStacks from './partials/PointsAndStacks';
-import Clusters from './partials/Clusters';
-import { COLOR_BY_BUCKETS_COUNT } from 'common/visualizations/views/mapConstants';
-import RenderByHelper from 'common/visualizations/helpers/RenderByHelper';
-
-const OTHER_COLOR_BY_CATEGORY = '__$$other$$__';
 const COLOR_BY_CATEGORY_ALIAS = '__color_by_category__';
-const RESIZE_BY_ALIAS = '__resize_by__';
 const COUNT_ALIAS = '__count__';
+const RESIZE_BY_ALIAS = '__resize_by__';
+export const OTHER_COLOR_BY_CATEGORY = '__$$other$$__';
 
 export default class VifPointOverlay extends VifOverlay {
-  constructor(map, visualizationElement) {
+  constructor(map, visualizationElement, mouseInteractionHandler) {
     const sourceIds = [].concat(PointsAndStacks.sourceIds()).concat(Clusters.sourceIds());
     const layerIds = [].concat(PointsAndStacks.layerIds()).concat(Clusters.layerIds());
     super(map, sourceIds, layerIds);
@@ -25,6 +25,7 @@ export default class VifPointOverlay extends VifOverlay {
     this._pointsAndStacks = new PointsAndStacks(map);
     this._clusters = new Clusters(map);
     this._legend = new Legend(visualizationElement);
+    this._mouseInteractionHandler = mouseInteractionHandler;
   }
 
   async setup(vif) {
@@ -36,6 +37,7 @@ export default class VifPointOverlay extends VifOverlay {
     );
     this._pointsAndStacks.setup(vif, renderOptions);
     this._clusters.setup(vif, renderOptions);
+    this._mouseInteractionHandler.setupOrUpdate(vif, renderOptions);
 
     return renderOptions;
   }
@@ -49,6 +51,7 @@ export default class VifPointOverlay extends VifOverlay {
     );
     this._pointsAndStacks.update(vif, renderOptions);
     this._clusters.update(vif, renderOptions);
+    this._mouseInteractionHandler.setupOrUpdate(vif, renderOptions);
 
     return renderOptions;
   }
@@ -63,12 +66,10 @@ export default class VifPointOverlay extends VifOverlay {
     const resizeByColumn = vif.getPointResizeByColumn();
 
     try {
-      let colorByCategories;
-      let resizeByRange;
-
-      [colorByCategories, resizeByRange] = await Promise.all([
+      const [colorByCategories, resizeByRange, datasetMetadata] = await Promise.all([
         RenderByHelper.getColorByCategories(vif, this._pointDataset(vif), colorByColumn),
-        RenderByHelper.getResizeByRange(vif, this._pointDataset(vif), resizeByColumn)
+        RenderByHelper.getResizeByRange(vif, this._pointDataset(vif), resizeByColumn),
+        vif.getDatasetMetadata()
       ]);
 
       if (this._preparingForVif !== vif) {
@@ -77,6 +78,7 @@ export default class VifPointOverlay extends VifOverlay {
 
       return {
         colorByCategories,
+        datasetMetadata,
         resizeByRange,
         countBy: COUNT_ALIAS,
         colorBy: COLOR_BY_CATEGORY_ALIAS,
@@ -132,9 +134,12 @@ export default class VifPointOverlay extends VifOverlay {
       // We are concatenating empty string to the resizeBy column to convert it to string.
       // Otherwise, depending on whether it is a numeric column or string column, we need to
       // use quotes around values(colorByCategories value) in case statement.
-      const colorByCategoriesString = _.map(colorByCategories, SoqlHelpers.soqlEncodeValue);
+      const colorByCategoriesString = _.chain(colorByCategories).
+        map(SoqlHelpers.soqlEncodeValue).
+        map(encodeURIComponent).
+        value();
       selects.push('CASE(' +
-        `${colorByColumn} in (${colorByCategoriesString}),` + // if Condition
+        `${colorByColumn}||'' in (${colorByCategoriesString}),` + // if Condition
         `${colorByColumn}||'',` + // if value
         'true,' + // else condition
         `'${OTHER_COLOR_BY_CATEGORY}'` + // else value

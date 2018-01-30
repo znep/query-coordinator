@@ -130,3 +130,10 @@ Notifications:
 100 Notifications Panel
 1 Notifications Panel Footer
 0 Notifications Secondary Panel
+
+Maps:
+2 mapboxgl-ctrl-top-left
+2 mapboxgl-ctrl-top-right
+2 mapboxgl-ctrl-bottom-left
+2 mapboxgl-ctrl-bottom-right
+3 mapboxgl-popup

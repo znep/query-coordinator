@@ -96,7 +96,7 @@ export default function map(state, action) {
 
     case actions.SET_STACK_RADIUS:
       const stackRadius = parseInt(action.stackRadius);
-      _.set(state, 'series[0].mapOptions.stackRadius', _.isFinite(stackRadius) ? _.clamp(stackRadius, 10, 80) : null);
+      _.set(state, 'series[0].mapOptions.stackRadius', _.isFinite(stackRadius) ? _.clamp(stackRadius, 1, 80) : null);
       break;
 
     case actions.SET_BASE_LAYER:

@@ -10,7 +10,7 @@ export function getNumberOfDataClasses() {
 }
 
 export function getMaxClusteringZoomLevel() {
-  return _.get(this, 'series[0].mapOptions.maxClusteringZoomLevel', 11);
+  return _.get(this, 'series[0].mapOptions.maxClusteringZoomLevel', 9);
 }
 
 export function getClusterRadius() {
@@ -18,7 +18,7 @@ export function getClusterRadius() {
 }
 
 export function getStackRadius() {
-  return _.get(this, 'series[0].mapOptions.stackRadius', 20);
+  return _.get(this, 'series[0].mapOptions.stackRadius', 1);
 }
 
 export function getPointResizeByColumn() {

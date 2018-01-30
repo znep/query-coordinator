@@ -45,7 +45,7 @@ describe('Lines', () => {
           type: 'line',
           paint: {
             'line-color':'#eb6900',
-            'line-width': 5
+            'line-width': 2
           }
         })
       );

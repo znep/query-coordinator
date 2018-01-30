@@ -36,7 +36,7 @@ export function getLineColor(colorByColumnAlias, colorByCategories) {
 
 export function getLineWidth(aggregateAndResizeBy, resizeByRange) {
   if (!_.isString(this.getLineWeighByColumn())) {
-    return _.get(this, 'series[0].mapOptions.lineWeight', 5);
+    return _.get(this, 'series[0].mapOptions.lineWeight', 2);
   }
 
   const minWidth = _.get(this, 'series[0].mapOptions.minimumLineWeight', 3);

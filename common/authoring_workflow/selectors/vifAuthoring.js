@@ -150,7 +150,7 @@ export const getNumberOfDataClasses = createSelector(
 
 export const getMaxClusteringZoomLevel = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.maxClusteringZoomLevel', 11)
+  (vif) => _.get(vif, 'series[0].mapOptions.maxClusteringZoomLevel', 9)
 );
 
 export const getPointThreshold = createSelector(
@@ -170,7 +170,7 @@ export const getMaxClusterSize = createSelector(
 
 export const getStackRadius = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.stackRadius', 20)
+  (vif) => _.get(vif, 'series[0].mapOptions.stackRadius', 1)
 );
 
 export const getPointColorByColumn = createSelector(
@@ -180,7 +180,7 @@ export const getPointColorByColumn = createSelector(
 
 export const getLineWeight = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.lineWeight', 5)
+  (vif) => _.get(vif, 'series[0].mapOptions.lineWeight', 2)
 );
 
 export const getLineWeightByColumn = createSelector(

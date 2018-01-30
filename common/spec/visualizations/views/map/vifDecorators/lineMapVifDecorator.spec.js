@@ -11,7 +11,7 @@ describe('lineMapVifDecorator', () => {
 
     describe('lineWeight is not configured in map options', () => {
       it('should return default LineWidth', () => {
-        let defaultLineWidth = 5;
+        let defaultLineWidth = 2;
         let decoratedVif = _.merge({}, lineMapVifDecorator, vif);
 
         let lineWidth = decoratedVif.getLineWidth();

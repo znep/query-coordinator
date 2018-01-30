@@ -17,6 +17,12 @@
     text-decoration: none;
     color: $black;
   }
+  span.dsmp-status-text {
+    color: $light-grey-2;
+  }
+  span.dsmp-status-text-error {
+    color: $error;
+  }
 
   @media (max-width: 750px) {
     position: static;
@@ -59,6 +65,4 @@
       }
     }
   }
-
 }
-

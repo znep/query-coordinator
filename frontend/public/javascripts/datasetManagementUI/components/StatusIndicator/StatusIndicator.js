@@ -6,29 +6,37 @@ import {
   ERRORED,
   INITIALIZED
 } from 'datasetManagementUI/components/ManageMetadata/ManageMetadata';
-import styles from './StatusIndicator.module.scss';
+import SocrataIcon from 'common/components/SocrataIcon';
 
 const StatusIndicator = ({ formStatus }) => {
   let colorClass;
+  let iconName;
 
   switch (formStatus) {
     case INITIALIZED:
-      colorClass = styles.base;
+      colorClass = 'dsmp-status-initialized';
       break;
     case SAVED:
-      colorClass = styles.saved;
+      colorClass = 'dsmp-status-saved';
+      iconName = 'checkmark-alt';
       break;
     case UNSAVED:
-      colorClass = styles.unsaved;
+      colorClass = 'dsmp-status-unsaved';
+      iconName = 'pending';
       break;
     case ERRORED:
-      colorClass = styles.errored;
+      colorClass = 'dsmp-status-errored';
+      iconName = 'warning-alt';
       break;
     default:
-      colorClass = styles.base;
+      colorClass = 'dsmp-status-initialized';
   }
 
-  return <span className={colorClass}> </span>;
+  return (
+    <span id="status-indicator">
+      {iconName ? <SocrataIcon name={iconName} className={colorClass} /> : <span className={colorClass} />}
+    </span>
+  );
 };
 
 StatusIndicator.propTypes = {

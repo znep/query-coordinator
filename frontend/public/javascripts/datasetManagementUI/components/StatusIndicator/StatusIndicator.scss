@@ -1,0 +1,39 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+#status-indicator {
+  .socrata-icon {
+    height: 26px;
+    width: 26px;
+    top: 50%;
+    right: 10%;
+    transform: translateY(-50%);
+    position: absolute;
+  }
+
+  .dsmp-status-initialized {
+    top: 50%;
+    right: 10%;
+    transform: translateY(-50%);
+    position: absolute;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 1px solid $primary-base;
+  }
+
+  .dsmp-status-saved {
+    color: $success-dark;
+  }
+
+  .dsmp-status-unsaved {
+    color: $primary-base;
+  }
+
+  .dsmp-status-errored {
+    color: $error;
+  }
+}

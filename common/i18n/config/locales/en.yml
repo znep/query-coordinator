@@ -432,10 +432,10 @@ en:
           button:
             delete: 'Yes'
             cancel: Cancel
-        advance_search:
+        advanced_search:
           alert_title: Create your own alert
-          description: SoQL. An alert will be sent each time the dataset is updated and the parameters are met
-          text_box_description: Enter your SOQL
+          description: Please enter your SoQL statement. An alert will be sent when the dataset is updated and the SoQL statement returns one or more rows.
+          text_box_description: Enter your SoQL statement
         info:
           name_error: Please Name this Alert
           valid_query: Looks good!

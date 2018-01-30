@@ -1836,6 +1836,7 @@ en:
       map: Maps
       measure: Measures
     visibility:
+      approval_message: (requires approval)
       pending_approval_html: <strong>Private</strong> and <strong>pending approval</strong>
       awaiting_approval_html: <strong>Private</strong> and <strong>awaiting approval</strong>
       private: private

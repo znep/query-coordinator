@@ -497,6 +497,12 @@
       label {
         margin-left: 0.5em;
       }
+
+      #manage-permissions-approval-message {
+        display: none;
+        font-size: 12px;
+        margin-left: 0.5em;
+      }
     }
     .disabledFeatureFlags {
       label {

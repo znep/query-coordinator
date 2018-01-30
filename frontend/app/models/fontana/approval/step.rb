@@ -9,7 +9,7 @@ module Fontana
 
       def initialize(approvalWorkflow, data)
         self.approvalWorkflow = approvalWorkflow
-        data.each do |key, value|
+        data.with_indifferent_access.each do |key, value|
           if key == 'tasks'
             public_send(:tasks=, value.map { |task| Fontana::Approval::Task.new(self, task) })
           else

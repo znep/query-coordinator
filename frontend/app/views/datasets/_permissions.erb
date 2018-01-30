@@ -11,7 +11,10 @@
                   <%= raw('checked="checked"') if @view.is_public? %>
                   class="toggleDatasetPermissions" value="makePublic"/>
           </div>
-          <label for="public"><%= t('core.visibility.public').capitalize %></label>
+          <label for="public">
+            <%= t('core.visibility.public').capitalize %>
+            <span id="manage-permissions-approval-message"><%= t('core.visibility.approval_message') %></span>
+          </label>
         </div>
         <div class="line inputFirst">
           <div class="inputWrapper">

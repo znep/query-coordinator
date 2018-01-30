@@ -21,7 +21,10 @@ function updatePageBasedOnApprovalOutcome(assetWillEnterApprovalsQueue) {
       document.getElementById('derived-view-approval-message').style.display = 'inherit';
     }
 
-    // TODO: update other parts of the new grid view UI based on assetWillEnterApprovalsQueue
+    // EN-21598: Show approval message next to "Public" radio button if the asset is currently private.
+    if (!blist.dataset.isPublic()) {
+      document.getElementById('manage-permissions-approval-message').style.display = 'inline';
+    }
   }
 }
 

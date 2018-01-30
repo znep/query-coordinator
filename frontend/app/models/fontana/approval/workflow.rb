@@ -27,15 +27,16 @@ module Fontana
               :headers => instance.approval_request_headers
             ).parsed_response.find { |workflow| workflow.to_h['outcome'] == 'publicize' }.to_h['id']
           end
+
           raise RuntimeError.new('Unable to determine workflow_id') unless workflow_id
 
           response = get(
             "#{APPROVALS_API_URI}/#{workflow_id}",
             :headers => instance.approval_request_headers
-          ).parsed_response
+          ).parsed_response.with_indifferent_access
           ATTRIBUTE_NAMES.each do |key|
-            value = response[key]
-            if key == 'steps'
+            value = response.fetch(key)
+            if key == :steps
               instance.public_send(:steps=, value.map { |step| Fontana::Approval::Step.new(instance, step) })
             else
               instance.public_send("#{key}=", value)

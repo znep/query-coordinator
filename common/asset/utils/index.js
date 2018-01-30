@@ -9,12 +9,14 @@ export const assetWillEnterApprovalsQueueOnPublish = ({ coreView, assetWillBePub
     return false;
   }
 
-  const getResult = (assetIsAutoApproved) => !!(
-    !assetIsAutoApproved &&
-    helpers.currentUserHasRights() &&
-    (helpers.assetIsPublic(coreView) || assetWillBePublic) &&
-    helpers.manualApprovalRequiredForProvenanceType(coreView)
-  );
+  const getResult = (assetIsAutoApproved) => {
+    return !!(
+      !assetIsAutoApproved &&
+      helpers.currentUserHasRights() &&
+      (helpers.assetIsPublic(coreView) || assetWillBePublic) &&
+      helpers.manualApprovalRequiredForProvenanceType(coreView)
+    );
+  };
 
   if (coreView.publishedViewUid) {
     // If the asset has a publishedViewUid then we check its published view for the 'approved' status.

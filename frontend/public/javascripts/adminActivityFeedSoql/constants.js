@@ -30,6 +30,7 @@ export const EVENT_TYPES = [
   'ApprovalChanged',
   'AssetCreated',
   'AssetDeleted',
+  'AssetRestored',
   'AssetMetadataChanged',
   'AssetOwnerChanged',
   'AssetPermissionsChanged',

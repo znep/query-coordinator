@@ -3828,6 +3828,7 @@ en:
               approval_changed: Approval Changed
               asset_created: Asset Created
               asset_deleted: Asset Deleted
+              asset_restored: Asset Restored
               asset_metadata_changed: Asset Metadata Changed
               asset_owner_changed: Asset Owner Changed
               asset_permissions_changed: Asset Permissions Changed

@@ -4,12 +4,16 @@ class Administration::ActivityFeedController < AdministrationController
   # Activity Feed
   #
 
+  layout 'administration'
+
   before_filter :only => [:index, :show] do |c|
     c.check_auth_level(UserRights::VIEW_ALL_DATASET_STATUS_LOGS)
   end
 
   def index
-    return soql_index if FeatureFlags.derive(nil, request).enable_activity_log_soql
+    if FeatureFlags.derive(nil, request).enable_activity_log_soql
+      return render 'soql_index'
+    end
 
     page_size = 30
     all_threshold = 8
@@ -93,11 +97,6 @@ class Administration::ActivityFeedController < AdministrationController
     rescue ImportStatusService::ServerError
       return render_500
     end
-  end
-
-  def soql_index
-
-    render 'soql_index', :layout => 'styleguide'
   end
 
   private

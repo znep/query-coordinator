@@ -1259,11 +1259,10 @@ module ApplicationHelper
     return false if action_name == 'new'
 
     # On DSMUI, we also need a second flag to decide rendering.
-    on_dsmui = controller_name == 'datasets' &&
-      %w(show_revision current_revision).include?(action_name)
-    return false if on_dsmui &&
-      FeatureFlags.value_for(:enable_asset_action_bar_on_dsmui,
-                             view: @view, request: _req) == false
+    on_dsmui = controller_name == 'datasets' && %w(show_revision current_revision).include?(action_name)
+    if on_dsmui && !FeatureFlags.value_for(:enable_asset_action_bar_on_dsmui, view: @view, request: _req)
+      return false
+    end
 
     # Currently we want it to show on DSLP and nowhere else,
     # but it will eventually be in other places.

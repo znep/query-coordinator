@@ -1,6 +1,5 @@
-// This mirrors frontend/app/styles/screen-admin.scss, and should
-// be kept in sync with that file (and vice versa)
 $site-chrome-admin-header-height: 46px;
+
 .admin-header {
   margin: $site-chrome-admin-header-height 0 0;
   min-height: $site-chrome-admin-header-height;
@@ -8,7 +7,7 @@ $site-chrome-admin-header-height: 46px;
   border-bottom: 1px solid $light-grey-4;
   font-family: Open Sans,Helvetica,Arial,sans-serif;
   box-sizing: border-box;
-  background: $light-grey-6;
+  background: $light-grey-7;
 }
 
 .admin-breadcrumb {
@@ -17,6 +16,8 @@ $site-chrome-admin-header-height: 46px;
   h1 {
     font-weight: 400;
     font-size: 23px;
+    line-height: normal;
+    margin-bottom: 0;
 
     .internal-link {
       display: block;
@@ -25,8 +26,18 @@ $site-chrome-admin-header-height: 46px;
       font-size: 15px;
       font-weight: normal;
 
+      @media (max-width : 600px) {
+        .internal-link-text {
+          display: none;
+        }
+      }
+    }
+
+    a {
+      text-decoration: none;
+
       &:hover {
-        text-decoration: none;
+        text-decoration: underline;
 
         span {
           text-decoration: underline;

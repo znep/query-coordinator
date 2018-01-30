@@ -1,110 +1,108 @@
-<% if logged_in? %>
-  <script>
-    window.socrata = window.socrata || {};
-    window.socrata.siteChrome = window.socrata.siteChrome || {};
-    <%= raw "window.socrata.siteChrome.appToken = '#{app_token}';" if app_token %>
-  </script>
+<script>
+  window.socrata = window.socrata || {};
+  window.socrata.siteChrome = window.socrata.siteChrome || {};
+  <%== "window.socrata.siteChrome.appToken = '#{app_token}';" if app_token %>
+</script>
 
-  <section
-    id="site-chrome-admin-header"
-    role="navigation"
-    class="<%= local_assigns.has_key?(:size) ? "site-chrome-#{size}" : '' %>">
+<header
+  id="site-chrome-admin-header"
+  role="navigation"
+  class="<%= local_assigns.has_key?(:size) ? "site-chrome-#{size}" : '' %>">
 
-    <div class="site-chrome-admin-header-section">
-      <div class="site-chrome-admin-title">
-        <a href="/"><%= admin_title %></a>
-      </div>
-
-      <div class="site-chrome-admin-separator"></div>
-
-      <div class="site-chrome-admin-menus" role="menubar">
-        <% if open_performance_enabled? %>
-          <%= render 'site_chrome/admin/open_performance' %>
-        <% else %>
-          <div id="site-chrome-data-catalog" class="site-chrome-admin-menu">
-            <a href="/browse"><%= t('shared.site_chrome.admin.data_catalog.title') %></a>
-          </div>
-        <% end %>
-
-        <%- if current_user_can_see_create_menu? -%>
-          <%= render 'site_chrome/admin/create_menu' %>
-        <%- end -%>
-      </div>
+  <div class="site-chrome-admin-header-section">
+    <div class="site-chrome-admin-title">
+      <%= link_to(admin_title, '/') %>
     </div>
 
-    <div class="site-chrome-admin-header-section">
-      <div
-        id="site-chrome-header-notifications"
-        tabIndex="-1"
-        class="<%= 'site-chrome-with-settings-button' if current_user_can_see_admin_link? %>">
-        <%# This gets filled in by notifications JS %>
-      </div>
+    <div class="site-chrome-admin-separator"></div>
 
-      <div class="site-chrome-admin-separator"></div>
-
-      <% if current_user_can_see_admin_link? %>
-        <div class="site-chrome-admin-settings"
-          tabIndex="0"
-          role="button"
-          aria-haspopup="true"
-          aria-label="<%= t('shared.site_chrome.header.settings_menu.title') %>">
-          <%= render 'site_chrome/admin/settings' %>
+    <div class="site-chrome-admin-menus" role="menubar">
+      <% if open_performance_enabled? %>
+        <%= render 'site_chrome/admin/open_performance' %>
+      <% else %>
+        <div id="site-chrome-data-catalog" class="site-chrome-admin-menu">
+          <%= link_to(t('shared.site_chrome.admin.data_catalog.title'), '/browse') %>
         </div>
-
-        <div class="site-chrome-admin-separator"></div>
       <% end %>
 
-      <div class="site-chrome-admin-search collapsible-search"
-        data-autocomplete="true"
-        data-autocomplete-collapsible="true"
-        data-admin-header-classes="<%= local_assigns.has_key?(:size) && size == 'small' ? 'for-admin-header site-chrome-small' : 'for-admin-header' %>">
-        <span class="socrata-icon-search collapsible-search-toggle"
-          title="<%= t('shared.site_chrome.header.search') %>" role="button" tabindex="0">
-        </span>
+      <%- if current_user_can_see_create_menu? -%>
+        <%= render 'site_chrome/admin/create_menu' %>
+      <%- end -%>
+    </div>
+  </div>
 
-        <%= render 'site_chrome/searchbox', path: site_chrome_massage_url('/browse'), vanishing_search_button: true %>
-      </div>
+  <div class="site-chrome-admin-header-section">
+    <div
+      id="site-chrome-header-notifications"
+      tabIndex="-1"
+      class="<%= 'site-chrome-with-settings-button' if current_user_can_see_admin_link? %>">
+      <%# This gets filled in by notifications JS %>
+    </div>
 
-      <div class="site-chrome-admin-separator"></div>
+    <div class="site-chrome-admin-separator"></div>
 
-      <div
-        class="site-chrome-admin-user"
+    <% if current_user_can_see_admin_link? %>
+      <div class="site-chrome-admin-settings"
         tabIndex="0"
         role="button"
         aria-haspopup="true"
-        aria-label="<%= t('shared.site_chrome.header.profile') %>">
-        <%= render 'site_chrome/admin/user' %>
+        aria-label="<%= t('shared.site_chrome.header.settings_menu.title') %>">
+        <%= render 'site_chrome/admin/settings' %>
       </div>
+
+      <div class="site-chrome-admin-separator"></div>
+    <% end %>
+
+    <div class="site-chrome-admin-search collapsible-search"
+      data-autocomplete="true"
+      data-autocomplete-collapsible="true"
+      data-admin-header-classes="<%= local_assigns.has_key?(:size) && size == 'small' ? 'for-admin-header site-chrome-small' : 'for-admin-header' %>">
+      <span class="socrata-icon-search collapsible-search-toggle"
+        title="<%= t('shared.site_chrome.header.search') %>" role="button" tabindex="0">
+      </span>
+
+      <%= render 'site_chrome/searchbox', path: site_chrome_massage_url('/browse'), vanishing_search_button: true %>
     </div>
 
-    <script type="text/javascript">
-      document.addEventListener(
-        'DOMContentLoaded',
-        function() {
-          if (window.headerNotifications && document.getElementById('site-chrome-header-notifications')) {
-            var options = {
-              currentDomainFeatures: <%== current_domain_features_map.to_json %>,
-              currentUserRole: <%== current_user_role.to_json %>,
-              developmentMode: <%== is_development_mode? %>,
-              inProductTransientNotificationsEnabled: <%= get_feature_flag('in_product_transient_notifications') %>,
-              isSuperAdmin: <%== is_superadmin? %>,
-              lockScrollbar: false,
-              mapboxAccessToken: <%== mapbox_access_token.to_json %>,
-              scrollTop: 0,
-              showMyAlertPreference: <%= show_alert_preference? %>,
-              showProductNotifications: true,
-              showUserNotifications: <%= get_feature_flag('enable_user_notifications') %>
-            };
+    <div class="site-chrome-admin-separator"></div>
 
-            window.headerNotifications('#site-chrome-header-notifications',
-              options,
-              <%== json_escape current_user_id.to_json %>,
-              <%== json_escape I18n.t(".shared.site_chrome.notifications").to_json %>
-            );
-          }
-        },
-        false
-      );
-    </script>
-  </section>
-<% end %>
+    <div
+      class="site-chrome-admin-user"
+      tabIndex="0"
+      role="button"
+      aria-haspopup="true"
+      aria-label="<%= t('shared.site_chrome.header.profile') %>">
+      <%= render 'site_chrome/admin/user' %>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    document.addEventListener(
+      'DOMContentLoaded',
+      function() {
+        if (window.headerNotifications && document.getElementById('site-chrome-header-notifications')) {
+          var options = {
+            currentDomainFeatures: <%== current_domain_features_map.to_json %>,
+            currentUserRole: <%== current_user_role.to_json %>,
+            developmentMode: <%== is_development_mode? %>,
+            inProductTransientNotificationsEnabled: <%= get_feature_flag('in_product_transient_notifications') %>,
+            isSuperAdmin: <%== is_superadmin? %>,
+            lockScrollbar: false,
+            mapboxAccessToken: <%== mapbox_access_token.to_json %>,
+            scrollTop: 0,
+            showMyAlertPreference: <%= show_alert_preference? %>,
+            showProductNotifications: true,
+            showUserNotifications: <%= get_feature_flag('enable_user_notifications') %>
+          };
+
+          window.headerNotifications('#site-chrome-header-notifications',
+            options,
+            <%== json_escape current_user_id.to_json %>,
+            <%== json_escape I18n.t(".shared.site_chrome.notifications").to_json %>
+          );
+        }
+      },
+      false
+    );
+  </script>
+</header>

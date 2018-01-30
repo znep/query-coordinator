@@ -10,12 +10,10 @@
 
 <% admin_breadcrumb('screens.admin.site_appearance.site_appearance') %>
 
-<% content_for :admin_header do %>
-  <div class="site-appearance-header">
-    <%= render 'tabs' %>
-    <%= render 'page_controls' %>
-  </div>
-<% end %>
+<div class="site-appearance-header">
+  <%= render 'tabs' %>
+  <%= render 'page_controls' %>
+</div>
 
 <div class="site-appearance <%= 'custom' if enable_custom_chrome? %>">
   <div class="site-appearance-admin-header">

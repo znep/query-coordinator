@@ -1,4 +1,4 @@
-class ApprovalsController < AdministrationController
+class Administration::ApprovalsController < AdministrationController
 
   include ApplicationHelper
   include AdministrationHelper
@@ -9,7 +9,7 @@ class ApprovalsController < AdministrationController
   before_filter :fetch_approvers, :only => :settings
   before_filter :fetch_approval
 
-  layout 'styleguide'
+  layout 'administration'
 
   def disable_site_chrome?
     true

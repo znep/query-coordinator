@@ -290,7 +290,7 @@ describe SiteChromeHelper do
     end
 
     context 'for Internal Asset Manager' do
-      let(:subject) { InternalAssetManagerController.new }
+      let(:subject) { Administration::InternalAssetManagerController.new }
       let(:chrome_enabled) { true }
 
       it 'returns false' do

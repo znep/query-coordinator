@@ -269,7 +269,6 @@ module AdministrationHelper
     render_qualtrics_survey('admin')
   end
 
-
   def show_site_appearance_admin_panel?
     !!current_user.try(:can_use_site_appearance?) &&
       !SocrataSiteChrome::CustomContent.new(CurrentDomain.cname).activated?

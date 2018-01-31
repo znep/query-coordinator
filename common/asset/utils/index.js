@@ -6,7 +6,7 @@ import * as helpers from './helpers';
 // TODO: ideally this logic would just be done within Core and included in the asset's coreView.
 export const assetWillEnterApprovalsQueueOnPublish = ({ coreView, assetWillBePublic }) => {
   if (!FeatureFlags.value('use_fontana_approvals')) {
-    return false;
+    return Promise.resolve(false);
   }
 
   const getResult = (assetIsAutoApproved) => {

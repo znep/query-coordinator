@@ -92,10 +92,7 @@ const DEFAULT_LAYER_STYLES = {
   CLUSTER_BORDER_SIZE: 2,
   CLUSTER_BORDER_OPACITY: 0.8,
   STACK_BORDER_SIZE: 2,
-  STACK_BORDER_OPACITY: 0.8,
-  // Cluster size varies based on configured min max cluster size.
-  // But stack size is always fixed.
-  STACK_SIZE: 24
+  STACK_BORDER_OPACITY: 0.8
 };
 
 export function getBaseMapLayerStyles(vif) {

@@ -28,7 +28,7 @@ export const MAP_TYPES = Object.freeze({
   BOUNDARY_MAP: 'boundaryMap'
 });
 
-export const POINT_AGGREATIONS = Object.freeze({
+export const POINT_AGGREGATIONS = Object.freeze({
   NONE: 'none',
   HEAT_MAP: 'heat_map',
   REGION_MAP: 'region_map'

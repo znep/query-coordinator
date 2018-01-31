@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default [{ 'date_trunc':'2001-01-01T00:00:00.000', 'value':'37010' }
 , { 'date_trunc':'2001-02-01T00:00:00.000', 'value':'33757' }
 , { 'date_trunc':'2001-03-01T00:00:00.000', 'value':'40504' }

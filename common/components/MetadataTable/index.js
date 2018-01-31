@@ -13,6 +13,7 @@ import { ENTER, SPACE, isOneOfKeys } from 'common/dom_helpers/keycodes_deprecate
 import AssociatedAssets from 'common/components/AssociatedAssets';
 import CreateAlertButton from 'common/components/CreateAlertButton';
 import SocrataIcon from 'common/components/SocrataIcon';
+import { FeatureFlags } from 'common/feature_flags';
 
 // Checks if event is a space or an enter
 const handleInvokeKey = (handler, preventDefault) => (
@@ -148,13 +149,17 @@ class MetadataTable extends Component {
     const watchDatasetButton = renderWatchDatasetButton ? renderWatchDatasetButton() : null;
     const createAlertButton = showCreateAlertButton ? (<CreateAlertButton />) : null;
     if (editMetadataUrl) {
+      const translationPath = FeatureFlags.value('usaid_features_enabled') ?
+        'common.metadata.usaid_edit_metadata' :
+        'common.metadata.edit_metadata';
+
       editMetadata = (
         <a
           href={localizeLink(editMetadataUrl)}
           className="btn btn-sm btn-default btn-alternate-2"
           onClick={onClickEditMetadata}>
           <SocrataIcon name="edit" isBtnIcon />
-          <span>{I18n.t('common.metadata.edit_metadata')}</span>
+          <span>{I18n.t(translationPath)}</span>
         </a>
       );
     }

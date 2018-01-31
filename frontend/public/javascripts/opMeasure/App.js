@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 
-import FeedbackPanel from '../common/components/FeedbackPanel';
+import { FeedbackPanel } from 'common/components';
 import { ModeStates } from 'common/performance_measures/lib/constants';
 import PreviewBar from './components/PreviewBar';
 import EditBar from './components/EditBar';

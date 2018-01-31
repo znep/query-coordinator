@@ -1,0 +1,39 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+$sidebar-width: 250px;
+
+#show-source {
+  .modal-footer {
+    z-index: 1000;
+    align-self: flex-end;
+    width: calc(100% - #{$sidebar-width});
+  }
+
+  .dsmp-modal-content {
+    display: flex;
+
+    @media (max-width: 750px) {
+      height: 100%;
+      flex-direction: column;
+    }
+  }
+
+  .dsmp-centered-container {
+    display: flex;
+    flex-grow: 1;
+    margin-left: 250px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    @media (max-width: 750px) {
+      margin-left: 0;
+    }
+  }
+
+  .dsmp-source-icon {
+    color: $dark-grey-1;
+    margin: 0 0.4em;
+  }
+}

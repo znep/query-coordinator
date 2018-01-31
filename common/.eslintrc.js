@@ -46,6 +46,12 @@ module.exports = {
     "new-cap": 0,
     //End temporary relaxations
 
+    // In the context of common/components, self-importing
+    // common/components causes dangerous dependency cycles.
+    // Directly import the component you need instead (i.e.,
+    // import Checkbox from 'common/components/Checkbox';)
+    "no-restricted-imports": [ "error", "common/components" ],
+
     "react/no-danger": 0,
     "dot-notation": [
       1,

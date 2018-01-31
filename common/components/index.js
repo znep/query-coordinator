@@ -36,6 +36,7 @@ import ViewCard from './ViewCard';
 import EditBar from './EditBar';
 import EditableText from './EditableText';
 import ExternalViewCard from './ViewCard/ExternalViewCard';
+import FeedbackPanel from './FeedbackPanel';
 import FilterBar from './FilterBar';
 import AssetActionBar from './AssetActionBar';
 import InfoPane from './InfoPane';
@@ -93,6 +94,7 @@ module.exports = {
   EditableText,
   ExpandableMenuListItem,
   ExternalViewCard,
+  FeedbackPanel,
   FilterBar,
   FilterItem,
   Flannel,

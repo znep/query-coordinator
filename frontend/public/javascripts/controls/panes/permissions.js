@@ -73,9 +73,8 @@
                 $toggleRadios.uniform();
               });
 
-              var pendingApproval = _.get(blist, 'dataset.approvals.0.outcome') === 'publicize' && cpObj._view.isPublic();
 
-              if (pendingApproval) {
+              if (cpObj._view.pendingApproval) {
                 $publicText.html($.t('core.visibility.awaiting_approval_html'));
                 var $sectionContent = $(cpObj.currentDom).find('.sectionContent.togglePermissionsForm');
                 var $withdrawApprovalRequestButton = $(
@@ -109,6 +108,12 @@
     shown: function() {
       this._super();
       this.$dom().find('.flash').removeClass('error').text('');
+
+      // EN-21598: See grid_view_socrata_visualizations/main.js
+      // Can be removed after AssetActionBar rollout in May.
+      if (window.socrata.approvals.showManagePermissionsApprovalMessage) {
+        document.getElementById('manage-permissions-approval-message').style.display = 'inline';
+      }
     },
 
     _getFinishButtons: function() {

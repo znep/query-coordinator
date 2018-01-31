@@ -1,0 +1,17 @@
+@import 'common/styleguide/variables/color_helpers';
+@import 'common/styleguide/variables/colors';
+
+$sidebar-width: 250px;
+
+#manage-metadata {
+  section.modal-content {
+    margin: 0;
+    padding: 0;
+  }
+
+  .modal-footer {
+    z-index: 1000;
+    align-self: flex-end;
+    width: calc(100% - #{$sidebar-width});
+  }
+}

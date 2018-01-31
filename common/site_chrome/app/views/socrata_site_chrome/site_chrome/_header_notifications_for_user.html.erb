@@ -16,16 +16,17 @@
       if (window.headerNotifications && document.getElementById('site-chrome-header-notifications')) {
         var template = document.querySelector('#site-chrome-header').getAttribute('template');
         var options = {
+          currentDomainFeatures: <%== current_domain_features_map.to_json %>,
+          currentUserRole: <%== current_user_role.to_json %>,
+          developmentMode: <%== is_development_mode? %>,
+          inProductTransientNotificationsEnabled: <%= get_feature_flag('in_product_transient_notifications') %>,
+          isSuperAdmin: <%== is_superadmin? %>,
+          mapboxAccessToken: <%== mapbox_access_token.to_json %>,
           lockScrollbar: true,
           scrollTop: template === 'rally' ? document.querySelector('#site-chrome-header .rally-top').offsetHeight : 0,
+          showMyAlertPreference: <%= show_alert_preference? %>,
           showProductNotifications: false,
           showUserNotifications: true,
-          currentUserRole: <%== current_user_role.to_json %>,
-          currentDomainFeatures: <%== current_domain_features_map.to_json %>,
-          isSuperAdmin: <%== is_superadmin? %>,
-          showMyAlertPreference: <%= show_alert_preference? %>,
-          inProductTransientNotificationsEnabled: <%= get_feature_flag('in_product_transient_notifications') %>,
-          developmentMode: <%== is_development_mode? %>
         };
 
         window.headerNotifications('#site-chrome-header-notifications',

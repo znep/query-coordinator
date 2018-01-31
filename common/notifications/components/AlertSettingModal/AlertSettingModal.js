@@ -174,11 +174,12 @@ class AlertSettingModal extends Component {
 
   renderTabContent() {
     const { selectedTab } = this.state;
+    const { mapboxAccessToken } = this.props;
 
     if (selectedTab == 'notification') {
       return this.renderNotificationTabContent();
     } else if (selectedTab == 'my_alerts') {
-      return (<MyAlerts />);
+      return (<MyAlerts mapboxAccessToken={mapboxAccessToken} />);
     }
   }
 

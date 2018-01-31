@@ -25,9 +25,11 @@
         href="#update"><%= t('core.dialogs.update') %></a>
     </li>
   </ul>
+
+  <%# 21596: Hidden by default. Conditionally shown in grid_view_socrata_visualizations/main.js %>
+  <div id="save-new-derived-view-approval-message"><%= t('core.dialogs.approval_message') %></div>
 <%- end -%>
 
 <%- content_for :translations do -%>
   <%= render_translations LocalePart.screens.ds.save_dialog %>
 <%- end -%>
-

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import SvgVisualization from './SvgVisualization';
-import { MAP_TYPES, POINT_AGGREATIONS } from './mapConstants';
+import { MAP_TYPES, POINT_AGGREGATIONS } from './mapConstants';
 
 import MapFactory from './map/MapFactory';
 import MouseInteractionHandler from './map/handlers/MouseInteractionHandler';
@@ -60,7 +60,6 @@ export default class UnifiedMap extends SvgVisualization {
   destroy() {
     if (this._map) {
       this._map.remove();
-      this._map = null;
     }
   }
 
@@ -106,7 +105,7 @@ export default class UnifiedMap extends SvgVisualization {
     }
 
     if (newMapType == MAP_TYPES.POINT_MAP) {
-      if (newPointAggregation == POINT_AGGREATIONS.HEAT_MAP) {
+      if (newPointAggregation == POINT_AGGREGATIONS.HEAT_MAP) {
         return new VifHeatOverlay(this._map);
       } else if (vif.isRegionMap()) {
         return new VifRegionOverlay(this._map, this._element);

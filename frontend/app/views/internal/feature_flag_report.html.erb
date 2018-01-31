@@ -23,8 +23,8 @@
         <%= feature_flag_input(params[:for],
                                Hashie::Mash.new(FeatureFlags.config_for(params[:for])),
                                @environment) %>
-        <input type="submit" value="Update" />
-        <input type="submit" name="reset_to_default[<%= params[:for] %>]" value="Unset" />
+        <input type="submit" id="update-env-feature-flag" value="Update" />
+        <input type="submit" id="unset-env-feature-flag" name="reset_to_default[<%= params[:for] %>]" value="Unset" />
       <%- end %>
     </div>
 
@@ -91,6 +91,37 @@
 <% content_for :js_footer do %>
   <script type="text/javascript">
     $(function() {
+      // Warn user if they click the 'Update' button for env-wide feature flags
+      $('#update-env-feature-flag').on('click', function() {
+        // Drop everything up to 'for=', and anything after the next '&'
+        var featureFlag = this.baseURI.split('for=').slice(-1)[0].split('&')[0];
+        var featureFlagValue = $(this.form).find('input:checked').val();
+
+        if (!featureFlagValue) {
+          console.warn('No value set - ignoring');
+          return false;
+        };
+
+        if (featureFlagValue.toLowerCase() === 'on') {
+          featureFlagValue = $('#feature_flag_value').val();
+        };
+
+        var confirmationMessage = 'You are about to set the feature flag' +
+          " '" + featureFlag +  "' to '" + featureFlagValue + "'" +
+          ' for the entire environment.\n\nAre you sure?\n\n' +
+          '(Please update feature_flags.yml if this is the new default)';
+
+        if (!confirm(confirmationMessage)) return false;
+      });
+
+      // Warn user if they click the 'Unset' button for env-wide feature flags
+      $('#unset-env-feature-flag').on('click', function() {
+        var confirmationMessage = 'You are about to unset the feature flag' +
+          ' for the entire environment.\n\nAre you sure?'
+
+        if (!confirm(confirmationMessage)) return false;
+      });
+
       $('.featureFlagReport select').change(function() {
         var flag = $(this).val();
 

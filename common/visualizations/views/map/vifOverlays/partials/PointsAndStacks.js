@@ -24,6 +24,11 @@ export default class PointsAndStacks {
   }
 
   setup(vif, renderOptions) {
+    const pointAndStackRadius = vif.getPointCircleRadius(
+      renderOptions.resizeByRange,
+      renderOptions.aggregateAndResizeBy
+    );
+
     this._map.addSource(SOURCES.POINTS_AND_STACKS, this._sourceOptions(vif, renderOptions));
 
     this._map.addLayer({
@@ -33,7 +38,7 @@ export default class PointsAndStacks {
       'source-layer': '_geojsonTileLayer',
       'filter': ['any', ['has', 'point_count'], ['!in', renderOptions.countBy, 1, '1']],
       'paint': {
-        'circle-radius': renderOptions.layerStyles.STACK_SIZE / 2,
+        'circle-radius': pointAndStackRadius,
         'circle-color': renderOptions.layerStyles.STACK_COLOR,
         'circle-stroke-width': renderOptions.layerStyles.STACK_BORDER_SIZE,
         'circle-stroke-color': renderOptions.layerStyles.STACK_BORDER_COLOR,
@@ -49,7 +54,7 @@ export default class PointsAndStacks {
       'filter': ['any', ['has', 'point_count'], ['!in', renderOptions.countBy, 1, '1']],
       layout: {
         'text-field': `{${renderOptions.countBy}_abbrev}`,
-        'text-size': 12,
+        'text-size': pointAndStackRadius,
         'text-allow-overlap': true
       },
       paint: {
@@ -64,7 +69,7 @@ export default class PointsAndStacks {
       'source-layer': '_geojsonTileLayer',
       'filter': ['all', ['!has', 'point_count'], ['in', renderOptions.countBy, 1, '1']],
       'paint': {
-        'circle-radius': vif.getPointCircleRadius(renderOptions.resizeByRange, renderOptions.aggregateAndResizeBy),
+        'circle-radius': pointAndStackRadius,
         'circle-color': vif.getPointColor(renderOptions.colorBy, renderOptions.colorByCategories),
         'circle-opacity': vif.getPointOpacity()
       }
@@ -81,6 +86,11 @@ export default class PointsAndStacks {
       return;
     }
 
+    const pointAndStackRadius = vif.getPointCircleRadius(
+      renderOptions.resizeByRange,
+      renderOptions.aggregateAndResizeBy
+    );
+
     // Updating point color/radius based on new vif
     this._map.setFilter(LAYERS.POINT,
       ['all', ['!has', 'point_count'], ['in', renderOptions.countBy, 1, '1']]);
@@ -89,7 +99,7 @@ export default class PointsAndStacks {
       vif.getPointColor(renderOptions.colorBy, renderOptions.colorByCategories));
     this._map.setPaintProperty(LAYERS.POINT,
       'circle-radius',
-      vif.getPointCircleRadius(renderOptions.resizeByRange, renderOptions.aggregateAndResizeBy));
+      pointAndStackRadius);
     this._map.setPaintProperty(LAYERS.POINT,
       'circle-opacity',
       vif.getPointOpacity());
@@ -97,7 +107,7 @@ export default class PointsAndStacks {
     // Updating stack look and feel based on new base-map-style in vif
     this._map.setPaintProperty(LAYERS.STACK_CIRCLE,
       'circle-radius',
-      renderOptions.layerStyles.STACK_SIZE / 2);
+      pointAndStackRadius);
     this._map.setPaintProperty(LAYERS.STACK_CIRCLE,
       'circle-color',
       renderOptions.layerStyles.STACK_COLOR);
@@ -113,6 +123,9 @@ export default class PointsAndStacks {
     this._map.setPaintProperty(LAYERS.STACK_COUNT_LABEL,
       'text-color',
       renderOptions.layerStyles.STACK_TEXT_COLOR);
+    this._map.setLayoutProperty(LAYERS.STACK_COUNT_LABEL,
+      'text-size',
+      pointAndStackRadius);
 
     this._existingVif = vif;
     this._existingRenderOptions = renderOptions;

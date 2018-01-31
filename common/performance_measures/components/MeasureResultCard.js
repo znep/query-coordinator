@@ -5,7 +5,7 @@ import classnames from 'classnames';
 
 import I18n from 'common/i18n';
 import { formatNumber } from 'common/js_utils';
-import { SocrataIcon } from 'common/components';
+import SocrataIcon from 'common/components/SocrataIcon';
 
 import withComputedMeasure from './withComputedMeasure';
 import { PeriodTypes } from '../lib/constants';

@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
-import { MAP_TYPES, POINT_AGGREATIONS } from 'common/visualizations/views/mapConstants';
+import { MAP_TYPES, POINT_AGGREGATIONS } from 'common/visualizations/views/mapConstants';
 import ChoroplethMapUtils from 'common/visualizations/views/ChoroplethMapUtils';
 
 export function isRegionMap() {
   return this.getMapType() === MAP_TYPES.POINT_MAP &&
-    this.getPointAggregation() === POINT_AGGREATIONS.REGION_MAP &&
+    this.getPointAggregation() === POINT_AGGREGATIONS.REGION_MAP &&
     !_.isUndefined(this.getShapeDatasetUid());
 }
 

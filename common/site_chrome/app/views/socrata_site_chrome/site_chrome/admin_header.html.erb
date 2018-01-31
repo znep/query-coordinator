@@ -81,17 +81,18 @@
       'DOMContentLoaded',
       function() {
         if (window.headerNotifications && document.getElementById('site-chrome-header-notifications')) {
-          const options = {
-            lockScrollbar: false,
-            scrollTop: 0,
-            showProductNotifications: true,
-            showUserNotifications: <%= get_feature_flag('enable_user_notifications') %>,
-            currentUserRole: <%== current_user_role.to_json %>,
+          var options = {
             currentDomainFeatures: <%== current_domain_features_map.to_json %>,
-            isSuperAdmin: <%== is_superadmin? %>,
-            showMyAlertPreference: <%= show_alert_preference? %>,
+            currentUserRole: <%== current_user_role.to_json %>,
+            developmentMode: <%== is_development_mode? %>,
             inProductTransientNotificationsEnabled: <%= get_feature_flag('in_product_transient_notifications') %>,
-            developmentMode: <%== is_development_mode? %>
+            isSuperAdmin: <%== is_superadmin? %>,
+            lockScrollbar: false,
+            mapboxAccessToken: <%== mapbox_access_token.to_json %>,
+            scrollTop: 0,
+            showMyAlertPreference: <%= show_alert_preference? %>,
+            showProductNotifications: true,
+            showUserNotifications: <%= get_feature_flag('enable_user_notifications') %>
           };
 
           window.headerNotifications('#site-chrome-header-notifications',

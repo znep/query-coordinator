@@ -1,0 +1,13 @@
+@import "../../index.module.scss";
+
+.soql-builder {
+  .soql-slices-section {
+    margin-top: 15px;
+
+    .add-soql-slice-button {
+      margin: 15px 3px 3px 3px;
+      font-size: 12px;
+      padding: 10px;
+    }
+  }
+}

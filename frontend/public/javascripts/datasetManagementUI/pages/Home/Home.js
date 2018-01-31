@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import FeedbackPanel from '../../../common/components/FeedbackPanel';
+import { FeedbackPanel } from 'common/components';
 import AppBar from 'datasetManagementUI/containers/AppBarContainer';
 import NotificationList from 'datasetManagementUI/containers/NotificationListContainer';
 import Modal from 'datasetManagementUI/containers/ModalContainer';

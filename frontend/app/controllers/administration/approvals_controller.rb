@@ -32,8 +32,6 @@ class Administration::ApprovalsController < AdministrationController
       @approval_workflow.steps.first.community_task.manual! if params[:community_approval_strategy] == 'manual'
       @approval_workflow.steps.first.community_task.rejected! if params[:community_approval_strategy] == 'reject'
 
-      @approval_workflow.require_reapproval = params[:reapproval_strategy]
-
       begin
         @approval_workflow.update
         flash[:notice] = t('approvals.settings.notifications.save_success')

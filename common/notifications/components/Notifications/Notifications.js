@@ -317,13 +317,14 @@ class Notifications extends Component {
 
     if (showNotificationPanel) {
       const {
-        showProductNotifications,
-        showUserNotifications,
-        currentUserRole,
-        isSuperAdmin,
         currentDomainFeatures,
+        currentUserRole,
+        inProductTransientNotificationsEnabled,
+        isSuperAdmin,
+        mapboxAccessToken,
         showMyAlertPreference,
-        inProductTransientNotificationsEnabled
+        showProductNotifications,
+        showUserNotifications
       } = this.props.options;
       const {
         areNotificationsLoading,
@@ -376,6 +377,7 @@ class Notifications extends Component {
             showMyAlertPreference={showMyAlertPreference}
             inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
             onShowTransientNotificationsChange={this.onShowTransientNotificationsChange}
+            mapboxAccessToken={mapboxAccessToken}
             viewOlderLink={viewOlderLink} />
         </div>
       );

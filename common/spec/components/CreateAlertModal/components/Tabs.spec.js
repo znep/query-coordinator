@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import React, { Component } from 'react';
 import TestUtils from 'react-dom/test-utils';
 
-import Tabs from 'common/notifications/components/AlertSettingModal/Tabs';
+import Tabs from 'common/components/CreateAlertModal/components/Tabs';
 
 describe('Tabs', () => {
 
@@ -14,25 +14,25 @@ describe('Tabs', () => {
     assert.isDefined(element);
   });
 
-  it('should renders notification, my_alerts tabs', () => {
+  it('should render custom_alert & advance_alert tabs', () => {
     const spy = sinon.spy();
-    const element = mount(<Tabs onTabChange={spy} showMyAlertsTab />);
+    const element = mount(<Tabs onTabChange={spy} />);
     const liTabs = element.find('li');
 
     assert.lengthOf(liTabs, 2);
   });
 
-  it('should call tab change function on click', () => {
+  it('should call onTabChange function on click', () => {
     const spy = sinon.spy();
     const element = mount(<Tabs onTabChange={spy} />);
 
-    element.find('li a').first().simulate('click');
+    element.find('li').first().simulate('click');
 
     sinon.assert.calledOnce(spy);
   });
 
-  it('should hide my alerts tab if showMyAlertsTab props is false', () => {
-    const props = { showMyAlertsTab: false, selectedTab: 'notification', onTabChange: _.noop };
+  it('should hide non active tab in edit mode', () => {
+    const props = { editMode: true, selectedTab: 'customAlert', onTabChange: _.noop };
     const element = mount(<Tabs {...props} />);
     const liTabs = element.find('li');
 

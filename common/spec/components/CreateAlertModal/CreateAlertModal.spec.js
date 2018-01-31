@@ -1,59 +1,84 @@
-import TestUtils from 'react-dom/test-utils';
-import CreateAlertModal from 'common/components/CreateAlertModal';
-import CreateAlertApi from 'common/components/CreateAlertModal/api/CreateAlertApi';
-import { renderComponent } from '../../helpers';
-import React, { Component } from 'react';
 import { mount } from 'enzyme';
+import React, { Component } from 'react';
+import TestUtils from 'react-dom/test-utils';
+
+import AdvancedAlertFooter from 'common/components/CreateAlertModal/AdvancedAlert/AdvancedAlertFooter';
+import CreateAlertModal from 'common/components/CreateAlertModal';
+import CustomAlertFooter from 'common/components/CreateAlertModal/CustomAlert/CustomAlertFooter';
+import DeleteAlert from 'common/components/CreateAlertModal/DeleteAlert';
+import datasetApi from 'common/components/CreateAlertModal/api/datasetApi';
+import Tabs from 'common/components/CreateAlertModal/components/Tabs';
 
 describe('CreateAlertModal', () => {
+  let getColumnsPromise;
+  let getMigrationPromise;
+
+  beforeEach(() => {
+    window.serverConfig.mapboxAccessToken = 'Mapbox-Access-Token';
+    getColumnsPromise = sinon.stub(datasetApi, 'getColumns').returns(Promise.resolve({ status: 200 }));
+    getMigrationPromise = sinon.stub(datasetApi, 'getMigration').returns(Promise.resolve({ status: 200 }));
+  });
+
+  afterEach(() => {
+    window.serverConfig.mapboxAccessToken = null;
+    getColumnsPromise.restore();
+    getMigrationPromise.restore();
+  });
+
   it('renders an element', () => {
     const spy = sinon.spy();
-    const element = renderComponent(CreateAlertModal, { onClose: spy });
-    assert.isNotNull(element);
+    const element = mount(<CreateAlertModal onClose={spy} />);
+
+    assert.isDefined(element);
   });
 
-  it('should renders an Modal with name, query inputs', () => {
+  it('should render a modal with name & query input fields', () => {
     const spy = sinon.spy();
-    const element = renderComponent(CreateAlertModal, { onClose: spy });
-    assert.isNotNull(element.querySelectorAll('.create-alert-modal'));
-    assert.isNotNull(element.querySelectorAll('.alert-name-section'));
-    assert.isNotNull(element.querySelectorAll('textarea'));
+    const element = mount(<CreateAlertModal onClose={spy} />);
+
+    assert.lengthOf(element.find('.create-alert-modal-container'), 1);
   });
 
-
-  it('on save should call create alert promise', () => {
+  it('should call onClose method on modal dismiss', () => {
     const spy = sinon.spy();
-    let createAlertPromise = sinon.stub(CreateAlertApi, 'create').returns(Promise.resolve({ status: 200 }));
-    let element = mount(<CreateAlertModal onClose={spy} />);
-    let saveButton = element.find('.create-button');
-    element.setState({ alertName: 'alert' });
-    saveButton.simulate('click');
-    sinon.assert.calledOnce(createAlertPromise);
-    createAlertPromise.restore();
-  });
+    const element = mount(<CreateAlertModal onClose={spy} />);
 
-  it('on validate should call validate soql query promise', () => {
-    const spy = sinon.spy();
-    const element = renderComponent(CreateAlertModal, { onClose: spy });
-    let validateButton = element.querySelector('.validate-button');
-    let validateAlertPromise = sinon.stub(CreateAlertApi, 'validate').returns(Promise.resolve({ status: 200 }));
-    TestUtils.Simulate.click(validateButton);
-    sinon.assert.calledOnce(validateAlertPromise);
-    validateAlertPromise.restore();
-  });
+    element.find('.modal-header-dismiss').simulate('click');
 
-  it('it should call onClose method while dismiss', () => {
-    const spy = sinon.spy();
-    const element = renderComponent(CreateAlertModal, { onClose: spy });
-    let closeButton = element.querySelector('.modal-header-dismiss');
-    TestUtils.Simulate.click(closeButton);
     sinon.assert.calledOnce(spy);
   });
 
-  it('should show deleted button if edit mode is on', () => {
+  it('should render delete view content in delete mode', () => {
     const spy = sinon.spy();
-    const element = renderComponent(CreateAlertModal, { onClose: spy, editMode: true });
-    assert.isNotNull(element.querySelectorAll('.delete-button'));
+    const element = mount(<CreateAlertModal onClose={spy} selectedTab="advance_alert" />);
+
+    element.setState({ showDeleteAlertPage: true });
+
+    assert.lengthOf(element.find(DeleteAlert), 1);
+  });
+
+  describe('Advanced Alert', () => {
+    it('should show the Advanced Alert content and footer', () => {
+      const spy = sinon.spy();
+      const element = mount(<CreateAlertModal onClose={spy} />);
+
+      element.setState({ selectedTab: 'advancedAlert' });
+
+      assert.isTrue(element.find('.advance-alert').exists());
+      assert.lengthOf(element.find(AdvancedAlertFooter), 1);
+    });
+  });
+
+  describe('Custom Alert', () => {
+    it('should show the Custom Alert content and footer', () => {
+      const spy = sinon.spy();
+      const element = mount(<CreateAlertModal onClose={spy} />);
+
+      element.setState({ selectedTab: 'customAlert' });
+
+      assert.isTrue(element.find('.custom-alert').exists());
+      assert.lengthOf(element.find(CustomAlertFooter), 1);
+    });
   });
 
 });

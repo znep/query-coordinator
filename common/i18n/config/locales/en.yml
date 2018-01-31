@@ -422,31 +422,70 @@ en:
       create_alert:
         title: Create Alert
       create_alert_modal:
-        title: Create Alert for this Dataset
-        edit_mode_title: Manage Alerts
-        alert_name_label: Name
-        alert_name_placeholder: Name this Alert
-        delete_view:
-          title: Are you sure you want to delete your alert?
-          description: Once an alert is deleted, it cannot be recovered.
-          button:
-            delete: 'Yes'
-            cancel: Cancel
         advanced_search:
           alert_title: Create your own alert
           description: Please enter your SoQL statement. An alert will be sent when the dataset is updated and the SoQL statement returns one or more rows.
-          text_box_description: Enter your SoQL statement
+          text_box_description: Enter your SoQL statement      
+        alert_name_label: Name
+        alert_name_placeholder: Name this Alert
+        edit_mode_title: Manage Alerts
+        title: Create Alert for this Dataset
+        delete_view:
+          description: Once an alert is deleted, it cannot be recovered.
+          title: Are you sure you want to delete your alert?
+          button:
+            cancel: Cancel
+            delete: 'Yes'
         info:
-          name_error: Please Name this Alert
-          valid_query: Looks good!
           invalid_query: Query failed
           loading: Validating...
+          name_error: Please Name this Alert
+          valid_query: Looks good!
         tab:
           advance_alert: Advanced Alert
+          custom_alert: Custom Alert
         button:
-          delete: Delete
-          validate: Validate
+          add_params: Add Parameters
+          back: Back
           create: Save
+          delete: Delete
+          next: Next
+          validate: Validate
+        custom_alert:
+          alert_type_description: Set your dataset alert conditions.
+          alert_param_page_description: Set parameters for the condition you need to be alerted when new rows are created in the dataset. An alert will be sent each time the parameters are met.
+          radius_text: Mile Radius
+          rolling_description: Rolling queries will execute every time the dataset updates and the alert condition is met. For example, if you want to be alerted when the row count exceeds 100, you will be alerted when rows exceed 100, 101, 102, etc.
+          rolling_title: Rolling
+          threshold_title: Threshold Alert
+          threshold_description: Triggers when a threshold is reached in the dataset
+          title: My Alert
+          trigger_page_description: Select how you want to be alerted.
+          aggregation:
+            and: AND
+            avg: Avg
+            is: IS
+            is_not: IS NOT
+            is_within: IS WITHIN
+            max: Max
+            min: Min
+            near: NEAR
+            not_within: NOT WITHIN
+            or: OR
+            sum: Sum
+          breadcrumb:
+            alert_type: Choose Alert Type
+            parameters: Set Parameters
+            trigger: Select Trigger Method
+          column:
+            group_by: Group By
+            row_count: Row Count
+          placeholder:
+            aggregation: Select
+            column: Select Column
+            location: Select Location
+            operator: Select Condition
+            value: Select Value
     pager:
       of: of
       invalid_page_error: Invalid page number. Please enter a value between {first} and {last}.

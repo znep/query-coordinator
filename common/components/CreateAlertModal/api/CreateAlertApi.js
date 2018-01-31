@@ -1,79 +1,51 @@
 import 'whatwg-fetch';
-import airbrake from 'common/airbrake';
 import _ from 'lodash';
 
-/* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
+import airbrake from 'common/airbrake';
+import { checkStatus, defaultHeaders, fetchJson } from 'common/http';
 
-function checkStatus(response) {
-  let errorMessage;
-  if (response.status === 401 || response.status === 403) {
-    // session may expired so we are reloading the page
-    window.location.reload();
-  } else if (response.status >= 200 && response.status < 300) {
-    return response;
-  } else {
-    errorMessage = response.statusText;
-    try {
-      airbrake.notify({
-        error: `Error while creating alert: ${errorMessage}`
-      });
-    } catch (err) {
-    }
-    throw new Error(errorMessage);
-  }
-}
+export default class CreateAlertApi {
+  static validate = (alertParams) => {
+    return fetchJson('/api/notifications_and_alerts/alerts/validate_raw_soql', {
+      method: 'POST',
+      headers: defaultHeaders,
+      credentials: 'same-origin',
+      body: JSON.stringify({ alert: alertParams })
+    });
+  };
 
+  static validateCustomAlert = (alertParams) => {
+    return fetchJson('/api/notifications_and_alerts/alerts/validate_abstract_params', {
+      method: 'POST',
+      headers: defaultHeaders,
+      credentials: 'same-origin',
+      body: JSON.stringify({ alert: alertParams })
+    });
+  };
 
-function getDefaultHeaders() {
-  return {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
+  static create = (alertParams) => {
+    return fetchJson('/api/notifications_and_alerts/alerts', {
+      method: 'POST',
+      headers: defaultHeaders,
+      credentials: 'same-origin',
+      body: JSON.stringify({ alert: alertParams })
+    }).then((response) => response.data);
+  };
+
+  static update = (params, alertId) => {
+    return fetchJson(`/api/notifications_and_alerts/alerts/${alertId}`, {
+      method: 'PUT',
+      headers: defaultHeaders,
+      credentials: 'same-origin',
+      body: JSON.stringify({ alert: params })
+    }).then((response) => response.data);
+  };
+
+  static deleteAlert = (alertId) => {
+    return fetch(`/api/notifications_and_alerts/alerts/${alertId}`, {
+      method: 'DELETE',
+      headers: defaultHeaders,
+      credentials: 'same-origin'
+    }).then(checkStatus);
   };
 }
-
-export const createAlertApi = (() => {
-  return {
-    validate: (alertParams) => {
-      return fetch('/api/notifications_and_alerts/alerts/validate_raw_soql', {
-        method: 'POST',
-        headers: getDefaultHeaders(),
-        credentials: 'same-origin',
-        body: JSON.stringify({ alert: alertParams })
-      }).
-      then(checkStatus).
-      then((response) => response.json());
-    },
-    create: (alertParams) => {
-      return fetch('/api/notifications_and_alerts/alerts', {
-        method: 'POST',
-        headers: getDefaultHeaders(),
-        credentials: 'same-origin',
-        body: JSON.stringify({ alert: alertParams })
-      }).
-      then(checkStatus).
-      then((response) => response.json()).
-      then((response) => response.data);
-    },
-    update: (params, alertId) => {
-      return fetch(`/api/notifications_and_alerts/alerts/${alertId}`, {
-        method: 'PUT',
-        headers: getDefaultHeaders(),
-        credentials: 'same-origin',
-        body: JSON.stringify({ alert: params })
-      }).
-      then(checkStatus).
-      then((response) => response.json()).
-      then((response) => response.data);
-    },
-    delete: (alertId) => {
-      return fetch(`/api/notifications_and_alerts/alerts/${alertId}`, {
-        method: 'DELETE',
-        headers: getDefaultHeaders(),
-        credentials: 'same-origin'
-      }).
-      then(checkStatus);
-    }
-  };
-})();
-
-export default createAlertApi;

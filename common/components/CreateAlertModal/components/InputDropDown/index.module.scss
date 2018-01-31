@@ -1,0 +1,59 @@
+@import "../../index.module.scss";
+
+.input-dropdown-button {
+
+  input {
+    background: $white;
+    border: solid 1px $light-grey-0;
+    cursor: pointer;
+    color: $grey;
+    overflow: hidden;
+    padding: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    &.small {
+      max-width: 160px;
+    }
+  }
+
+  .onclick-dropdown-menu {
+    &.hidden {
+      visibility: hidden;
+    }
+    &.small {
+      max-width: 155px;
+    }
+    min-height: 1px;
+    position: fixed;
+    overflow-y: auto;
+    max-height: 200px;
+    z-index: 102;
+    display: flex;
+  }
+
+  .input-container {
+    position: relative;
+    display: inline-flex;
+
+    @keyframes loading {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .input-loading {
+      content: '';
+      box-sizing: border-box;
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 8px;
+      right: 5px;
+      border-radius: 60%;
+      border: 3px solid $light-grey-2;
+      border-top: 3px solid $primary;
+      animation: loading .8s linear infinite;
+    }
+  }
+}
+

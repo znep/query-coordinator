@@ -131,6 +131,9 @@ Notifications:
 1 Notifications Panel Footer
 0 Notifications Secondary Panel
 
+CreateAlertModal:
+102 Input drop down box
+
 Maps:
 2 mapboxgl-ctrl-top-left
 2 mapboxgl-ctrl-top-right

@@ -688,7 +688,7 @@
         }
       };
 
-      if (ds.isPublic()) {
+      if (ds.isPublic() || ds.isPendingPublic()) {
         ds.grants = _.reject(ds.grants,
           function(g) {
             return _.include(g.flags || [], 'public') &&

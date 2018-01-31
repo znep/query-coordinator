@@ -73,9 +73,8 @@
                 $toggleRadios.uniform();
               });
 
-              var pendingApproval = _.get(blist, 'dataset.approvals.0.outcome') === 'publicize' && cpObj._view.isPublic();
 
-              if (pendingApproval) {
+              if (cpObj._view.pendingApproval) {
                 $publicText.html($.t('core.visibility.awaiting_approval_html'));
                 var $sectionContent = $(cpObj.currentDom).find('.sectionContent.togglePermissionsForm');
                 var $withdrawApprovalRequestButton = $(

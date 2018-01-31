@@ -3,6 +3,7 @@
 import { FeatureFlags } from 'common/feature_flags';
 import Visualizations from 'common/visualizations';
 import { assetWillEnterApprovalsQueueOnPublish } from 'common/asset/utils';
+import { assetIsPending } from 'common/asset/utils/helpers';
 
 import ColumnEditor from './column_editor';
 import RowEditor from './row_editor';
@@ -31,6 +32,7 @@ function updatePageBasedOnApprovalOutcome(assetWillEnterApprovalsQueue) {
       window.socrata.approvals.showManagePermissionsApprovalMessage = true;
     }
 
+    blist.dataset.pendingApproval = assetIsPending(blist.dataset);
   }
 }
 

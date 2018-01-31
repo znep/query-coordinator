@@ -646,13 +646,6 @@ en:
       header_title: Feature an External Resource
       open_editor_button: Feature an External Resource
       preview: Preview
-    feedback:
-      close: Close
-      panel_details_html: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.
-      panel_title: Do you want to include an annotated screenshot of the current page?
-      screenshot_no: No thanks
-      screenshot_yes: Yes, include a screenshot
-      title: Feedback
     less: Show Less
     metadata:
       associated_assets:

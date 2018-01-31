@@ -7,8 +7,9 @@ import createLogger from 'redux-logger';
 import airbrake from 'common/airbrake';
 import { AppContainer } from 'react-hot-loader';
 
+import { FeedbackPanel } from 'common/components';
+
 import { dateLocalize } from 'common/locale';
-import { FeedbackPanel } from 'common/components/FeedbackPanel';
 import reducer from 'common/components/AssetBrowser/reducers';
 import InternalAssetManager from './components/internal_asset_manager';
 
@@ -41,7 +42,9 @@ if (module.hot) {
 }
 
 _.defer(() => {
-  const feedbackPanel = <FeedbackPanel {...window.serverConfig} buttonPosition="bottom" store={store} />;
+  // Note: This will never render anything because we don't pass the current user in serverConfig.
+  // Is this expected?
+  const feedbackPanel = <FeedbackPanel {...window.serverConfig} buttonPosition="bottom" />;
 
   ReactDOM.render(feedbackPanel, document.querySelector('#feedback-panel-content'));
 

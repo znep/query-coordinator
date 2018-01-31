@@ -281,6 +281,13 @@ en:
           hidden: Hidden
           hidden_from_catalog: Hidden from catalog
     components:
+      feedback:
+        close: Close
+        panel_details_html: With a screenshot you can show us exactly what you have feedback on. We’re using <a href="https://usersnap.com">Usersnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy">privacy policy</a>.
+        panel_title: Do you want to include an annotated screenshot of the current page?
+        screenshot_no: No thanks
+        screenshot_yes: Yes, include a screenshot
+        title: Feedback
       blobs:
         preview: Preview
         download:

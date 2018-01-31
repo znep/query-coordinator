@@ -13,7 +13,7 @@ import styles from '../index.module.scss';
  @prop onRawSoqlQueryChange - trigger when alert query change
 */
 class AdvancedAlert extends Component {
-  translationScope = 'shared.components.create_alert_modal.advance_search';
+  translationScope = 'shared.components.create_alert_modal.advanced_search';
 
   render() {
     const { onRawSoqlQueryChange, rawSoqlQuery } = this.props;

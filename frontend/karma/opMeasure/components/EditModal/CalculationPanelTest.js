@@ -10,7 +10,10 @@ describe('CalculationPanel', () => {
   const getProps = (props) => {
     return {
       calculationType: 'count',
-      hasDataSource: true,
+      // TODO: Where can we get a default computedMeasure?
+      computedMeasure: {
+        errors: {}
+      },
       measure: {},
       onChangeDecimalPlaces: _.noop,
       onChangeUnitLabel: _.noop,
@@ -23,10 +26,15 @@ describe('CalculationPanel', () => {
   };
 
   describe('when no dataset', () => {
+    const props = getProps({
+      computedMeasure: {
+        errors: {
+          dataSourceNotConfigured: true
+        }
+      },
+      openDataSourceTab: sinon.stub()
+    });
     it('renders disabled cover over form', () => {
-      const props = getProps({
-        hasDataSource: false
-      });
       const element = shallow(<CalculationPanel {...props} />);
 
       const cover = element.find('.cover');
@@ -34,20 +42,45 @@ describe('CalculationPanel', () => {
     });
 
     it('renders button to navigate to DataSource panel', () => {
-      const props = getProps({
-        hasDataSource: false,
-        openDataSourceTab: sinon.stub()
-      });
       const element = shallow(<CalculationPanel {...props} />);
 
-      const noDataBox = element.find('.no-data-source');
+      const configLinks = element.find('.config-links');
       // TODO: Re-Check this after switching to common Button.
-      const navBtn = noDataBox.find('button');
+      const navBtn = configLinks.find('button');
+      // NOTE: If dataSourceNotConfigured && noReportingPeriodConfigured, navBtn.length should be 2
       assert.equal(navBtn.length, 1);
 
       navBtn.simulate('click');
-
       sinon.assert.calledOnce(props.openDataSourceTab);
+    });
+  });
+
+  describe('when no reporting period set', () => {
+    const props = getProps({
+      computedMeasure: {
+        errors: {
+          noReportingPeriodConfigured: true
+        }
+      },
+      openReportingPeriodTab: sinon.stub()
+    });
+    it('renders disabled cover over form', () => {
+      const element = shallow(<CalculationPanel {...props} />);
+
+      const cover = element.find('.cover');
+      assert.equal(cover.length, 1);
+    });
+
+    it('renders button to navigate to Reporting Period panel', () => {
+      const element = shallow(<CalculationPanel {...props} />);
+
+      const configLinks = element.find('.config-links');
+      // TODO: Re-Check this after switching to common Button.
+      const navBtn = configLinks.find('button');
+      assert.equal(navBtn.length, 1);
+
+      navBtn.simulate('click');
+      sinon.assert.calledOnce(props.openReportingPeriodTab);
     });
   });
 

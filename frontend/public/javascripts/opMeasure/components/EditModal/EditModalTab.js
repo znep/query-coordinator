@@ -7,7 +7,7 @@ import classNames from 'classnames';
 // navigation handling from the parent component.
 export class EditModalTab extends Component {
   render() {
-    const { icon, id, isSelected, title, onTabNavigation } = this.props;
+    const { icon, id, isSelected, title, needsAttention, onTabNavigation } = this.props;
 
     const listItemAttributes = {
       className: classNames('tab-link', { 'current': isSelected })
@@ -26,6 +26,10 @@ export class EditModalTab extends Component {
       }
     };
 
+    const dotAttributes = {
+      className: classNames('tab-dot', { 'tab-attention': needsAttention })
+    };
+
     const iconAttributes = {
       className: `icon-${icon}`,
       role: 'presentation'
@@ -38,6 +42,7 @@ export class EditModalTab extends Component {
     return (
       <li {...listItemAttributes}>
         <a {...linkAttributes}>
+          <span {...dotAttributes} />
           <span {...iconAttributes} />
           <span {...titleAttributes}>{title}</span>
         </a>
@@ -50,6 +55,7 @@ EditModalTab.propTypes = {
   icon: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   isSelected: PropTypes.bool.isRequired,
+  needsAttention: PropTypes.bool,
   title: PropTypes.string.isRequired,
   onTabNavigation: PropTypes.func.isRequired
 };

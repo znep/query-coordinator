@@ -2,12 +2,16 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import I18n from 'common/i18n';
+
+// TODO: EditTabs should *probably* not have been moved to common. Only imports are in opMeasure
 import { EditTabs } from 'common/performance_measures/lib/constants';
+import withComputedMeasure from 'common/performance_measures/components/withComputedMeasure';
+import computedMeasurePropType from 'common/performance_measures/propTypes/computedMeasurePropType';
 
 import { cancelEditModal, acceptEditModalChanges, setActivePanel } from '../../actions/editor';
 import EditModalTab from './EditModalTab';
@@ -42,10 +46,14 @@ export class EditModal extends Component {
   }
 
   renderTabList() {
+    const { tabs, computedMeasure } = this.props;
+    const errors = _.get(computedMeasure, 'errors', {});
+
     const renderTab = (tab) => {
       const tabAttributes = _.extend(tab, {
         key: tab.id,
         isSelected: tab.id === this.props.activePanel,
+        needsAttention: tab.needsAttentionFor && errors[tab.needsAttentionFor],
         onTabNavigation: () => this.props.onTabClick(tab.id)
       });
 
@@ -54,7 +62,7 @@ export class EditModal extends Component {
 
     return (
       <ul role="tablist" className="nav-tabs measure-edit-modal-tabs">
-        {_.map(this.props.tabs, renderTab)}
+        {_.map(tabs, renderTab)}
       </ul>
     );
   }
@@ -130,6 +138,7 @@ export class EditModal extends Component {
 
 EditModal.propTypes = {
   activePanel: PropTypes.string,
+  computedMeasure: computedMeasurePropType,
   isEditing: PropTypes.bool,
   measure: PropTypes.object,
   coreView: PropTypes.object,
@@ -157,11 +166,16 @@ EditModal.defaultProps = {
     id: EditTabs.DATA_SOURCE,
     title: I18n.t('open_performance.measure.edit_modal.data_source.tab_title'),
     icon: 'data',
+    // TODO: Not a fan of using a string here. How else can we achieve this?
+    //       Should we be defining all the error keys in the lib/constants module?
+    needsAttentionFor: 'dataSourceNotConfigured',
     panelComponent: DataPanel
   }, {
     id: EditTabs.REPORTING_PERIOD,
     title: I18n.t('open_performance.measure.edit_modal.reporting_period.tab_title'),
     icon: 'date',
+    // TODO: Not a fan of using a string here. How else can we achieve this?
+    needsAttentionFor: 'noReportingPeriodConfigured',
     panelComponent: ReportingPeriodPanel
   }, {
     id: EditTabs.CALCULATION,
@@ -185,4 +199,7 @@ function mapDispatchToProps(dispatch) {
   }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditModal);
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withComputedMeasure()
+)(EditModal);

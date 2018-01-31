@@ -1,12 +1,14 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import I18n from 'common/i18n';
 import { CalculationTypeNames, EditTabs } from 'common/performance_measures/lib/constants';
+import withComputedMeasure from 'common/performance_measures/components/withComputedMeasure';
+import computedMeasurePropType from 'common/performance_measures/propTypes/computedMeasurePropType';
 
 import {
   setDateColumn,
@@ -28,7 +30,12 @@ const i18nOptions = {
 export class CalculationPanel extends Component {
 
   renderCalculatorTypeButtons() {
-    const { hasDataSource, calculationType, onSetCalculationType } = this.props;
+    const { computedMeasure, calculationType, onSetCalculationType } = this.props;
+
+    const {
+      dataSourceNotConfigured,
+      noReportingPeriodConfigured
+    } = _.get(computedMeasure, 'errors', {});
 
     return Object.keys(CalculationTypeNames).
       map(key => CalculationTypeNames[key]).
@@ -46,7 +53,7 @@ export class CalculationPanel extends Component {
             type="button"
             key={index}
             className={className}
-            disabled={!hasDataSource}
+            disabled={dataSourceNotConfigured || noReportingPeriodConfigured}
             onClick={() => onSetCalculationType(type)}>
             {I18n.t(`open_performance.calculation_types.${type}`)}
           </button>
@@ -55,20 +62,38 @@ export class CalculationPanel extends Component {
     );
   }
 
-  renderNoData() {
-    const { openDataSourceTab } = this.props;
+  renderConfigLinks() {
+    const { computedMeasure, openDataSourceTab, openReportingPeriodTab } = this.props;
+
+    const {
+      dataSourceNotConfigured,
+      noReportingPeriodConfigured
+    } = _.get(computedMeasure, 'errors', {});
+
+    const dataLink = (
+      <button
+        className="btn btn-inverse btn-primary"
+        onClick={openDataSourceTab}>
+        {I18n.t('select_dataset', i18nOptions)}
+      </button>
+    );
+
+    const periodLink = (
+      <button
+        className="btn btn-inverse btn-primary"
+        onClick={openReportingPeriodTab}>
+        {I18n.t('set_reporting_period', i18nOptions)}
+      </button>
+    );
 
     return (
-      <div className="no-data-source">
+      <div className="config-links">
         <div className="centerbox">
           <h2>
-            {I18n.t('calculation.data_source_needed', i18nOptions)}
+            {I18n.t('calculation.not_ready', i18nOptions)}
           </h2>
-          <button
-            className="btn btn-inverse btn-primary"
-            onClick={openDataSourceTab}>
-            {I18n.t('select_dataset', i18nOptions)}
-          </button>
+          {dataSourceNotConfigured && dataLink}
+          {noReportingPeriodConfigured && periodLink}
         </div>
       </div>
     );
@@ -122,14 +147,21 @@ export class CalculationPanel extends Component {
   }
 
   render() {
-    const { hasDataSource } = this.props;
+    const { computedMeasure } = this.props;
 
-    const dataLink = !hasDataSource ? this.renderNoData() : null;
-    const preview = hasDataSource ? <CalculationPreview /> : null;
-    const cover = !hasDataSource ? (
+    const {
+      dataSourceNotConfigured,
+      noReportingPeriodConfigured
+    } = _.get(computedMeasure, 'errors', {});
+
+    const isReady = computedMeasure && !dataSourceNotConfigured && !noReportingPeriodConfigured;
+
+    const configLinks = !isReady ? this.renderConfigLinks() : null;
+    const preview = isReady ? <CalculationPreview /> : null;
+    const cover = !isReady ? (
       <div
         className="cover"
-        title={I18n.t('calculation.data_source_needed', i18nOptions)} />
+        title={I18n.t('calculation.not_ready', i18nOptions)} />
     ) : null;
 
     return (
@@ -140,7 +172,7 @@ export class CalculationPanel extends Component {
         <p className="calculation-panel-subtitle">
           {I18n.t('calculation.subtitle', i18nOptions)}
         </p>
-        {dataLink}
+        {configLinks}
         <div className="calculation-panel-form">
           <form onSubmit={(event) => event.preventDefault()}>
             {preview}
@@ -159,6 +191,7 @@ export class CalculationPanel extends Component {
 
 CalculationPanel.propTypes = {
   calculationType: PropTypes.string,
+  computedMeasure: computedMeasurePropType,
   dateColumnFieldName: PropTypes.string,
   decimalPlaces: PropTypes.number,
   displayableFilterableColumns: PropTypes.arrayOf(PropTypes.shape({
@@ -166,20 +199,19 @@ CalculationPanel.propTypes = {
     name: PropTypes.string.isRequired,
     fieldName: PropTypes.string.isRequired
   })),
-  hasDataSource: PropTypes.bool.isRequired,
   measure: PropTypes.object.isRequired,
   onChangeDecimalPlaces: PropTypes.func.isRequired,
   onChangeUnitLabel: PropTypes.func.isRequired,
   onSelectDateColumn: PropTypes.func.isRequired,
   onSetCalculationType: PropTypes.func.isRequired,
   openDataSourceTab: PropTypes.func.isRequired,
+  openReportingPeriodTab: PropTypes.func.isRequired,
   unitLabel: PropTypes.string
 };
 
 function mapStateToProps(state) {
   const calculationType = _.get(state, 'editor.measure.metricConfig.type');
   const decimalPlaces = _.get(state, 'editor.measure.metricConfig.display.decimalPlaces', 0);
-  const hasDataSource = !!_.get(state, 'editor.measure.dataSourceLensUid');
   const unitLabel = _.get(state, 'editor.measure.metricConfig.label', '');
 
   const dateColumnFieldName = _.get(state, 'editor.measure.metricConfig.dateColumn');
@@ -190,7 +222,6 @@ function mapStateToProps(state) {
     dateColumnFieldName,
     decimalPlaces,
     displayableFilterableColumns,
-    hasDataSource,
     measure: state.editor.measure,
     unitLabel
   };
@@ -202,8 +233,12 @@ function mapDispatchToProps(dispatch) {
     onChangeDecimalPlaces: setDecimalPlaces,
     onChangeUnitLabel: setUnitLabel,
     onSetCalculationType: setCalculationType,
-    openDataSourceTab: () => setActivePanel(EditTabs.DATA_SOURCE)
+    openDataSourceTab: () => setActivePanel(EditTabs.DATA_SOURCE),
+    openReportingPeriodTab: () => setActivePanel(EditTabs.REPORTING_PERIOD)
   }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CalculationPanel);
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withComputedMeasure()
+)(CalculationPanel);

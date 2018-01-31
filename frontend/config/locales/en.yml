@@ -3194,7 +3194,7 @@ en:
         calculation:
           choose_aggregation: Choose aggregation...
           choose_column: Choose a column...
-          data_source_needed: Connect your data to power your metric
+          data_source_needed: DEPRECATED KEY - Connect your data to power your metric
           display_options:
             decimal_places: Decimal Places
             title: Display Options
@@ -3202,6 +3202,7 @@ en:
             unit_label_placeholder: Per ...
             display_as_percent: Display as percent
           include_nulls: Include missing or null values
+          not_ready: To configure your metric calculation
           reference_date_column_subtitle: Used to organize your visualization.
           reference_date_column_title: Set Reference Date Column
           sample_result: Sample Result
@@ -3297,6 +3298,7 @@ en:
           title: Configure Reporting Period
           type_label: Period type
         select_dataset: Select Dataset
+        set_reporting_period: Set Reporting Period
       methods_and_analysis:
         analysis: Analysis
         combined: Methods and Analysis

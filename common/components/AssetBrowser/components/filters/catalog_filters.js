@@ -73,10 +73,14 @@ export class CatalogFilters extends Component {
       </div>
     );
 
+    /**
+      Keep the following logic in sync with ./mobile_catalog_filters
+      TODO: use a helper for this logic that both files can share
+    **/
     const onMyAssetsTab = activeTab === constants.MY_ASSETS_TAB;
     const onApprovals = activeTab === constants.MY_QUEUE_TAB || activeTab === constants.HISTORY_TAB;
 
-    const authorityFilterSection = onMyAssetsTab ? null : <AuthorityFilter />;
+    const authorityFilterSection = onMyAssetsTab || onApprovals ? null : <AuthorityFilter />;
     const ownedByFilterSection = onMyAssetsTab ? null : <OwnedByFilter />;
     const visibilityFilterSection = onApprovals ? null : <VisibilityFilter />;
     const awaitingApprovalFilter = showAwaitingApprovalFilter ? <AwaitingApprovalFilter /> : null;

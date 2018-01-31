@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import I18n from 'common/i18n';
+import * as constants from 'common/components/AssetBrowser/lib/constants.js';
 import SocrataIcon from 'common/components/SocrataIcon';
 import Modal, { ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
 
@@ -38,9 +39,17 @@ export class MobileCatalogFilters extends Component {
       </div>
     );
 
-    const onMyAssetsTab = activeTab === 'myAssets';
-    const authorityFilterSection = onMyAssetsTab ? null : <AuthorityFilter />;
+    /**
+      Keep the following logic in sync with ./catalog_filters
+      TODO: use a helper for this logic that both files can share
+    **/
+    const onMyAssetsTab = activeTab === constants.MY_ASSETS_TAB;
+    const onApprovals = activeTab === constants.MY_QUEUE_TAB || activeTab === constants.HISTORY_TAB;
+
+    const authorityFilterSection = onMyAssetsTab || onApprovals ? null : <AuthorityFilter />;
     const ownedByFilterSection = onMyAssetsTab ? null : <OwnedByFilter />;
+    const visibilityFilterSection = onApprovals ? null : <VisibilityFilter />;
+    const awaitingApprovalFilter = showAwaitingApprovalFilter ? <AwaitingApprovalFilter /> : null;
 
     const modalProps = {
       className: 'catalog-filters mobile',
@@ -65,11 +74,11 @@ export class MobileCatalogFilters extends Component {
           <div className="filter-content">
             <form>
               <RecentlyViewedFilter />
-              {showAwaitingApprovalFilter && <AwaitingApprovalFilter />}
+              {awaitingApprovalFilter}
               <AssetTypesFilter />
               {authorityFilterSection}
               {ownedByFilterSection}
-              <VisibilityFilter />
+              {visibilityFilterSection}
               <CategoryFilter />
               <TagFilter />
               <CustomFacetFilters />
@@ -105,4 +114,3 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MobileCatalogFilters);
-

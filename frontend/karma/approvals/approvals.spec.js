@@ -92,4 +92,22 @@ describe('<Approvals />', () => {
       });
     })
   });
+
+  describe('filters', () => {
+    it('does not render an authority filter', () => {
+      const wrapper = mount(<Approvals {...approvalsProps()} />);
+      assert(
+        wrapper.find('.asset-browser .filter-content .filter-section.authority').length <= 0,
+        'Expected the Authority filter to NOT be rendered'
+      );
+    });
+
+    it('does not render a visibility filter', () => {
+      const wrapper = mount(<Approvals {...approvalsProps()} />);
+      assert(
+        wrapper.find('.asset-browser .filter-content .filter-section.visibility').length <= 0,
+        'Expected the Visibility filter to NOT be rendered'
+      );
+    });
+  });
 });

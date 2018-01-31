@@ -10,7 +10,6 @@ import {
 import ManageMetadataSidebar
   from 'datasetManagementUI/components/ManageMetadataSidebar/ManageMetadataSidebar';
 import SubmitButton from 'datasetManagementUI/containers/SubmitButtonContainer';
-import styles from './ManageMetadata.module.scss';
 
 export const SAVED = 'SAVED';
 export const UNSAVED = 'UNSAVED';
@@ -177,7 +176,7 @@ class ManageMetadata extends Component {
     const onColumnTab = !!params.outputSchemaId;
 
     return (
-      <div className={styles.manageMetadata}>
+      <div id="manage-metadata">
         <Modal
           fullScreen
           onDismiss={() =>
@@ -216,7 +215,7 @@ class ManageMetadata extends Component {
           </ModalContent>
           <ModalFooter>
             <button
-              className={styles.button}
+              className="btn btn-default"
               onClick={() =>
                 this.props.handleModalDismiss(
                   this.props.pathToNewOutputSchema,

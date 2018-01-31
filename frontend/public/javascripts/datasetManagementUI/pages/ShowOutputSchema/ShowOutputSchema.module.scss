@@ -36,6 +36,14 @@ $sidebar-width: 250px;
     }
   }
 
+  :global {
+    .modal-footer {
+      z-index: 1000;
+      align-self: flex-end;
+      width: calc(100% - #{$sidebar-width});
+    }
+  }
+
   .modalFooter {
     :global {
       .modal-footer-actions {

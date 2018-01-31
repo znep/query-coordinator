@@ -810,22 +810,37 @@ module ApplicationHelper
       html << radio_button_tag(name, nil, other_selected, :class => 'other', :disabled => options[:disabled])
       html << label_tag(label_for(name, ''), 'Other:')
     end
+
+    opts = [
+      :disabled => options[:disabled],
+      'aria-label' => label_for(name, 'other'),
+      :id => 'feature_flag_value'
+    ]
+
     if flag_config.expectedValues?
       html << select_tag(
-                name,
-                options_for_select(flag_config.expectedValues.split(' ').
-                  reject { |value| ['true', 'false'].include? value }, flag_value),
-                :disabled => options[:disabled],
-                'aria-label' => label_for(name, 'other'))
+        name,
+        options_for_select(
+          flag_config.expectedValues.split(' ').reject { |value| ['true', 'false'].include? value },
+          flag_value
+        ),
+        *opts
+      )
     else
       case flag_value
       when String, Fixnum
-        html << text_field_tag(name, flag_value, :disabled => options[:disabled], 'aria-label' => label_for(name, 'other'))
+        transformed_value = flag_value
       when Array
-        html << text_field_tag(name, flag_value.to_json, :disabled => options[:disabled], 'aria-label' => label_for(name, 'other'))
+        transformed_value = flag_value.to_json
       else
-        html << text_field_tag(name, nil, :disabled => options[:disabled], 'aria-label' => label_for(name, 'other'))
+        transformed_value = nil
       end
+
+      html << text_field_tag(
+        name,
+        transformed_value,
+        *opts
+      )
     end
 
     html.join(' ').html_safe

@@ -7,7 +7,6 @@ export default () => ({
     'baseMapStyle': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
     'baseMapOpacity': 0.2,
     'datasetMetadata': false,
-    'locateUser': false,
     'geoCoderControl': true,
     'geoLocateControl': true,
     'locateUser': false,

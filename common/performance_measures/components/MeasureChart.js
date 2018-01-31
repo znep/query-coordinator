@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import I18n from 'common/i18n';
-import { SocrataIcon } from 'common/components';
+import SocrataIcon from 'common/components/SocrataIcon';
 
 import withComputedMeasure from './withComputedMeasure';
 import computedMeasurePropType from '../propTypes/computedMeasurePropType';

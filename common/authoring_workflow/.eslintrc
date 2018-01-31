@@ -1,0 +1,7 @@
+{
+  "rules": {
+    // In the context of common/authoring_workflow, it's OK
+    // to include common/components.
+    "no-restricted-imports": 0
+  }
+}

@@ -11,5 +11,10 @@
     "xdescribe": true,
     "xit": true,
     "expect": true // Deprecated, but many tests still use it.
+  },
+  "rules": {
+    // In the context of common/spec, it's OK
+    // to include common/components.
+    "no-restricted-imports": 0
   }
 }

@@ -1,33 +1,19 @@
 import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import createLogger from 'redux-logger';
 import airbrake from 'common/airbrake';
 import { AppContainer } from 'react-hot-loader';
 
 import { FeedbackPanel } from 'common/components';
 
 import { dateLocalize } from 'common/locale';
-import reducer from 'common/components/AssetBrowser/reducers';
 import InternalAssetManager from './components/internal_asset_manager';
 
-const middleware = [thunk];
-
-if (_.get(window, 'serverConfig.environment') === 'development') {
-  middleware.push(createLogger({
-    duration: true,
-    timestamp: false,
-    collapsed: true
-  }));
-} else {
+if (_.get(window, 'serverConfig.environment') !== 'development') {
   airbrake.init(_.get(window, 'serverConfig.airbrakeProjectId'), _.get(window, 'serverConfig.airbrakeKey'));
 }
 
 ReactDOM.render(<InternalAssetManager />, document.querySelector('#internal-asset-manager-asset-browser'));
-
-const store = createStore(reducer, applyMiddleware(...middleware));
 
 // Hot Module Replacement API
 if (module.hot) {

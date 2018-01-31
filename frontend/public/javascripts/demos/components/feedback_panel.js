@@ -7,7 +7,7 @@ class FeedbackPanelDemo extends Component {
   render() {
     const props = {
       currentUser: {
-        id: 'fake-fake',
+        id: 'fake-fake'
       },
       // locale: auto-default
       // Fake usersnap project id, you will probably read from window.serverConfig.

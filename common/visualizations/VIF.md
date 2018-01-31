@@ -14,6 +14,7 @@ An explanation of the version 2 vif format follows.
   createdAt: <ISO-8601 timestamp as string>,
   description: <string> or <empty string>,
   format: <format object (see below)>,
+  origin: <origin object (see below)>,
   series: <series array (see below)>,
   title: <string> or <empty string>
 }
@@ -361,7 +362,7 @@ Required |Optional
 |    -    |Column Chart, Timeline Chart|
 
 ##### `showOtherCategory`
-`showOtherCategory` controls whether grouping data above specified limit into `(other)` category. 
+`showOtherCategory` controls whether grouping data above specified limit into `(other)` category.
 Default limit in Pie Chart is 12 and `showOtherCategory` is true by default.
 There isn't a default limit in Bar Chart and Column Chart. `showOtherCategory` is false by default.
 
@@ -394,6 +395,25 @@ The following example shows a valid format object for a version 2 vif:
   }
 }
 ```
+
+### The `origin` Object
+The origin object specifies metadata about the origins of the visualization.
+
+#### Optional Properties
+
+##### `type`
+`type` identifies where visualization cames from or was generated. This value does not affect the rendering of the chart in any way.
+
+Required |Optional
+:-------:|:----------------------------------------------------------------------:
+|    -    |All types|
+
+##### `url`
+`url` controls the value of the href for the "View source data" link in the info bar of the visualization. The value of that link defaults to the `dataSource` dataset if no value is provided in `url`. Its type is `<string>`. It is useful for visualizations that have `series.dataSource.type === 'socrata.inline'` since the data source can't be inferred from the VIF itself. If `url` is given a non-empty value _and_ `viewSourceDataLink` is set to true, then the link generated will only reflect the value of `url`.
+
+Required |Optional
+:-------:|:----------------------------------------------------------------------:
+|    -    |All types|
 
 ### The `series` Array
 Vif 2 supports multiple series in a visualization by default. As such, the `series` property is of type `<array>` and contains one or more series objects (see next section).
@@ -863,4 +883,3 @@ Output SoQL:
 ```
 WHERE `number_column` < 7
 ```
-

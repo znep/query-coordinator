@@ -467,34 +467,17 @@ function SvgVisualization($element, vif, options) {
   };
 
   this.showViewSourceDataLink = function() {
+    const viewSourceDataOverride = _.get(self.getVif(), 'origin.url');
+    const renderLink = function(href) {
+      if (self.isEmbedded()) {
+        href += '?referrer=embed';
+      }
 
-    if (_.get(self.getVif(), 'series[0].dataSource.type') === 'socrata.soql') {
-
-      const domain = _.get(self.getVif(), 'series[0].dataSource.domain');
-      const datasetUid = _.get(self.getVif(), 'series[0].dataSource.datasetUid');
-      const metadataProvider = new MetadataProvider({ domain, datasetUid }, true);
-      const renderLink = function(linkableDatasetUid) {
-
-        let href = `https://${domain}/d/${linkableDatasetUid}`;
-
-        if (self.isEmbedded()) {
-          href += '?referrer=embed';
-        }
-
-        self.
-          $container.
-          addClass('socrata-visualization-view-source-data').
-          find('.socrata-visualization-view-source-data a').
-          attr('href', href);
-      };
-
-      metadataProvider.getDatasetMigrationMetadata().
-        then(function(migrationMetadata) {
-          renderLink(_.get(migrationMetadata, 'nbe_id', datasetUid));
-        }).
-        catch(function() {
-          renderLink(datasetUid);
-        });
+      self.
+        $container.
+        addClass('socrata-visualization-view-source-data').
+        find('.socrata-visualization-view-source-data a').
+        attr('href', href);
 
       // Add the info class immediately so that visualizations can accurately
       // measure how much space they have to fill, but only add the
@@ -502,6 +485,24 @@ function SvgVisualization($element, vif, options) {
       // request has returned, if it is made.
       self.sourceDataLinkVisible = true;
       self.showInfo();
+    };
+
+    if (!_.isEmpty(viewSourceDataOverride)) {
+      renderLink(viewSourceDataOverride);
+    } else if (_.get(self.getVif(), 'series[0].dataSource.type') === 'socrata.soql') {
+
+      const domain = _.get(self.getVif(), 'series[0].dataSource.domain');
+      const datasetUid = _.get(self.getVif(), 'series[0].dataSource.datasetUid');
+      const metadataProvider = new MetadataProvider({ domain, datasetUid }, true);
+
+      metadataProvider.getDatasetMigrationMetadata().
+        then(function(migrationMetadata) {
+          const nbeUid = _.get(migrationMetadata, 'nbe_id', datasetUid);
+          renderLink(`https://${domain}/d/${nbeUid}`);
+        }).
+        catch(function() {
+          renderLink(`https://${domain}/d/${datasetUid}`);
+        });
     }
   };
 

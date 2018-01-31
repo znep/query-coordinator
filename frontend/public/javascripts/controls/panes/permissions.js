@@ -109,6 +109,12 @@
     shown: function() {
       this._super();
       this.$dom().find('.flash').removeClass('error').text('');
+
+      // EN-21598: See grid_view_socrata_visualizations/main.js
+      // Can be removed after AssetActionBar rollout in May.
+      if (window.socrata.approvals.showManagePermissionsApprovalMessage) {
+        document.getElementById('manage-permissions-approval-message').style.display = 'inline';
+      }
     },
 
     _getFinishButtons: function() {

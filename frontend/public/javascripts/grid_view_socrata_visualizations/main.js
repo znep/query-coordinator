@@ -21,10 +21,16 @@ function updatePageBasedOnApprovalOutcome(assetWillEnterApprovalsQueue) {
       document.getElementById('derived-view-approval-message').style.display = 'inherit';
     }
 
+    // EN-21596: Show approval warning message in the Save new derived view dialog
+    document.getElementById('save-new-derived-view-approval-message').style.display = 'inherit';
+
     // EN-21598: Show approval message next to "Public" radio button if the asset is currently private.
     if (!blist.dataset.isPublic()) {
-      document.getElementById('manage-permissions-approval-message').style.display = 'inline';
+      // The element isn't actually rendered until the user clicks the Manage button, so we can't
+      // just select it and modify its style like the others.
+      window.socrata.approvals.showManagePermissionsApprovalMessage = true;
     }
+
   }
 }
 

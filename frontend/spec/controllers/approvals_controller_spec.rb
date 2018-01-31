@@ -40,8 +40,7 @@ describe Administration::ApprovalsController do
       {
         'id' => workflow.id,
         'official_approval_strategy' => 'manual',
-        'community_approval_strategy' => 'automatic',
-        'reapproval_strategy' => 'manual'
+        'community_approval_strategy' => 'automatic'
       }
     end
 

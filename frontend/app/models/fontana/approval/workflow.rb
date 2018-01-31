@@ -10,10 +10,10 @@ module Fontana
       default_timeout 5.seconds.to_i
       format :json
 
-      ATTRIBUTE_NAMES = %i(id createdAt description displayName domainId outcome reapprovalPolicy updatedAt steps)
+      ATTRIBUTE_NAMES = %i(id description displayName domainId outcome steps)
       ATTRIBUTE_NAMES.each(&method(:attr_accessor))
 
-      JSON_ATTRIBUTES = %i(displayName description reapprovalPolicy)
+      JSON_ATTRIBUTES = %i(displayName description)
 
       attr_accessor :cookies
 
@@ -48,18 +48,6 @@ module Fontana
 
       def initialize
         @cookies = nil
-      end
-
-      def manual?
-        reapprovalPolicy == 'manual'
-      end
-
-      def automatic?
-        reapprovalPolicy == 'auto'
-      end
-
-      def require_reapproval=(new_state)
-        self.reapprovalPolicy = new_state ? 'manual' : 'auto'
       end
 
       def update

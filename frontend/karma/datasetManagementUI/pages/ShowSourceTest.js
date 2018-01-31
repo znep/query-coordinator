@@ -46,7 +46,7 @@ describe('ShowSource page', () => {
 
     const component = shallow(<ShowSource {...newProps} />);
 
-    assert.equal(component.find('.spinner').length, 1);
+    assert.equal(component.find('.spinner-large').length, 1);
   });
 
   it('renders SourceSidebar and any children if not in progress', () => {

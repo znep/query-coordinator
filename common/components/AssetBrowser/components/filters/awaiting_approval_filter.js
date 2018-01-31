@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
-import { SocrataIcon } from 'common/components';
+import SocrataIcon from 'common/components/SocrataIcon';
 
 import * as constants from 'common/components/AssetBrowser/lib/constants';
 import * as filters from 'common/components/AssetBrowser/actions/filters';

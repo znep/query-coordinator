@@ -130,8 +130,6 @@ administration-activity-feed-soql:
 - activity-feed/index
 administration-index-screen:
 - screen-admin-index
-administration-internal-asset-manager:
-- common/feedback-panel
 administration-analytics-screen:
 - screen-metrics
 administration-georegions:

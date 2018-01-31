@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { spring } from 'react-motion';
 
+import { FeedbackPanel } from 'common/components';
 import LocalizedText from 'common/i18n/components/LocalizedText';
-import FeedbackPanel from '../../common/components/FeedbackPanel';
 import Table from './Table';
 import Footer from './Footer';
 import Tabs from './Tabs';

@@ -22,16 +22,16 @@ function generateConfig() {
     lang: getLocalizationKey(),
     loadHandler: () => {
       // Fill in some additional info which we can't expose via the widget.
-      UserSnap.on('beforeSend', (message) => {
+      window.UserSnap.on('beforeSend', (message) => {
         message.addInfo = user;
       });
 
       // Allow consumers to bind a callback for close events.
       // The current implementation sets this callback only on initialization,
       // because there are no known usages where we need to change behavior.
-      UserSnap.on('afterSend', onClose);
-      UserSnap.on('cancel', onClose);
-      UserSnap.on('error', onClose);
+      window.UserSnap.on('afterSend', onClose);
+      window.UserSnap.on('cancel', onClose);
+      window.UserSnap.on('error', onClose);
     }
   };
 }
@@ -102,3 +102,4 @@ function init(projectID, options) {
 }
 
 export default { activate, init };
+

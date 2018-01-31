@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default {
   CHICAGO_CRIMES_DATASET_METADATA: {
     'id' : '6zsd-86xi',

@@ -11,7 +11,7 @@ import { COLUMN_TYPES } from '../constants';
 import {
   addBasemapFlyoutColumn,
   removeBasemapFlyoutColumn,
-  setAdditionalFlyoutColumns
+  changeAdditionalFlyoutColumn
 } from '../actions';
 import { getAdditionalFlyoutColumns } from '../selectors/vifAuthoring';
 import { hasData, getDisplayableColumns } from '../selectors/metadata';
@@ -50,9 +50,9 @@ export class ColumnSelector extends Component {
   }
 
   handleOnSelectionColumn(relativeIndex, option) {
-    const { onSetColumn } = this.props;
+    const { onChangeColumn } = this.props;
 
-    onSetColumn(relativeIndex, option.value);
+    onChangeColumn(relativeIndex, option.value);
   }
 
   handleOnSelectionPendingColumn(option) {
@@ -73,10 +73,17 @@ export class ColumnSelector extends Component {
       type: column.renderTypeName,
       render: this.renderColumnOption
     }));
-    const columnSelectors = additionalFlyoutColumns.map((columnName, columnIndex) => {
-      return this.renderColumnSelector(columnIndex, options, columnName);
-    });
-    const relativeIndex = columnSelectors.length;
+    let columnSelectors = null;
+    let relativeIndex = 0;
+
+    if (additionalFlyoutColumns.length > 0) {
+      columnSelectors = additionalFlyoutColumns.map((columnName, columnIndex) => {
+        return this.renderColumnSelector(columnIndex, options, columnName);
+      });
+
+      relativeIndex = columnSelectors.length;
+    }
+
     const pendingColumnSelector = isColumnPending ?
       this.renderPendingColumnSelector(options, relativeIndex) :
       null;
@@ -231,8 +238,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(removeBasemapFlyoutColumn(relativeIndex));
     },
 
-    onSetColumn(relativeIndex, columnName) {
-      dispatch(setAdditionalFlyoutColumns(columnName, relativeIndex));
+    onChangeColumn(relativeIndex, columnName) {
+      dispatch(changeAdditionalFlyoutColumn(columnName, relativeIndex));
     }
   };
 }

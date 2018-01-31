@@ -271,7 +271,7 @@ describe('AuthoringWorkflow reducer', () => {
           });
         });
 
-        describe('when called setAdditionalFlyoutColumns', () => {
+        describe('when called changeAdditionalFlyoutColumn', () => {
           let state;
 
           beforeEach(() => {
@@ -283,7 +283,7 @@ describe('AuthoringWorkflow reducer', () => {
 
           it('should set the flyout column name', () => {
             assert.equal(state.vifAuthoring.vifs.map.series[0].mapOptions.additionalFlyoutColumns[0], 'COLUMN_NAME');
-            const newState = reducer(state, actions.setAdditionalFlyoutColumns('NEW_COLUMN_NAME', 0));
+            const newState = reducer(state, actions.changeAdditionalFlyoutColumn('NEW_COLUMN_NAME', 0));
 
             assert.equal(newState.vifAuthoring.vifs.map.series[0].mapOptions.additionalFlyoutColumns[0], 'NEW_COLUMN_NAME');
           });

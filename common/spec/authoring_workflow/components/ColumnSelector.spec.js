@@ -98,7 +98,7 @@ describe('ColumnSelector', function() {
       listItemKeyPrefix: 'AdditionalFlyoutValues',
       onAddColumnSelector: sinon.stub(),
       onRemoveColumnSelector: sinon.stub(),
-      onSetColumn: sinon.stub()
+      onChangeColumn: sinon.stub()
     };
 
     function emitsEvent(id, eventName) {
@@ -124,7 +124,7 @@ describe('ColumnSelector', function() {
     });
 
     describe('when changing the additional flyout column dropdown', function() {
-      emitsEvent('#column-selection-0 .picklist-option:nth-child(2)', 'onSetColumn');
+      emitsEvent('#column-selection-0 .picklist-option:nth-child(2)', 'onChangeColumn');
     });
 
     describe('when clicked on delete link', function() {

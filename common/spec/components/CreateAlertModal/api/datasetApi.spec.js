@@ -15,7 +15,7 @@ describe('datasetApi', () => {
             {
               'name': 'test_asset',
               'dataTypeName': 'test_dataTypeName',
-              'fieldName': 'test_filed_name'
+              'fieldName': 'test_field_name'
             }
           ]
         }), { status: 200 }
@@ -33,7 +33,7 @@ describe('datasetApi', () => {
         const expectedOutput = [{
           column_type: 'test_dataTypeName',
           title: 'test_asset',
-          value: 'test_filed_name'
+          value: 'test_field_name'
         }];
 
         return datasetApi.getColumns({ viewId: 'test-tset' }).then((res) => {
@@ -294,7 +294,7 @@ describe('datasetApi', () => {
         });
       });
 
-      it('should retrun empty array if access token is undefined', () => {
+      it('should return empty array if access token is undefined', () => {
         return datasetApi.geoSearch('test', null).then((res) => {
           assert.deepEqual(res, []);
           geoSearchStub.restore();
@@ -325,7 +325,7 @@ describe('datasetApi', () => {
             getColumnsStub.restore();
             assert.equal(error.toString(), 'Error');
           }
-          );
+        );
       });
     });
   });

@@ -67,7 +67,7 @@ class MyAlerts extends Component {
   }
 
   formatDatasetName(datasetName) {
-    // sometimes datesetName may be null
+    // sometimes datasetName may be null
     let name = (datasetName || '');
     name = name.replace(/[\W]/g, '-').replace(/\-+/g, '-');
 

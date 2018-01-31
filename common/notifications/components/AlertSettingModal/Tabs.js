@@ -1,10 +1,12 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import cssModules from 'react-css-modules';
 import classNames from 'classnames';
-import styles from './tabs.module.scss';
+import cssModules from 'react-css-modules';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
 import connectLocalization from 'common/i18n/components/connectLocalization';
 import I18n from 'common/i18n';
+
+import styles from './tabs.module.scss';
 
 class Tabs extends Component {
   render() {

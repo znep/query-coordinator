@@ -79,7 +79,7 @@ RadiusSlider.defaultProps = {
 
 RadiusSlider.propTypes = {
   value: PropTypes.number,
-  onChange: PropTypes.func
+  onChange: PropTypes.func.isRequired
 };
 
 export default cssModules(RadiusSlider, styles, { allowMultiple: true });

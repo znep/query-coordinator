@@ -7,13 +7,15 @@ import Slider from 'common/components/Slider';
 
 describe('RadiusSlider', () => {
   it('renders an element', () => {
-    const element = mount(<RadiusSlider />);
+    const onChangeSpy = sinon.spy();
+    const element = mount(<RadiusSlider onChange={onChangeSpy} />);
 
     assert.isDefined(element);
   });
 
   it('should render element with icon and input field', () => {
-    const element = mount(<RadiusSlider />);
+    const onChangeSpy = sinon.spy();
+    const element = mount(<RadiusSlider onChange={onChangeSpy} />);
 
     assert.lengthOf(element.find('.socrata-icon-arrow-up'), 1);
     assert.lengthOf(element.find('.socrata-icon-arrow-down'), 1);

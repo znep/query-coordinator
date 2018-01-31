@@ -231,9 +231,9 @@ class CreateAlertModal extends Component {
   renderTabContent() {
     const {
       currentCustomAlertPage,
+      customAlert,
       customAlertType,
       customAlertTriggerType,
-      customAlert,
       enableSaveButton,
       mapboxAccessToken,
       selectedTab,

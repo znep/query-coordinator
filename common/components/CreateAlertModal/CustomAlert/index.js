@@ -150,21 +150,21 @@ class CreateCustomAlert extends Component {
         disable: editMode,
         id: 'alertType',
         name: I18n.t('breadcrumb.alert_type', { scope: this.translationScope }),
-        onClcik: () => { (!editMode && this.onBreadcrumbClick('alertType')); },
+        onClick: () => { (!editMode && this.onBreadcrumbClick('alertType')); },
         showArrowIcon: true
       },
       {
         disable: disableParamPage,
         id: 'parameters',
         name: I18n.t('breadcrumb.parameters', { scope: this.translationScope }),
-        onClcik: () => { (!disableParamPage && this.onBreadcrumbClick('parameters')); },
+        onClick: () => { (!disableParamPage && this.onBreadcrumbClick('parameters')); },
         showArrowIcon: true
       },
       {
         disable: !enableSaveButton,
         id: 'trigger',
         name: I18n.t('breadcrumb.trigger', { scope: this.translationScope }),
-        onClcik: () => { (enableSaveButton && this.onBreadcrumbClick('trigger')); },
+        onClick: () => { (enableSaveButton && this.onBreadcrumbClick('trigger')); },
         showArrowIcon: false
       }
     ];
@@ -174,7 +174,7 @@ class CreateCustomAlert extends Component {
         styleName={
           classNames({ 'active': customAlertPage === crumb.id, 'disable': crumb.disable })
         }>
-        <span onClick={crumb.onClcik}>
+        <span onClick={crumb.onClick}>
           {crumb.name}
         </span>
         {crumb.showArrowIcon ? <SocrataIcon name="arrow-right" styleName="arrow-icon" /> : null}

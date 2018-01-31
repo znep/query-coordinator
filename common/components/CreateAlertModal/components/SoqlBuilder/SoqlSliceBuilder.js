@@ -369,7 +369,7 @@ class SoqlSliceBuilder extends Component {
     if (!_.isEmpty(slice.location)) {
       radiusInputField = (
         <RadiusSlider
-          // sometimes (eg: editmode ) radius value may be string & silder accepts only number
+          // sometimes (eg: editmode ) radius value may be string & slider accepts only number
           value={Number(slice.radius)}
           onChange={(value) => this.onSliceParamChange('radius', value)} />
       );

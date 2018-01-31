@@ -76,9 +76,9 @@ export default class datasetApi {
   static getTopValuesByColumn = (params) => {
     const { column, viewId } = params;
     const limit = (_.get(params, 'limit', 20));
-    const conditionText = `$select=${column}&$group=${column}&$limit=${limit}`;
+    const queryParamString = `$select=${column}&$group=${column}&$limit=${limit}`;
 
-    return fetchJson(`/resource/${viewId}.json?${conditionText}`, {
+    return fetchJson(`/resource/${viewId}.json?${queryParamString}`, {
       method: 'GET',
       headers: defaultHeaders,
       credentials: 'same-origin'

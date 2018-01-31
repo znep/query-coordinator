@@ -25,6 +25,10 @@
 
   .icon-section {
     cursor: pointer;
+
+    :global(.socrata-icon svg) {
+      vertical-align: bottom;
+    }
   }
 
   .section {

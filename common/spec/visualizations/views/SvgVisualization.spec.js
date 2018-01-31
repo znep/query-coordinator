@@ -536,6 +536,29 @@ describe('SvgVisualization', () => {
         });
       });
     });
+
+    describe('when origin.url exists', () => {
+      it('renders url from origin', () => {
+        const vif = _.cloneDeep(mockVif);
+        vif.origin = { url: 'url-override' };
+
+        const viz = new SvgVisualization($element, vif);
+        viz.showViewSourceDataLink();
+
+        validateLink('url-override');
+      });
+
+      it('does not render when viewSourceDataLink is false', () => {
+        const vif = _.cloneDeep(mockVif);
+        vif.origin = { url: 'url-override' };
+
+        const viz = new SvgVisualization($element, vif);
+
+        assert.isFalse($element.hasClass('socrata-visualization-view-source-data'));
+        assert.lengthOf($element.find('.socrata-visualization-view-source-data a:visible'), 0);
+      });
+    });
+
   });
 
   describe('#hideViewSourceDataLink', () => {

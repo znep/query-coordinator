@@ -18,7 +18,8 @@ export default class Approvals extends Component {
         props: {
           actionElement: ApprovalActionButtons,
           baseFilters: {
-            approvalStatus: constants.APPROVAL_STATUS_PENDING
+            approvalStatus: constants.APPROVAL_STATUS_PENDING,
+            authority: 'official'
           },
           showProvenanceCounts: true
         }
@@ -28,7 +29,8 @@ export default class Approvals extends Component {
         props: {
           actionElement: ApprovalActionButtons,
           baseFilters: {
-            approvalStatus: [constants.APPROVAL_STATUS_APPROVED, constants.APPROVAL_STATUS_REJECTED]
+            approvalStatus: [constants.APPROVAL_STATUS_APPROVED, constants.APPROVAL_STATUS_REJECTED],
+            authority: 'official'
           }
         }
       }

@@ -541,6 +541,7 @@ en:
           subtitle: Who can see this asset?
           success_toast: Audience updated!
           title: Change Audience Scope
+        choose_published_viewers_html: <strong>Add People or Teams</strong> to view the published version of this asset
         current_owner: Current Owner
         manage_collaborators:
           subtitle: Add people to collaborate on the draft version of this asset
@@ -548,6 +549,7 @@ en:
           title: Add Collaborators
         new_owner: New Owner
         no_collaborators: No collaborators have been added yet. Add some below.
+        no_published_to: Search below to add people or teams who can see the published version of this asset.
         no_results: No results found. Try again or enter a full email address.
         owner: Owner
         people: People
@@ -559,6 +561,7 @@ en:
           title: Publish Asset
         publish_button: Publish
         save: Save
+        search_placeholder: Enter name or email...
         submit_for_approval: Submit for Approval
         summary:
           subtitle: Who can see this dataset?

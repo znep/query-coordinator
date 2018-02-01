@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
+
 import I18n from '../../i18n';
 import UserSearchResultPropType, { UserPropType } from './UserSearchResultPropType';
 import MultiSelect from '../MultiSelect';
@@ -60,6 +62,7 @@ class UserSearch extends Component {
     return (
       <MultiSelect
         currentQuery={currentQuery}
+        inputPlaceholder={isEmpty(selectedUsers) ? I18n.t('shared.site_chrome.access_manager.search_placeholder') : ''}
         noResultsMessage={I18n.t('shared.site_chrome.access_manager.no_results')}
         options={results}
         maxSelectedOptions={maxSelectedUsers}

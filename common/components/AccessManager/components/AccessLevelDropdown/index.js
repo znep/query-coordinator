@@ -7,6 +7,8 @@ import FeatureFlags from 'common/feature_flags';
 import I18n from 'common/i18n';
 import Dropdown from 'common/components/Dropdown';
 
+import { ACCESS_LEVELS, ACCESS_LEVEL_VERSIONS } from 'common/components/AccessManager/Constants';
+
 import UserAccessLevelPropType from 'common/components/AccessManager/propTypes/UserAccessLevelPropType';
 
 import styles from './dropdown.module.scss';
@@ -35,12 +37,17 @@ class AccessLevelDropdown extends Component {
     onSelection: () => {}
   };
 
+  static shouldIncludeLevel = (level) => {
+    // since "viewer" of the "published" version is actually controlled by the AudienceScopeChooser, we don't want to display it here
+    return !(level.name === ACCESS_LEVELS.VIEWER && level.version === ACCESS_LEVEL_VERSIONS.PUBLISHED);
+  }
+
   /**
    * Given a list of access levels, translates them to options for the dropdowns
    * (that is, their translated name as the title)
    */
   static accessLevelsToOptions = (levels) =>
-    levels.map(level => ({
+    levels.filter(AccessLevelDropdown.shouldIncludeLevel).map(level => ({
       title: I18n.t(
         // we change these labels based on the value of the strict_permissions flag
         FeatureFlags.value('strict_permissions') ?

@@ -9,11 +9,13 @@ import {
 import uiReducer from '../AccessManager/reducers/UiReducer';
 import uiSagas from '../AccessManager/sagas/UiSagas';
 import permissionsReducer from '../AccessManager/reducers/PermissionsReducer';
-import addUsersReducer from '../AccessManager/reducers/AddUsersReducer';
+import addCollaboratorsReducer from '../AccessManager/reducers/AddCollaboratorsReducer';
 import permissionsSagas from '../AccessManager/sagas/PermissionsSagas';
-import addUsersSagas from '../AccessManager/sagas/AddUsersSagas';
+import addCollaboratorsSagas from '../AccessManager/sagas/AddCollaboratorsSagas';
 import changeOwnerReducer from '../AccessManager/reducers/ChangeOwnerReducer';
 import changeOwnerSagas from '../AccessManager/sagas/ChangeOwnerSagas';
+import publishedToReducer from '../AccessManager/reducers/PublishedToReducer';
+import publishedToSagas from '../AccessManager/sagas/PublishedToSagas';
 
 /**
  * Creates a store for the AccessManager component to use,
@@ -32,9 +34,10 @@ export default (initialState) => {
   const store = createStore(
     combineReducers({
       permissions: permissionsReducer,
-      addUsers: addUsersReducer,
+      addCollaborators: addCollaboratorsReducer,
       changeOwner: changeOwnerReducer,
-      ui: uiReducer
+      ui: uiReducer,
+      publishedTo: publishedToReducer
     }),
     initialState,
     composeEnhancers(applyMiddleware(sagaMiddleware))
@@ -44,9 +47,10 @@ export default (initialState) => {
   function* sagas() {
     yield all([
       ...permissionsSagas,
-      ...addUsersSagas,
+      ...addCollaboratorsSagas,
       ...changeOwnerSagas,
-      ...uiSagas
+      ...uiSagas,
+      ...publishedToSagas
     ]);
   }
   sagaMiddleware.run(sagas);

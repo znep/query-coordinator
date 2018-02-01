@@ -107,9 +107,15 @@ export const findUserIndexWithAccessLevel = (users, accessLevel) => users.findIn
  * Determine if the given user has the given access level
  * @param {object} user User to check
  * @param {string} accessLevel Access level to check
+ * @param {string} accessLevelVersion (Optional) Version to check for
  */
 export const userHasAccessLevel =
-  (user, accessLevel) => user.accessLevels.some(level => level.name === accessLevel);
+  (user, accessLevel, accessLevelVersion) =>
+    user.accessLevels.some(
+      level =>
+        level.name === accessLevel &&
+        (!accessLevelVersion || (accessLevelVersion === level.version))
+    );
 
 // TODO don't use window.location.host here (or maybe it's fine...?)
 /**

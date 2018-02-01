@@ -24,7 +24,8 @@ class UserDetailsWithAccessLevel extends Component {
     user: UserPropType,
     changeUserAccessLevel: PropTypes.func,
     accessLevel: UserAccessLevelPropType,
-    removeUser: PropTypes.func
+    removeUser: PropTypes.func,
+    hideAccessLevelDropdown: PropTypes.bool
   }
 
   renderActions = () => {
@@ -32,16 +33,19 @@ class UserDetailsWithAccessLevel extends Component {
       user,
       changeUserAccessLevel,
       accessLevel,
-      removeUser
+      removeUser,
+      hideAccessLevelDropdown
     } = this.props;
 
     // TODO are there "read-only" scenarios for these that shouldn't show any actions here?
 
     return (
       <div styleName="user-options-container">
-        <AccessLevelDropdown
-          value={accessLevel}
-          onSelection={(level) => { changeUserAccessLevel(user, level.value); }} />
+        {hideAccessLevelDropdown === false &&
+          <AccessLevelDropdown
+            value={accessLevel}
+            onSelection={(level) => { changeUserAccessLevel(user, level.value); }} />
+        }
         <button styleName="remove-button" onClick={() => { removeUser(user); }}>
           <SocrataIcon name="close" styleName="remove-icon" />
         </button>

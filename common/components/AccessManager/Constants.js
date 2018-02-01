@@ -9,6 +9,12 @@ export const ACCESS_LEVELS = {
   VIEWER: 'viewer'
 };
 
+export const ACCESS_LEVEL_VERSIONS = {
+  PUBLISHED: 'published',
+  DRAFT: 'draft',
+  ALL: 'all'
+};
+
 export const AUDIENCE_SCOPES = {
   PRIVATE: 'private',
   PUBLIC: 'public',

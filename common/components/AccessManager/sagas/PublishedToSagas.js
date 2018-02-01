@@ -9,12 +9,12 @@ import {
 } from 'common/components/AccessManager/Util';
 import { CATALOG_SEARCH_DEBOUNCE_MILLISECONDS } from 'common/components/AccessManager/Constants';
 
-import * as addUsersActions from 'common/components/AccessManager/actions/AddUsersActions';
+import * as publishedToActions from 'common/components/AccessManager/actions/PublishedToActions';
 
-import { getAddedUsers, getSelectedUsers } from './Selectors';
+import { getAddedUsers, getSelectedPublishTo } from './Selectors';
 
 // grab list of (roled) users from the catalog
-export function* userSearchQueryChanged(action) {
+export function* publishedToSearchQueryChanged(action) {
   const { query, domain } = action;
 
   if (query) {
@@ -33,20 +33,20 @@ export function* userSearchQueryChanged(action) {
       );
 
       const addedUsers = yield select(getAddedUsers);
-      const selectedUsers = yield select(getSelectedUsers);
+      const selectedUsers = yield select(getSelectedPublishTo);
 
       // this will filter out all the users who have already been selected,
       // or who already have permissions on the asset
       // it will also add "query" to the bottom of the list if it is a valid email address
       const filteredResults = filterSearchResults(results, selectedUsers, addedUsers, query);
 
-      yield put(addUsersActions.userSearchResultsFetchSuccess(filteredResults));
+      yield put(publishedToActions.publishedToSearchResultsFetchSuccess(filteredResults));
     } catch (error) {
-      yield put(addUsersActions.userSearchResultsFetchFail(error));
+      yield put(publishedToActions.publishedToSearchResultsFetchFail(error));
     }
   }
 }
 
 export default [
-  takeLatest(addUsersActions.USER_SEARCH_QUERY_CHANGED, userSearchQueryChanged)
+  takeLatest(publishedToActions.PUBLISHED_TO_SEARCH_QUERY_CHANGED, publishedToSearchQueryChanged)
 ];

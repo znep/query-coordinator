@@ -1,13 +1,13 @@
 import { call, put, select } from 'redux-saga/effects';
 import { assert } from 'chai';
 import { userAutocompleteUrl, fetchJsonWithDefaults } from 'common/components/AccessManager/Util';
-import { userSearchQueryChanged } from 'common/components/AccessManager/sagas/AddUsersSagas';
+import { collaboratorsSearchQueryChanged } from 'common/components/AccessManager/sagas/AddCollaboratorsSagas';
 import * as selectors from 'common/components/AccessManager/sagas/Selectors';
-import * as addUsersActions from 'common/components/AccessManager/actions/AddUsersActions';
+import * as addCollaboratorsActions from 'common/components/AccessManager/actions/AddCollaboratorsActions';
 import MockUserSearchResults from '../MockUserSearchResults';
 
-describe('AddUsersSagas', () => {
-  describe('userSearchQueryChanged', () => {
+describe('AddCollaboratorsSagas', () => {
+  describe('collaboratorsSearchQueryChanged', () => {
     const domain = 'test.test';
 
     const mockCatalogCall = (gen, query) => {
@@ -25,7 +25,7 @@ describe('AddUsersSagas', () => {
 
     it('filters addedUsers', () => {
       const query = 'fake';
-      const gen = userSearchQueryChanged({ query, domain });
+      const gen = collaboratorsSearchQueryChanged({ query, domain });
       const addedUsers = [
         { email: 'fake0@fake.com' },
         { email: 'fake1@fake.com' }
@@ -48,7 +48,7 @@ describe('AddUsersSagas', () => {
 
       assert.deepEqual(
         gen.next([]).value,
-        put(addUsersActions.userSearchResultsFetchSuccess(filtered))
+        put(addCollaboratorsActions.collaboratorsSearchResultsFetchSuccess(filtered))
       );
 
       assert.deepEqual(
@@ -59,7 +59,7 @@ describe('AddUsersSagas', () => {
 
     it('filters selectedUsers', () => {
       const query = 'fake';
-      const gen = userSearchQueryChanged({ query, domain });
+      const gen = collaboratorsSearchQueryChanged({ query, domain });
       const selectedUsers = [
         { email: 'fake2@fake.com' },
         { email: 'fake3@fake.com' }
@@ -82,7 +82,7 @@ describe('AddUsersSagas', () => {
 
       assert.deepEqual(
         gen.next(selectedUsers).value,
-        put(addUsersActions.userSearchResultsFetchSuccess(filtered))
+        put(addCollaboratorsActions.collaboratorsSearchResultsFetchSuccess(filtered))
       );
 
       assert.deepEqual(
@@ -93,7 +93,7 @@ describe('AddUsersSagas', () => {
 
     it('adds the query if it is a valid email', () => {
       const query = 'fake100@fake.com';
-      const gen = userSearchQueryChanged({ query, domain });
+      const gen = collaboratorsSearchQueryChanged({ query, domain });
 
       mockCatalogCall(gen, query);
 
@@ -112,7 +112,7 @@ describe('AddUsersSagas', () => {
 
       assert.deepEqual(
         gen.next([]).value,
-        put(addUsersActions.userSearchResultsFetchSuccess(filtered))
+        put(addCollaboratorsActions.collaboratorsSearchResultsFetchSuccess(filtered))
       );
 
       assert.deepEqual(
@@ -123,7 +123,7 @@ describe('AddUsersSagas', () => {
 
     it('catches errors', () => {
       const query = 'fake100@fake.com';
-      const gen = userSearchQueryChanged({ query, domain });
+      const gen = collaboratorsSearchQueryChanged({ query, domain });
 
       // skip delay
       gen.next();
@@ -138,7 +138,7 @@ describe('AddUsersSagas', () => {
 
       assert.deepEqual(
         gen.throw('error').value,
-        put(addUsersActions.userSearchResultsFetchFail('error'))
+        put(addCollaboratorsActions.collaboratorsSearchResultsFetchFail('error'))
       );
 
       assert.deepEqual(

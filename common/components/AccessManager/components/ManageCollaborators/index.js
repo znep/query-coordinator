@@ -3,17 +3,20 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import cssModules from 'react-css-modules';
 
-import PermissionPropType from 'common/components/AccessManager/propTypes/PermissionPropType';
-import AddUser from 'common/components/AccessManager/components/AddUser';
+import I18n from 'common/i18n';
 
-import UserList from './UserList';
+import { userHasAccessLevel } from 'common/components/AccessManager/Util';
+import { ACCESS_LEVELS, ACCESS_LEVEL_VERSIONS } from 'common/components/AccessManager/Constants';
+import PermissionPropType from 'common/components/AccessManager/propTypes/PermissionPropType';
+
+import UserList from 'common/components/AccessManager/components/UserList';
+
+import AddCollaborators from './AddCollaborators';
 import styles from './manage-collaborators.module.scss';
 
 
 /**
- * Shows a summary of the current permissions for a given asset.
- * That is, it's "audience" setting (public, private, etc.)
- * and all the users it has been shared to.
+ * Shows all of the current collaborators, with ways to add, remove, and change them
  */
 class ManageCollaborators extends Component {
   static propTypes = {
@@ -27,16 +30,24 @@ class ManageCollaborators extends Component {
   };
 
   render() {
-    const { permissions, errors } = this.props;
+    const {
+      permissions,
+      errors
+    } = this.props;
 
     // if the "permissions" object exists, it means we've gotten back results from our API call
     if (permissions) {
       return (
         <div>
           <div styleName="manage-collaborators-container">
-            <UserList />
+            {/* User List filtered to only show users WITHOUT published viewer access */}
+            <UserList
+              noUsersMessage={I18n.t('shared.site_chrome.access_manager.no_collaborators')}
+              userFilter={
+                user => !userHasAccessLevel(user, ACCESS_LEVELS.VIEWER, ACCESS_LEVEL_VERSIONS.PUBLISHED)
+              } />
           </div>
-          <AddUser />
+          <AddCollaborators />
         </div>
       );
     }

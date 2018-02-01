@@ -11,8 +11,9 @@ export const getCurrentOwner =
   state => findUserWithAccessLevel(state.permissions.permissions.users || [], ACCESS_LEVELS.CURRENT_OWNER);
 
 // userSearch selectors
-export const getCurrentUserSearchQuery = state => state.addUsers.query;
-export const getSelectedUsers = state => state.addUsers.selectedUsers;
+export const getCurrentUserSearchQuery = state => state.addCollaborators.query;
+export const getSelectedUsers = state => state.addCollaborators.selectedUsers;
+export const getSelectedPublishTo = state => state.publishedTo.selectedUsers;
 
 // permissions selectors
 export const getCurrentView = state => state.permissions.view;

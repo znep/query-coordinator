@@ -1,0 +1,19 @@
+.manage-published {
+  & :global(.multiselect-form-container) {
+    width: 585px;
+    max-width: 100%;
+  }
+
+  & :global(.multiselect-root) {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.header {
+  margin-top: 20px;
+}
+
+hr.divider {
+  margin-top: 10px !important;
+}

@@ -9,6 +9,8 @@ import { AUDIENCE_SCOPES } from 'common/components/AccessManager/Constants';
 import { DOMAIN_RIGHTS, MODES } from './Constants';
 import { fetchJsonWithDefaultHeaders } from '../../http';
 
+import fp from 'lodash/fp';
+
 /**
  * Returns true is the "userList" already contains a user that has the
  * given email.
@@ -38,9 +40,10 @@ const emailExistsInResults = (email, results) => results.some(result => result.u
 
 /**
  * Filter a list of search results to not display users that have already been selected in some way
- * @param {array} results List of search results
+ * @param {array} searchResults List of search results
  * @param {array} selectedUsers Users that have already been selected in the combo box
  * @param {array} addedUsers Users that have already been added with persmissions
+ * @param query
  */
 export const filterSearchResults = (searchResults, selectedUsers, addedUsers, query) => {
   // filter out any results of users that have already been added to this view
@@ -123,12 +126,30 @@ export const userHasAccessLevel =
  */
 export const getDomain = () => window.location.host;
 
+const userAutocompletePath = '/api/catalog/v1/users/autocomplete';
+
+const buildQueryString = fp.flow(
+  fp.toPairs,
+  fp.filter(([_, v]) => !fp.isNil(v)),
+  fp.map(([k, v]) => [k, encodeURIComponent(v)]),
+  fp.map(fp.join('=')),
+  fp.join('&')
+);
+
 /**
  * Get the URL to hit to query the catalog for a list of users.
  * @param {string} query User search query
- * @param {boolean} includeDomain Whether to include the domain in the querY (will only return roled users)
+ * @param {boolean} domain Whether to include the domain in the query (will only return roled users)
  */
-export const userAutocompleteUrl = (query, domain) => `/api/catalog/v1/users/autocomplete?q=${encodeURIComponent(query)}${domain ? `&domain=${domain}` : ''}`; // eslint-disable-line max-len
+export const userAndTeamAutocompleteUrl = (query, domain) =>
+  fp.flow(fp.compact, fp.join('?'))([
+    userAutocompletePath,
+    buildQueryString({
+      q: query,
+      include_teams: true,
+      domain: domain
+    })
+  ]);
 
 /**
  * Get the url to hit for the permissions of an asset

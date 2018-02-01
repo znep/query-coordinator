@@ -21,6 +21,12 @@ export const AUDIENCE_SCOPES = {
   ORGANIZATION: 'organization'
 };
 
+export const USER_TYPES = {
+  INTERACTIVE: 'interactive',
+  TEAM: 'team',
+  USER: 'user'
+};
+
 export const CATALOG_SEARCH_DEBOUNCE_MILLISECONDS = 250;
 export const TOAST_NOTIFICATION_MILLISECONDS = 3000;
 

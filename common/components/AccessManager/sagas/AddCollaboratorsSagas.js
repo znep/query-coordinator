@@ -2,16 +2,15 @@ import { delay } from 'redux-saga';
 import { takeLatest, call, put, select } from 'redux-saga/effects';
 
 import {
-  filterSearchResults,
   getDomain,
-  userAutocompleteUrl,
+  userAndTeamAutocompleteUrl,
   fetchJsonWithDefaults
 } from 'common/components/AccessManager/Util';
-import { CATALOG_SEARCH_DEBOUNCE_MILLISECONDS } from 'common/components/AccessManager/Constants';
+import { CATALOG_SEARCH_DEBOUNCE_MILLISECONDS, USER_TYPES } from 'common/components/AccessManager/Constants';
 
 import * as addCollaboratorsActions from 'common/components/AccessManager/actions/AddCollaboratorsActions';
 
-import { getAddedUsers, getSelectedUsers } from './Selectors';
+import { getAddedUsers } from './Selectors';
 
 // grab list of (roled) users from the catalog
 export function* collaboratorsSearchQueryChanged(action) {
@@ -27,26 +26,30 @@ export function* collaboratorsSearchQueryChanged(action) {
       // this is the desired behavior when searching for users to give permission to
       // Note that users can still be added by email if they are un-roled on the domain
       // (we may want to control this in the future)
-      const results = yield call(
+      const unmappedResults = yield call(
         fetchJsonWithDefaults,
-        userAutocompleteUrl(query, domain || getDomain())
+        userAndTeamAutocompleteUrl(query, domain || getDomain())
       );
 
+      // TODO: EN-21982 - Reassess remapping these results
+      const results = {
+        ...unmappedResults,
+        results: unmappedResults.results.map(
+          result => (
+            result.team ?
+            { ...result, user: { ...result.team, type: USER_TYPES.TEAM } } :
+            { ...result, user: { ...result.user, type: USER_TYPES.INTERACTIVE } })
+        )
+      };
+
       const addedUsers = yield select(getAddedUsers);
-      const selectedUsers = yield select(getSelectedUsers);
 
-      // this will filter out all the users who have already been selected,
-      // or who already have permissions on the asset
-      // it will also add "query" to the bottom of the list if it is a valid email address
-      const filteredResults = filterSearchResults(results, selectedUsers, addedUsers, query);
-
-      yield put(addCollaboratorsActions.collaboratorsSearchResultsFetchSuccess(filteredResults));
+      yield put(addCollaboratorsActions.collaboratorsSearchResultsFetchSuccess(results, addedUsers));
     } catch (error) {
+      console.error('Error fetching user search results', error);
       yield put(addCollaboratorsActions.collaboratorsSearchResultsFetchFail(error));
     }
   }
 }
 
-export default [
-  takeLatest(addCollaboratorsActions.COLLABORATORS_SEARCH_QUERY_CHANGED, collaboratorsSearchQueryChanged)
-];
+export default [takeLatest(addCollaboratorsActions.COLLABORATORS_SEARCH_QUERY_CHANGED, collaboratorsSearchQueryChanged)];

@@ -6,6 +6,8 @@ import SocrataIcon from 'common/components/SocrataIcon';
 
 import UserPropType from 'common/components/AccessManager/propTypes/UserPropType';
 
+import { USER_TYPES } from 'common/components/AccessManager/Constants';
+
 import UserLabel from './UserLabel';
 import styles from './list-item.module.scss';
 
@@ -23,10 +25,18 @@ class UserDetails extends Component {
 
   render() {
     const { user } = this.props;
+    const { type } = user;
 
     return (
       <div styleName="container">
-        <SocrataIcon name="user" styleName="icon" />
+        {/*
+          Unfortunately we can't just use "type" here as the icon name since
+          the type is "interactive" but the icon is "user"
+        */}
+        {(type && type === USER_TYPES.TEAM) ?
+          (<SocrataIcon name="team" styleName="icon" />) :
+          (<SocrataIcon name="user" styleName="icon" />)
+        }
         <div styleName="inner-container">
           <UserLabel user={user} />
           {this.props.children}

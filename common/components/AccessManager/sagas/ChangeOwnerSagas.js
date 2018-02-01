@@ -3,7 +3,7 @@ import { takeLatest, call, put, select } from 'redux-saga/effects';
 
 import {
   filterOwnerSearchResults,
-  userAutocompleteUrl,
+  userAndTeamAutocompleteUrl,
   fetchJsonWithDefaults
 } from 'common/components/AccessManager/Util';
 import { CATALOG_SEARCH_DEBOUNCE_MILLISECONDS } from 'common/components/AccessManager/Constants';
@@ -26,7 +26,7 @@ function* ownerSearchQueryChanged(action) {
         fetchJsonWithDefaults,
         // by not passing a domain here, we get ALL users on the platform
         // this is only for feature parity and we may want to change it in the future
-        userAutocompleteUrl(query)
+        userAndTeamAutocompleteUrl(query)
       );
 
       const currentOwner = yield select(getCurrentOwner);

@@ -278,6 +278,7 @@ module AdministrationHelper
 
     server_config = {
       airbrakeEnvironment: ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env,
+      appToken: APP_CONFIG.app_token,
       csrfToken: form_authenticity_token.to_s,
       currentUser: current_user,
       defaultMemberRoleId: 'member',

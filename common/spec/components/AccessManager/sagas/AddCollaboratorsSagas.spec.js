@@ -1,10 +1,11 @@
 import { call, put, select } from 'redux-saga/effects';
 import { assert } from 'chai';
-import { userAutocompleteUrl, fetchJsonWithDefaults } from 'common/components/AccessManager/Util';
+import { userAndTeamAutocompleteUrl, fetchJsonWithDefaults } from 'common/components/AccessManager/Util';
 import { collaboratorsSearchQueryChanged } from 'common/components/AccessManager/sagas/AddCollaboratorsSagas';
 import * as selectors from 'common/components/AccessManager/sagas/Selectors';
 import * as addCollaboratorsActions from 'common/components/AccessManager/actions/AddCollaboratorsActions';
 import MockUserSearchResults from '../MockUserSearchResults';
+import { USER_TYPES } from 'common/components/AccessManager/Constants';
 
 describe('AddCollaboratorsSagas', () => {
   describe('collaboratorsSearchQueryChanged', () => {
@@ -18,12 +19,12 @@ describe('AddCollaboratorsSagas', () => {
         gen.next().value,
         call(
           fetchJsonWithDefaults,
-          userAutocompleteUrl(query, domain)
+          userAndTeamAutocompleteUrl(query, domain)
         )
       );
     };
 
-    it('filters addedUsers', () => {
+    it('handles collaboratorSearchResultsFetchSuccess', () => {
       const query = 'fake';
       const gen = collaboratorsSearchQueryChanged({ query, domain });
       const addedUsers = [
@@ -38,87 +39,20 @@ describe('AddCollaboratorsSagas', () => {
         select(selectors.getAddedUsers)
       );
 
+      const searchResultsWithTypes = {
+        ...MockUserSearchResults,
+        results: MockUserSearchResults.results.map(r => ({
+          ...r,
+          user: { ...r.user, type: USER_TYPES.INTERACTIVE }
+        }))
+      };
+
       assert.deepEqual(
         gen.next(addedUsers).value,
-        select(selectors.getSelectedUsers)
+        put(addCollaboratorsActions.collaboratorsSearchResultsFetchSuccess(searchResultsWithTypes, addedUsers))
       );
 
-      const filtered = { ...MockUserSearchResults };
-      filtered.results = filtered.results.filter(result => !addedUsers.some(added => added.email === result.user.email));
-
-      assert.deepEqual(
-        gen.next([]).value,
-        put(addCollaboratorsActions.collaboratorsSearchResultsFetchSuccess(filtered))
-      );
-
-      assert.deepEqual(
-        gen.next(),
-        { done: true, value: undefined }
-      );
-    });
-
-    it('filters selectedUsers', () => {
-      const query = 'fake';
-      const gen = collaboratorsSearchQueryChanged({ query, domain });
-      const selectedUsers = [
-        { email: 'fake2@fake.com' },
-        { email: 'fake3@fake.com' }
-      ];
-
-      mockCatalogCall(gen, query);
-
-      assert.deepEqual(
-        gen.next(MockUserSearchResults).value,
-        select(selectors.getAddedUsers)
-      );
-
-      assert.deepEqual(
-        gen.next([]).value,
-        select(selectors.getSelectedUsers)
-      );
-
-      const filtered = { ...MockUserSearchResults };
-      filtered.results = filtered.results.filter(result => !selectedUsers.some(added => added.email === result.user.email));
-
-      assert.deepEqual(
-        gen.next(selectedUsers).value,
-        put(addCollaboratorsActions.collaboratorsSearchResultsFetchSuccess(filtered))
-      );
-
-      assert.deepEqual(
-        gen.next(),
-        { done: true, value: undefined }
-      );
-    });
-
-    it('adds the query if it is a valid email', () => {
-      const query = 'fake100@fake.com';
-      const gen = collaboratorsSearchQueryChanged({ query, domain });
-
-      mockCatalogCall(gen, query);
-
-      assert.deepEqual(
-        gen.next(MockUserSearchResults).value,
-        select(selectors.getAddedUsers)
-      );
-
-      assert.deepEqual(
-        gen.next([]).value,
-        select(selectors.getSelectedUsers)
-      );
-
-      const filtered = { ...MockUserSearchResults };
-      filtered.results.push({ user: { email: query } });
-
-      assert.deepEqual(
-        gen.next([]).value,
-        put(addCollaboratorsActions.collaboratorsSearchResultsFetchSuccess(filtered))
-      );
-
-      assert.deepEqual(
-        gen.next(),
-        { done: true, value: undefined }
-      );
+      assert.isTrue(gen.next().done);
     });
 
     it('catches errors', () => {
@@ -132,7 +66,7 @@ describe('AddCollaboratorsSagas', () => {
         gen.next().value,
         call(
           fetchJsonWithDefaults,
-          userAutocompleteUrl(query, domain)
+          userAndTeamAutocompleteUrl(query, domain)
         )
       );
 

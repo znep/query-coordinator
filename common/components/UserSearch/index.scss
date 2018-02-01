@@ -17,6 +17,25 @@
   color: $primary-light !important;
 }
 
+.user-search-result-container {
+  display: flex;
+  align-items: center;
+  height: 45px;
+}
+
+.user-search-result-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-search-result-icon {
+  margin-right: 10px;
+
+  & svg use, & svg path {
+    fill: $primary-dark !important;
+  }
+}
+
 .user-search-result-name {
   font-size: 15px !important;
   font-weight: 400;

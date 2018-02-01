@@ -7,9 +7,9 @@ export const publishedToSearchQueryChanged = query => ({
 
 // Getting results back from the catalog
 export const PUBLISHED_TO_SEARCH_RESULTS_FETCH_SUCCESS = 'PUBLISHED_TO_SEARCH_RESULTS_FETCH_SUCCESS';
-export const publishedToSearchResultsFetchSuccess = results => ({
+export const publishedToSearchResultsFetchSuccess = (results, existingUsers) => ({
   type: PUBLISHED_TO_SEARCH_RESULTS_FETCH_SUCCESS,
-  results
+  payload: { results, existingUsers }
 });
 
 // Failed to get results from catalog

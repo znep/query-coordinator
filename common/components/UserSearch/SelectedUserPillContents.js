@@ -12,9 +12,16 @@ class SelectedUserPillContents extends Component {
 
   render() {
     const { user } = this.props;
+    const { type } = user;
     return (
       <div className="user-search-pill-contents">
-        <SocrataIcon name="user" className="user-search-pill-user-icon" />
+        {/*
+            Unfortunately we can't just use "type" here as the icon name since
+            the type is "interactive" but the icon is "user"
+        */}
+        {(type && type === 'team') ?
+          (<SocrataIcon name="team" className="user-search-pill-user-icon" />) :
+          (<SocrataIcon name="user" className="user-search-pill-user-icon" />)}
         {/*
           * For registered users, we have a screen name.
           * For unregistered users, we only have an email address

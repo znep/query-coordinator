@@ -60,7 +60,7 @@ class UserList extends Component {
 
   renderOwner = (owner) => (
     // current owner can potentially appear in the list twice, so we need to give them a special key
-    <div key={`current_owner-${owner.email}`}>
+    <div key={`current_owner-${owner.id || owner.email}`}>
       <OwnerUserDetails user={owner} />
       <hr />
     </div>
@@ -68,14 +68,14 @@ class UserList extends Component {
 
   renderUser = (user) => {
     const { hideAccessLevelDropdown } = this.props;
-    const { accessLevels, email } = user;
+    const { accessLevels, email, id } = user;
 
     // just using the first accessLevel in the list for now; if/when we want to add multiple in the future,
     // this will have to be changed (along with the dropdown)
     const accessLevel = accessLevels[0];
 
     return (
-      <div key={email}>
+      <div key={id || email}>
         <UserDetailsWithAccessLevel
           user={user}
           accessLevel={accessLevel}

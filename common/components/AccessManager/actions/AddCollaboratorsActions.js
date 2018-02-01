@@ -7,9 +7,9 @@ export const collaboratorsSearchQueryChanged = query => ({
 
 // Getting results back from the catalog
 export const COLLABORATORS_SEARCH_RESULTS_FETCH_SUCCESS = 'COLLABORATORS_SEARCH_RESULTS_FETCH_SUCCESS';
-export const collaboratorsSearchResultsFetchSuccess = results => ({
+export const collaboratorsSearchResultsFetchSuccess = (results, existingUsers) => ({
   type: COLLABORATORS_SEARCH_RESULTS_FETCH_SUCCESS,
-  results
+  payload: { results, existingUsers }
 });
 
 // Failed to get results from catalog

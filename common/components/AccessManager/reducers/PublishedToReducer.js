@@ -1,6 +1,7 @@
 import * as publishedToActions from 'common/components/AccessManager/actions/PublishedToActions';
 import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
 import * as uiActions from 'common/components/AccessManager/actions/UiActions';
+import { filterSearchResults } from 'common/components/AccessManager/Util';
 
 // user is typing into the search box
 const publishedToSearchQueryChanged = (state, action) => ({
@@ -11,10 +12,10 @@ const publishedToSearchQueryChanged = (state, action) => ({
   results: null
 });
 
-// AddUsersSaga will call this with the search results from the catalog
-const publishedToSearchResultsFetchSuccess = (state, action) => ({
+// PublishedToSagas will call this with the search results from the catalog
+const publishedToSearchResultsFetchSuccess = (state, { payload: { results, existingUsers } }) => ({
   ...state,
-  results: action.results
+  results: filterSearchResults(results, state.selectedUsers, existingUsers, state.query)
 });
 
 // AddUsersSaga will call this when catalog query fails

@@ -126,7 +126,10 @@ export const calculateSumMeasure = async (errors, measure, dateRangeWhereClause)
   let value = null;
 
   if (column && dataProvider && dateRangeWhereClause) {
-    value = (await sum(dataProvider, column, [dateRangeWhereClause])).toFixed(decimalPlaces);
+    const sumResult = await sum(dataProvider, column, [dateRangeWhereClause]);
+
+    // sum() will return null if there are no values to sum
+    value = _.isNil(sumResult) ? sumResult : sumResult.toFixed(decimalPlaces);
   } else {
     errors.calculationNotConfigured = !column || !dateColumn;
   }
@@ -151,7 +154,14 @@ export const calculateRecentValueMeasure = async (errors, measure, endDate) => {
       `select ${valueColumn} where ${where} order by ${dateColumn} DESC limit 1`
     );
 
-    value = new BigNumber(_.values(data[0])[0]).toFixed(decimalPlaces);
+    value = _.get(data, [0, valueColumn], null);
+
+    if (_.isNil(value)) {
+      // There are no rows with non-null values for the selected date column
+      errors.noRecentValue = true;
+    } else {
+      value = new BigNumber(value).toFixed(decimalPlaces);
+    }
   } else {
     errors.calculationNotConfigured = !valueColumn || !dateColumn;
   }
@@ -248,9 +258,13 @@ export const calculateRateMeasure = async (
       errors.dividingByZero = denominator.isZero();
     }
     if (numerator && denominator) {
-      calculation.value = numerator.dividedBy(denominator).
-        times(asPercent ? '100' : '1').
-        toFixed(decimalPlaces);
+      if (errors.dividingByZero) {
+        calculation.value = null;
+      } else {
+        calculation.value = numerator.dividedBy(denominator).
+          times(asPercent ? '100' : '1').
+          toFixed(decimalPlaces);
+      }
     } else {
       errors.calculationNotConfigured = true;
     }
@@ -333,6 +347,8 @@ export const calculateMeasure = async (measure, dateRange) => {
 //
 //   dividingByZero: Boolean (Rate measures only). Indicates the denominator is zero.
 //   dataSourceNotConfigured: Boolean. If set to true, indicates that the data source is not configured.
+//   noRecentValue: Boolean (Recent Value measures only). If set to true, the selected reference date column
+//     does not contain any non-null values.
 //   noReportingPeriodAvailable: Boolean. If set to true, indicates that no reporting period is usable
 //     (this can happen if the start date is in the future, or we're using closed reporting periods and
 //     no period has closed yet).
@@ -356,9 +372,11 @@ export const getMetricSeries = async (measure) => {
 
   return Promise.resolve(
     measureResultsPerReportingPeriod.map((measureResult, i) => {
-      const startDate = reportingPeriods[i].start.format();
+      const startDate = reportingPeriods[i].start.format('YYYY-MM-DDTHH:mm:ss.SSS');
+      const result = measureResult.result.value;
+      const value = _.isNil(result) ? result : parseFloat(result);
 
-      return [startDate, measureResult.result.value];
+      return [startDate, value];
     }),
   );
 };

@@ -59,7 +59,7 @@ export const buildWhereClause = (filters) => {
   }
 
   if (filters.date && filters.date.start && filters.date.end) {
-    const dateRange = formatToInclusiveSoqlDateRange(filters.date);
+    const dateRange = formatToInclusiveSoqlDateRange(filters.date, { asUTC: true });
     ands.push(`(created_at between '${dateRange.start}' and '${dateRange.end}')`);
   }
 

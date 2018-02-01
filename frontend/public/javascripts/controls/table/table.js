@@ -2948,6 +2948,9 @@ if (!_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false))
         }
 
         var rowDivContents = function(html, index, renderIndex, row) {
+          // EN-20510
+          var sanitizedColor = (row.color && row.color.match(/(#[0-9a-f]{6})/i) || [])[1];
+
           html.push('class="blist-tr',
             (renderIndex % 2 ? ' blist-tr-even' : ''),
             (row.noMatch ? ' blist-tr-noMatch' : ''),
@@ -2959,7 +2962,7 @@ if (!_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false))
             (row.sessionMeta && row.sessionMeta.highlight ? ' blist-tr-highlight' : ''),
             (row.groupLast ? ' last' : ''),
             '" style="top:', (index * rowOffset), 'px',
-            (row.color ? ';background-color:' + row.color : ''), ';"');
+            (sanitizedColor ? ';background-color:' + sanitizedColor : ''), ';"');
         };
 
         // Create the rendering function.

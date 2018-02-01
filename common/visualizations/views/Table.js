@@ -371,11 +371,8 @@ module.exports = function Table(element, originalVif, locale) {
             return !_.isEmpty(conditionalFormattingStylesForColumnValue);
           });
 
-        const conditionalFormattingStyleAttributeOrNothing = (!_.isEmpty(conditionalFormattingStyles)) ?
-          ` style="${_.get(conditionalFormattingStyles, '[0]', '')}"` :
-          '';
-
-        return `<tr data-row-id="${rowId}"${conditionalFormattingStyleAttributeOrNothing}>${rowData}</tr>`;
+        const styleAttribute = _.escape(_.first(conditionalFormattingStyles));
+        return `<tr data-row-id="${rowId}" style="${styleAttribute}">${rowData}</tr>`;
       }).
       join('');
 

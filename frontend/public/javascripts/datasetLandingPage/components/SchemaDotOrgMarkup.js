@@ -13,18 +13,22 @@ invisible to the naked eye.
 This implementation uses the DSLP's concept of a view, which is _not_ a core view
 and as such is not generalizable.
 
-- links
-  - a permalink to the primer page doesn't exist anywhere else on the primer page
+Why not just put this markup on the items themselves as they already exist on
+primer? Explanations for each below:
+
+- links that don't exist anywhere on the page
+  - a permalink (/d) to the primer page
+  - a link to the landing page for this dataset on the ODN
 - download links
   - Primer page groups these into featured and other links. Schema.org wants
-    them all in a collection. This is easier.
+    them all in a collection
 - license
   - The license on the primer page is often an image. We need a URL or text.
 - tags/categories
   - tags on the primer page have commas
-  - categories we want to downcase (dunno, just for consistency)
+  - we want to downcase both tags and categories
 
-There are other tags (name, description, ...) that preferably belong with
+There are other tags (name, description, ...) that belong with
 the surface representation of those objects.
 
 See:
@@ -41,8 +45,9 @@ export const Taxonomy = Object.freeze({
 
 export const ItemProps = Object.freeze({
   CONTENT_URL: 'contentUrl',
-  CREATED_AT: 'createdAt',
-  DATA_PROVIDED_BY: 'dataProvidedBy',
+  DATE_CREATED: 'dateCreated',
+  DATE_MODIFIED: 'dateModified',
+  DATE_PUBLISHED: 'datePublished',
   DISTRIBUTION: 'distribution',
   FILE_FORMAT: 'fileFormat',
   KEYWORDS: 'keywords',
@@ -53,20 +58,6 @@ export const ItemProps = Object.freeze({
 });
 
 export class SchemaDotOrgMarkup extends Component {
-
-  extractPrefix(currentPage) {
-    const prefixRegex = /(\D+:\/\/.*?)\//;
-    const match = currentPage.match(prefixRegex);
-    if (match.length <= 1) { return null; }
-    return match[1];
-  }
-
-  extractCname(currentPage) {
-    const cnameRegex = /\D+:\/\/(.*?)\//;
-    const match = currentPage.match(cnameRegex);
-    if (match.length <= 1) { return null; }
-    return match[1];
-  }
 
   renderItemProp(prop, content) {
     return <meta itemProp={prop} content={content} />;
@@ -84,25 +75,31 @@ export class SchemaDotOrgMarkup extends Component {
     );
   }
 
+  renderODNLink() {
+    const { view, cname } = this.props;
+    const viewUid = view.id;
+    const ODNLink = `https://www.opendatanetwork.com/dataset/${cname}/${viewUid}`;
+
+    return this.renderItemProp(ItemProps.SAME_AS, ODNLink);
+  }
+
   renderUrl() {
-    const primerLink = window.location.href;
-    return <meta itemProp={ItemProps.URL} content={primerLink} />;
+    const { href } = this.props;
+    return this.renderItemProp(ItemProps.URL, href);
   }
 
   renderPermalink() {
-    const { view } = this.props;
+    const { view, cname, protocol } = this.props;
     const viewUid = view.id;
-    const prefix = this.extractPrefix(window.location.href);
-    const permalink = `${prefix}/d/${viewUid}`;
+    const permalink = `${protocol}//${cname}/d/${viewUid}`;
 
-    return <meta itemProp={ItemProps.SAME_AS} content={permalink} />;
+    return this.renderItemProp(ItemProps.SAME_AS, permalink);
   }
 
   renderDistributions() {
-    const { view } = this.props;
+    const { view, cname } = this.props;
     const viewUid = view.id;
     const exportFormats = view.exportFormats;
-    const cname = this.extractCname(window.location.href);
 
     return _.map(_.compact(exportFormats), (format, i) =>
       this.renderDownloadLink(format, viewUid, cname, i));
@@ -133,7 +130,7 @@ export class SchemaDotOrgMarkup extends Component {
     const tags = view.tags;
 
     return _.map(_.compact(tags), (tag, i) =>
-      <meta key={i} itemProp={ItemProps.KEYWORDS} content={tag} />);
+      <meta key={i} itemProp={ItemProps.KEYWORDS} content={tag.toLowerCase()} />);
   }
 
   renderCategory() {
@@ -145,7 +142,7 @@ export class SchemaDotOrgMarkup extends Component {
     return <meta itemProp={ItemProps.KEYWORDS} content={category.toLowerCase()} />;
   }
 
-  renderCreatedAt() {
+  renderCreationDates() {
     const { view } = this.props;
     const coreView = view.coreView;
 
@@ -155,42 +152,30 @@ export class SchemaDotOrgMarkup extends Component {
 
     const formattedCreatedAt = formatRawDateAsISO8601(createdAt);
 
-    return <meta itemProp={ItemProps.CREATED_AT} content={formattedCreatedAt} />;
-  }
-
-  renderAttribution() {
-    const { view } = this.props;
-    const coreView = view.coreView;
-
-    if (_.isEmpty(coreView)) { return null; }
-
-    const { attribution, attributionLink } = coreView;
-
-    let attributionMeta;
-    let attributionLinkMeta;
-    if (_.isEmpty(attribution)) {
-      attributionMeta = null;
-    } else {
-      attributionMeta = this.renderItemProp(ItemProps.NAME, attribution);
-    }
-    if (_.isEmpty(attributionLink)) {
-      attributionLinkMeta = null;
-    } else {
-      attributionLinkMeta = this.renderItemProp(ItemProps.URL, attributionLink);
-    }
-
-    if (attributionMeta == null & attributionLinkMeta == null) { return null; }
-
+    // Google is requesting that we return both createdAt and publishedAt.
+    // I'm not sure what the difference should be.
     return (
-      <div itemScope itemProp={ItemProps.DATA_PROVIDED_BY} itemType={Taxonomy.ORGANIZATION}>
-        {attributionMeta}
-        {attributionLinkMeta}
+      <div>
+        <meta itemProp={ItemProps.DATE_CREATED} content={formattedCreatedAt} />
+        <meta itemProp={ItemProps.DATE_PUBLISHED} content={formattedCreatedAt} />
       </div>
     );
   }
 
-  render() {
+  renderModificationDate() {
+    const { view } = this.props;
+    const coreView = view.coreView;
 
+    const updatedAt = _.get(coreView, 'rowsUpdatedAt');
+
+    if (updatedAt == null) { return null; }
+
+    return (
+      <meta itemProp={ItemProps.DATE_MODIFIED} content={formatRawDateAsISO8601(updatedAt)} />
+    );
+  }
+
+  render() {
     return (
       <div>
         {this.renderUrl()}
@@ -199,8 +184,9 @@ export class SchemaDotOrgMarkup extends Component {
         {this.renderLicense()}
         {this.renderTags()}
         {this.renderCategory()}
-        {this.renderCreatedAt()}
-        {this.renderAttribution()}
+        {this.renderCreationDates()}
+        {this.renderModificationDate()}
+        {this.renderODNLink()}
       </div>
     );
   }
@@ -221,11 +207,19 @@ SchemaDotOrgMarkup.propTypes = {
     exportFormats: PropTypes.arrayOf(PropTypes.string),
     gridUrl: PropTypes.string,
     tags: PropTypes.arrayOf(PropTypes.string)
-  }).isRequired
+  }).isRequired,
+  cname: PropTypes.string.isRequired,
+  protocol: PropTypes.string.isRequired,
+  href: PropTypes.string.isRequired
 };
 
-function mapStateToProps(state) {
-  return _.pick(state, 'view');
+function mapStateToProps({ view }) {
+  return {
+    view,
+    cname: window.location.hostname,
+    protocol: window.location.protocol,
+    href: window.location.href
+  };
 }
 
 export default connect(mapStateToProps)(SchemaDotOrgMarkup);

@@ -14,30 +14,21 @@ const store = (state = {}) => ({
 describe('components/SchemaDotOrgMarkup', () => {
   function getProps(props) {
     return _.defaultsDeep({}, props, {
-      view: mockView
+      view: mockView,
+      cname: 'data.socrata.gov',
+      protocol: 'https:',
+      href: 'https://data.socrata.gov/dataset/title/four-four'
     });
   }
 
   function getElement(view) {
-    const viewProps = getProps({view});
+    const props = getProps({view});
     return mount(
       <Provider store={store}>
-        <SchemaDotOrgMarkup {...viewProps} />
+        <SchemaDotOrgMarkup {...props} />
       </Provider>,
-      { context: store(viewProps) }
+      { context: store(props) }
     );
-  }
-
-  // Since Jenkins multithreads these tests, we can't be sure of the port
-  // that the tests will run on -- thus, strip the port out.
-  function stripPort(link) {
-    const port = /:[0-9]{4}/;
-    return link.replace(port, '');
-  }
-
-  function stripPorts(links) {
-    return _.map(_.compact(links), (link) =>
-      stripPort(link));
   }
 
   describe('Keywords', () => {
@@ -81,7 +72,7 @@ describe('components/SchemaDotOrgMarkup', () => {
       assert.equal(nodes.length, 3);
       const contents = _.map(_.compact(nodes), (node) =>
         node.getAttribute('content'));
-      assert.deepEqual(contents, ['tag1', 'TAG2', 'zoinks!']);
+      assert.deepEqual(contents, ['tag1', 'tag2', 'zoinks!']);
     });
   });
 
@@ -89,23 +80,25 @@ describe('components/SchemaDotOrgMarkup', () => {
     it("doesn't rely on the view at all to get the URL to the current page", () => {
       const view = {};
       const element = getElement(view);
-      const expectedURL = 'http://localhost/context.html';
+      const expectedURL = 'https://data.socrata.gov/dataset/title/four-four';
       const nodes = element.find('meta[itemProp="url"]').getNodes();
 
       assert.equal(nodes.length, 1);
-      assert.equal(stripPort(nodes[0].getAttribute('content')), expectedURL);
+      assert.equal(nodes[0].getAttribute('content'), expectedURL);
     });
   });
 
-  describe('Permalink', () => {
-    it('renders the permalink correctly', () => {
+  describe('Links', () => {
+    it('renders the permalink and opendatanetwork links correctly', () => {
       const view = {};
       const element = getElement(view);
-      const expectedURL = 'http://localhost/d/four-four';
+      const expectedPermalink = 'https://data.socrata.gov/d/four-four';
+      const expectedODNLink = 'https://www.opendatanetwork.com/dataset/data.socrata.gov/four-four';
       const nodes = element.find('meta[itemProp="sameAs"]').getNodes();
 
-      assert.equal(nodes.length, 1);
-      assert.equal(stripPort(nodes[0].getAttribute('content')), expectedURL);
+      assert.equal(nodes.length, 2);
+      assert.equal(nodes[0].getAttribute('content'), expectedPermalink);
+      assert.equal(nodes[1].getAttribute('content'), expectedODNLink);
     });
   });
 
@@ -134,15 +127,15 @@ describe('components/SchemaDotOrgMarkup', () => {
                                         'application/rdfxml', 'application/rssxml',
                                         'text/tab-separated-values', 'application/xml'].sort());
 
-      assert.deepEqual(stripPorts(urls.sort()), [
-        'https://localhost/api/views/four-four/rows.csv?accessType=DOWNLOAD',
-        'https://localhost/api/views/four-four/rows.json?accessType=DOWNLOAD',
-        'https://localhost/api/views/four-four/rows.rdf?accessType=DOWNLOAD',
-        'https://localhost/api/views/four-four/rows.rss?accessType=DOWNLOAD',
-        'https://localhost/api/views/four-four/rows.xml?accessType=DOWNLOAD',
-        'https://localhost/api/views/four-four/rows.csv?accessType=DOWNLOAD&bom=true&format=true',
-        'https://localhost/api/views/four-four/rows.csv?accessType=DOWNLOAD&bom=true&format=true&delimiter=%3B',
-        'https://localhost/api/views/four-four/rows.tsv?accessType=DOWNLOAD&bom=true'
+      assert.deepEqual(urls.sort(), [
+        'https://data.socrata.gov/api/views/four-four/rows.csv?accessType=DOWNLOAD',
+        'https://data.socrata.gov/api/views/four-four/rows.json?accessType=DOWNLOAD',
+        'https://data.socrata.gov/api/views/four-four/rows.rdf?accessType=DOWNLOAD',
+        'https://data.socrata.gov/api/views/four-four/rows.rss?accessType=DOWNLOAD',
+        'https://data.socrata.gov/api/views/four-four/rows.xml?accessType=DOWNLOAD',
+        'https://data.socrata.gov/api/views/four-four/rows.csv?accessType=DOWNLOAD&bom=true&format=true',
+        'https://data.socrata.gov/api/views/four-four/rows.csv?accessType=DOWNLOAD&bom=true&format=true&delimiter=%3B',
+        'https://data.socrata.gov/api/views/four-four/rows.tsv?accessType=DOWNLOAD&bom=true'
       ].sort());
     });
 
@@ -228,8 +221,8 @@ describe('components/SchemaDotOrgMarkup', () => {
     });
   });
 
-  describe('Date', () => {
-    it('renders the expected createdAt', () => {
+  describe('Dates', () => {
+    it('renders the expected dateCreated', () => {
       const view = {
         coreView: {
           createdAt: 1506966449
@@ -237,98 +230,38 @@ describe('components/SchemaDotOrgMarkup', () => {
       };
       const element = getElement(view);
 
-      const createdAt = element.find('meta[itemProp="createdAt"]').getNodes();
+      const dateCreated = element.find('meta[itemProp="dateCreated"]').getNodes();
 
-      assert.equal(createdAt.length, 1);
-      assert.equal(createdAt[0].getAttribute('content'), '2017-10-02T17:47:29.000Z');
-    });
-  });
-
-  describe('Attribution', () => {
-    it("doesn't render attribution at all if coreView is missing", () => {
-      const view = {
-        coreView: null
-      };
-      const element = getElement(view);
-
-      const providedBy = element.find('div[itemProp="dataProvidedBy"]').getNodes();
-
-      assert.isEmpty(providedBy);
+      assert.equal(dateCreated.length, 1);
+      assert.equal(dateCreated[0].getAttribute('content'), '2017-10-02T17:47:29.000Z');
     });
 
-    it("doesn't render attribution at all if both attribution and attributionLink are missing", () => {
+    it('renders the expected datePublished', () => {
       const view = {
         coreView: {
-          attribution: null,
-          attributionLink: null
+          createdAt: 1506966449
         }
       };
       const element = getElement(view);
 
-      const providedBy = element.find('div[itemProp="dataProvidedBy"]').getNodes();
+      const datePublished = element.find('meta[itemProp="datePublished"]').getNodes();
 
-      assert.isEmpty(providedBy);
+      assert.equal(datePublished.length, 1);
+      assert.equal(datePublished[0].getAttribute('content'), '2017-10-02T17:47:29.000Z');
     });
 
-    it('only renders the attribution if attributionLink is empty', () => {
+    it('renders the expected dateModified', () => {
       const view = {
         coreView: {
-          attribution: 'Government of Somalia',
-          attributionLink: null
+          rowsUpdatedAt: 1506966449
         }
       };
       const element = getElement(view);
 
-      const providedByWrapper = element.find('div[itemProp="dataProvidedBy"]')
-      const providedBy = providedByWrapper.getNodes();
-      const attribution = providedByWrapper.find('meta[itemProp="name"]').getNodes();
-      const attributionLink = providedByWrapper.find('meta[itemProp="url"]').getNodes();
+      const dateModified = element.find('meta[itemProp="dateModified"]').getNodes();
 
-      assert.equal(providedBy.length, 1);
-      assert.equal(attribution.length, 1);
-      assert.equal(attribution[0].getAttribute('content'), 'Government of Somalia');
-      assert.isEmpty(attributionLink);
-    });
-
-    it('only renders the attributionLink if attribution is empty', () => {
-      const view = {
-        coreView: {
-          attribution: null,
-          attributionLink: 'http://data.gov/link'
-        }
-      };
-      const element = getElement(view);
-
-      const providedByWrapper = element.find('div[itemProp="dataProvidedBy"]')
-      const providedBy = providedByWrapper.getNodes();
-      const attribution = providedByWrapper.find('meta[itemProp="name"]').getNodes();
-      const attributionLink = providedByWrapper.find('meta[itemProp="url"]').getNodes();
-
-      assert.equal(providedBy.length, 1);
-      assert.isEmpty(attribution);
-      assert.equal(attributionLink.length, 1);
-      assert.equal(attributionLink[0].getAttribute('content'), 'http://data.gov/link');
-    });
-
-    it('renders both attribution and attributionLink if both are available', () => {
-      const view = {
-        coreView: {
-          attribution: 'Government of Somalia',
-          attributionLink: 'http://data.gov/link'
-        }
-      };
-      const element = getElement(view);
-
-      const providedByWrapper = element.find('div[itemProp="dataProvidedBy"]')
-      const providedBy = providedByWrapper.getNodes();
-      const attribution = providedByWrapper.find('meta[itemProp="name"]').getNodes();
-      const attributionLink = providedByWrapper.find('meta[itemProp="url"]').getNodes();
-
-      assert.equal(providedBy.length, 1);
-      assert.equal(attribution.length, 1);
-      assert.equal(attribution[0].getAttribute('content'), 'Government of Somalia');
-      assert.equal(attributionLink.length, 1);
-      assert.equal(attributionLink[0].getAttribute('content'), 'http://data.gov/link');
+      assert.equal(dateModified.length, 1);
+      assert.equal(dateModified[0].getAttribute('content'), '2017-10-02T17:47:29.000Z');
     });
   });
 });

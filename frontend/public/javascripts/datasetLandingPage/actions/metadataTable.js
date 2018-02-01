@@ -18,10 +18,10 @@ function createDsmapiRevision(fourfour) {
     body: JSON.stringify({
       type: 'replace'
     })
-  })
-    .then(checkStatus)
-    .then(resp => resp.json())
-    .then(({ resource }) => resource);
+  }).
+  then(checkStatus).
+  then(resp => resp.json()).
+  then(({ resource }) => resource);
 }
 
 // createDsmapiViewSource :: String -> Int -> Promise Err JSON
@@ -33,9 +33,9 @@ function createDsmapiViewSource(fourfour, revisionSeq) {
         type: 'view'
       }
     })
-  })
-    .then(checkStatus)
-    .then(resp => resp.json());
+  }).
+  then(checkStatus).
+  then(resp => resp.json());
 }
 
 // createDsmapiEdit :: String -> (() -> undefined)

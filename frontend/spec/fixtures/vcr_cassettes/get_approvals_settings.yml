@@ -130,4 +130,46 @@ http_interactions:
         bgcolor=\"white\">\r\n<center><h1>301 Moved Permanently</h1></center>\r\n<hr><center>nginx/1.12.2</center>\r\n</body>\r\n</html>\r\n"
     http_version: 
   recorded_at: Wed, 06 Dec 2017 23:02:52 GMT
-recorded_with: VCR 4.0.0
+- request:
+    method: get
+    uri: http://localhost:8080/approvals/1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      X-Socrata-Host:
+      - localhost
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Thu, 01 Feb 2018 18:25:11 GMT
+      X-Socrata-Requestid:
+      - 2wmy9hk4i4lbqe6mrfepx74am
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/json; charset=utf-8
+      X-Error-Code:
+      - not_found
+      X-Error-Message:
+      - Approval workflow with id 1 not found.
+      Transfer-Encoding:
+      - chunked
+      Server:
+      - Jetty(9.3.z-SNAPSHOT)
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "code" : "not_found",
+          "error" : true,
+          "message" : "Approval workflow with id 1 not found."
+        }
+    http_version: 
+  recorded_at: Thu, 01 Feb 2018 18:25:11 GMT
+recorded_with: VCR 3.0.3

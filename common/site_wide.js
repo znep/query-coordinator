@@ -79,6 +79,8 @@ if (_.get(window, 'socrata.featureFlags.enable_new_dataset_sharing_ux', false)) 
       const view = sift(window,
         // "blist.dataset" is for the grid view
         'blist.dataset',
+        // "initialState.view" is for dsmui
+        'initialState.view',
         // "initialState.view.coreView" is for primer
         'initialState.view.coreView'
       );

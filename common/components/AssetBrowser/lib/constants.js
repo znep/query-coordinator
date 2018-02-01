@@ -13,3 +13,6 @@ export const APPROVAL_STATUS_REJECT = 'reject';
 export const APPROVAL_STATUS_APPROVED = 'approved';
 export const APPROVAL_STATUS_REJECTED = 'rejected';
 export const APPROVAL_STATUS_PENDING = 'pending';
+
+export const AUTHORITY_OFFICIAL = 'official';
+export const AUTHORITY_COMMUNITY = 'community';

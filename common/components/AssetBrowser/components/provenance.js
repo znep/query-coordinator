@@ -4,13 +4,14 @@ import React, { Component } from 'react';
 
 import { FeatureFlags } from 'common/feature_flags';
 import I18n from 'common/i18n';
+import { AUTHORITY_OFFICIAL, AUTHORITY_COMMUNITY } from 'common/components/AssetBrowser/lib/constants';
 
 export class Provenance extends Component {
   provenanceIcon() {
-    if (this.props.provenance === 'official') {
+    if (this.props.provenance === AUTHORITY_OFFICIAL) {
       return 'official2';
     }
-    if (this.props.provenance === 'community') {
+    if (this.props.provenance === AUTHORITY_COMMUNITY) {
       return 'community';
     }
     if (!this.props.provenance) {

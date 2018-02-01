@@ -1,11 +1,12 @@
 import _ from 'lodash';
 
+import { AUTHORITY_OFFICIAL, AUTHORITY_COMMUNITY } from 'common/components/AssetBrowser/lib/constants';
 import * as ceteraActions from 'common/components/AssetBrowser/actions/cetera';
 
 const getInitialState = () => ({
   values: {
-    official: 0,
-    community: 0
+    [AUTHORITY_OFFICIAL]: 0,
+    [AUTHORITY_COMMUNITY]: 0
   },
   fetchingProvenanceCounts: false,
   fetchingProvenanceCountsError: false
@@ -21,8 +22,8 @@ export default (state = getInitialState(), action) => {
     return {
       ...state,
       values: {
-        official: getCountForProvenanceType('official'),
-        community: getCountForProvenanceType('community')
+        [AUTHORITY_OFFICIAL]: getCountForProvenanceType(AUTHORITY_OFFICIAL),
+        [AUTHORITY_COMMUNITY]: getCountForProvenanceType(AUTHORITY_COMMUNITY)
       }
     };
   }

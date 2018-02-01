@@ -117,9 +117,18 @@ $popup-column-value-max-width: $popup-content-max-width - $popup-column-name-wid
 }
 
 .legend-container {
-  bottom: 50px;
+  height: 65%;
+  max-height: 260px;
   position: absolute;
   right: 10px;
+
+  &.legend-type-interval {
+    bottom: 40px;
+  }
+
+  &.legend-type-categorical {
+    bottom: 10px;
+  }
 
   .bucket-end-value {
     font-size: 12px;
@@ -150,7 +159,7 @@ $popup-column-value-max-width: $popup-content-max-width - $popup-column-name-wid
       text-overflow: ellipsis;
       vertical-align: middle;
       white-space: pre;
-      width: 3.5rem;
+      width: 6.5rem;
     }
 
     .interval-bucket-value {

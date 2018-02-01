@@ -5,6 +5,7 @@
   position: relative;
   .show-revision-content {
     max-width:1200px;
+    flex-basis: 1200px;
     margin: 0 auto;
     padding: 20px 40px;
     @media screen and (max-width: 600px) {

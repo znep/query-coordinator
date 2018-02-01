@@ -597,6 +597,13 @@ if (_.get(window, 'socrata.featureFlags.enable_2017_grid_view_refresh', false)) 
                 renderTableFromScratch();
               }
             );
+            // EN-21946 - Grouping and Roll-up incorrect before save.
+            //
+            // We use the 'row_count_change' event as a proxy for aggregation or filtering
+            // having occurred, which in this context means we want to reload the data from
+            // scratch, which will cause the correct grouping and roll-up results to be
+            // shown before the view is saved.
+            self.view.bind('row_change', renderTableFromScratch);
             self.view.bind('conditionalformatting_change', updateConditionalFormatting);
 
             $datasetGrid = $(self.currentGrid);

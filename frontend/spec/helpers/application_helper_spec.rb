@@ -44,6 +44,7 @@ window.socrata.featureFlags =
 
   describe '#approvals_settings' do
     context 'when fontana approvals are disabled' do
+
       before do
         stub_feature_flags_with(use_fontana_approvals: false)
         allow(Fontana::Approval::Workflow).to receive(:find).and_return(nil)
@@ -77,6 +78,29 @@ window.socrata.featureFlags =
           :community => 'manual'
         })
       end
+
+      context 'when approval workflow has no steps' do
+        let(:expected) do
+          {
+            :official => 'automatic',
+            :community => 'automatic'
+          }
+        end
+
+        let(:mock_workflow) do
+          OpenStruct.new(:steps => nil)
+        end
+
+        before do
+          allow(Fontana::Approval::Workflow).to receive(:find).and_return(mock_workflow)
+        end
+
+        it 'should indicate approvals are automatic' do
+          result = helper.approvals_settings
+          expect(result).to eq(expected)
+        end
+      end
+
     end
   end
 

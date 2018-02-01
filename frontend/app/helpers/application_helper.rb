@@ -93,6 +93,13 @@ module ApplicationHelper
           :official => approval_workflow.steps.first.official_task.manual? ? 'manual' : 'automatic',
           :community => approval_workflow.steps.first.community_task.manual? ? 'manual' : 'automatic'
         }
+      else
+        # An approvals workflow with no steps, is implicitly treated as "all approvals are automatic"
+        # TODO: Encapsulate this logic within the Fontana::Approval::Workflow class(es)
+        return {
+          :official => 'automatic',
+          :community => 'automatic'
+        }
       end
     end
     {}

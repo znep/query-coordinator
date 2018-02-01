@@ -1,4 +1,6 @@
+import _ from 'lodash';
 import mapboxgl from 'mapbox-gl';
+
 import { TILE_URL_OPTIONS } from '../views/mapConstants';
 
 export default class MapHelper {
@@ -10,6 +12,10 @@ export default class MapHelper {
         MapHelper.afterMapLoad(map, callback);
       });
     }
+  }
+
+  static isLineOrBoundaryMap(mapType) {
+    return _.includes(['boundaryMap', 'lineMap'], mapType);
   }
 
   static substituteSoqlParams(tileUrl) {

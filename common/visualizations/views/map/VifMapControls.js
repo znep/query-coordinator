@@ -4,6 +4,7 @@ import mapboxgl from 'mapbox-gl';
 
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import { GEO_LOCATE_CONTROL_OPTIONS, MAP_CONTROLS_POSITION } from '../mapConstants';
+import MapHelper from '../../helpers/MapHelper';
 
 /**
 * Handles vif map controls init/updates
@@ -96,9 +97,17 @@ function shouldShowNavigationControl(vif) {
 }
 
 function shouldShowGeoLocateControl(vif) {
-  return _.get(vif, 'configuration.geoLocateControl', true);
+  return _.get(
+    vif,
+    'configuration.geoLocateControl',
+    !MapHelper.isLineOrBoundaryMap(_.get(vif, 'series[0].mapOptions.mapType'))
+  );
 }
 
 function shouldShowGeoCoderControl(vif) {
-  return _.get(vif, 'configuration.geoCoderControl', true);
+  return _.get(
+    vif,
+    'configuration.geoCoderControl',
+    !MapHelper.isLineOrBoundaryMap(_.get(vif, 'series[0].mapOptions.mapType'))
+  );
 }

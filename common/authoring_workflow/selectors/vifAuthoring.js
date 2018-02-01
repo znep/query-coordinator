@@ -1,5 +1,8 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
+
+import MapHelper from 'common/visualizations/helpers/MapHelper';
+
 import {
   VECTOR_BASE_MAP_STYLES,
   COLOR_PALETTES,
@@ -235,14 +238,15 @@ export const getNavigationControl = createSelector(
 
 export const getGeoCoderControl = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'configuration.geoCoderControl', true)
+  getMapType,
+  (vif, mapType) => _.get(vif, 'configuration.geoCoderControl', !MapHelper.isLineOrBoundaryMap(mapType))
 );
 
 export const getGeoLocateControl = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'configuration.geoLocateControl', true)
+  getMapType,
+  (vif, mapType) => _.get(vif, 'configuration.geoLocateControl', !MapHelper.isLineOrBoundaryMap(mapType))
 );
-
 
 export const getMapFlyoutTitleColumnName = createSelector(
   getCurrentVif,

@@ -8,8 +8,6 @@ export default {
   configuration: {
     baseMapStyle: VECTOR_BASE_MAP_STYLES.basic.value,
     datasetMetadata: false,
-    geoCoderControl: true,
-    geoLocateControl: true,
     locateUser: false,
     navigationControl: true,
     panAndZoom: true,

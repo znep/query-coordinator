@@ -16,11 +16,8 @@ export default PropTypes.shape({
   }),
 
   // Represents results for all date ranges within a reporting period
-  // eg: [ ['2002-12-01T00:00:00.000', "42"], [], ... ]
-  series: PropTypes.arrayOf(
-    // [ <datetime>, <value> ]
-    PropTypes.arrayOf(PropTypes.string)
-  ),
+  // eg: [ ['2002-12-01T00:00:00.000', 42], [], ... ]
+  series: PropTypes.arrayOf(PropTypes.array),
 
   // Represents any metric configuration or calculation errors
   errors: PropTypes.shape({

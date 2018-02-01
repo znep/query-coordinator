@@ -18,6 +18,15 @@ $('.my-visualization').socrataColumnChart(vif);
 Raw components may be accessed via the `views` and `dataProviders` keys of the
 `SocrataVisualizations` object.
 
+Include `visualizations-import-shim` in your package in `/frontend/config/style_package.yml` like so:
+```yml
+my-package:
+- my-package/foo
+- visualizations-import-shim
+```
+
+Storyteller and Visualization Embeds already load visualization styles so the above only applies to Frontend
+
 ## Examples
 
 We maintain a list of example visualizations in the Internal Panel. See the links

@@ -151,8 +151,8 @@ describe('withComputedMeasure', () => {
       const calculateSeries = async (measureToCompute) => {
         assert.deepEqual(measure, measureToCompute);
         return [
-          ['2001-01-01T00:00:00.000', '10'],
-          ['2001-02-01T00:00:00.000', '20']
+          ['2001-01-01T00:00:00.000', 10],
+          ['2001-02-01T00:00:00.000', 20]
         ];
       };
 
@@ -170,7 +170,7 @@ describe('withComputedMeasure', () => {
         // Along with series data
         assert.deepEqual(
           props.computedMeasure.series,
-          [['2001-01-01T00:00:00.000', '10'], ['2001-02-01T00:00:00.000', '20']]
+          [['2001-01-01T00:00:00.000', 10], ['2001-02-01T00:00:00.000', 20]]
         );
         assert.isFalse(!!props.dataRequestInFlight);
         done();

@@ -1,19 +1,105 @@
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import moment from 'moment';
 
 import I18n from 'common/i18n';
+import { components } from 'common/visualizations';
 import SocrataIcon from 'common/components/SocrataIcon';
 
+import { CalculationTypeNames, PeriodTypes } from '../lib/constants';
 import withComputedMeasure from './withComputedMeasure';
 import computedMeasurePropType from '../propTypes/computedMeasurePropType';
 
 export class MeasureChart extends Component {
 
-  renderChart(series) {
-    if (!series) return null;
+  generateVifFromMeasure(measure, computedMeasure) {
+    const { metricConfig } = measure;
+    const { series } = computedMeasure;
 
-    // TODO: Render the series of data in a SVGTimelineChart
-    return null;
+    const reportingPeriodStartDate = _.get(metricConfig, 'reportingPeriod.startDate');
+    const reportingPeriodType = _.get(metricConfig, 'reportingPeriod.type');
+    const reportingPeriodSize = _.get(metricConfig, 'reportingPeriod.size');
+    const dateColumn = _.get(metricConfig, 'dateColumn');
+    const calculationType = _.get(metricConfig, 'type');
+    const dataSourceLensUid = _.get(measure, 'dataSourceLensUid');
+
+    // Not enough info to draw a visualization
+    const requiredFields = [
+      reportingPeriodStartDate,
+      reportingPeriodType,
+      reportingPeriodSize,
+      dateColumn,
+      dataSourceLensUid
+    ];
+
+    if (!_.every(requiredFields)) {
+      return null;
+    }
+
+    const timestampWithoutZone = 'YYYY-MM-DDTHH:mm:ss.SSS';
+    const today = moment().format(timestampWithoutZone);
+    const startDate = moment(reportingPeriodStartDate).format(timestampWithoutZone);
+    const pointStyle = reportingPeriodType === PeriodTypes.OPEN ? 'last-open' : 'closed';
+    const useCountAggregation = calculationType === CalculationTypeNames.COUNT;
+
+    return {
+      configuration: {
+        dimensionAxisMinValue: startDate,
+        dimensionAxisMaxValue: today,
+        viewSourceDataLink: true
+      },
+      origin: {
+        url: `/d/${dataSourceLensUid}`// how do we get domain for embeds?
+      },
+      series: [
+        {
+          lineStyle: {
+            points: pointStyle,
+            pointRadius: 4
+          },
+          dataSource: {
+            precision: reportingPeriodSize.toUpperCase(),
+            dimension: {
+              columnName: dateColumn,
+              aggregationFunction: null
+            },
+            measure: {
+              // KPIs should set each measure columnName to something unique.
+              columnName: `${calculationType}_for_${dataSourceLensUid}`,
+              aggregationFunction: useCountAggregation ? CalculationTypeNames.COUNT : CalculationTypeNames.SUM
+            },
+            type: 'socrata.inline',
+            rows: series
+          },
+          label: _.get(metricConfig, 'display.label'),
+          type: 'timelineChart',
+          unit: {
+            one: 'incident', // TODO: add a one / other input field for measures
+            other: _.get(metricConfig, 'display.label')
+          }
+        }
+      ],
+      createdAt: today, // does this date matter?
+      format: {
+        type: 'visualization_interchange_format',
+        version: 2
+      }
+    };
+  }
+
+  renderChart(series) {
+    if (!series) {
+      return null;
+    }
+
+    const vif = this.generateVifFromMeasure(this.props.measure, this.props.computedMeasure);
+
+    if (!vif) {
+      return null;
+    }
+
+    return <components.Visualization vif={vif} />;
   }
 
   renderPlaceholder() {
@@ -30,6 +116,11 @@ export class MeasureChart extends Component {
   render() {
     const { computedMeasure, dataRequestInFlight } = this.props;
     const { series } = computedMeasure;
+    const onlyNullValues = _.chain(series)
+      .map((pairs) => pairs[1])
+      .pull(null)
+      .isEmpty()
+      .value();
 
     const spinner = (
       <div className="spinner-container">
@@ -37,9 +128,11 @@ export class MeasureChart extends Component {
       </div>
     );
 
-    const content = series ?
-      this.renderChart(series) :
-      this.renderPlaceholder();
+    // TODO: Ideally we can render a blank timeline chart with the date range applied, however the
+    // current implementation of SvgTimelineChart does not play well with no data (error states, flyouts),
+    // so we'll have to carefully introduce that capability later
+    // For now, prevent the metric viz chart from rendering if only null data is available
+    const content = onlyNullValues ? this.renderPlaceholder() : this.renderChart(series);
 
     return (
       <div className="measure-chart">

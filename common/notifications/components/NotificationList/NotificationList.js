@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
@@ -14,6 +15,45 @@ import { FILTER_TABS } from 'common/notifications/constants';
 import styles from './notification-list.module.scss';
 
 class NotificationList extends Component {
+  componentWillMount() {
+    const { lockScrollbar, scrollTop } = this.props.renderingOptions;
+
+    if (lockScrollbar) {
+      // disable page scrolling for non admins as the
+      // notification panel won't be docked to header
+      document.querySelector('html').scrollTop = scrollTop;
+      document.querySelector('body').style.overflow = 'hidden';
+    }
+  }
+
+  componentDidMount() {
+    // if the view port height is less than combined height of sidebar and rally header
+    // it cause the header icons/links to overlap on notification panel
+    // reposition the notification panel with respect to the header bar
+
+    const $siteChromeHeader = $('#site-chrome-header');
+    const $siteChromeAdminHeader = $('#site-chrome-admin-header');
+
+    if (!$siteChromeAdminHeader.is(':visible') && $siteChromeHeader.attr('template') === 'rally') {
+      const $notificationsSidebar = $('#notifications-sidebar');
+      const siteChromeHeaderHeight = $siteChromeHeader.outerHeight();
+      const notificationsSidebarHeight = $notificationsSidebar.outerHeight();
+      const pageContentHeight = document.querySelector('.siteOuterWrapper').clientHeight +
+        document.querySelector('#site-chrome-footer').clientHeight;
+
+      if ((notificationsSidebarHeight + siteChromeHeaderHeight) >= pageContentHeight) {
+        $notificationsSidebar.css('top', siteChromeHeaderHeight);
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    // enable page scrolling once the notification panel is closed
+    if (this.props.renderingOptions.lockScrollbar) {
+      document.querySelector('body').style.overflow = '';
+    }
+  }
+
   renderPanelHeader() {
     const {
       showUserNotifications,
@@ -169,11 +209,10 @@ class NotificationList extends Component {
 
   render() {
     const { showUserNotifications } = this.props;
+    const className = classNames('clearfix', { 'socrata-notifications-sidebar': showUserNotifications });
 
     return (
-      <div
-        styleName="notifications-panel"
-        className={classNames('clearfix', { 'socrata-notifications-sidebar': showUserNotifications })}>
+      <div className={className} id="notifications-sidebar" styleName="notifications-panel">
         {this.renderPanelHeader()}
         {this.renderUserNotifications()}
         {this.renderProductNotifications()}
@@ -200,6 +239,7 @@ NotificationList.propTypes = {
   onToggleReadUserNotification: PropTypes.func.isRequired,
   openClearAllUserNotificationsPrompt: PropTypes.bool.isRequired,
   productNotifications: PropTypes.array.isRequired,
+  renderingOptions: PropTypes.object.isRequired,
   showProductNotifications: PropTypes.bool.isRequired,
   showUserNotifications: PropTypes.bool.isRequired,
   showProductNotificationsAsSecondaryPanel: PropTypes.bool.isRequired,

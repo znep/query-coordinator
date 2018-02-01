@@ -227,10 +227,6 @@ class Notifications extends Component {
 
   toggleNotificationPanel() {
     const showNotificationPanel = !this.state.showNotificationPanel;
-    const {
-      lockScrollbar,
-      scrollTop
-    } = this.props.options;
     const { showTransientNotifications } = this.state;
 
     if (showTransientNotifications) {
@@ -240,18 +236,9 @@ class Notifications extends Component {
     if (showNotificationPanel) {
       this.addKeyboardEvents();
 
-      if (lockScrollbar) {
-        document.querySelector('html').scrollTop = scrollTop;
-        document.querySelector('body').style.overflow = 'hidden';
-      }
-
       this.setState({ showNotificationPanel });
     } else {
       this.removeKeyboardEvents();
-
-      if (lockScrollbar) {
-        document.querySelector('body').style.overflow = '';
-      }
 
       this.setState({
         showNotificationPanel,
@@ -321,7 +308,9 @@ class Notifications extends Component {
         currentUserRole,
         inProductTransientNotificationsEnabled,
         isSuperAdmin,
+        lockScrollbar,
         mapboxAccessToken,
+        scrollTop,
         showMyAlertPreference,
         showProductNotifications,
         showUserNotifications
@@ -341,6 +330,7 @@ class Notifications extends Component {
         unreadUserNotificationCount,
         viewOlderLink
       } = this.state;
+      const renderingOptions = { lockScrollbar, scrollTop };
 
       return (
         <div className="notifications-panel-wrapper">
@@ -363,6 +353,7 @@ class Notifications extends Component {
             onSeeNewUserNotifications={this.onSeeNewUserNotifications}
             onToggleReadUserNotification={this.onToggleReadUserNotification}
             openClearAllUserNotificationsPrompt={openClearAllUserNotificationsPrompt}
+            renderingOptions={renderingOptions}
             productNotifications={productNotifications}
             showProductNotifications={showProductNotifications}
             showProductNotificationsAsSecondaryPanel={showProductNotificationsAsSecondaryPanel}

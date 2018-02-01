@@ -234,6 +234,11 @@ export const getAnyLocationColumn = createSelector(
   (datasetMetadata) => _.find(datasetMetadata.columns, { renderTypeName: 'point' })
 );
 
+export const getNonGeoLocationColumns = createSelector(
+  getDisplayableColumns,
+  (columns) => _.reject(columns, isGeoLocationColumn)
+);
+
 export const getFirstOccurringGeoLocationColumn = createSelector(
   getDatasetMetadata,
   (datasetMetadata) => {

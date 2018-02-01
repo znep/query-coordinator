@@ -25,6 +25,10 @@ export class Visualizations extends Component {
     }
 
     const visualizations = _.map(vifs, (vif, vifIndex) => {
+      // EN-22002 - including the `origin` (which includes `url`) will render the "View source data" link
+      // as a link to this viz-canvas. We remove it so that it defaults to pointing to the underlying dataset.
+      vif = _.omit(vif, 'origin');
+
       const props = {
         key: vifIndex,
         vif,

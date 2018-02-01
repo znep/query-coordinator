@@ -1,9 +1,11 @@
 import { assert } from 'chai';
 import _ from 'lodash';
 
-import { EditTabs, PeriodTypes, PeriodSizes } from 'common/performance_measures/lib/constants';
+import { EditTabs, PeriodTypes, PeriodSizes, CalculationTypeNames } from 'common/performance_measures/lib/constants';
 import reducer from 'opMeasure/reducers/editor';
 import actions from 'opMeasure/actions';
+
+const { COUNT, RATE, RECENT, SUM } = CalculationTypeNames;
 
 const { INITIAL_STATE } = reducer;
 
@@ -37,10 +39,17 @@ describe('Edit modal reducer', () => {
 
   describe('SET_AGGREGATION_TYPE', () => {
     it('throws if measure type is not "rate"', () => {
-      state = reducer(state, actions.editor.setCalculationType('count'));
+      state = reducer(state, actions.editor.setCalculationType(COUNT));
       assert.throws(() => {
-        reducer(state, actions.editor.setAggregationType('sum'))
+        reducer(state, actions.editor.setAggregationType(SUM))
       });
+    });
+
+    it('resets denominatorIncludeNullValues to true for type == sum', () => {
+      state.dataSourceView = { columns: [] };
+      state = reducer(state, actions.editor.setCalculationType(RATE));
+      state = reducer(state, actions.editor.setAggregationType(SUM));
+      assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorIncludeNullValues', true);
     });
 
     it('removes columns from arguments if they are incompatible with the new aggregation type', () => {
@@ -54,35 +63,35 @@ describe('Edit modal reducer', () => {
       };
 
       // Full tests for isColumnUsableWithMeasureArgument exist in the measureCalculator tests.
-      state = reducer(state, actions.editor.setCalculationType('rate'));
+      state = reducer(state, actions.editor.setCalculationType(RATE));
       state = reducer(state, actions.editor.setNumeratorColumn('date'));
       state = reducer(state, actions.editor.setDenominatorColumn('text'));
       assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.numeratorColumn', 'date');
       assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorColumn', 'text');
 
       // Check count calculations. They are OK with any column types.
-      state = reducer(state, actions.editor.setAggregationType('count'));
+      state = reducer(state, actions.editor.setAggregationType(COUNT));
       assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.numeratorColumn', 'date'); // Same as before
       assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorColumn', 'text'); // Same as before
 
       // Now check going from count to sum. Sum calculations require a numerical type.
       // Our current columns are date and text, so both should be removed once we select sum.
-      state = reducer(state, actions.editor.setAggregationType('sum'));
+      state = reducer(state, actions.editor.setAggregationType(SUM));
       assert.notNestedProperty(state, 'measure.metricConfig.arguments.numeratorColumn'); // Gone (was date).
       assert.notNestedProperty(state, 'measure.metricConfig.arguments.denominatorColumn'); // Gone (was text).
 
       // Now, verify that sum accepts both Money and Number (those being numerical types).
-      state = reducer(state, actions.editor.setAggregationType('count'));
+      state = reducer(state, actions.editor.setAggregationType(COUNT));
       state = reducer(state, actions.editor.setNumeratorColumn('number'));
       state = reducer(state, actions.editor.setDenominatorColumn('money'));
       assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.numeratorColumn', 'number'); // Test sanity.
       assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorColumn', 'money'); // Test sanity.
-      state = reducer(state, actions.editor.setAggregationType('sum'));
+      state = reducer(state, actions.editor.setAggregationType(SUM));
       assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.numeratorColumn', 'number'); // Numeric type, so should still be set.
       assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorColumn', 'money'); // Numeric type, so should still be set.
 
       // Finally, ensure selecting count does not inadvertently clear out numeric types.
-      state = reducer(state, actions.editor.setAggregationType('count'));
+      state = reducer(state, actions.editor.setAggregationType(COUNT));
       assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.numeratorColumn', 'number');
       assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorColumn', 'money');
     });
@@ -162,26 +171,26 @@ describe('Edit modal reducer', () => {
     });
 
     it('resets metricConfig to only contain default calculation type', () => {
-      _.set(state, 'measure.metricConfig.type', 'recent');
+      _.set(state, 'measure.metricConfig.type', RECENT);
       _.set(state, 'measure.metricConfig.arguments.column', 'foo');
       _.set(state, 'measure.metricConfig.dateColumn', 'some_date_column');
 
       state = reducer(state, actions.editor.resetDataSource());
 
-      assert.deepEqual(state.measure.metricConfig, {type: 'count'});
+      assert.deepEqual(state.measure.metricConfig, {type: COUNT});
     });
   });
 
   describe('SET_NUMERATOR_COLUMN_CONDITION', () => {
     it('throws if the calculation type is not rate', () => {
       assert.throws(() => {
-        state = reducer(state, actions.editor.setCalculationType('count'));
+        state = reducer(state, actions.editor.setCalculationType(COUNT));
         reducer(state, actions.editor.setNumeratorColumnCondition({}))
       });
     });
 
     it('replaces the appropriate argument', () => {
-      state = reducer(state, actions.editor.setCalculationType('rate'));
+      state = reducer(state, actions.editor.setCalculationType(RATE));
 
       const newCondition1 = { type: 'mock1', foo: 'bar' };
       state = reducer(state, actions.editor.setNumeratorColumnCondition(newCondition1));
@@ -262,8 +271,8 @@ describe('Edit modal reducer', () => {
   describe('SET_CALCULATION_TYPE', () => {
     describe('when the new type matches the existing type', () => {
       it('does nothing', () => {
-        _.set(state, 'measure.metricConfig.type', 'count');
-        const nextState = reducer(state, actions.editor.setCalculationType('count'));
+        _.set(state, 'measure.metricConfig.type', COUNT);
+        const nextState = reducer(state, actions.editor.setCalculationType(COUNT));
         assert.deepEqual(state, nextState);
       });
     });
@@ -272,26 +281,26 @@ describe('Edit modal reducer', () => {
       it('updates the calculation type in the measure metric', () => {
         assert.notNestedProperty(state, 'measure.metricConfig.type');
 
-        state = reducer(state, actions.editor.setCalculationType('count'));
+        state = reducer(state, actions.editor.setCalculationType(COUNT));
 
-        assert.nestedPropertyVal(state, 'measure.metricConfig.type', 'count' );
+        assert.nestedPropertyVal(state, 'measure.metricConfig.type', COUNT );
       });
 
       it('sets default arguments', () => {
-        state = reducer(state, actions.editor.setCalculationType('count'));
+        state = reducer(state, actions.editor.setCalculationType(COUNT));
         assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.includeNullValues', true);
 
-        state = reducer(state, actions.editor.setCalculationType('rate'));
+        state = reducer(state, actions.editor.setCalculationType(RATE));
         assert.nestedPropertyVal(state, 'measure.metricConfig.arguments.denominatorIncludeNullValues', true);
       });
 
       it('removes all values in "measure.metric" except for argument defaults and dataSource uid', () => {
-        state = reducer(state, actions.editor.setCalculationType('sum'));
+        state = reducer(state, actions.editor.setCalculationType(SUM));
         _.set(state, 'measure.metricConfig.arguments.column', 'some column');
         _.set(state, 'measure.metricConfig.arguments.something', 'what');
         _.set(state, 'measure.dataSourceLensUid', 'test-test');
 
-        state = reducer(state, actions.editor.setCalculationType('count'));
+        state = reducer(state, actions.editor.setCalculationType(COUNT));
         assert.notNestedProperty(state, 'measure.metricConfig.arguments.column');
         assert.notNestedProperty(state, 'measure.metricConfig.arguments.something');
         assert.equal(state.measure.dataSourceLensUid, 'test-test');
@@ -414,7 +423,7 @@ describe('Edit modal reducer', () => {
     const fakeMeasure = {
       fake: 'measure',
       metricConfig: {
-        type: 'sum'
+        type: SUM
       }
     };
 
@@ -452,7 +461,7 @@ describe('Edit modal reducer', () => {
           measure: stateWithoutType.measure
         });
 
-        assert.deepPropertyVal(state, 'measure.metricConfig.type', 'count');
+        assert.deepPropertyVal(state, 'measure.metricConfig.type', COUNT);
       });
     });
   });

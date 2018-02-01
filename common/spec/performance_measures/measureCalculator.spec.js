@@ -220,6 +220,32 @@ describe('measureCalculator', () => {
             {}, countWithCondition, fakeDateRangeWhereClause, dataProvider
           );
         });
+
+        describe('with missing denominator and include nulls checkbox is off', () => {
+          const measure = {
+            metricConfig: {
+              type: CalculationTypeNames.RATE,
+              arguments: {
+                aggregationType: CalculationTypeNames.COUNT,
+                numeratorColumn: 'numeratorCol',
+                denominatorIncludeNullValues: false
+              }
+            }
+          };
+
+          it('returns a calculated measure with a numerator, but also an error about not being configured', async () => {
+            const dataProvider = {
+              rawQuery: (query) => {
+                return [{ __measure_count_alias__: 40 }];
+              }
+            };
+            const computedMeasure = await calculateRateMeasure(
+              {}, measure, fakeDateRangeWhereClause, dataProvider
+            );
+            assert.isTrue(computedMeasure.errors.calculationNotConfigured);
+            assert.equal(computedMeasure.result.numerator, '40');
+          });
+        });
       });
 
       describe('sum aggregation', () => {

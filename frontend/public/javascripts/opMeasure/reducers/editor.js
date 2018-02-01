@@ -198,7 +198,7 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
     case actions.editor.SET_AGGREGATION_TYPE: {
       assertIsOneOfTypes(action.aggregationType, 'string');
       assert(
-        _.get(state, 'measure.metricConfig.type') === 'rate',
+        _.get(state, 'measure.metricConfig.type') === CalculationTypeNames.RATE,
         'This action only makes sense for rate measures today.'
       );
 
@@ -207,6 +207,11 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
         'metricConfig.arguments.aggregationType',
         action.aggregationType
       );
+
+      // For SUM aggregation types, we need to reset the includeNullValues argument.
+      if (action.aggregationType === CalculationTypeNames.SUM) {
+        _.set(newState, 'measure.metricConfig.arguments.denominatorIncludeNullValues', true);
+      }
 
       // Changing aggregation type changes the set of columns that are valid for the numerator
       // and denominator (i.e., it makes sense to count on a date column, but it does not make

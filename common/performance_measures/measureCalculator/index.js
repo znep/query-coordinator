@@ -48,7 +48,7 @@ const setupSoqlDataProvider = (measure) => {
 /* Helper functions. Should use BigNumbers where possible. */
 
 const columnConditionWhereClause = (fieldName, columnCondition) => {
-  if (columnCondition) {
+  if (columnCondition && fieldName) {
     return SoqlHelpers.filterToWhereClauseComponent({
       columnName: fieldName,
       ...columnCondition
@@ -232,6 +232,7 @@ export const calculateRateMeasure = async (
             count(
               dataProvider, denominatorColumn, [denominatorColumnConditionWhereClause, dateRangeWhereClause]
             ) : null);
+
         break;
       }
       case CalculationTypeNames.SUM:

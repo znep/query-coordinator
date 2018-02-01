@@ -113,9 +113,8 @@ const addUsers = (state, action) => {
           displayName: user.screen_name,
           email: user.email,
 
-          // TODO this needs to be updated once we introduce the
-          // concept of groups/teams to the catalog
-          type: 'user',
+          // this one we fill out when fetching from the catalog
+          type: user.type,
 
           // just one access level for now; if we ever want multiple
           // access levels in the future, this will need to be changed

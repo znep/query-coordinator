@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
 import { emitMixpanelEvent } from '../actions/mixpanel';
-import { createDSMAPIRevision } from '../actions/metadataTable';
+import { createDsmapiEdit } from '../actions/metadataTable';
 import { associateChildToParent } from '../actions/associateCollections';
 import { MetadataTable as CommonMetadataTable } from 'common/components';
 import { localizeLink } from 'common/locale';
@@ -129,7 +129,7 @@ function mergeProps(stateProps, { dispatch }) {
     onClickEditMetadata: e => {
       if (editThruDSMUI() && !isUSAID()) {
         e.preventDefault();
-        dispatch(createDSMAPIRevision(stateProps.view.id));
+        dispatch(createDsmapiEdit(stateProps.coreView.id));
       }
 
       const payload = {

@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import FeedbackPanel from '../common/components/FeedbackPanel';
+import { FeedbackPanel } from 'common/components';
 import { FeatureFlags } from 'common/feature_flags';
 
 import { updateName } from './actions';
@@ -90,7 +90,6 @@ export class App extends Component {
           <FilterBar isReadOnly={false} />
           <Visualizations isEditable displayShareButtons={SHARE_BUTTON_ENABLED.edit} />
           <Table />
-          <FeedbackPanel {...window.serverConfig} />
         </div>
         <AuthoringWorkflowModal />
         <ShareVisualizationModal />

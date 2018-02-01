@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
-import { connect } from 'react-redux';
 
 import I18n from 'common/i18n';
 import Button from 'common/components/Button';
 import UserSearch from 'common/components/UserSearch';
 import UserSearchResultPropType from 'common/components/UserSearch/UserSearchResultPropType';
-
-import * as addUsersActions from 'common/components/AccessManager/actions/AddUsersActions';
-import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
 
 import SelectedUsersPropType from 'common/components/AccessManager/propTypes/SelectedUsersPropType';
 import UserAccessLevelPropType from 'common/components/AccessManager/propTypes/UserAccessLevelPropType';
@@ -25,24 +21,27 @@ import styles from './add-user.module.scss';
  */
 class AddUser extends Component {
   static propTypes = {
-    onAccessLevelDropdownChanged: PropTypes.func.isRequired,
-    addUsers: PropTypes.func.isRequired,
-    accessLevel: UserAccessLevelPropType,
-
-    // UserSearch props, from redux
+    selectedAccessLevel: UserAccessLevelPropType,
     addSelectedUser: PropTypes.func.isRequired,
+    addUsers: PropTypes.func.isRequired,
     currentSearchQuery: PropTypes.string,
-    searchResults: PropTypes.arrayOf(UserSearchResultPropType),
+    onAccessLevelDropdownChanged: PropTypes.func.isRequired,
+    hideAccessLevelDropdown: PropTypes.bool,
     removeSelectedUser: PropTypes.func.isRequired,
+    searchResults: PropTypes.arrayOf(UserSearchResultPropType),
     selectedUsers: SelectedUsersPropType,
     userSearchQueryChanged: PropTypes.func.isRequired
   }
 
-  confirmSelectedUsers = () => {
-    const { selectedUsers, accessLevel, addUsers } = this.props;
+  static defaultProps = {
+    hideAccessLevelDropdown: false
+  }
 
-    if (selectedUsers && selectedUsers.length > 0 && accessLevel) {
-      addUsers(selectedUsers, accessLevel);
+  confirmSelectedUsers = () => {
+    const { selectedUsers, selectedAccessLevel, addUsers } = this.props;
+
+    if (selectedUsers && selectedUsers.length > 0 && selectedAccessLevel) {
+      addUsers(selectedUsers, selectedAccessLevel);
     }
   }
 
@@ -72,16 +71,19 @@ class AddUser extends Component {
 
   render() {
     const {
-      accessLevel,
-      onAccessLevelDropdownChanged
+      selectedAccessLevel,
+      onAccessLevelDropdownChanged,
+      hideAccessLevelDropdown
     } = this.props;
 
     return (
       <div styleName="container">
         {this.renderUserSearch()}
-        <AccessLevelDropdown
-          onSelection={onAccessLevelDropdownChanged}
-          value={accessLevel} />
+        {hideAccessLevelDropdown === false &&
+          (<AccessLevelDropdown
+            onSelection={onAccessLevelDropdownChanged}
+            value={selectedAccessLevel} />)
+        }
         <Button
           onClick={this.confirmSelectedUsers}
           styleName="add-user-button">
@@ -92,23 +94,4 @@ class AddUser extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  accessLevel: state.addUsers.accessLevel,
-
-  // for UserSearch
-  searchResults: state.addUsers.results ? state.addUsers.results.results : null,
-  currentSearchQuery: state.addUsers.query,
-  selectedUsers: state.addUsers.selectedUsers
-});
-
-const mapDispatchToProps = dispatch => ({
-  onAccessLevelDropdownChanged: level => dispatch(addUsersActions.accessLevelChanged(level)),
-  addUsers: (users, accessLevel) => dispatch(permissionsActions.addUsers(users, accessLevel)),
-
-  // for UserSearch
-  addSelectedUser: searchResult => dispatch(addUsersActions.addSelectedUser(searchResult.user)),
-  removeSelectedUser: user => dispatch(addUsersActions.removeSelectedUser(user)),
-  userSearchQueryChanged: (event) => dispatch(addUsersActions.userSearchQueryChanged(event.target.value))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(cssModules(AddUser, styles));
+export default cssModules(AddUser, styles);

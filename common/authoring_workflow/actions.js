@@ -1104,12 +1104,21 @@ export function removeBasemapFlyoutColumn(relativeIndex) {
     relativeIndex
   };
 }
-export const SET_ADDITIONAL_FLYOUT_COLUMNS = 'SET_ADDITIONAL_FLYOUT_COLUMNS';
-export function setAdditionalFlyoutColumns(columnName, relativeIndex) {
+
+export const CHANGE_ADDITIONAL_FLYOUT_COLUMN = 'CHANGE_ADDITIONAL_FLYOUT_COLUMN';
+export function changeAdditionalFlyoutColumn(columnName, relativeIndex) {
   return {
-    type: SET_ADDITIONAL_FLYOUT_COLUMNS,
+    type: CHANGE_ADDITIONAL_FLYOUT_COLUMN,
     columnName,
     relativeIndex
+  };
+}
+
+export const SET_ADDITIONAL_FLYOUT_COLUMNS = 'SET_ADDITIONAL_FLYOUT_COLUMNS';
+export function setAdditionalFlyoutColumns(columns) {
+  return {
+    type: SET_ADDITIONAL_FLYOUT_COLUMNS,
+    columns
   };
 }
 

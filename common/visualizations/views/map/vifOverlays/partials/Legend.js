@@ -4,7 +4,6 @@ import _ from 'lodash';
 import ChoroplethMapUtils from 'common/visualizations/views/ChoroplethMapUtils';
 
 const LEGEND_CONTAINER_CLASS = 'legend-container';
-const LEGEND_CONTAINER_HEIGHT = 260;
 
 // Renders categorical/interval legend for maps, showing the color used on the map for
 // each interval/category. Based on the type
@@ -40,8 +39,7 @@ export default class Legend {
     }
 
     const $legendContainer = $('<div>', {
-      'class': LEGEND_CONTAINER_CLASS,
-      'style': `height: ${LEGEND_CONTAINER_HEIGHT}px;`
+      'class': `${LEGEND_CONTAINER_CLASS} legend-type-${type}`
     });
     const orderedBuckets = this._getOrderedBuckets(buckets, type);
 

@@ -82,12 +82,12 @@ class ChangeOwner extends Component {
 
     const userSearchProps = {
       maxSelectedUsers: 1, // can only have one owner
-      addSelectedUser: addSelectedOwner,
+      addSelectedCollaborator: addSelectedOwner,
       currentQuery: currentSearchQuery,
       results: searchResults,
-      removeSelectedUser: removeSelectedOwner,
+      removeSelectedCollaborator: removeSelectedOwner,
       selectedUsers: selectedOwner,
-      userSearchQueryChanged: ownerSearchQueryChanged
+      collaboratorsSearchQueryChanged: ownerSearchQueryChanged
     };
 
     return (

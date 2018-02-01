@@ -2,6 +2,9 @@
 
 .user-label {
   width: 387px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .title {
@@ -15,5 +18,5 @@
 
 .unregistered {
   font-style: italic;
-  color: $error-text;
+  color: $error-text !important;
 }

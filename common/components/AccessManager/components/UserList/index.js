@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import cssModules from 'react-css-modules';
 
@@ -19,58 +20,85 @@ import styles from './user-list.module.scss';
  */
 class UserList extends Component {
   static propTypes = {
-    permissions: PermissionPropType
+    permissions: PermissionPropType,
+    userFilter: PropTypes.func,
+    hideOwner: PropTypes.bool,
+    hideAccessLevelDropdown: PropTypes.bool,
+    noUsersMessage: PropTypes.string
   }
 
-  shouldRenderNoUsersMessage = () => {
-    const { permissions } = this.props;
+  static defaultProps = {
+    userFilter: null,
+    hideOwner: false,
+    hideAccessLevelDropdown: false,
+    noUsersMessage: ''
+  }
 
-    // render message if the only user we have is the owner
+  static getAllUserExceptOwner = (users, userFilter) =>
+    users.
+          filter(user => !userHasAccessLevel(user, ACCESS_LEVELS.CURRENT_OWNER)).
+          filter(userFilter || (() => true));
+
+  shouldRenderNoUsersMessage = () => {
+    const { permissions, hideOwner, userFilter } = this.props;
+
+    // render message if the only user we have is the owner, and we're supposed to show the owner
     return (
-      isEmpty(permissions.users) ||
-      isEmpty(permissions.users.filter(user => !userHasAccessLevel(user, ACCESS_LEVELS.CURRENT_OWNER)))
+      isEmpty(UserList.getAllUserExceptOwner(permissions.users, userFilter)) ||
+      (
+        hideOwner === false &&
+        isEmpty(permissions.users.filter(user => !userHasAccessLevel(user, ACCESS_LEVELS.CURRENT_OWNER)))
+      )
     );
   }
 
   renderNoUsersMessage = () => (
     <div styleName="no-users-message">
-      <em>{I18n.t('shared.site_chrome.access_manager.no_collaborators')}</em>
+      <em>{this.props.noUsersMessage}</em>
     </div>
   )
 
   renderOwner = (owner) => (
     // current owner can potentially appear in the list twice, so we need to give them a special key
-    <div key={`current_owner-${owner.email}`}>
+    <div key={`current_owner-${owner.id || owner.email}`}>
       <OwnerUserDetails user={owner} />
       <hr />
     </div>
   )
 
   renderUser = (user) => {
-    const { accessLevels, email } = user;
+    const { hideAccessLevelDropdown } = this.props;
+    const { accessLevels, email, id } = user;
 
     // just using the first accessLevel in the list for now; if/when we want to add multiple in the future,
     // this will have to be changed (along with the dropdown)
     const accessLevel = accessLevels[0];
 
     return (
-      <div key={email}>
-        <UserDetailsWithAccessLevel user={user} accessLevel={accessLevel} />
+      <div key={id || email}>
+        <UserDetailsWithAccessLevel
+          user={user}
+          accessLevel={accessLevel}
+          hideAccessLevelDropdown={hideAccessLevelDropdown} />
         <hr />
       </div>
     );
   }
 
   render() {
-    const { permissions } = this.props;
+    const {
+      permissions,
+      hideOwner,
+      userFilter
+    } = this.props;
     const { users } = permissions;
 
     const owner = users.find(user => userHasAccessLevel(user, ACCESS_LEVELS.CURRENT_OWNER));
-    const filteredUsers = users.filter(user => !userHasAccessLevel(user, ACCESS_LEVELS.CURRENT_OWNER));
+    const filteredUsers = UserList.getAllUserExceptOwner(users, userFilter);
 
     return (
       <div>
-        {owner && this.renderOwner(owner)}
+        {hideOwner === false && owner && this.renderOwner(owner)}
         {this.shouldRenderNoUsersMessage() ?
             this.renderNoUsersMessage() :
             filteredUsers.map(this.renderUser)

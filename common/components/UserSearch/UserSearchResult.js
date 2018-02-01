@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import FeatureFlags from 'common/feature_flags';
 import I18n from 'common/i18n';
+import SocrataIcon from 'common/components/SocrataIcon';
 
 import UserSearchResultPropType from './UserSearchResultPropType';
 import HighlightedResultText from './HighlightedResultText';
@@ -16,44 +18,61 @@ class UserSearchResult extends Component {
     result: UserSearchResultPropType.isRequired
   };
 
-  render() {
-    const { result } = this.props;
-    const { user, matches } = result;
-    const { screen_name: screenName, email } = user;
-
-    // if we have screen_name and email, then this is a user who
-    // has registered and we can display them as such
-    if (screenName && email) { // eslint-disable-line camelcase
+  renderEmail = (isTeam, screenName, email, matches) => {
+    if (isTeam) {
+      // team has no email
+      return null;
+    } else if (screenName) {
+      // if we have a screen name, we have an actual user and not
+      // just a share to an email address
       return (
-        <div>
-          <div className="user-search-result-name">
-            <HighlightedResultText
-              text={screenName}
-              fieldName="screen_name"
-              matches={matches} />
-          </div>
-          <div className="user-search-result-email">
-            <HighlightedResultText
-              text={email}
-              fieldName="email"
-              matches={matches} />
-          </div>
-        </div>
+        <HighlightedResultText
+          text={email}
+          fieldName="email"
+          matches={matches} />
       );
     } else {
-      // else this is an unregistered user and we only have their email
-      // (most likely, the email has been entered into the search box)
+      // else lack of screen name means this is an unregistered user
       return (
-        <div>
-          <div className="user-search-result-name">
-            {email}
-          </div>
-          <div className="user-search-result-email">
-            <em>{I18n.t('shared.site_chrome.access_manager.unregistered_user_search_result')}</em>
-          </div>
-        </div>
+        <em>
+          {I18n.t('shared.site_chrome.access_manager.unregistered_user_search_result')}
+        </em>
       );
     }
+  }
+
+  render() {
+    const teamsEnabled = FeatureFlags.value('enable_teams');
+
+    const { result } = this.props;
+    const { user, team, matches } = result;
+    const entity = user ? user : team;
+    const { screen_name: screenName, email } = entity;
+    const isTeam = team || false;
+
+    const nameContent = screenName ?
+      // if we have a screen name, we have an actual user
+      (<HighlightedResultText
+        text={screenName}
+        fieldName="screen_name"
+        matches={matches} />) :
+      // else we have a share to just an email
+      email;
+
+    return (
+      <div className="user-search-result-container">
+        {/* We only show icons if teams are enabled... */}
+        {teamsEnabled && (<SocrataIcon name={isTeam ? 'team' : 'user'} className="user-search-result-icon" />)}
+        <div className="user-search-result-content">
+          <div className="user-search-result-name">
+            {nameContent}
+          </div>
+          <div className="user-search-result-email">
+            {this.renderEmail(isTeam, screenName, email, matches)}
+          </div>
+        </div>
+      </div>
+    );
   }
 }
 

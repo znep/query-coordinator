@@ -41,9 +41,7 @@ export class DatasetPreview extends Component {
       { locale: window.serverConfig.locale } :
       { locale: '' };
     return (
-      <div className="table-contents" itemScope itemType="http://schema.org/Dataset">
-        <SocrataVisualizations.Visualization vif={vif} options={options} />
-      </div>
+      <SocrataVisualizations.Visualization vif={vif} options={options} />
     );
   }
 

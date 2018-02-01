@@ -29,6 +29,11 @@ class MultiSelect extends Component {
     currentQuery: PropTypes.string.isRequired,
 
     /**
+     * Placeholder for the input when it's empty
+     */
+    inputPlaceholder: PropTypes.string,
+
+    /**
      * Maximum number of options that can be selected at one time.
      * By default, there is no limit.
      * When the limit is reached, the input essentially becomes disabled until
@@ -108,6 +113,7 @@ class MultiSelect extends Component {
   }
 
   static defaultProps = {
+    inputPlaceholder: 'Search...',
     maxSelectedOptions: null,
     selectedOptionIndex: null,
     selectedOptions: [],
@@ -303,6 +309,7 @@ class MultiSelect extends Component {
     const {
       shouldRenderResultsWhenQueryIsEmpty,
       currentQuery,
+      inputPlaceholder,
       maxSelectedOptions,
       noOptionsMessage,
       onCurrentQueryChanged,
@@ -357,6 +364,7 @@ class MultiSelect extends Component {
       // of the input box, which we need to focus on when the container is clicked
       inputRef: inputRef => this.inputRef = inputRef,
       currentQuery,
+      inputPlaceholder,
       onCurrentQueryChanged,
       onOptionsVisibilityChanged: this.onOptionsVisibilityChanged,
       onSelectedOptionIndexChange: this.onSelectedOptionIndexChange

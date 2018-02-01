@@ -14,7 +14,7 @@ export const FeatureFlags = {
       );
 
     if (isNil(flagValue)) {
-      throw new Error(`Invalid feature flag: ${key} (check that window.socrata.featureFlags or window.serverConfig.featureFlags is defined; Please see README.md in common/feature_flags.`);
+      throw new Error(`Invalid feature flag: ${key} (check that window.socrata.featureFlags or window.serverConfig.featureFlags is defined; Please see README.md in common/feature_flags.)`);
     }
 
     return flagValue;

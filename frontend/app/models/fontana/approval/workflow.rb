@@ -34,7 +34,11 @@ module Fontana
             "#{APPROVALS_API_URI}/#{workflow_id}",
             :headers => instance.approval_request_headers
           ).parsed_response.with_indifferent_access
+
           ATTRIBUTE_NAMES.each do |key|
+            # An approvals workflow with no steps, is implicitly treated as "all approvals are automatic"
+            next if key == :steps && response[key].blank?
+
             value = response.fetch(key)
             if key == :steps
               instance.public_send(:steps=, value.map { |step| Fontana::Approval::Step.new(instance, step) })

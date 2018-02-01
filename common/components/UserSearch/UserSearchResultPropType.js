@@ -11,10 +11,11 @@ export const MatchesPropType = PropTypes.arrayOf(PropTypes.shape({
 export const UserPropType = PropTypes.shape({
   id: PropTypes.string,
   screen_name: PropTypes.string,
-  email: PropTypes.string.isRequired,
+  email: PropTypes.string,
   role_name: PropTypes.string,
   role_id: PropTypes.number,
-  last_authenticated_at: PropTypes.number
+  last_authenticated_at: PropTypes.number,
+  type: PropTypes.oneOf(['interactive', 'team'])
 });
 
 export default PropTypes.shape({

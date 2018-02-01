@@ -9,10 +9,22 @@ export const ACCESS_LEVELS = {
   VIEWER: 'viewer'
 };
 
+export const ACCESS_LEVEL_VERSIONS = {
+  PUBLISHED: 'published',
+  DRAFT: 'draft',
+  ALL: 'all'
+};
+
 export const AUDIENCE_SCOPES = {
   PRIVATE: 'private',
   PUBLIC: 'public',
   ORGANIZATION: 'organization'
+};
+
+export const USER_TYPES = {
+  INTERACTIVE: 'interactive',
+  TEAM: 'team',
+  USER: 'user'
 };
 
 export const CATALOG_SEARCH_DEBOUNCE_MILLISECONDS = 250;

@@ -8,6 +8,7 @@ class MultiSelectInput extends Component {
   // see the wrapping component for details on these propTypes
   static propTypes = {
     currentQuery: PropTypes.string.isRequired,
+    inputPlaceholder: PropTypes.string.isRequired,
     inputRef: PropTypes.func.isRequired,
     onCurrentQueryChanged: PropTypes.func.isRequired,
     onOptionsVisibilityChanged: PropTypes.func.isRequired,
@@ -33,12 +34,14 @@ class MultiSelectInput extends Component {
 
   render() {
     const {
+      inputPlaceholder,
       inputRef,
       currentQuery
     } = this.props;
 
     return (
       <input
+        placeholder={inputPlaceholder}
         ref={ref => inputRef(ref)}
         className="text-input multiselect-input"
         value={currentQuery}

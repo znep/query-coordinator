@@ -195,22 +195,27 @@ export default function map(state, action) {
 
     case actions.ADD_BASEMAP_FLYOUT_COLUMN:
       const flyoutColumns = _.get(state, 'series[0].mapOptions.additionalFlyoutColumns', []);
+
       flyoutColumns.push(action.columnName);
       _.set(state, 'series[0].mapOptions.additionalFlyoutColumns', flyoutColumns);
       break;
 
     case actions.REMOVE_BASEMAP_FLYOUT_COLUMN:
       let additionalFlyoutColumns = _.get(state, 'series[0].mapOptions.additionalFlyoutColumns', []);
-      additionalFlyoutColumns.splice(action.relativeIndex, 1);
 
+      additionalFlyoutColumns.splice(action.relativeIndex, 1);
       _.set(state, 'series[0].mapOptions.additionalFlyoutColumns', additionalFlyoutColumns);
       break;
 
-    case actions.SET_ADDITIONAL_FLYOUT_COLUMNS:
+    case actions.CHANGE_ADDITIONAL_FLYOUT_COLUMN:
       const columns = _.get(state, 'series[0].mapOptions.additionalFlyoutColumns', []);
-      columns[action.relativeIndex] = action.columnName;
 
+      columns[action.relativeIndex] = action.columnName;
       _.set(state, 'series[0].mapOptions.additionalFlyoutColumns', columns);
+      break;
+
+    case actions.SET_ADDITIONAL_FLYOUT_COLUMNS:
+      _.set(state, 'series[0].mapOptions.additionalFlyoutColumns', action.columns);
       break;
 
     case actions.SET_SEARCH_BOUNDARY_UPPER_LEFT_LATITUDE:

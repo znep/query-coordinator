@@ -7,6 +7,7 @@ import I18n from 'common/i18n';
 import SocrataIcon from 'common/components/SocrataIcon';
 
 import * as filters from 'common/components/AssetBrowser/actions/filters';
+import { AUTHORITY_OFFICIAL, AUTHORITY_COMMUNITY } from 'common/components/AssetBrowser/lib/constants';
 
 export class AuthorityFilter extends Component {
   render() {
@@ -18,8 +19,8 @@ export class AuthorityFilter extends Component {
 
     const authorityOptions = [
       { title: I18n.t('options.all', { scope }), value: null, defaultOption: true },
-      { title: I18n.t('options.official', { scope }), value: 'official', icon: officialIcon },
-      { title: I18n.t('options.community', { scope }), value: 'community', icon: communityIcon }
+      { title: I18n.t('options.official', { scope }), value: AUTHORITY_OFFICIAL, icon: officialIcon },
+      { title: I18n.t('options.community', { scope }), value: AUTHORITY_COMMUNITY, icon: communityIcon }
     ];
 
     const labelText = I18n.t('label', { scope });

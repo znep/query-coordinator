@@ -4,6 +4,7 @@ import cssModules from 'react-css-modules';
 import I18n from 'common/i18n';
 
 import UserPropType from 'common/components/AccessManager/propTypes/UserPropType';
+import { USER_TYPES } from 'common/components/AccessManager/Constants';
 
 import styles from './user-label.module.scss';
 
@@ -19,12 +20,14 @@ class UserLabel extends Component {
 
   render() {
     const { user } = this.props;
+    const { displayName, email, type } = user;
 
-    if (user.displayName) {
+    if (displayName) {
       return (
         <div styleName="user-label">
-          <div styleName="title">{user.displayName}</div>
-          <div styleName="subtitle">{user.email}</div>
+          <div styleName="title">{displayName}</div>
+          {/* Teams have no email */}
+          {(type === USER_TYPES.INTERACTIVE && email) ? <div styleName="subtitle">{email}</div> : null}
         </div>
       );
     } else {
@@ -32,7 +35,7 @@ class UserLabel extends Component {
       // is "unregistered" (meaning they had permission shared to just their email)
       return (
         <div styleName="user-label">
-          <div styleName="title">{user.email}</div>
+          <div styleName="title">{email}</div>
           <div styleName="subtitle">
             <em styleName="unregistered">
               {I18n.t('shared.site_chrome.access_manager.unregistered_user')}

@@ -46,6 +46,12 @@ class AccessManagerModalToggle extends Component {
         currentUser,
         permissions: null,
         view
+      },
+      addCollaborators: {
+        selectedUsers: []
+      },
+      publishedTo: {
+        selectedUsers: []
       }
     });
   }

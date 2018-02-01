@@ -2,7 +2,6 @@
 
 .chooser {
   margin-bottom: 15px;
-  width: 75%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -10,6 +9,8 @@
 .chooser-buttons {
   display: flex;
   justify-content: space-around;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .approval-message {

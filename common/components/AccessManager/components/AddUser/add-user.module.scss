@@ -10,6 +10,7 @@
   padding-bottom: 5px;
   margin-bottom: 15px;
   box-shadow: 0 -5px 5px $light-grey-6;
+  min-height: 66px;
 
   & :global(.multiselect-form-container) {
     height: auto;

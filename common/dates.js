@@ -14,9 +14,19 @@ export function formatToSoqlDate(date) {
   return date.format('YYYY-MM-DDTHH:mm:ss');
 }
 
-export function formatToInclusiveSoqlDateRange(value) {
-  const start = formatToSoqlDate(moment(value.start).startOf('day'));
-  const end = formatToSoqlDate(moment(value.end).endOf('day'));
+export function formatToInclusiveSoqlDateRange(value, options = {}) {
+  let { start, end } = value;
+
+  start = moment(start).startOf('day');
+  end = moment(end).endOf('day');
+
+  if (options.asUTC) {
+    start = start.utc();
+    end = end.utc();
+  }
+
+  start = formatToSoqlDate(start);
+  end = formatToSoqlDate(end);
 
   return { start, end };
 }

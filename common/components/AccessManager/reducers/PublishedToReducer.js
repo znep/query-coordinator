@@ -1,9 +1,10 @@
-import * as addUsersActions from 'common/components/AccessManager/actions/AddUsersActions';
+import * as publishedToActions from 'common/components/AccessManager/actions/PublishedToActions';
 import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
 import * as uiActions from 'common/components/AccessManager/actions/UiActions';
+import { filterSearchResults } from 'common/components/AccessManager/Util';
 
 // user is typing into the search box
-const userSearchQueryChanged = (state, action) => ({
+const publishedToSearchQueryChanged = (state, action) => ({
   ...state,
   query: action.query,
 
@@ -11,20 +12,20 @@ const userSearchQueryChanged = (state, action) => ({
   results: null
 });
 
-// AddUsersSaga will call this with the search results from the catalog
-const userSearchResultsFetchSuccess = (state, action) => ({
+// PublishedToSagas will call this with the search results from the catalog
+const publishedToSearchResultsFetchSuccess = (state, { payload: { results, existingUsers } }) => ({
   ...state,
-  results: action.results
+  results: filterSearchResults(results, state.selectedUsers, existingUsers, state.query)
 });
 
 // AddUsersSaga will call this when catalog query fails
-const userSearchResultsFetchFail = (state, action) => {
+const publishedToSearchResultsFetchFail = (state, action) => {
   console.error('Error fetching user search results', action.error);
   return state;
 };
 
 // User is selected from the search reuslts
-const addSelectedUser = (state, action) => {
+const addSelectedPublishedTo = (state, action) => {
   const selectedUsers = state.selectedUsers || [];
 
   return {
@@ -36,7 +37,7 @@ const addSelectedUser = (state, action) => {
 };
 
 // Remove a user that has been selected
-const removeSelectedUser = (state, action) => {
+const removeSelectedPublishedTo = (state, action) => {
   const selectedUsers = state.selectedUsers || [];
 
   let indexToRemove = null;
@@ -60,38 +61,28 @@ const removeSelectedUser = (state, action) => {
   };
 };
 
-// Access level dropdown next to the search box has been changed
-const accessLevelChanged = (state, action) => ({
-  ...state,
-  accessLevel: action.level.value
-});
-
-
 const resetState = (state) => ({
   ...state,
   selectedUsers: [],
-  accessLevel: null,
   query: '',
   results: null
 });
 
 export default (state = {}, action) => {
   switch (action.type) {
-    // addUsersActions
-    case addUsersActions.USER_SEARCH_QUERY_CHANGED:
-      return userSearchQueryChanged(state, action);
-    case addUsersActions.USER_SEARCH_RESULTS_FETCH_SUCCESS:
-      return userSearchResultsFetchSuccess(state, action);
-    case addUsersActions.USER_SEARCH_RESULTS_FETCH_FAIL:
-      return userSearchResultsFetchFail(state, action);
-    case addUsersActions.ADD_SELECTED_USER:
-      return addSelectedUser(state, action);
-    case addUsersActions.REMOVE_SELECTED_USER:
-      return removeSelectedUser(state, action);
-    case addUsersActions.ACCESS_LEVEL_CHANGED:
-      return accessLevelChanged(state, action);
+    // publishedToActions
+    case publishedToActions.PUBLISHED_TO_SEARCH_QUERY_CHANGED:
+      return publishedToSearchQueryChanged(state, action);
+    case publishedToActions.PUBLISHED_TO_SEARCH_RESULTS_FETCH_SUCCESS:
+      return publishedToSearchResultsFetchSuccess(state, action);
+    case publishedToActions.PUBLISHED_TO_SEARCH_RESULTS_FETCH_FAIL:
+      return publishedToSearchResultsFetchFail(state, action);
+    case publishedToActions.ADD_SELECTED_PUBLISHED_TO:
+      return addSelectedPublishedTo(state, action);
+    case publishedToActions.REMOVE_SELECTED_PUBLISHED_TO:
+      return removeSelectedPublishedTo(state, action);
 
-    case permissionsActions.ADD_USERS: // Dispatched when the "confirm" button is clicked and the users have been added to the list of users with access
+    case permissionsActions.ADD_USERS: // Dispatched when the "Add" button is clicked and the users have been added to the list of users with access
     case uiActions.CANCEL_BUTTON_CLICKED: // Dispatched when the "cancel" button is clicked
       return resetState(state, action);
     default:

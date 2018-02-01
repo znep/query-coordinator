@@ -2239,9 +2239,11 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _handleDatasetAssetSelected(assetData) {
+    // We don't want to get the initial view with the `read_from_nbe` flags. We get the migration and nbe view later.
     const datasetConfig = {
       domain: assetData.domain,
-      datasetUid: assetData.id
+      datasetUid: assetData.id,
+      readFromNbe: false
     };
 
     // Check for the NBE version of the dataset we're choosing
@@ -2365,9 +2367,12 @@ export default function AssetSelectorRenderer(options) {
   }
 
   function _handleVisualizationAssetSelected(assetData) {
+    // We don't want to get the initial view with the `read_from_nbe` flags. That will cause
+    // problems when we try to generate a preview of a classic visualization.
     const visualizationConfig = {
       domain: assetData.domain,
-      datasetUid: assetData.id
+      datasetUid: assetData.id,
+      readFromNbe: false
     };
 
     const metadataProvider = new MetadataProvider(visualizationConfig);

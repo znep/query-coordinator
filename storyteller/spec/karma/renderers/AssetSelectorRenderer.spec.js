@@ -698,7 +698,7 @@ describe('AssetSelectorRenderer', function() {
           server.respondImmediately = true;
           server.respondWith(
             'GET',
-            `https://${assetData.domain}/api/views/${assetData.id}.json?read_from_nbe=true&version=2.1`,
+            `https://${assetData.domain}/api/views/${assetData.id}.json`,
             [
               200,
               {'Content-Type': 'application/json'},
@@ -776,7 +776,7 @@ describe('AssetSelectorRenderer', function() {
             server.respondImmediately = true;
             server.respondWith(
               'GET',
-              `https://${assetData.domain}/api/views/${assetData.id}.json?read_from_nbe=true&version=2.1`,
+              `https://${assetData.domain}/api/views/${assetData.id}.json`,
               [
                 statusCode,
                 {'Content-Type': 'application/json'},

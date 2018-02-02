@@ -6,8 +6,9 @@
   <%= render_admin_activity_feed_initial_data %>
 <% end %>
 
-<% translations_for('shared.components.filter_bar', 'screens.admin.jobs') %>
+<% @translation_keys = ['shared.components.filter_bar', 'screens.admin.jobs'] %>
 <% content_for :translations do %>
+  <%= render_translations(LocalePart.screens.admin.jobs) %>
   <%= render_translations(LocalePart.plugins.daterangepicker) %>
   <%= render_translations(LocalePart.table) %>
 <% end %>
@@ -24,4 +25,4 @@
   data-alert-translation-key="<%= (@alert || {}).fetch(:translation_key, nil) %>">
 </div>
 
-<%= include_webpack_bundle 'shared/adminActivityFeed' %>
+<%= include_webpack_bundle 'shared-with-jquery/adminActivityFeed' %>

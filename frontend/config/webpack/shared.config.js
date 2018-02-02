@@ -12,7 +12,6 @@ var COMMONS_CHUNK_MIN_CHUNKS = 5;
 module.exports = _.defaultsDeep({
   context: path.resolve(webpackHelpers.frontendRoot, 'public/javascripts'),
   entry: webpackHelpers.withHotModuleEntries({
-    'adminActivityFeed': 'adminActivityFeed/main.js',
     'adminActivityFeedSoql': 'adminActivityFeedSoql/main.js',
     'adminConnector': 'src/screens/admin-connector.js',
     'adminEditConnector': 'src/screens/admin-edit-connector.js',

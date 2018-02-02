@@ -11,7 +11,6 @@ var identifier = path.basename(__filename, '.config.js');
 module.exports = _.defaultsDeep({
   context: path.resolve(webpackHelpers.frontendRoot, 'public/javascripts'),
   entry: webpackHelpers.withHotModuleEntries({
-    'adminActivityFeed': 'adminActivityFeed/main.js',
     'gridViewSocrataVisualizations': 'grid_view_socrata_visualizations/main.js',
     'visualizationEmbedLoader': 'visualization_embed/loader.js',
     'visualizationEmbedMain': 'visualization_embed/main.js'

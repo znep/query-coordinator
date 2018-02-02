@@ -21,12 +21,15 @@ export class MeasureResultCard extends Component {
       calculationNotConfigured,
       dataSourceNotConfigured,
       dividingByZero,
+      noRecentValue,
       noReportingPeriodAvailable,
       noReportingPeriodConfigured
     } = computedMeasure.errors;
 
     if (dataSourceNotConfigured || !measure.dataSourceLensUid) {
       return I18n.t('shared.performance_measures.no_dataset');
+    } else if (noRecentValue) {
+      return I18n.t('shared.performance_measures.no_recent_value');
     } else if (calculationNotConfigured) {
       return I18n.t('shared.performance_measures.no_calculation');
     } else if (noReportingPeriodConfigured) {

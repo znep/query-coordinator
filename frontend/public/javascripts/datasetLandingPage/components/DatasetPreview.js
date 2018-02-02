@@ -41,7 +41,9 @@ export class DatasetPreview extends Component {
       { locale: window.serverConfig.locale } :
       { locale: '' };
     return (
-      <SocrataVisualizations.Visualization vif={vif} options={options} />
+      <div className="table-contents">
+        <SocrataVisualizations.Visualization vif={vif} options={options} />
+      </div>
     );
   }
 

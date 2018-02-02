@@ -1,6 +1,6 @@
 var karmaConfig = require('../helpers/karma_config');
 var webpackConfig = require('../helpers/webpack').karmaWebpackConfig(
-  'shared-with-jquery.config.js',
+  'shared.config.js',
   [ 'karma/adminActivityFeed' ],
   [ 'adminActivityFeed' ]
 );

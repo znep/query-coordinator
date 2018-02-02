@@ -24,10 +24,6 @@ http://www.socrata.com
 
     <%= get_favicon_tag %>
 
-
-    <% translations = json_escape(LocaleCache.render_all_translation_keys(@translation_keys).to_json) %>
-    <%= javascript_tag("window.translations = #{translations};") %>
-
     <%= include_webpack_bundle 'shared/common' %>
   </head>
 
@@ -67,8 +63,14 @@ http://www.socrata.com
 
     <%= site_chrome_javascript_tag %>
 
+    <script type="text/javascript">
+      window.translations = <%== json_escape(LocaleCache.render_all_translation_keys(@translation_keys).to_json) %>
+    </script>
+
     <%= yield :translations %>
+
     <%= yield :scripts %>
+
     <%= include_webpack_bundle 'shared/siteWide' %>
 
     <%= render_admin_qualtrics %>

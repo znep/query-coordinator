@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch -->
-    <title>chart</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="chart" fill="#000000">
-            <path d="M159.5,42 L159.5,159.5 L42,159.5 L42,982 L864.5,982 L864.5,864.5 L982,864.5 L982,42 L159.5,42 L159.5,42 Z M277,864.5 L159.5,864.5 L159.5,277 L277,277 L277,864.5 L277,864.5 Z M512,864.5 L394.5,864.5 L394.5,629.5 L512,629.5 L512,864.5 L512,864.5 Z M747,864.5 L629.5,864.5 L629.5,453.25 L747,453.25 L747,864.5 L747,864.5 Z M923.25,805.75 L864.5,805.75 L864.5,159.5 L218.25,159.5 L218.25,100.75 L923.25,100.75 L923.25,805.75 L923.25,805.75 Z" id="Shape"></path>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M159.5 42v117.5H42V982h822.5V864.5H982V42H159.5zM277 864.5H159.5V277H277v587.5zm235 0H394.5v-235H512v235zm235 0H629.5V453.25H747V864.5zm176.25-58.75H864.5V159.5H218.25v-58.75h705v705z" fill-rule="evenodd"/>
 </svg>

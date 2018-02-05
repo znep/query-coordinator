@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 40.3 (33839) - http://www.bohemiancoding.com/sketch -->
-    <title>axis-scale</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="axis-scale" fill="#000000">
-            <path d="M490.7887,575.74435 L723.94435,342.5887 L723.94435,438.4 L798.04435,438.4 L798.04435,216.1 L575.74435,216.1 L575.74435,290.2 L671.55565,290.2 L438.4,523.35565 L490.7887,575.74435 Z M142,883 L142,142 L290.2,142 L290.2,216.1 L216.1,216.1 L216.1,290.2 L290.2,290.2 L290.2,364.3 L216.1,364.3 L216.1,438.4 L290.2,438.4 L290.2,512.5 L216.1,512.5 L216.1,586.6 L290.2,586.6 L290.2,660.7 L216.1,660.7 L216.1,808.9 L364.3,808.9 L364.3,734.8 L438.4,734.8 L438.4,808.9 L512.5,808.9 L512.5,734.8 L586.6,734.8 L586.6,808.9 L660.7,808.9 L660.7,734.8 L734.8,734.8 L734.8,808.9 L808.9,808.9 L808.9,734.8 L883,734.8 L883,808.9 L883,883 L142,883 Z" id="Combined-Shape"></path>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M490.789 575.744L723.944 342.59v95.81h74.1V216.1h-222.3v74.1h95.812L438.4 523.356l52.389 52.388zM142 883V142h148.2v74.1h-74.1v74.1h74.1v74.1h-74.1v74.1h74.1v74.1h-74.1v74.1h74.1v74.1h-74.1v148.2h148.2v-74.1h74.1v74.1h74.1v-74.1h74.1v74.1h74.1v-74.1h74.1v74.1h74.1v-74.1H883V883H142z" fill-rule="evenodd"/>
 </svg>

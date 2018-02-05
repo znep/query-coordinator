@@ -46,3 +46,38 @@ cd common/resources/fonts && npm i && npm run build
 [fontforge](https://fontforge.github.io/). If using fontforge, use View->Next Defined Glyph
 to help you find the icons.
 6. Check in the changes to the files and merge via PR. You're done.
+
+### Step 3: Minify SVGs
+
+Since we're inlining SVGs in most places, we want to clean up any of the junk that Sketch leaves behind.
+
+1. After adding new icons to the `svg` folder, run `npm run minify`
+2. This will minify all the SVG files in-place
+3. Note that it will also print out a list of files using `xlink`; this can be a bug if two SVGs define the same `id` for a path/shape and the use it in a `<use>` block (see EN-22022)
+
+To clean up `xlink`:
+SVG may look something like this:
+
+```xml
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <path d="long string" id="a"/>
+    </defs>
+    <use xlink:href="#a" fill-rule="evenodd"/>
+</svg>
+```
+
+this can easily be turned into...
+
+```xml
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="long string" fill-rule="evenodd"/>
+</svg>
+```
+
+Note:
+- Properties inside the `<use>` need to be moved into the `<path>`/`<shape>`/`<whatever>`
+- Remove any `id` properties
+- Remove `xmlns:xlink="http://www.w3.org/1999/xlink"` from the SVG declaration
+
+If the SVG is more complicated, it's suggested to rename all of the `id` properties to something specific to that icon (like the file name)

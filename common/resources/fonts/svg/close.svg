@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch -->
-    <title>close</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="close" fill="#000000">
-            <polygon id="Shape" points="576.599519 512.185697 753.447731 334.785216 689.425963 271 512.656445 448.400481 335.255964 271.552269 271.470748 335.574037 448.871229 512.343555 272.023018 689.744036 336.044785 753.529252 512.814303 576.128771 690.214784 752.976982 754 688.955215"></polygon>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M576.6 512.186l176.848-177.4L689.426 271l-176.77 177.4-177.4-176.848-63.785 64.022 177.4 176.77-176.848 177.4 64.022 63.785 176.77-177.4 177.4 176.848L754 688.955z" fill-rule="evenodd"/>
 </svg>

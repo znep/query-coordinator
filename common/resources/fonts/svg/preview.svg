@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch -->
-    <title>preview</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="preview" fill="#000000">
-            <path d="M297,627 C297,627 349.849688,454.5 642,454.5 L642,627 L987,397 L642,167 L642,339.5 C412,339.5 297,482.955313 297,627 L297,627 Z M699.5,742 L182,742 L182,397 L295.091719,397 C304.160547,386.292422 313.879844,376.035859 324.280156,366.291406 C363.779063,329.284766 411.035078,301.018125 464.538828,282 L67,282 L67,857 L814.5,857 L814.5,615.658125 L699.5,692.325391 L699.5,742 L699.5,742 Z" id="Shape"></path>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M297 627s52.85-172.5 345-172.5V627l345-230-345-230v172.5c-230 0-345 143.455-345 287.5zm402.5 115H182V397h113.092a367.683 367.683 0 0 1 29.188-30.709c39.5-37.006 86.755-65.273 140.259-84.291H67v575h747.5V615.658l-115 76.667V742z" fill-rule="evenodd"/>
 </svg>

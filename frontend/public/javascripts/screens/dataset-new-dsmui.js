@@ -69,9 +69,10 @@ function createDataset() {
     'X-CSRF-Token': window.serverConfig.csrfToken,
     'X-App-Token': window.serverConfig.appToken
   };
+  var deletedAt = $.urlParam(window.location.href, 'deleted_at');
   $.ajax({
     type: 'POST',
-    url: '/api/views',
+    url: '/api/views' + (_.isEmpty(deletedAt) ? '' : '?deleted_at=' + deletedAt),
     headers: headers,
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',

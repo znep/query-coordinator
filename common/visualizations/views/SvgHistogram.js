@@ -18,6 +18,7 @@ import {
   DIMENSION_LABEL_FONT_COLOR,
   DIMENSION_LABEL_FONT_SIZE,
   FONT_STACK,
+  GLYPH_SPACE_HEIGHT,
   MEASURE_LABELS_FONT_COLOR,
   MEASURE_LABELS_FONT_SIZE,
   REFERENCE_LINES_STROKE_DASHARRAY,
@@ -407,19 +408,7 @@ function SvgHistogram($element, vif, options) {
     }
 
     function renderReferenceLines() {
-      // Because the line stroke thickness is 2px, the half of the line can be clipped on the top or bottom edge
-      // of the chart area.  This function shifts the clipped line down 1 pixel when at the top edge and up 1 pixel
-      // when at the bottom edge.  All the other lines are rendered in normal positions.
-      const getYPosition = (referenceLine) => {
-        if (referenceLine.value == maxYValue) {
-          return d3YScale(referenceLine.value) + 1; // shift down a pixel if at the top of chart area
-        } else if (referenceLine.value == minYValue) {
-          return d3YScale(referenceLine.value) - 1; // shift up a pixel if at the bottom of chart area
-        } else {
-          return d3YScale(referenceLine.value);
-        }
-      };
-
+      const getYPosition = (referenceLine) => d3YScale(referenceLine.value);
       const getLineThickness = (referenceLine) => {
         return self.isInRange(referenceLine.value, minYValue, maxYValue) ? REFERENCE_LINES_STROKE_WIDTH : 0;
       };
@@ -701,12 +690,12 @@ function SvgHistogram($element, vif, options) {
       if (limitMin || limitMax) {
         d3YScale = d3.scale.linear().
           domain([minYValue, maxYValue]).
-          range([chartHeight, 0]);
+          range([chartHeight, GLYPH_SPACE_HEIGHT]);
       } else {
         d3YScale = d3.scale.linear().
           domain([minYValue, maxYValue]).
           nice().
-          range([chartHeight, 0]);
+          range([chartHeight, GLYPH_SPACE_HEIGHT]);
       }
 
     } catch (error) {

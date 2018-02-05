@@ -35,6 +35,7 @@ export const ERROR_BARS_DEFAULT_BAR_COLOR = '#767676';
 export const ERROR_BARS_MAX_END_BAR_LENGTH = 18;
 export const ERROR_BARS_STROKE_WIDTH = 2;
 export const FONT_STACK = '"Open Sans", "Helvetica", sans-serif';
+export const GLYPH_SPACE_HEIGHT = 6;
 export const LABEL_PADDING_WIDTH = 15;
 export const LEGEND_BAR_HEIGHT = 35;
 export const LEGEND_RECT_SIZE = 16;

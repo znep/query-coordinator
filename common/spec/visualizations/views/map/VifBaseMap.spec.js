@@ -82,7 +82,9 @@ describe('VifBaseMap', () => {
 
         sinon.assert.calledWith(mockMap.flyTo, {
           zoom: 17,
-          center: { lat: 47.596, lng: -122.328 }
+          center: { lat: 47.596, lng: -122.328 },
+          pitch:0,
+          bearing: 0
         });
       });
     });
@@ -216,5 +218,33 @@ describe('VifBaseMap', () => {
       });
     });
 
+    describe('vif with map pitch and bearing', () => {
+      it('should return configured map pitch and bearing', () => {
+        const vif = mapMockVif({
+          configuration: {
+            mapPitchAndBearing: {
+              pitch: 60,
+              bearing: -60
+            }
+          }
+        });
+
+        const mapInitOptions = VifBaseMap.getMapInitOptions(vif);
+
+        assert.equal(mapInitOptions.pitch, 60);
+        assert.equal(mapInitOptions.bearing, -60);
+      });
+    });
+
+    describe('vif without map pitch and bearing', () => {
+      it('should return default map pitch and bearing', () => {
+        const vif = mapMockVif();
+
+        const mapInitOptions = VifBaseMap.getMapInitOptions(vif);
+
+        assert.equal(mapInitOptions.pitch, 0);
+        assert.equal(mapInitOptions.bearing, 0);
+      });
+    });
   });
 });

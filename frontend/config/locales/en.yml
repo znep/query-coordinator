@@ -2026,7 +2026,8 @@ en:
     more: Show More
     multiple_geo_layers: This dataset contains multiple geospatial layers, detailed below.
     odata_modal:
-      description: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
+      description: Use OData to open the dataset in tools like Excel or Tableau. This provides a direct connection to the data that can be refreshed on-demand within the connected application.
+      description_tableau: Tableau users should select the OData v2 endpoint option.
       developer_portal_button: Socrata OData Documentation
       endpoint_title: OData Endpoint
       multiple_geo_layers: This dataset contains multiple geospatial layers. Each layer has its own OData Endpoint below.
@@ -6184,8 +6185,9 @@ en:
         odata:
           endpoint_v2_action: 'OData V2 Endpoint:'
           endpoint_v4_action: 'OData V4 Endpoint:'
-          intro_html1: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
+          intro_html1: Use OData to open the dataset in tools like Excel or Tableau. This provides a direct connection to the data that can be refreshed on-demand within the connected application.
           intro_html2: <a href="%{doc_link}" target="_blank">Socrata OData documentation</a>
+          intro_html3: Tableau users should select the OData v2 endpoint option.
           no_endpoints_available: No available endpoints.
           subtitle: Access this dataset via OData
           title: OData

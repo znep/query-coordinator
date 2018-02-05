@@ -37,6 +37,7 @@ class ODataModal extends PureComponent {
 
           <section className="modal-content odata-description">
             <p className="small">{I18n.odata_modal.description}</p>
+            <p className="small tableau">{I18n.odata_modal.description_tableau}</p>
           </section>
 
           <section className="modal-content">

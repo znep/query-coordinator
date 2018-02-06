@@ -7,7 +7,7 @@
   section {
     background-color: $white;
     border-top: 1px solid $panel-border-color;
-    padding: 1rem 32.5%;
+    padding: 1rem 26%;
     font-size: 80%;
   }
 
@@ -17,6 +17,10 @@
 
   .introduction {
     margin-top: 1.5rem;
+
+    p {
+      font-weight: bold;
+    }
 
     .section-title {
       font-size: 120%;

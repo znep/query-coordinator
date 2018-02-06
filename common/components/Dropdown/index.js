@@ -87,10 +87,9 @@ export class Dropdown extends Component {
    */
   onAnyScroll(event) {
     if (event && this.state.opened) {
-      const list = $(event.target).closest('.dropdown-options-list');
-      const nonrelated = list.length === 0;
+      const scrollInOptionsList = this.dropdownRef.querySelector('.dropdown-options-list').contains(event.target);
 
-      if (nonrelated) {
+      if (!scrollInOptionsList) {
         this.setState({ opened: false });
       }
     }
@@ -114,8 +113,8 @@ export class Dropdown extends Component {
       const xWithinDropdown = mouseX >= dropdownRect.left && mouseX <= dropdownRect.right;
       const yWithinDropdown = mouseY >= dropdownRect.top && mouseY <= dropdownRect.bottom;
 
-      const placeholder = $(event.target).closest('.dropdown-container');
-      const mousedDownOnDropdown = (xWithinDropdown && yWithinDropdown) || placeholder.length !== 0;
+      const clickedInDropdown = this.dropdownRef.contains(event.target);
+      const mousedDownOnDropdown = (xWithinDropdown && yWithinDropdown) || clickedInDropdown;
 
       // Close the dropdown if outside click detected
       if (!mousedDownOnDropdown) {
@@ -135,7 +134,6 @@ export class Dropdown extends Component {
   }
 
   onClickPlaceholder() {
-    this.onAnyScroll();
     this.setState({ opened: !this.state.opened }, () => {
       if (this.state.opened && this.picklistRef) {
         this.picklistRef.picklist.focus();

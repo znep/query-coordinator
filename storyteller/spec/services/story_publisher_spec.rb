@@ -128,10 +128,11 @@ RSpec.describe StoryPublisher do
         }
       end
 
-      it 'raises an appropriate message' do
+      # EN-21838
+      it 'does not raise' do
         expect {
           subject
-        }.to raise_error(/Rejected specified draft story for publication because it has already been published./)
+        }.not_to raise_error
       end
     end
 

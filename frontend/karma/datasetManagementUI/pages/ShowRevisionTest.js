@@ -21,11 +21,11 @@ describe('ShowRevision page', () => {
   });
 
   it('renders the SchemaPreview', () => {
-    assert.isTrue(component.find('SchemaPreview').exists());
+    assert.isTrue(component.find('withRouter(Connect(SchemaPreview))').exists());
   });
 
   it('renders RowDetails', () => {
-    assert.isTrue(component.find('RowDetails').exists());
+    assert.isTrue(component.find('Connect(RowDetails)').exists());
   });
 
   it('renders the HomePaneSidebar', () => {

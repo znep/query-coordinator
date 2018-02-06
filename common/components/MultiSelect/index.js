@@ -169,15 +169,17 @@ class MultiSelect extends Component {
     // is over an option after the container scrolls.
     // If the mouse hasn't moved, we basically ignore this mouseover event
     // (see MultiSelectOption)
-    document.addEventListener('mousemove', this.onDocumentMouseMove);
+    this.rootNode.addEventListener('mousemove', this.onDocumentMouseMove);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('mousemove', this.onDocumentMouseMove);
+    this.rootNode.removeEventListener('mousemove', this.onDocumentMouseMove);
   }
 
   onDocumentMouseMove = () => {
-    this.setState({ mouseMoved: true });
+    if (this.state.mouseMoved === false) {
+      this.setState({ mouseMoved: true });
+    }
   }
 
   /**

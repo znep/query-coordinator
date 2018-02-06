@@ -52,6 +52,21 @@ header#site-chrome-header[template="rally"].small {
               font-size: 11px;
             }
           }
+
+          .site-chrome-user-header-notifications {
+            padding: 0;
+
+            #socrata-notifications-container {
+              button {
+                height: $small_banner_height;
+                padding: 10px 0;
+
+                &.has-unread-notifications:after {
+                  top: 10px;
+                }
+              }
+            }
+          }
         }
       }
 

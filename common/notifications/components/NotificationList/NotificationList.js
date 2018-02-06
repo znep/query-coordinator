@@ -16,41 +16,27 @@ import styles from './notification-list.module.scss';
 
 class NotificationList extends Component {
   componentWillMount() {
-    const { lockScrollbar, scrollTop } = this.props.renderingOptions;
+    if (!this.props.isSuperAdmin) {
+      // disable page scrolling for non admins as notification panel won't be docked
 
-    if (lockScrollbar) {
-      // disable page scrolling for non admins as the
-      // notification panel won't be docked to header
-      document.querySelector('html').scrollTop = scrollTop;
-      document.querySelector('body').style.overflow = 'hidden';
+      $('html').scrollTop(0);
+      $('body').css('overflow', 'hidden');
     }
   }
 
   componentDidMount() {
-    // if the view port height is less than combined height of sidebar and rally header
-    // it cause the header icons/links to overlap on notification panel
-    // reposition the notification panel with respect to the header bar
+    if (!this.props.isSuperAdmin) {
+      // reposition the notification panel with respect to the header bar
 
-    const $siteChromeHeader = $('#site-chrome-header');
-    const $siteChromeAdminHeader = $('#site-chrome-admin-header');
-
-    if (!$siteChromeAdminHeader.is(':visible') && $siteChromeHeader.attr('template') === 'rally') {
-      const $notificationsSidebar = $('#notifications-sidebar');
-      const siteChromeHeaderHeight = $siteChromeHeader.outerHeight();
-      const notificationsSidebarHeight = $notificationsSidebar.outerHeight();
-      const pageContentHeight = document.querySelector('.siteOuterWrapper').clientHeight +
-        document.querySelector('#site-chrome-footer').clientHeight;
-
-      if ((notificationsSidebarHeight + siteChromeHeaderHeight) >= pageContentHeight) {
-        $notificationsSidebar.css('top', siteChromeHeaderHeight);
-      }
+      $('#notifications-sidebar').css('top', $('#site-chrome-header').outerHeight());
     }
   }
 
   componentWillUnmount() {
-    // enable page scrolling once the notification panel is closed
-    if (this.props.renderingOptions.lockScrollbar) {
-      document.querySelector('body').style.overflow = '';
+    if (!this.props.isSuperAdmin) {
+      // enable page scrolling once the notification panel is closed
+
+      $('body').css('overflow', '');
     }
   }
 
@@ -239,7 +225,6 @@ NotificationList.propTypes = {
   onToggleReadUserNotification: PropTypes.func.isRequired,
   openClearAllUserNotificationsPrompt: PropTypes.bool.isRequired,
   productNotifications: PropTypes.array.isRequired,
-  renderingOptions: PropTypes.object.isRequired,
   showProductNotifications: PropTypes.bool.isRequired,
   showUserNotifications: PropTypes.bool.isRequired,
   showProductNotificationsAsSecondaryPanel: PropTypes.bool.isRequired,

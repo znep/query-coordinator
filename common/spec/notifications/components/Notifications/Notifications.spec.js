@@ -24,8 +24,6 @@ describe('notifications', () => {
     const options = {
       inProductTransientNotificationsEnabled: false,
       isSuperAdmin: false,
-      lockScrollbar: false,
-      scrollTop: 0,
       showProductNotifications: true,
       showUserNotifications: false
     };
@@ -215,8 +213,6 @@ describe('notifications', () => {
       hasUnreadNotifications: true,
       inProductTransientNotificationsEnabled: false,
       isSuperAdmin: false,
-      lockScrollbar: false,
-      scrollTop: 0,
       showProductNotifications: false,
       showUserNotifications: true
     };

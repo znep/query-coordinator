@@ -60,7 +60,7 @@ function handleRevisionError(
 
 function createDataset() {
   var datasetTitle = document.getElementById('dataset-title-input').value;
-  const revisionData = { action: {type: 'replace'}, is_parent: window.serverConfig.isDataAsset};
+  const revisionData = { action: {type: 'replace'}, is_parent: window.urlParams.isDataAsset};
 
   if (inProgress || datasetTitle == '') return false;
   inProgress = true;
@@ -69,10 +69,11 @@ function createDataset() {
     'X-CSRF-Token': window.serverConfig.csrfToken,
     'X-App-Token': window.serverConfig.appToken
   };
-  var deletedAt = $.urlParam(window.location.href, 'deleted_at');
+  var deletedAt = window.urlParams.deletedAt;
+
   $.ajax({
     type: 'POST',
-    url: '/api/views' + (_.isEmpty(deletedAt) ? '' : '?deleted_at=' + deletedAt),
+    url: '/api/views' + (deletedAt ? '?deleted_at=' + deletedAt : ''),
     headers: headers,
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',

@@ -112,6 +112,8 @@ module SiteChromeConsumerHelpers
   end
 
   def site_chrome_admin_header(request, response, args = {})
+    return unless site_chrome_current_user.present?
+
     site_chrome_controller_instance(request, response).admin_header(args)
   end
 

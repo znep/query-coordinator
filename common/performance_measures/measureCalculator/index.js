@@ -5,6 +5,7 @@ import { SoqlDataProvider, SoqlHelpers } from 'common/visualizations/dataProvide
 import ReportingPeriods from '../lib/reportingPeriods';
 import { CalculationTypeNames } from '../lib/constants';
 import { assert, assertIsOneOfTypes } from 'common/js_utils';
+import { UID_REGEX } from 'common/http/constants';
 
 // Returns true if the given column can be used
 // with the given measure, false otherwise.
@@ -306,7 +307,7 @@ export const calculateMeasure = async (measure, dateRange) => {
   // ... and if they did, does it give us a valid date range for today's value?
   errors.noReportingPeriodAvailable = !dateRange;
 
-  errors.dataSourceNotConfigured = _.isUndefined(_.get(measure, 'dataSourceLensUid'));
+  errors.dataSourceNotConfigured = !UID_REGEX.test(measure.dataSourceLensUid);
 
   // A blank dateRange can happen if:
   //   * The start date is in the future, or

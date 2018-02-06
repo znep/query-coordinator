@@ -48,9 +48,11 @@ describe SocrataSiteChrome::SiteChromeHelper do
 
   describe '#profile_image?' do
     let(:user_profile_image_url) { nil }
+    let(:user) { SocrataSiteChrome::User.new }
 
     before do
       allow(helper).to receive(:user_profile_image_url).and_return(user_profile_image_url)
+      allow(helper).to receive(:site_chrome_current_user).and_return(user)
     end
 
     it 'returns false' do
@@ -71,20 +73,32 @@ describe SocrataSiteChrome::SiteChromeHelper do
   describe '#user_profile_image_url' do
     let(:profileImageUrlMedium) { nil }
 
-    before do
-      user = SocrataSiteChrome::User.new('profileImageUrlMedium' => profileImageUrlMedium)
-      allow(helper).to receive(:site_chrome_current_user).and_return(user)
+    context 'when site_chrome_current_user is nil' do
+      before do
+        allow(helper).to receive(:site_chrome_current_user).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(helper.user_profile_image_url).to be_nil
+      end
     end
 
-    it 'returns nil' do
-      expect(helper.user_profile_image_url).to be_nil
-    end
+    context 'when site_chrome_current_user is not nil' do
+      before do
+        user = SocrataSiteChrome::User.new('profileImageUrlMedium' => profileImageUrlMedium)
+        allow(helper).to receive(:site_chrome_current_user).and_return(user)
+      end
 
-    describe 'when the user has a profile image' do
-      let(:profileImageUrlMedium) { 'https://idk.com/idk.png' }
+      it 'returns nil' do
+        expect(helper.user_profile_image_url).to be_nil
+      end
 
-      it 'returns the user\'s profile image' do
-        expect(helper.user_profile_image_url).to eq(profileImageUrlMedium)
+      describe 'when the user has a profile image' do
+        let(:profileImageUrlMedium) { 'https://idk.com/idk.png' }
+
+        it "returns the user's profile image" do
+          expect(helper.user_profile_image_url).to eq(profileImageUrlMedium)
+        end
       end
     end
   end

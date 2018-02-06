@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import MetadataTable from 'datasetManagementUI/containers/MetadataTableContainer';
-import SchemaPreview from 'datasetManagementUI/components/SchemaPreview/SchemaPreview';
+import SchemaPreview from 'datasetManagementUI/containers/SchemaPreviewContainer';
 import HomePaneSidebar from 'datasetManagementUI/components/HomePaneSidebar/HomePaneSidebar';
 import TablePreview from 'datasetManagementUI/containers/TablePreviewContainer';
-import RowDetails from 'datasetManagementUI/components/RowDetails/RowDetails';
+import RowDetails from 'datasetManagementUI/containers/RowDetailsContainer';
 import styles from './ShowRevision.module.scss';
 
 export class ShowRevision extends Component {
@@ -19,7 +19,7 @@ export class ShowRevision extends Component {
     this.setState({ recentActionsOpened: !this.state.recentActionsOpened });
   }
   render() {
-    const { params, readFromCore, isPublishedDataset, isParentRevision, hasOutputSchema } = this.props;
+    const { params, isPublishedDataset, isParentRevision, hasOutputSchema } = this.props;
     return (
       <div className={`${styles.homeContainer} show-revision-container`}>
         <div className={`${styles.homeContent} show-revision-content`}>
@@ -34,11 +34,10 @@ export class ShowRevision extends Component {
           )}
           <MetadataTable />
           {hasOutputSchema && (<div className={styles.schemaPreviewContainer}>
-            <SchemaPreview readFromCore={readFromCore} />
+            <SchemaPreview />
             {isParentRevision || <RowDetails
               fourfour={params.fourfour}
-              revisionSeq={_.toNumber(params.revisionSeq)}
-              isPublishedDataset={isPublishedDataset} />}
+              revisionSeq={_.toNumber(params.revisionSeq)} />}
           </div>)}
           {isPublishedDataset || isParentRevision || (
             <TablePreview params={params} />
@@ -52,7 +51,6 @@ export class ShowRevision extends Component {
 ShowRevision.propTypes = {
   params: PropTypes.object.isRequired,
   isPublishedDataset: PropTypes.bool.isRequired,
-  readFromCore: PropTypes.bool.isRequired,
   isParentRevision: PropTypes.bool,
   hasOutputSchema: PropTypes.bool
 };
@@ -70,7 +68,6 @@ const mapStateToProps = ({ entities }, { params }) => {
   return {
     params,
     isPublishedDataset,
-    readFromCore: isPublishedDataset && revision.output_schema_id == null,
     isParentRevision,
     hasOutputSchema: !_.isNil(revision.output_schema_id)
   };

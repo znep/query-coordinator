@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { Children } from 'react';
+import React, { Children, PureComponent } from 'react';
 import { SocrataIcon } from 'common/components/SocrataIcon';
+import Button from 'common/components/Button';
+import cx from 'classnames';
 
-export class DropdownItem extends React.Component {
+export class DropdownItem extends PureComponent {
   static propTypes = {
     children: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired
@@ -21,7 +23,39 @@ export class DropdownItem extends React.Component {
   }
 }
 
-class DropdownButton extends React.Component {
+class DropdownContainer extends PureComponent {
+  state = {
+    marginOffset: 0
+  };
+
+  componentDidMount() {
+    if (this.container) {
+      const windowWidth = window.innerWidth;
+      const rightBounds = this.container.getBoundingClientRect().right;
+      if (rightBounds > windowWidth) {
+        this.setState({ marginOffset: windowWidth - rightBounds });
+      }
+    }
+  }
+
+  render() {
+    const { children } = this.props;
+    const { marginOffset } = this.state;
+    return (
+      <ul
+        style={{ marginLeft: marginOffset }}
+        ref={ref => (this.container = ref)}
+        className="dropdown-button-actions"
+      >
+        {children}
+      </ul>
+    );
+  }
+}
+
+class DropdownButton extends PureComponent {
+  static Item = DropdownItem;
+
   static propTypes = {
     children: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     isDisabled: PropTypes.bool
@@ -41,13 +75,13 @@ class DropdownButton extends React.Component {
     }
   }
 
-  onMouseDown = (ev) => {
+  onMouseDown = ev => {
     if (!(this.dropdownRef === ev.target || this.dropdownRef.contains(ev.target))) {
       this.setState({ showDropdown: false });
     }
   };
 
-  toggleDocumentMouseDown = (isMounted) => {
+  toggleDocumentMouseDown = isMounted => {
     window.document[isMounted ? 'addEventListener' : 'removeEventListener']('mousedown', this.onMouseDown);
   };
 
@@ -59,7 +93,6 @@ class DropdownButton extends React.Component {
     const { children, isDisabled } = this.props;
     const { showDropdown } = this.state;
 
-    const buttonClass = `btn btn-transparent kebab-button${showDropdown ? ' selected' : ''}`;
     const childItems = Children.map(children, child => {
       return React.cloneElement(child, {
         onClick: () => {
@@ -69,15 +102,19 @@ class DropdownButton extends React.Component {
       });
     });
 
+    const buttonClass = cx(
+      {
+        selected: showDropdown
+      },
+      'kebab-button'
+    );
+
     return (
       <div className="dropdown-button" ref={ref => (this.dropdownRef = ref)}>
-        <button
-          className={buttonClass}
-          onClick={this.toggleDropdown}
-          disabled={isDisabled}>
+        <Button transparent className={buttonClass} onClick={this.toggleDropdown} disabled={isDisabled}>
           <SocrataIcon name="kebab" />
-        </button>
-        {showDropdown && <ul className="dropdown-button-actions">{childItems}</ul>}
+        </Button>
+        {showDropdown && <DropdownContainer>{childItems}</DropdownContainer>}
       </div>
     );
   }

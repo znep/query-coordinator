@@ -1,0 +1,114 @@
+@import 'styleguide-colors';
+@import 'common/styleguide/partials/admin/_breadcrumbs';
+
+.data_catalog {
+
+  form {
+    margin: 0;
+  }
+
+  section {
+    background-color: $white;
+    border-top: 1px solid $panel-border-color;
+    padding: 1rem 25%;
+    font-size: 80%;
+  }
+
+  p {
+    margin: 0 0 1rem 0;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    margin: 1rem;
+
+    button {
+      width: 6rem;
+      margin-left: 0.8rem;
+
+      .spinner-default.hidden {
+        display: none;
+      }
+      .spinner-btn-secondary {
+        border: 2px solid $btn-primary-border-color;
+        border-right-color: $alternate-3-light;
+      }
+
+      &.btn-busy {
+        padding: 8px 13px !important;
+        height: 38px !important;
+        position: relative;
+        top: 2px; // TODO: Unshit busy button stupidity
+
+        .spinner-default.hidden {
+          display: inline-block;
+        }
+
+        .btn-title {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .change_settings {
+    margin: 0rem 0 2rem 0;
+
+    .socrata-icon-official2,
+    .socrata-icon-community {
+      position: relative;
+      width: 30px;
+      height: 30px;
+      margin-right: 0;
+      float: right;
+      font-size: 200%;
+      top: -0.5rem;
+    }
+
+    .socrata-icon-official2 {
+      color: $alternate-1;
+    }
+    .socrata-icon-community {
+      color: $primary-base;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      list-style-type: none;
+      margin-top: 0.25rem;
+      background-color: $btn-simple-background-color;
+      padding: 0.33rem;
+      border: 1px solid $header-accent-color;
+      border-radius: 3px;
+
+      &.selected {
+        background-color: $alternate-2-light;
+        border: 1px solid $alternate-2;
+      }
+
+      input {
+        position: relative;
+        top: 1px;
+      }
+
+      label.radio_label {
+        display: inline-block;
+        margin-left: 0.5rem;
+        font-weight: bold;
+
+        & + div {
+          margin-left: 1.5rem;
+        }
+
+        div {
+          font-size: 80%;
+        }
+      }
+    }
+  }
+}

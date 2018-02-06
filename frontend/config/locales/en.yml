@@ -440,7 +440,7 @@ en:
       user_management: Go to User Management
       official_assets:
         title: Official assets
-        subtitle: When data assets are published to the public by roled users on your site, these assets should...
+        subtitle: When data assets are published to the public by members of your organization, these assets should...
         manual_approval:
           required:
             title: Require manual approval
@@ -469,7 +469,20 @@ en:
       notifications:
         save_success: Changes saved successfully.
         save_error: Something went wrong. Please contact support@socrata.com if the issue persists.
-    title: Routing and Approval
+  catalog_configuration:
+    breadcrumbs:
+      title: Catalog Management
+    community_assets:
+      title: Community assets
+      subtitle: When data assets (charts, maps, filtered views) using public data are created and saved by members of the community on your site, these assets should...
+      appear:
+        title: Appear in the data catalog
+        subtitle: These assets will be discoverable in your data catalog and will receive a "Community" badge to visually indicate their ownership.
+      not_appear:
+        title: Never appear in the data catalog
+        subtitle: These assets will not be discoverable in your data catalog. However, they will still be visible to Administrators under the "All Assets" tab of the Asset List.
+    update_notice: The Data Catalog configuration has been updated to %{state} community assets in the catalog.
+    update_error: An error occurred when saving the Data Catalog configuration. Please contact <a href="mailto:support@socrata.com" title="support@socrata.com">support@socrata.com</a> for assistance.
   catalog_landing_page:
     activation:
       action: Feature Content
@@ -4183,6 +4196,8 @@ en:
           super_admin: Super Admin
           site_settings: Site Settings
         page_title: Administration
+        catalog_configuration: Catalog Management
+        catalog_configuration_description: Configure the presence and discovery of assets in your data catalog
         comment_moderation: Comment Moderation
         comment_moderation_description: Review and approve comments submitted on your assets by users
         connectors: Connectors

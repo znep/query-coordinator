@@ -6,13 +6,16 @@ import DateRange from 'common/performance_measures/lib/dateRange';
 import {
   calculateMeasure,
   calculateRateMeasure,
+  calculateCountMeasure,
+  calculateSumMeasure,
   isColumnUsableWithMeasureArgument
 } from 'common/performance_measures/measureCalculator';
 
 describe('measureCalculator', () => {
   const sampleDateRange = new DateRange(moment('2018-01-10T00:21:27.375Z'), 'day');
   const fakeDateRangeWhereClause = 'MOCK WHERE CLAUSE';
-  const nullDataProvider = {};
+  const nullDataProvider = { rawQuery: async () => [] };
+  const zeroCountProvider = { rawQuery: async () => [{ __measure_count_alias__: 0 }] };
   const rowCountDataProvider = { rawQuery: async () => [{ __measure_count_alias__: 50 }] };
 
   describe('isColumnUsableWithMeasureArgument', () => {
@@ -108,6 +111,86 @@ describe('measureCalculator', () => {
       scenario(numberCol, recentValueMeasure, 'dateColumn', false);
       scenario(moneyCol, recentValueMeasure, 'dateColumn', false);
       scenario(textCol, recentValueMeasure, 'dateColumn', false);
+    });
+
+  });
+
+  describe('no rows in query response', () => {
+    describe('for rate/sum calcs', () => {
+      it('returns null result value and notEnoughData error', async () => {
+        const measure = {
+          metricConfig: {
+            type: CalculationTypeNames.RATE,
+            arguments: {
+              aggregationType: CalculationTypeNames.SUM,
+              numeratorColumn: 'numeratorCol',
+              denominatorColumn: 'denominatorCol'
+            }
+          }
+        };
+        const { errors } = await calculateRateMeasure(
+          {}, measure, fakeDateRangeWhereClause, nullDataProvider
+        );
+        assert.propertyVal(errors, 'notEnoughData', true);
+      });
+    });
+
+    describe('for rate/count calcs', () => {
+      it('returns a result value of 0 and does not include notEnoughData error', async () => {
+        const measure = {
+          metricConfig: {
+            type: CalculationTypeNames.RATE,
+            arguments: {
+              aggregationType: CalculationTypeNames.COUNT,
+              numeratorColumn: 'numeratorCol',
+              fixedDenominator: '10' // Using fixed to avoid dividing by zero
+            }
+          }
+        };
+        const { errors, result } = await calculateRateMeasure(
+          {}, measure, fakeDateRangeWhereClause, zeroCountProvider
+        );
+        assert.notProperty(errors, 'notEnoughData');
+        assert.equal(Number(result.numerator), 0);
+        assert.equal(Number(result.value), 0);
+      });
+    });
+
+    describe('for sum calcs', () => {
+      it('returns null result value and notEnoughData error', async () => {
+        const measure = {
+          metricConfig: {
+            type: CalculationTypeNames.SUM,
+            arguments: {
+              column: 'col',
+              dateColumn: 'dateCol'
+            }
+          }
+        };
+        const { errors } = await calculateSumMeasure(
+          {}, measure, fakeDateRangeWhereClause, nullDataProvider
+        );
+        assert.propertyVal(errors, 'notEnoughData', true);
+      });
+    });
+
+    describe('for count calcs', () => {
+      it('returns a result value of 0 and does not include notEnoughData error', async () => {
+        const measure = {
+          metricConfig: {
+            type: CalculationTypeNames.COUNT,
+            arguments: {
+              column: 'col',
+              dateColumn: 'dateCol'
+            }
+          }
+        };
+        const { errors, result } = await calculateCountMeasure(
+          {}, measure, fakeDateRangeWhereClause, zeroCountProvider
+        );
+        assert.notProperty(errors, 'notEnoughData');
+        assert.equal(Number(result.value), 0);
+      });
     });
 
   });

@@ -95,8 +95,12 @@ const excludeNullsFilter = (fieldName) => ({
 /* Measure types
  */
 
-export const calculateCountMeasure = async (errors, measure, dateRangeWhereClause) => {
-  const dataProvider = setupSoqlDataProvider(measure);
+export const calculateCountMeasure = async (
+  errors,
+  measure,
+  dateRangeWhereClause,
+  dataProvider = setupSoqlDataProvider(measure) // For test injection
+) => {
   const dateColumn = _.get(measure, 'metricConfig.dateColumn');
   const column = _.get(measure, 'metricConfig.arguments.column');
 
@@ -118,8 +122,12 @@ export const calculateCountMeasure = async (errors, measure, dateRangeWhereClaus
   return { errors, result: { value } };
 };
 
-export const calculateSumMeasure = async (errors, measure, dateRangeWhereClause) => {
-  const dataProvider = setupSoqlDataProvider(measure);
+export const calculateSumMeasure = async (
+  errors,
+  measure,
+  dateRangeWhereClause,
+  dataProvider = setupSoqlDataProvider(measure) // For test injection
+) => {
   const column = _.get(measure, 'metricConfig.arguments.column');
   const dateColumn = _.get(measure, 'metricConfig.dateColumn');
   const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces');
@@ -131,6 +139,9 @@ export const calculateSumMeasure = async (errors, measure, dateRangeWhereClause)
 
     // sum() will return null if there are no values to sum
     value = _.isNil(sumResult) ? sumResult : sumResult.toFixed(decimalPlaces);
+    if (value === null) {
+      errors.notEnoughData = true;
+    }
   } else {
     errors.calculationNotConfigured = !column || !dateColumn;
   }
@@ -174,7 +185,7 @@ export const calculateRateMeasure = async (
   errors,
   measure,
   dateRangeWhereClause,
-  dataProvider = setupSoqlDataProvider(measure)
+  dataProvider = setupSoqlDataProvider(measure) // For test injection
 ) => {
   const {
     aggregationType,
@@ -252,6 +263,10 @@ export const calculateRateMeasure = async (
     let denominator = await denominatorPromise;
     if (numerator) { numerator = new BigNumber(numerator); }
     if (denominator) { denominator = new BigNumber(denominator); }
+
+    if (numerator === null || denominator === null) {
+      errors.notEnoughData = true;
+    }
 
     const calculation = {};
     if (numerator) { calculation.numerator = numerator.toString(); }

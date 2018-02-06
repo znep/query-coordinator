@@ -23,19 +23,21 @@ export class MeasureResultCard extends Component {
       dividingByZero,
       noRecentValue,
       noReportingPeriodAvailable,
-      noReportingPeriodConfigured
+      noReportingPeriodConfigured,
+      notEnoughData
     } = computedMeasure.errors;
 
+    // NOTE: The order of these error states is important
     if (dataSourceNotConfigured || !measure.dataSourceLensUid) {
       return I18n.t('shared.performance_measures.no_dataset');
-    } else if (noRecentValue) {
-      return I18n.t('shared.performance_measures.no_recent_value');
-    } else if (calculationNotConfigured) {
-      return I18n.t('shared.performance_measures.no_calculation');
     } else if (noReportingPeriodConfigured) {
       return I18n.t('shared.performance_measures.no_reporting_period');
-    } else if (noReportingPeriodAvailable) {
+    } else if (calculationNotConfigured) {
+      return I18n.t('shared.performance_measures.no_calculation');
+    } else if (noReportingPeriodAvailable || notEnoughData) {
       return I18n.t('shared.performance_measures.not_enough_data');
+    } else if (noRecentValue) {
+      return I18n.t('shared.performance_measures.no_recent_value');
     } else if (dividingByZero) {
       return I18n.t('shared.performance_measures.measure.dividing_by_zero');
     } else {
@@ -88,11 +90,27 @@ export class MeasureResultCard extends Component {
     );
   }
 
+  renderError() {
+    const { dataSourceNotConfigured } = this.props.computedMeasure.errors;
+
+    if (dataSourceNotConfigured) {
+      return this.renderPlaceholder();
+    }
+
+    return (
+      <div className="measure-result-value">
+        <div className="measure-result-error measure-result-subtitle">
+          {this.getSubtitle()}
+        </div>
+      </div>
+    );
+  }
+
   renderPlaceholder(icon = 'number') {
     return (
       <div className="measure-result-placeholder">
         <SocrataIcon name={icon} />
-        <div className="measure-result-placeholder-text">
+        <div className="measure-result-placeholder-text measure-result-subtitle">
           {this.getSubtitle()}
         </div>
       </div>
@@ -127,7 +145,7 @@ export class MeasureResultCard extends Component {
 
     const content = result && result.value ?
       this.renderResult(result.value) :
-      this.renderPlaceholder();
+      this.renderError();
 
     return (
       <div className="measure-result-card">

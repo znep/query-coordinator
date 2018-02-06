@@ -1,15 +1,3 @@
-<svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <defs>
-        <path d="M8 4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4zm-1 7v2h10v-2H7z" id="indeterminate-state-icon"/>
-    </defs>
-    <g fill="none" fill-rule="evenodd">
-        <path d="M0 0h24v24H0z"/>
-        <mask id="indeterminate-state-icon-mask" fill="#fff">
-            <use xlink:href="#indeterminate-state-icon"/>
-        </mask>
-        <use fill="#2F2F2F" xlink:href="#indeterminate-state-icon"/>
-        <g mask="url(#indeterminate-state-icon-mask)" fill="currentColor">
-            <path d="M0 0h24v24H0z"/>
-        </g>
-    </g>
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
+    <path fill="#2f2f2f" fill-rule="evenodd" d="M8 4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4zm-1 7v2h10v-2H7z" />
 </svg>

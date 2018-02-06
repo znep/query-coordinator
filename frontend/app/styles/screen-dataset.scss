@@ -579,13 +579,6 @@ body.grid-view-2017-refresh {
         }
       }
 
-      // EN-21601: temporary approval message until AssetActionBar is rolled out
-      #derived-view-approval-message {
-        display: none; // displayed in `grid_view_socrata_visualizations/main.js`
-        padding: 0.5rem 0;
-        font-weight: 100;
-      }
-
       .snapshotted {
         font-size: 13px;
         font-weight: 400;
@@ -2533,4 +2526,11 @@ body.grid-view-2017-refresh {
       }
     }
   }
+}
+
+// EN-21601: temporary approval message until AssetActionBar is rolled out
+#derived-view-approval-message {
+  display: none; // displayed in `grid_view_socrata_visualizations/main.js`
+  padding: 0.5rem 0;
+  font-weight: 100;
 }

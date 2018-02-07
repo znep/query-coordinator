@@ -1,4 +1,4 @@
-import { ACCESS_LEVELS } from 'common/components/AccessManager/Constants';
+import { ACCESS_LEVELS, OWNER_ACCESS_LEVEL } from 'common/components/AccessManager/Constants';
 import { userHasAccessLevel, findUserIndexWithAccessLevel } from 'common/components/AccessManager/Util';
 
 import * as permissionsActions from 'common/components/AccessManager/actions/PermissionsActions';
@@ -150,10 +150,7 @@ const changeOwner = (state, action) => {
     displayName: owner.screen_name,
     email: owner.email,
     accessLevels: [
-      {
-        name: 'current_owner',
-        version: 'all'
-      }
+      OWNER_ACCESS_LEVEL
     ]
   };
 

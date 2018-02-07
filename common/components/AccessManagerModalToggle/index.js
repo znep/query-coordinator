@@ -8,7 +8,7 @@ import UserPropType from '../AccessManager/propTypes/UserPropType';
 import AccessManager from '../AccessManager/components/AccessManager';
 import { fetchPermissions } from '../AccessManager/actions/PermissionsActions';
 import { showAccessManager } from '../AccessManager/actions/UiActions';
-import { MODES } from '../AccessManager/Constants';
+import { MODES, ALL_VIEWER_ACCESS_LEVEL } from '../AccessManager/Constants';
 
 /**
  * This component wraps the AccessManager in a redux store and provider.
@@ -48,7 +48,10 @@ class AccessManagerModalToggle extends Component {
         view
       },
       addCollaborators: {
-        selectedUsers: []
+        selectedUsers: [],
+
+        // default to "view all" access level
+        accessLevel: ALL_VIEWER_ACCESS_LEVEL
       },
       publishedTo: {
         selectedUsers: []

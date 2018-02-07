@@ -13,6 +13,8 @@ export const getCurrentOwner =
 // userSearch selectors
 export const getCurrentUserSearchQuery = state => state.addCollaborators.query;
 export const getSelectedUsers = state => state.addCollaborators.selectedUsers;
+export const getAccessLevel = state => state.addCollaborators.accessLevel;
+
 export const getSelectedPublishTo = state => state.publishedTo.selectedUsers;
 
 // permissions selectors

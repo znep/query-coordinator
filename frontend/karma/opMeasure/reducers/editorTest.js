@@ -1,5 +1,6 @@
 import { assert } from 'chai';
 import _ from 'lodash';
+import moment from 'moment';
 
 import { EditTabs, PeriodTypes, PeriodSizes, CalculationTypeNames } from 'common/performance_measures/lib/constants';
 import reducer from 'opMeasure/reducers/editor';
@@ -170,14 +171,27 @@ describe('Edit modal reducer', () => {
       assert.isEmpty(state.displayableFilterableColumns);
     });
 
-    it('resets metricConfig to only contain default calculation type', () => {
+    it('resets metricConfig and sets a default calculation type', () => {
       _.set(state, 'measure.metricConfig.type', RECENT);
       _.set(state, 'measure.metricConfig.arguments.column', 'foo');
       _.set(state, 'measure.metricConfig.dateColumn', 'some_date_column');
 
       state = reducer(state, actions.editor.resetDataSource());
 
-      assert.deepEqual(state.measure.metricConfig, {type: COUNT});
+      assert.deepEqual(state.measure.metricConfig, {type: COUNT, reportingPeriod: {}});
+    });
+
+    it('preserves reportingPeriod data', () => {
+      _.set(state, 'measure.metricConfig.reportingPeriod.startDate', '2018-03-04');
+      _.set(state, 'measure.metricConfig.reportingPeriod.size', 'month');
+      _.set(state, 'measure.metricConfig.reportingPeriod.type', 'open');
+
+      state = reducer(state, actions.editor.resetDataSource());
+
+      assert.deepEqual(
+        state.measure.metricConfig.reportingPeriod,
+        { startDate: '2018-03-04', size: 'month', type: 'open' }
+      );
     });
   });
 
@@ -452,7 +466,7 @@ describe('Edit modal reducer', () => {
       });
     });
 
-    it('when metric type is not set', () => {
+    describe('when metric type is not set', () => {
       it('defaults metric type to "count"', () => {
         const stateWithoutType = _.omit(state, 'measure.metricConfig.type');
 
@@ -461,8 +475,36 @@ describe('Edit modal reducer', () => {
           measure: stateWithoutType.measure
         });
 
-        assert.deepPropertyVal(state, 'measure.metricConfig.type', COUNT);
+        assert.nestedPropertyVal(state, 'measure.metricConfig.type', COUNT);
       });
+    });
+
+    it('sets a default reportingPeriod.startDate if none is set', () => {
+      const year = moment().year();
+
+      state = reducer(state, {
+        type: actions.editor.OPEN_EDIT_MODAL,
+        measure: fakeMeasure
+      });
+
+      assert.nestedPropertyVal(state, 'measure.metricConfig.reportingPeriod.startDate', `${year}-01-01`);
+    });
+
+    it('preserves existing reportingPeriod.startDate if already set', () => {
+      const measureWithStartDate = {
+        metricConfig: {
+          reportingPeriod: {
+            startDate: '2015-05-01'
+          }
+        }
+      };
+
+      state = reducer(state, {
+        type: actions.editor.OPEN_EDIT_MODAL,
+        measure: measureWithStartDate
+      });
+
+      assert.nestedPropertyVal(state, 'measure.metricConfig.reportingPeriod.startDate', '2015-05-01');
     });
   });
 

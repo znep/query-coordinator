@@ -26,7 +26,7 @@ class DatasetsController < ApplicationController
     end
     if FeatureFlags.derive(nil, request).dsmp_level != "off" && params[:beta]
       @data_asset = params[:data_asset].nil? ? nil : params[:data_assets].to_s.downcase == 'true'
-      @deleted_at = params[:deleted_at].try(:to_time).try(:to_s, :iso8601)
+      @deleted_at = ERB::Util.url_encode(params[:deleted_at].try(:to_time).try(:to_s, :iso8601))
       @il8n_prefix = @data_asset ? "dataset_management_ui.create.data_asset" : "dataset_management_ui.create.dataset"
       render 'datasets/new-dsmui', layout: 'styleguide'
     else

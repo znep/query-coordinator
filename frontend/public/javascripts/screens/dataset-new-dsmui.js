@@ -73,7 +73,7 @@ function createDataset() {
 
   $.ajax({
     type: 'POST',
-    url: '/api/views' + (deletedAt ? '?deleted_at=' + deletedAt : ''),
+    url: '/api/views' + ((deletedAt && deletedAt.length != 0) ? '?deleted_at=' + deletedAt : ''),
     headers: headers,
     contentType: 'application/json; charset=utf-8',
     dataType: 'json',

@@ -167,17 +167,20 @@
 
     <div class="prebuiltActions expandable">
       <%= expandable_section('Pre-built Actions') do %>
+        <h3>Standard test configurations</h3>
+          <div class="warning">
+            <strong> WARNING! NOT INTENDED FOR USE ON CUSTOMER DOMAINS!</strong>
+            <p>Enabling these cofigurations will override any existing values, and resetting will not remember the previous values.
+          </div>
+          <dl class="config_type_description">
+            <%= reset_feature_flags(bundle_name: 'Reset to Default', bundle_description: 'Standard configuration. Reset all feature flags to their default values.') %>
+            <%= bulk_feature_flag_update(@configurations[:sgcc]) %>
+          </dl>
+
+        <h3>Feature sets</h3>
         <dl class="config_type_description">
-          <%= bulk_feature_flag_update(
-            @bulk_updates[:enable_nbe],
-            enable_text: 'Enable NBE-only',
-            disable_text: 'Reset from NBE-only',
-            feature_description: 'This will bulk-change feature flags to turn on and off NBE-only, effecting imports, redirects, and enabled features. Be careful.') %>
-          <%= bulk_module_feature_addition(
-            @bulk_updates[:enable_govstat],
-            text: 'Enable GovStat',
-            feature_description: %Q!Add Open Performance to this domain. You will still need to go to #{link_to govstat_my_goals_path, '/stat/my/goals'}, press ~ twice, and type ".bootstrap".!.html_safe
-          ) %>
+          <%= bulk_feature_flag_update(@configurations[:nbe])%>
+          <%= bulk_module_feature_addition(@configurations[:govstat]) %>
         </dl>
       <%- end %>
     </div>

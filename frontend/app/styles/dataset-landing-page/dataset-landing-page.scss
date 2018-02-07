@@ -571,6 +571,10 @@ div.container.landing-page-container {
   .modal-content {
     &.odata-description {
       margin-bottom: 1.5rem;
+
+      .tableau {
+        font-weight: 600;
+      }
     }
 
     & *:last-child {

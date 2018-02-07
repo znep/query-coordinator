@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 
 import { assert, assertIsNumber, assertIsString, assertIsOneOfTypes } from 'common/js_utils';
 import { CalculationTypeNames, EditTabs } from 'common/performance_measures/lib/constants';
@@ -66,6 +67,7 @@ const setCalculationType = (state, type) => {
 const resetDataSource = (state) => {
   const { measure, errors } = state;
   const defaultCalculationType = CalculationTypeNames.COUNT;
+  const reportingPeriod = _.get(measure, 'metricConfig.reportingPeriod', {});
 
   return {
     ...state,
@@ -73,6 +75,9 @@ const resetDataSource = (state) => {
       ...measure,
       dataSourceLensUid: null,
       metricConfig: {
+        reportingPeriod: {
+          ...reportingPeriod
+        },
         type: defaultCalculationType
       }
     },
@@ -344,6 +349,12 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       const currentType = _.get(nextState, 'measure.metricConfig.type');
       if (_.isEmpty(currentType)) {
         nextState = setCalculationType(nextState, CalculationTypeNames.COUNT);
+      }
+
+      const currentStartDate = _.get(nextState, 'measure.metricConfig.reportingPeriod.startDate');
+      if (_.isNil(currentStartDate)) {
+        const defaultStartDate = moment().startOf('year').format('YYYY-MM-DD');
+        _.set(nextState, 'measure.metricConfig.reportingPeriod.startDate', defaultStartDate);
       }
 
       return nextState;

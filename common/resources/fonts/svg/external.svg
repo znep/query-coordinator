@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch -->
-    <title>external</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="external" fill="#000000">
-            <path d="M972,513.609139 L688.923077,229 L688.923077,370.538462 C122.769231,370.538462 52,653.615385 52,795.153846 C122.673467,512.076923 688.923077,653.615385 688.923077,653.615385 L688.923077,795.153846 L972,513.609139 L972,513.609139 Z" id="Shape"></path>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M972 513.61L688.923 229v141.538C122.77 370.538 52 653.615 52 795.154c70.673-283.077 636.923-141.539 636.923-141.539v141.539L972 513.609z" fill-rule="evenodd"/>
 </svg>

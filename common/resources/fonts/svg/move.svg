@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch -->
-    <title>move</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="move" fill="#000000">
-            <polygon id="Shape" points="972 512 742 339.5 742 454.5 569.5 454.5 569.5 282 684.5 282 512 52 339.5 282 454.5 282 454.5 454.5 282 454.5 282 339.5 52 512 282 684.5 282 569.5 454.5 569.5 454.5 742 339.5 742 512 972 684.5 742 569.5 742 569.5 569.5 742 569.5 742 684.5"></polygon>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M972 512L742 339.5v115H569.5V282h115L512 52 339.5 282h115v172.5H282v-115L52 512l230 172.5v-115h172.5V742h-115L512 972l172.5-230h-115V569.5H742v115z" fill-rule="evenodd"/>
 </svg>

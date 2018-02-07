@@ -12,15 +12,21 @@ module DatasetManagementUiHelper
       localePrefix: locale_prefix,
       featureFlags: feature_flags_as_json,
       :mapboxAccessToken => ENV['MAPBOX_ACCESS_TOKEN'] || APP_CONFIG.mapbox_access_token,
-      usersnapProjectID: 'b08ab2ec-8952-4e7f-8e61-85501ece585a',
-      isDataAsset: is_data_asset.nil? ? is_data_asset : is_data_asset == true
-
+      usersnapProjectID: 'b08ab2ec-8952-4e7f-8e61-85501ece585a'
     }
   end
 
-  def render_dataset_management_ui_server_config(websocket_token = nil, is_data_asset = nil)
+  def render_dataset_management_ui_server_config(websocket_token = nil, is_data_asset = nil, deleted_at = nil)
     config = dataset_management_ui_server_config(websocket_token, is_data_asset)
-    javascript_tag("var serverConfig = #{json_escape(config.to_json)};")
+    url_params = {
+      isDataAsset: is_data_asset,
+      deletedAt: deleted_at
+    }
+    javascript_tag(%Q{
+      var serverConfig = #{json_escape(config.to_json)};
+      var urlParams = #{json_escape(url_params.to_json)};
+    })
+
   end
 
   def get_dataset_management_ui_custom_metadata

@@ -359,7 +359,15 @@
     },
 
     saveNew: function(useNBE, successCallback, errorCallback) {
-      var url = (useNBE) ? '/views?nbe=true' : '/views';
+      var urlParams = {
+          nbe: useNBE
+      };
+
+      var deletedAt = $.urlParam(window.location.href, 'deleted_at');
+      if (!_.isEmpty(deletedAt)) {
+          urlParams.deleted_at = deletedAt;
+      }
+
       var dsOrig = this;
       var dsCreated = function(newDS) {
         newDS = createDatasetFromView(newDS);
@@ -382,7 +390,7 @@
       }
 
       this.makeRequest({
-        url: url,
+        url: '/views?' + $.toParam(urlParams),
         type: 'POST',
         data: JSON.stringify(ds),
         error: errorCallback,

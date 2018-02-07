@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
-    <title>bar-chart</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="bar-chart" fill="#000000">
-            <path d="M72,952 L292,952 L292,512 L72,512 L72,952 L72,952 L72,952 Z M402,952 L622,952 L622,72 L402,72 L402,952 L402,952 L402,952 Z M732,237 L732,952 L952,952 L952,237 L732,237 L732,237 L732,237 Z" id="Shape"></path>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M72 952h220V512H72v440zm330 0h220V72H402v880zm330-715v715h220V237H732z" fill-rule="evenodd"/>
 </svg>

@@ -10,14 +10,12 @@ import { connect } from 'react-redux';
 import bindAll from 'lodash/fp/bindAll';
 import { connectLocalization } from 'common/components/Localization';
 
-const mapStateToProps = () => ({});
-
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch, { role }) =>
   bindActionCreators(
     {
-      deleteRole: role => deleteRole({ role }),
-      editRole: role => startEditRole({ role }),
-      renameRole: role => startRenameRole({ role })
+      deleteRole: () => deleteRole({ role }),
+      editRole: () => startEditRole({ role }),
+      renameRole: () => startRenameRole({ role })
     },
     dispatch
   );
@@ -76,7 +74,7 @@ class RoleEditControl extends React.Component {
   }
 
   render() {
-    const { deleteRole, editRole, renameRole, role, localization: { translate } } = this.props;
+    const { deleteRole, editRole, renameRole, localization: { translate } } = this.props;
     const { showDropdown } = this.state;
 
     return (
@@ -94,17 +92,17 @@ class RoleEditControl extends React.Component {
             <DropdownItem
               name={translate('screens.admin.roles.index_page.edit_controls.rename_role')}
               hideDropdown={this.hideDropdown}
-              onClick={() => renameRole(role)}
+              onClick={renameRole}
             />
             <DropdownItem
               name={translate('screens.admin.roles.index_page.edit_controls.edit_role')}
               hideDropdown={this.hideDropdown}
-              onClick={() => editRole(role)}
+              onClick={editRole}
             />
             <DropdownItem
               name={translate('screens.admin.roles.index_page.edit_controls.delete_role')}
               hideDropdown={this.hideDropdown}
-              onClick={() => deleteRole(role)}
+              onClick={deleteRole}
             />
           </ul>}
       </div>
@@ -120,5 +118,5 @@ RoleEditControl.propTypes = {
 };
 
 export default connectLocalization(
-  connect(mapStateToProps, mapDispatchToProps)(cssModules(RoleEditControl, styles))
+  connect(null, mapDispatchToProps)(cssModules(RoleEditControl, styles))
 );

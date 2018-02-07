@@ -14,18 +14,23 @@ export class VisualizationWrapper extends Component {
 
     _.bindAll(this, [
       'onMapCenterAndZoomChange',
-      'onMapNotificationDismiss'
+      'onMapNotificationDismiss',
+      'onMapPitchAndBearingChange'
     ]);
   }
 
   componentDidMount() {
     $(this.visualization).
       on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onMapCenterAndZoomChange);
+    $(this.visualization).
+      on('SOCRATA_VISUALIZATION_PITCH_AND_BEARING_CHANGED', this.onMapPitchAndBearingChange);
   }
 
   componentWillUnmount() {
     $(this.visualization).
       off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onMapCenterAndZoomChange);
+    $(this.visualization).
+      off('SOCRATA_VISUALIZATION_PITCH_AND_BEARING_CHANGED', this.onMapPitchAndBearingChange);
   }
 
   onMapCenterAndZoomChange(event) {
@@ -37,6 +42,20 @@ export class VisualizationWrapper extends Component {
     if (isEditable && !_.isEqual(vifCenterAndZoom, centerAndZoom)) {
       onMapCenterAndZoomChange({
         centerAndZoom,
+        vifIndex
+      });
+    }
+  }
+
+  onMapPitchAndBearingChange(event) {
+    const { isEditable, vif, vifIndex, onMapPitchAndBearingChange } = this.props;
+    const pitchAndBearing = event.originalEvent.detail;
+    const vifPitchAndBearing = _.get(vif, 'configuration.mapPitchAndBearing');
+
+    // only update the VIF if the visualization is editable and the pitch/bearing has changed
+    if (isEditable && !_.isEqual(vifPitchAndBearing, pitchAndBearing)) {
+      onMapPitchAndBearingChange({
+        pitchAndBearing,
         vifIndex
       });
     }
@@ -106,7 +125,8 @@ VisualizationWrapper.propTypes = {
   mapNotificationDismissed: PropTypes.bool,
   displayShareButton: PropTypes.bool,
   onMapCenterAndZoomChange: PropTypes.func,
-  onMapNotificationDismiss: PropTypes.func
+  onMapNotificationDismiss: PropTypes.func,
+  onMapPitchAndBearingChange: PropTypes.func
 };
 
 VisualizationWrapper.defaultProps = {
@@ -114,7 +134,8 @@ VisualizationWrapper.defaultProps = {
   mapNotificationDismissed: false,
   displayShareButton: false,
   onMapCenterAndZoomChange: _.noop,
-  onMapNotificationDismiss: _.noop
+  onMapNotificationDismiss: _.noop,
+  onMapPitchAndBearingChange: _.noop
 };
 
 export default VisualizationWrapper;

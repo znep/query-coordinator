@@ -28,11 +28,11 @@ module SocrataSiteChrome
     end
 
     def profile_image?
-      user_profile_image_url.present?
+      site_chrome_current_user.present? && user_profile_image_url.present?
     end
 
     def user_profile_image_url
-      site_chrome_current_user.profileImageUrlMedium
+      site_chrome_current_user.try(:profileImageUrlMedium)
     end
 
     def open_performance_enabled?

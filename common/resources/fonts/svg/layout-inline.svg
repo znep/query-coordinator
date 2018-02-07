@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 41.2 (35397) - http://www.bohemiancoding.com/sketch -->
-    <title>layout-inline</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="layout-inline" fill="#000000">
-            <path d="M212,319.231407 C212,318.674653 212.455393,318.223315 212.998753,318.223315 L802.001247,318.223315 C802.552843,318.223315 803,318.670716 803,319.231407 L803,703.661853 C803,704.218606 802.544607,704.669944 802.001247,704.669944 L212.998753,704.669944 C212.447157,704.669944 212,704.222543 212,703.661853 L212,319.231407 Z M212,801.281602 L803,801.281602 L803,897.893259 L212,897.893259 L212,801.281602 Z M212,125 L803,125 L803,221.611657 L212,221.611657 L212,125 Z" id="Combined-Shape-Copy"></path>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M212 319.231c0-.556.455-1.008.999-1.008H802a1 1 0 0 1 .999 1.008v384.43c0 .558-.455 1.009-.999 1.009H213a1 1 0 0 1-.999-1.008v-384.43zm0 482.05h591v96.612H212v-96.611zM212 125h591v96.612H212V125z" fill-rule="evenodd"/>
 </svg>

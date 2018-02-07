@@ -4,6 +4,8 @@ import cssModules from 'react-css-modules';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { connectLocalization } from 'common/components/Localization';
+import omit from 'lodash/fp/omit';
+import cx from 'classnames';
 
 import { hoverRow, unhoverRow } from '../../actions';
 
@@ -13,11 +15,11 @@ const mapStateToProps = (state) => ({
   hovered: state.get('hovered')
 });
 
-const mapDispatchToProps = (dispatch) =>
+const mapDispatchToProps = (dispatch, { name }) =>
   bindActionCreators(
     {
-      hoverRow: (name) => hoverRow({ name }),
-      unhoverRow: (name) => unhoverRow({ name })
+      hoverRow: () => hoverRow({ name }),
+      unhoverRow: () => unhoverRow({ name })
     },
     dispatch
   );
@@ -30,18 +32,15 @@ class Hoverable extends Component {
       hoverRow,
       unhoverRow,
       hovered,
-      styles,
       ...props
     } = this.props;
 
-    const className = name == hovered ? 'hovered' : '';
+    const className = cx({ hovered: name === hovered });
 
-    const childrenWithExtraProp = React.Children.map(this.props.children, child => {
-      return React.cloneElement(child, props);
-    });
+    const childrenWithExtraProp = React.Children.map(children, child => React.cloneElement(child, omit('styles', props)));
 
     return (
-      <div className={className} onMouseEnter={() => hoverRow(name)} onMouseLeave={() => unhoverRow(name)}>
+      <div className={className} onMouseEnter={hoverRow} onMouseLeave={unhoverRow}>
         {childrenWithExtraProp}
       </div>
     );

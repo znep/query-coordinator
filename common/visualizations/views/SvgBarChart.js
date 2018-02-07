@@ -436,19 +436,9 @@ function SvgBarChart($element, vif, options) {
     }
 
     function renderReferenceLines() {
-      // Because the line stroke thickness is 2px, the half of the line can be clipped on the left or right edge
-      // of the chart area.  This function shifts the clipped line right 1 pixel when at the left edge and left 1
-      // pixel when at the right edge.  All the other lines are rendered in normal positions.
       const getXPosition = (referenceLine) => {
         const value = isOneHundredPercentStacked ? (referenceLine.value / 100) : referenceLine.value;
-
-        if (value == minXValue) {
-          return d3XScale(value) + 1; // shift right a pixel if at the left edge of chart area
-        } else if (value == maxXValue) {
-          return d3XScale(value) - 1; // shift left a pixel if at the right edge of chart area
-        } else {
-          return d3XScale(value);
-        }
+        return d3XScale(value);
       };
 
       const getLineThickness = (referenceLine) => {

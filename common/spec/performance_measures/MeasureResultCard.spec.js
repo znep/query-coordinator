@@ -28,11 +28,6 @@ describe('MeasureResultCard', () => {
 
   const getRenderedValue = (element) => element.find('.measure-result-big-number').nodes[0].props.children;
 
-  it('renders a placeholder if computedMeasure is not present', () => {
-    const element = shallow(<MeasureResultCard {...getProps()} />);
-    assert.lengthOf(element.find('.measure-result-placeholder'), 1);
-  });
-
   it('renders result if it is set in computedMeasure', () => {
     const computedMeasure = getComputedMeasure({
       result: { value: '33.00' }
@@ -128,7 +123,7 @@ describe('MeasureResultCard', () => {
   });
 
   describe('Error messages', () => {
-    const getSubtitle = (element) => element.find('.measure-result-placeholder-text').text();
+    const getSubtitle = (element) => element.find('.measure-result-subtitle').text();
 
     describe('when measure does not have a dataSourceLensUid', () => {
       it('renders message about no dataset', () => {
@@ -169,6 +164,20 @@ describe('MeasureResultCard', () => {
       });
     });
 
+    // Verify that reporting period message takes priority over calculation message.
+    describe('when both noReportingPeriodConfigured and calculationNotConfigured are true', () => {
+      it('renders message about reporting period not configured', () => {
+        const computedMeasure = getComputedMeasure({
+          errors: {
+            calculationNotConfigured: true,
+            noReportingPeriodConfigured: true
+          }
+        });
+        const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+        assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_reporting_period'));
+      });
+    });
+
     describe('when computedMeasure.noReportingPeriodAvailable = true', () => {
       it('renders message about not enough data', () => {
         const computedMeasure = getComputedMeasure({
@@ -191,6 +200,16 @@ describe('MeasureResultCard', () => {
         computedMeasure.result.value = 'Infinity';
         element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.measure.dividing_by_zero'));
+      });
+    });
+
+    describe('when computedMeasure.notEnoughData = true', () => {
+      it('renders message about not enough data', () => {
+        const computedMeasure = getComputedMeasure({
+          errors: { notEnoughData: true }
+        });
+        const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+        assert.include(getSubtitle(element), I18n.t('shared.performance_measures.not_enough_data'));
       });
     });
 

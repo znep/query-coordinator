@@ -22,8 +22,6 @@
           inProductTransientNotificationsEnabled: <%= get_feature_flag('in_product_transient_notifications') %>,
           isSuperAdmin: <%== is_superadmin? %>,
           mapboxAccessToken: <%== mapbox_access_token.to_json %>,
-          lockScrollbar: true,
-          scrollTop: template === 'rally' ? document.querySelector('#site-chrome-header .rally-top').offsetHeight : 0,
           showMyAlertPreference: <%= show_alert_preference? %>,
           showProductNotifications: false,
           showUserNotifications: true,

@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch -->
-    <title>collapse</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="collapse" fill="#000000">
-            <path d="M454.5,910.1875 L454.5,569.5 L113.8125,569.5 L223.0625,678.75 L52,849.8125 L174.1875,972 L345.25,800.9375 L454.5,910.1875 Z M569.5,113.8125 L569.5,454.5 L910.1875,454.5 L800.9375,345.25 L972,174.1875 L849.8125,52 L678.75,223.0625 L569.5,113.8125 Z" id="Shape"></path>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M454.5 910.188V569.5H113.812l109.25 109.25L52 849.813 174.188 972 345.25 800.937l109.25 109.25zm115-796.375V454.5h340.688l-109.25-109.25L972 174.187 849.812 52 678.75 223.063 569.5 113.813z" fill-rule="evenodd"/>
 </svg>

@@ -5,6 +5,7 @@ import { SoqlDataProvider, SoqlHelpers } from 'common/visualizations/dataProvide
 import ReportingPeriods from '../lib/reportingPeriods';
 import { CalculationTypeNames } from '../lib/constants';
 import { assert, assertIsOneOfTypes } from 'common/js_utils';
+import { UID_REGEX } from 'common/http/constants';
 
 // Returns true if the given column can be used
 // with the given measure, false otherwise.
@@ -94,8 +95,12 @@ const excludeNullsFilter = (fieldName) => ({
 /* Measure types
  */
 
-export const calculateCountMeasure = async (errors, measure, dateRangeWhereClause) => {
-  const dataProvider = setupSoqlDataProvider(measure);
+export const calculateCountMeasure = async (
+  errors,
+  measure,
+  dateRangeWhereClause,
+  dataProvider = setupSoqlDataProvider(measure) // For test injection
+) => {
   const dateColumn = _.get(measure, 'metricConfig.dateColumn');
   const column = _.get(measure, 'metricConfig.arguments.column');
 
@@ -117,8 +122,12 @@ export const calculateCountMeasure = async (errors, measure, dateRangeWhereClaus
   return { errors, result: { value } };
 };
 
-export const calculateSumMeasure = async (errors, measure, dateRangeWhereClause) => {
-  const dataProvider = setupSoqlDataProvider(measure);
+export const calculateSumMeasure = async (
+  errors,
+  measure,
+  dateRangeWhereClause,
+  dataProvider = setupSoqlDataProvider(measure) // For test injection
+) => {
   const column = _.get(measure, 'metricConfig.arguments.column');
   const dateColumn = _.get(measure, 'metricConfig.dateColumn');
   const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces');
@@ -130,6 +139,9 @@ export const calculateSumMeasure = async (errors, measure, dateRangeWhereClause)
 
     // sum() will return null if there are no values to sum
     value = _.isNil(sumResult) ? sumResult : sumResult.toFixed(decimalPlaces);
+    if (value === null) {
+      errors.notEnoughData = true;
+    }
   } else {
     errors.calculationNotConfigured = !column || !dateColumn;
   }
@@ -173,7 +185,7 @@ export const calculateRateMeasure = async (
   errors,
   measure,
   dateRangeWhereClause,
-  dataProvider = setupSoqlDataProvider(measure)
+  dataProvider = setupSoqlDataProvider(measure) // For test injection
 ) => {
   const {
     aggregationType,
@@ -252,6 +264,10 @@ export const calculateRateMeasure = async (
     if (numerator) { numerator = new BigNumber(numerator); }
     if (denominator) { denominator = new BigNumber(denominator); }
 
+    if (numerator === null || denominator === null) {
+      errors.notEnoughData = true;
+    }
+
     const calculation = {};
     if (numerator) { calculation.numerator = numerator.toString(); }
     if (denominator) {
@@ -306,7 +322,7 @@ export const calculateMeasure = async (measure, dateRange) => {
   // ... and if they did, does it give us a valid date range for today's value?
   errors.noReportingPeriodAvailable = !dateRange;
 
-  errors.dataSourceNotConfigured = _.isUndefined(_.get(measure, 'dataSourceLensUid'));
+  errors.dataSourceNotConfigured = !UID_REGEX.test(measure.dataSourceLensUid);
 
   // A blank dateRange can happen if:
   //   * The start date is in the future, or

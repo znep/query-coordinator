@@ -181,6 +181,7 @@ EditModal.defaultProps = {
     id: EditTabs.CALCULATION,
     title: I18n.t('open_performance.measure.edit_modal.calculation.tab_title'),
     icon: 'puzzle',
+    needsAttentionFor: 'calculationNotConfigured',
     panelComponent: CalculationPanel
   }],
   onCancel: _.noop,

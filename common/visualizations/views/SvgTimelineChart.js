@@ -26,6 +26,7 @@ import {
   DIMENSION_LABELS_MAX_CHARACTERS,
   DIMENSION_LABELS_ROTATION_ANGLE,
   FONT_STACK,
+  GLYPH_SPACE_HEIGHT,
   LEGEND_BAR_HEIGHT,
   LINE_DASH_ARRAY,
   MEASURE_LABELS_FONT_COLOR,
@@ -447,19 +448,7 @@ function SvgTimelineChart($element, vif, options) {
     }
 
     function renderReferenceLines() {
-      // Because the line stroke thickness is 2px, the half of the line can be clipped on the top or bottom edge
-      // of the chart area.  This function shifts the clipped line down 1 pixel when at the top edge and up 1 pixel
-      // when at the bottom edge.  All the other lines are rendered in normal positions.
-      const getYPosition = (referenceLine) => {
-        if (referenceLine.value == maxYValue) {
-          return d3YScale(referenceLine.value) + 1; // shift down a pixel if at the top of chart area
-        } else if (referenceLine.value == minYValue) {
-          return d3YScale(referenceLine.value) - 1; // shift up a pixel if at the bottom of chart area
-        } else {
-          return d3YScale(referenceLine.value);
-        }
-      };
-
+      const getYPosition = (referenceLine) => d3YScale(referenceLine.value);
       const getLineThickness = (referenceLine) => {
         return self.isInRange(referenceLine.value, minYValue, maxYValue) ? REFERENCE_LINES_STROKE_WIDTH : 0;
       };
@@ -1831,14 +1820,9 @@ function SvgTimelineChart($element, vif, options) {
   }
 
   function generateYScale(minValue, maxValue, height) {
-    // Don't cut off the top of the highest point.
-    const maxPointRadius = _(_.range(0, dataToRenderBySeries.length)).
-      map(self.getLineStyleBySeriesIndex).
-      map('pointRadius').
-      max() || 0;
     return d3.scale.linear().
       domain([minValue, maxValue]).
-      range([height, 0 + maxPointRadius]);
+      range([height, GLYPH_SPACE_HEIGHT]);
   }
 
   function generateYAxis(yScale) {

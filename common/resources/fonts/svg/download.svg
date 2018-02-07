@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
-    <title>download</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="download" fill="#000000">
-            <path d="M126.975334,943.508953 L126.975334,875.937576 L897.022187,875.937576 L897.022187,943.508953 L126.975334,943.508953 Z M511.99876,793.278875 L122.846396,385.123449 L392.055612,384.514058 L392.918709,65.0810429 L631.078812,65.0810429 L631.941909,384.514058 L901.151124,385.123449 L511.99876,793.278875 Z"></path>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M126.975 943.509v-67.571h770.047v67.571H126.975zM512 793.279L122.846 385.123l269.21-.609.863-319.433h238.16l.863 319.433 269.21.61-389.153 408.155z" fill-rule="evenodd"/>
 </svg>

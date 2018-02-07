@@ -187,6 +187,7 @@ describe('AuthoringWorkflow reducer', () => {
       shouldSetVif('setSearchBoundaryUpperLeftLongitude', -138.61595153808594, 'series[0].mapOptions.searchBoundaryUpperLeftLongitude', ['map']);
       shouldSetVif('setSearchBoundaryLowerRightLatitude', 53.81794822741499, 'series[0].mapOptions.searchBoundaryLowerRightLatitude', ['map']);
       shouldSetVif('setSearchBoundaryLowerRightLongitude', -128.93642272949219, 'series[0].mapOptions.searchBoundaryLowerRightLongitude', ['map']);
+      shouldSetVif('setPitchAndBearing', { pitch: 60, bearing: -60 }, 'configuration.mapPitchAndBearing', ['map']);
 
 
       describe('when settings the x-axis scaling mode', () => {

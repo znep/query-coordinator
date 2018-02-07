@@ -4,7 +4,8 @@
   "description": "Socrata's Icon Font",
   "scripts": {
     "build": "gulp",
-    "clean": "gulp clean"
+    "clean": "gulp clean",
+    "minify": "svgo --pretty --enable=removeXMLNS --disable=removeViewBox -f ./svg && echo 'Any files listed below use xlink; please clean them up manually or suffer EN-22022 (see the font folder README).\nCleaning up is usually as easy as replacing the <use> with the path/shape, deleting the <defs> and any ids, AND keeping any attributes that were in the <use> (i.e. fill-rule)\nAlternatively, change the ID to be the filename of the icon:' && grep -rni 'xlink:href=\"#a\"' ./svg || true"
   },
   "files": [
     "dist"
@@ -27,6 +28,7 @@
     "lodash": "^4.17.4",
     "merge-stream": "1.0.1",
     "normalize.css": "4.1.1",
-    "shelljs": "0.7.3"
+    "shelljs": "0.7.3",
+    "svgo": "^1.0.4"
   }
 }

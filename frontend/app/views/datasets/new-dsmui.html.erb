@@ -1,7 +1,7 @@
 
 <% content_for :head do %>
   <title><%= t("#{@il8n_prefix}.title") %></title>
-  <%= render_dataset_management_ui_server_config(nil, @data_asset) %>
+  <%= render_dataset_management_ui_server_config(nil, @data_asset, @deleted_at) %>
   <%= rendered_stylesheet_tag 'dataset-new-dsmui' %>
 <% end %>
 

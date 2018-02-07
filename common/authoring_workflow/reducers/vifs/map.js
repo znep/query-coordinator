@@ -238,6 +238,10 @@ export default function map(state, action) {
       _.set(state, 'series[0].mapOptions.searchBoundaryLowerRightLongitude', lowerRightLongitude);
       break;
 
+    case actions.SET_PITCH_AND_BEARING:
+      _.set(state, 'configuration.mapPitchAndBearing', action.pitchAndBearing);
+      break;
+
     case actions.RECEIVE_METADATA:
     case actions.SET_FILTERS:
     case actions.SET_TITLE:

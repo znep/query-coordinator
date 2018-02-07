@@ -87,9 +87,7 @@
             developmentMode: <%== is_development_mode? %>,
             inProductTransientNotificationsEnabled: <%= get_feature_flag('in_product_transient_notifications') %>,
             isSuperAdmin: <%== is_superadmin? %>,
-            lockScrollbar: false,
             mapboxAccessToken: <%== mapbox_access_token.to_json %>,
-            scrollTop: 0,
             showMyAlertPreference: <%= show_alert_preference? %>,
             showProductNotifications: true,
             showUserNotifications: <%= get_feature_flag('enable_user_notifications') %>

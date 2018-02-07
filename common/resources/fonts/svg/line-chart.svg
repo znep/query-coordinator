@@ -1,13 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
-    <title>line-chart</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="line-chart">
-            <polygon id="Shape" fill="#000000" points="65 904.0625 960 904.0625 960 960 65 960"></polygon>
-            <polygon id="Path-243" fill="#2C2C2C" points="386.046988 536.484375 585.384337 722.707949 960 294.117189 859.256763 197.911882 577.169403 516.66591 388.198396 344.825348 65 717.51812 160.48938 811.508057"></polygon>
-        </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <g fill="none" fill-rule="evenodd">
+        <path fill="#000" d="M65 904.063h895V960H65z"/>
+        <path fill="#2C2C2C" d="M386.047 536.484l199.337 186.224L960 294.118l-100.743-96.206-282.088 318.754-188.97-171.84L65 717.517l95.49 93.99z"/>
     </g>
 </svg>

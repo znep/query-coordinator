@@ -9,7 +9,7 @@ import Expandable from '../util/Expandable';
 import Hoverable from '../util/Hoverable';
 import TristateCheckbox from '../util/TristateCheckbox';
 import TristateIndicator from '../util/TristateIndicator';
-import { toggleRoleRightCategoryValue, toggleRoleRightValue } from '../../actions';
+import * as Actions from '../../actions';
 import { connectLocalization } from 'common/components/Localization';
 import * as selectors from '../../adminRolesSelectors';
 
@@ -21,8 +21,8 @@ const cellHeight = parseInt(cssVariables.cellHeight, 10);
 const mapDispatchToProps = (dispatch, { role, rightCategory }) =>
   bindActionCreators(
     {
-      toggleRoleRightCategoryValue: () => toggleRoleRightCategoryValue({ role, rightCategory }),
-      toggleRoleRightValue: right => toggleRoleRightValue({ role, right })
+      toggleRoleRightCategoryValue: () => Actions.toggleRoleRightCategoryValue(role, rightCategory),
+      toggleRoleRightValue: right => Actions.toggleRoleRightValue(role, right)
     },
     dispatch
   );

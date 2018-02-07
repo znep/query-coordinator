@@ -11,7 +11,7 @@ import noop from 'lodash/fp/noop';
 import reducer from '../reducers/RolesAdminReducer';
 import EditCustomRoleModal from './modal/EditCustomRoleModal';
 import { LOAD_DATA_FAILURE, LOADING } from '../appStates';
-import { loadData, showNotification } from '../actions';
+import * as Actions from '../actions';
 import LoadingSpinner from '../../adminActivityFeed/components/LoadingSpinner';
 import ToastNotification from 'common/components/ToastNotification';
 import AppError from './util/AppError';
@@ -46,8 +46,8 @@ const mapStateToProps = (state, { localization: { translate } }) => {
 };
 
 const mapDispatchToProps = {
-  loadData,
-  dismissNotification: showNotification.end
+  loadData: Actions.loadData,
+  dismissNotification: Actions.showNotificationEnd
 };
 
 class UnstyledRolesAdmin extends Component {

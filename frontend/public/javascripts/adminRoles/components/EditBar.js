@@ -3,7 +3,7 @@ import React from 'react';
 import cssModules from 'react-css-modules';
 import styles from './edit-bar.module.scss';
 import { connect } from 'react-redux';
-import { editCustomRoles, newCustomRole } from '../actions';
+import * as Actions from '../actions';
 import {
   configurableRoleFeatureFlagFromState,
   getAppState,
@@ -28,8 +28,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  newCustomRole,
-  startEditCustomRoles: editCustomRoles.start
+  newCustomRole: Actions.newCustomRole,
+  startEditCustomRoles: Actions.editCustomRolesStart
 };
 
 class EditBar extends React.Component {
@@ -57,7 +57,7 @@ class EditBar extends React.Component {
               variant="default"
               buttonDisabledStyle="light"
               disabled={!isEditCustomRolesEnabled}
-              onClick={() => startEditCustomRoles()}
+              onClick={startEditCustomRoles}
             >
               <i className="socrata-icon-edit" />
               {translate('screens.admin.roles.buttons.edit_custom_roles')}
@@ -67,7 +67,7 @@ class EditBar extends React.Component {
           ? <Button
               variant="primary"
               disabled={!isAddCustomRoleEnabled}
-              onClick={() => newCustomRole()}
+              onClick={newCustomRole}
             >
               <i className="socrata-icon-plus3" />
               {translate('screens.admin.roles.buttons.new_custom_role')}

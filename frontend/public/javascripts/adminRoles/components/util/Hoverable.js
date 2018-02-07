@@ -7,7 +7,7 @@ import { connectLocalization } from 'common/components/Localization';
 import omit from 'lodash/fp/omit';
 import cx from 'classnames';
 
-import { hoverRow, unhoverRow } from '../../actions';
+import * as Actions from '../../actions';
 
 import styles from './hoverable.module.scss';
 
@@ -18,8 +18,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch, { name }) =>
   bindActionCreators(
     {
-      hoverRow: () => hoverRow({ name }),
-      unhoverRow: () => unhoverRow({ name })
+      hoverRow: () => Actions.hoverRow(name),
+      unhoverRow: () => Actions.unhoverRow(name)
     },
     dispatch
   );

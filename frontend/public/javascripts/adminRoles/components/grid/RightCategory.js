@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import Grid from '../util/Grid';
 import Expandable from '../util/Expandable';
 import Hoverable from '../util/Hoverable';
-import { toggleExpanded } from '../../actions';
+import * as Actions from '../../actions';
 import { connectLocalization } from 'common/components/Localization';
 import * as selectors from '../../adminRolesSelectors';
 
@@ -19,7 +19,7 @@ const cellHeight = parseInt(cssVariables.cellHeight, 10);
 const mapDispatchToProps = (dispatch, { rightCategory }) =>
   bindActionCreators(
     {
-      toggleExpanded: () => toggleExpanded({ rightCategory })
+      toggleExpanded: () => Actions.toggleExpanded(rightCategory)
     },
     dispatch
   );

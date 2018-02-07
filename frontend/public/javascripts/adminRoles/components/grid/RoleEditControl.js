@@ -5,7 +5,7 @@ import cssModules from 'react-css-modules';
 import styles from './role-edit-control.module.scss';
 import { SocrataIcon } from 'common/components/SocrataIcon';
 import { Button } from 'common/components';
-import { startEditRole, deleteRole, startRenameRole } from '../../actions';
+import * as Actions from '../../actions';
 import { connect } from 'react-redux';
 import bindAll from 'lodash/fp/bindAll';
 import { connectLocalization } from 'common/components/Localization';
@@ -13,9 +13,9 @@ import { connectLocalization } from 'common/components/Localization';
 const mapDispatchToProps = (dispatch, { role }) =>
   bindActionCreators(
     {
-      deleteRole: () => deleteRole({ role }),
-      editRole: () => startEditRole({ role }),
-      renameRole: () => startRenameRole({ role })
+      deleteRole: () => Actions.deleteRole(role),
+      editRole: () => Actions.editRoleStart(role),
+      renameRole: () => Actions.renameRoleStart(role)
     },
     dispatch
   );

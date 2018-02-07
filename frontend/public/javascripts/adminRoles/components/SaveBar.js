@@ -8,7 +8,7 @@ import bindAll from 'lodash/fp/bindAll';
 
 import { connectLocalization } from 'common/components/Localization';
 import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
-import { editCustomRoles, saveRoles } from '../actions';
+import * as Actions from '../actions';
 import { getAppState, getDirtyRolesFromState, stateHasCustomRoles } from '../adminRolesSelectors';
 import { EDIT_CUSTOM_ROLES, SAVING, EDIT_INDIVIDUAL_CUSTOM_ROLE } from '../appStates';
 import { Button } from 'common/components';
@@ -27,8 +27,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  cancelEditCustomRoles: () => editCustomRoles.cancel(),
-  saveRoles: (roles) => saveRoles({ roles })
+  editCustomRolesCancel: Actions.editCustomRolesCancel,
+  saveRoles: Actions.saveRoles
 };
 
 class SaveBar extends React.Component {
@@ -38,7 +38,7 @@ class SaveBar extends React.Component {
   }
 
   renderCancelButton() {
-    const { cancelEditCustomRoles, isSaving, localization: { translate } } = this.props;
+    const { editCustomRolesCancel, isSaving, localization: { translate } } = this.props;
 
     return (
       <Button
@@ -46,7 +46,7 @@ class SaveBar extends React.Component {
         inverse={!isSaving}
         buttonDisabledStyle={'light'}
         disabled={isSaving}
-        onClick={cancelEditCustomRoles}
+        onClick={editCustomRolesCancel}
       >
         {translate('screens.admin.roles.buttons.cancel')}
       </Button>
@@ -88,7 +88,7 @@ class SaveBar extends React.Component {
 }
 
 SaveBar.propTypes = {
-  cancelEditCustomRoles: PropTypes.func.isRequired,
+  editCustomRolesCancel: PropTypes.func.isRequired,
   dirtyRoles: PropTypes.object.isRequired,
   isSaving: PropTypes.bool.isRequired,
   saveRoles: PropTypes.func.isRequired,

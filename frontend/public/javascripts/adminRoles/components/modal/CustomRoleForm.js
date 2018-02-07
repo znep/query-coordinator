@@ -7,7 +7,7 @@ import bindAll from 'lodash/fp/bindAll';
 import getOr from 'lodash/fp/getOr';
 import omit from 'lodash/fp/omit';
 import { connect } from 'react-redux';
-import { changeNewRoleName, changeNewRoleTemplate } from '../../actions';
+import * as Actions from '../../actions';
 import { NEW_CUSTOM_ROLE } from '../../appStates';
 import BoundedTextInput from '../util/BoundedTextInput';
 import { getAppState, getEditingRoleFromState, getMaxCharacterCountFromState } from '../../adminRolesSelectors';
@@ -27,8 +27,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  onNameChange: name => changeNewRoleName({ name }),
-  onTemplateChange: value => changeNewRoleTemplate({ value })
+  onNameChange: Actions.changeNewRoleName,
+  onTemplateChange: Actions.changeNewRoleTemplate
 };
 
 class CustomRoleForm extends Component {

@@ -37,7 +37,7 @@ function updatePageBasedOnApprovalOutcome(assetWillEnterApprovalsQueue) {
 }
 
 window.onload = () => {
-  if (!FeatureFlags.value('enable_asset_action_bar')) {
+  if (!FeatureFlags.value('enable_new_dataset_sharing_ux')) {
     assetWillEnterApprovalsQueueOnPublish({
       coreView: window.blist.dataset,
       assetWillBePublic: blist.dataset.isPendingPublic()

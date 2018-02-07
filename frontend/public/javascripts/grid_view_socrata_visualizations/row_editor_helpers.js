@@ -71,23 +71,40 @@ function renderDateInputLine(column, value) {
   var optionalUTCOffsetInput = '';
   var valueAsISOString = '';
 
-  if (column.dataTypeName === 'date') {
+  try {
 
-    valueAsISOString = new Date(value * 1000).toISOString();
-    optionalUTCOffsetInput = (
-      '<label class="value utc-offset"></label>' +
-      '<input id="row-editor-' +
-        column.fieldName +
-        '-utc-offset" class="value utc-offset" type="text" />'
-    );
-  } else {
-    // EN-21844 - Row Editor adds local timezone offset to UTC Date
+    if (column.dataTypeName === 'date') {
+
+      valueAsISOString = new Date(value * 1000).toISOString();
+      optionalUTCOffsetInput = (
+        '<label class="value utc-offset"></label>' +
+        '<input id="row-editor-' +
+          column.fieldName +
+          '-utc-offset" class="value utc-offset" type="text" />'
+      );
+    } else {
+      // EN-21844 - Row Editor adds local timezone offset to UTC Date
+      //
+      // Note the ` + 'Z'`, which causes the date object's constructor
+      // to treat the string as a UTC date. This is what we want for the
+      // 'calendar_date' type, which stores values in ISO-8601 format but
+      // lacking the 'Z' that would make it explicitly in UTC.
+      valueAsISOString = new Date(value + 'Z').toISOString();
+    }
+  } catch (e) {
+    // EN-22228 - Cannot update blank row with date
     //
-    // Note the ` + 'Z'`, which causes the date object's constructor
-    // to treat the string as a UTC date. This is what we want for the
-    // 'calendar_date' type, which stores values in ISO-8601 format but
-    // lacking the 'Z' that would make it explicitly in UTC.
-    valueAsISOString = new Date(value + 'Z').toISOString();
+    // Since we are passing in arbitrary strings to the Date constructor,
+    // there are situations in which it can fail in ways that are not easy
+    // to anticipate. It will also fail if the value parameter is null,
+    // but since we already need to catch exceptions that it throws it
+    // didn't seem terrible to just let it throw the same old RangeError
+    // and just catch it. Note that since we are catching an Error here
+    // we should be careful that the rest of the code in this function
+    // is ok with the starting values for optionalUTCOffsetInput and
+    // valueAsISOString. It was originally written to be so, but someone
+    // modifying this function in the future may not immediately realize
+    // that and end up in a spot of trouble.
   }
 
   var $inputLine = $(

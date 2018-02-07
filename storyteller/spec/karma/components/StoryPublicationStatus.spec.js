@@ -2,7 +2,7 @@ import _ from 'lodash';
 import moment from 'moment-timezone';
 import { Simulate } from 'react-dom/test-utils';
 import sinon from 'sinon';
-import { expect } from 'chai';
+import { assert } from 'chai';
 
 import renderComponent from '../renderComponent';
 import I18nMocker from '../I18nMocker';
@@ -84,19 +84,19 @@ describe('StoryPublicationStatus', () => {
     function rendersMakePrivateButton() {
       it('renders a "Make Private" button', () => {
         const text = component.querySelector('.flannel-actions button').textContent;
-        expect(text).to.contain('make_story_private');
+        assert.include(text, 'make_story_private');
       });
     }
 
     function rendersDraftAndUnpublished() {
       it('renders a draft status', () => {
         const text = component.querySelector('.panel-btn').textContent;
-        expect(text).to.contain('draft');
+        assert.include(text, 'draft');
       });
 
       it('renders an unpublished icon', () => {
         const iconElement = component.querySelector('.story-publication-status-icon.unpublished');
-        expect(iconElement).to.exist;
+        assert.ok(iconElement);
       });
     }
 
@@ -106,12 +106,12 @@ describe('StoryPublicationStatus', () => {
 
       it('renders last saved header text', () => {
         const text = component.querySelector('h5 strong').textContent;
-        expect(text).to.contain('saved');
+        assert.include(text, 'saved');
       });
 
       it('renders last saved time', () => {
         const text = component.querySelector('h5 span').textContent;
-        expect(text).to.equal(moment(storyUpdatedAt).calendar().toString());
+        assert.equal(text, moment(storyUpdatedAt).calendar().toString());
       });
     });
 
@@ -123,16 +123,16 @@ describe('StoryPublicationStatus', () => {
 
       it('renders a "Make Story Public" button', () => {
         const text = component.querySelector('.btn-publish').textContent;
-        expect(text).to.contain('make_story_public');
+        assert.include(text, 'make_story_public');
       });
 
       it('renders a "Can be shared publicly" message', () => {
         const text = component.querySelector('.alert').textContent;
-        expect(text).to.contain('can_be_shared_publicly');
+        assert.include(text, 'can_be_shared_publicly');
       });
 
       it('does not render a "Make Private" button', () => {
-        expect(component.querySelector('.flannel-actions')).to.not.exist;
+        assert.notOk(component.querySelector('.flannel-actions'));
       });
     });
 
@@ -145,12 +145,12 @@ describe('StoryPublicationStatus', () => {
 
       it('renders an "Update Public Version" button', () => {
         const text = component.querySelector('.btn-publish').textContent;
-        expect(text).to.contain('update_public_version');
+        assert.include(text, 'update_public_version');
       });
 
       it('renders a "Previously published..." message', () => {
         const text = component.querySelector('.alert').textContent;
-        expect(text).to.contain('previously_published');
+        assert.include(text, 'previously_published');
       });
     });
 
@@ -162,23 +162,23 @@ describe('StoryPublicationStatus', () => {
 
       it('renders a "Published" status', () => {
         const text = component.querySelector('.panel-btn').textContent;
-        expect(text).to.contain('published');
+        assert.include(text, 'published');
       });
 
       it('renders a published icon', () => {
         const iconElement = component.querySelector('.story-publication-status-icon.published');
-        expect(iconElement).to.exist;
+        assert.ok(iconElement);
       });
 
       it('renders a disabled "Update Public Version" button', () => {
         const buttonElement = component.querySelector('.btn-publish');
-        expect(buttonElement.textContent).to.contain('update_public_version');
-        expect(buttonElement.disabled).to.be.true;
+        assert.include(buttonElement.textContent, 'update_public_version');
+        assert.isTrue(buttonElement.disabled);
       });
 
       it('renders a "Story has been published..." message', () => {
         const text = component.querySelector('.alert').textContent;
-        expect(text).to.contain('has_been_published');
+        assert.include(text, 'has_been_published');
       });
     });
   });
@@ -190,10 +190,10 @@ describe('StoryPublicationStatus', () => {
 
       it('toggles the flannel visibility', () => {
         Simulate.click(component.querySelector('.panel-btn'));
-        expect(component.querySelector('.flannel.flannel-hidden')).to.not.exist;
+        assert.notOk(component.querySelector('.flannel.flannel-hidden'));
 
         Simulate.click(component.querySelector('.panel-btn'));
-        expect(component.querySelector('.flannel.flannel-hidden')).to.exist;
+        assert.ok(component.querySelector('.flannel.flannel-hidden'));
       });
     });
 
@@ -203,12 +203,12 @@ describe('StoryPublicationStatus', () => {
       });
 
       it('calls storyPermissionsManager.makePublic', () => {
-        expect(makePublicStub.called).to.be.true;
-        expect(makePublicStub.returned(makePublicStubPromise)).to.be.true;
+        sinon.assert.called(makePublicStub);
+        assert.isTrue(makePublicStub.returned(makePublicStubPromise));
       });
 
       it('enables loading spinner', () => {
-        expect(component.querySelector('.btn-publish.btn-busy')).to.exist;
+        assert.ok(component.querySelector('.btn-publish.btn-busy'));
       });
 
       describe('when the request succeeds', () => {
@@ -216,7 +216,7 @@ describe('StoryPublicationStatus', () => {
           makePublicStubPromiseResolve();
 
           _.defer(() => {
-            expect(component.querySelector('.btn-publish.btn-busy')).to.not.exist;
+            assert.notOk(component.querySelector('.btn-publish.btn-busy'));
             done();
           });
         });
@@ -227,8 +227,8 @@ describe('StoryPublicationStatus', () => {
           makePublicStubPromiseReject();
 
           _.defer(() => {
-            expect(component.querySelector('.btn-publish.btn-busy')).to.not.exist;
-            expect(component.querySelector('.alert.error')).to.exist;
+            assert.notOk(component.querySelector('.btn-publish.btn-busy'));
+            assert.ok(component.querySelector('.alert.error'));
             done();
           });
         });
@@ -266,12 +266,12 @@ describe('StoryPublicationStatus', () => {
         });
 
         it('calls storyPermissionsManager.makePrivate', () => {
-          expect(makePrivateStub.called).to.be.true;
-          expect(makePrivateStub.returned(makePrivateStubPromise)).to.be.true;
+          sinon.assert.called(makePrivateStub);
+          assert.isTrue(makePrivateStub.returned(makePrivateStubPromise));
         });
 
         it('enables loading spinner', () => {
-          expect(component.querySelector('.btn-publish.btn-busy')).to.exist;
+          assert.ok(component.querySelector('.btn-publish.btn-busy'));
         });
 
         describe('when the request succeeds', () => {
@@ -279,7 +279,7 @@ describe('StoryPublicationStatus', () => {
             makePrivateStubPromiseResolve();
 
             _.defer(() => {
-              expect(component.querySelector('.btn-publish.btn-busy')).to.not.exist;
+              assert.notOk(component.querySelector('.btn-publish.btn-busy'));
               done();
             });
           });
@@ -290,8 +290,8 @@ describe('StoryPublicationStatus', () => {
             makePrivateStubPromiseReject();
 
             _.defer(() => {
-              expect(component.querySelector('.btn-publish.btn-busy')).to.not.exist;
-              expect(component.querySelector('.alert.error')).to.exist;
+              assert.notOk(component.querySelector('.btn-publish.btn-busy'));
+              assert.ok(component.querySelector('.alert.error'));
               done();
             });
           });

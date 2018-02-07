@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { assert } from 'chai';
 
 import Actions from 'editor/Actions';
 import Dispatcher from 'editor/Dispatcher';
@@ -33,11 +33,11 @@ describe('GoalTitleStore', () => {
     });
 
     it('sets isUpdatingGoalTitle to true', () => {
-      expect(goalTitleStore.isUpdatingGoalTitle()).to.equal(true);
+      assert.isTrue(goalTitleStore.isUpdatingGoalTitle());
     });
 
     it('sets hasErroredUpdatingGoalTitle to false', () => {
-      expect(goalTitleStore.hasErroredUpdatingGoalTitle()).to.equal(false);
+      assert.isFalse(goalTitleStore.hasErroredUpdatingGoalTitle());
     });
   });
 
@@ -47,11 +47,11 @@ describe('GoalTitleStore', () => {
     });
 
     it('sets isUpdatingGoalTitle to false', () => {
-      expect(goalTitleStore.isUpdatingGoalTitle()).to.equal(false);
+      assert.isFalse(goalTitleStore.isUpdatingGoalTitle());
     });
 
     it('sets hasErroredUpdatingGoalTitle to false', () => {
-      expect(goalTitleStore.hasErroredUpdatingGoalTitle()).to.equal(false);
+      assert.isFalse(goalTitleStore.hasErroredUpdatingGoalTitle());
     });
   });
 
@@ -61,11 +61,11 @@ describe('GoalTitleStore', () => {
     });
 
     it('sets isUpdatingGoalTitle to false', () => {
-      expect(goalTitleStore.isUpdatingGoalTitle()).to.equal(false);
+      assert.isFalse(goalTitleStore.isUpdatingGoalTitle());
     });
 
     it('sets hasErroredUpdatingGoalTitle to true', () => {
-      expect(goalTitleStore.hasErroredUpdatingGoalTitle()).to.equal(true);
+      assert.isTrue(goalTitleStore.hasErroredUpdatingGoalTitle());
     });
   });
 });

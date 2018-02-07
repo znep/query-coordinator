@@ -1,3 +1,5 @@
+import { assert } from 'chai';
+
 import Actions from 'editor/Actions';
 import Dispatcher from 'editor/Dispatcher';
 import Store, {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';

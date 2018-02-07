@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import Actions from 'editor/Actions';
 import Dispatcher from 'editor/Dispatcher';

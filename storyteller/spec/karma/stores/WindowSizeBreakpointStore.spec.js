@@ -1,4 +1,6 @@
 import $ from 'jquery';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import Constants from 'editor/Constants';
 import WindowSizeBreakpointStore from 'editor/stores/WindowSizeBreakpointStore';
@@ -42,7 +44,7 @@ describe('WindowSizeBreakpointStore', function() {
   }
 
   beforeEach(function() {
-    sinon.stub($.fn, 'resize', function(windowResizeCallback) {
+    sinon.stub($.fn, 'resize').callsFake(function(windowResizeCallback) {
       if (typeof windowResizeCallback === 'function') {
         resizeCallback = windowResizeCallback;
       }

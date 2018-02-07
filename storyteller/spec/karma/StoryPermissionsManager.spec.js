@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import Actions from '../../app/assets/javascripts/editor/Actions';
 import StoryStore from '../../app/assets/javascripts/editor/stores/StoryStore';

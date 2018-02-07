@@ -1,6 +1,9 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
+import { stubConsoleError } from '../consoleStub';
 import { $transient } from '../TransientElement';
 import StorytellerUtils from 'StorytellerUtils';
 import 'editor/block-component-renderers/componentStoryTile';
@@ -111,6 +114,8 @@ describe('componentStoryTile jQuery plugin', function() {
   });
 
   describe('when there is no story with that 4x4', function() {
+    stubConsoleError();
+
     stubApiAndCreateComponentWith(404, {}, validComponentData);
 
     it('should render an error message', function() {
@@ -181,9 +186,9 @@ describe('componentStoryTile jQuery plugin', function() {
 
       it('should render the specified  image', function() {
 
-        assert.equal(
+        assert.include(
           $component.find('.story-tile-image').css('background-image'),
-          'url(about:blank)'
+          'about:blank'
         );
       });
     });

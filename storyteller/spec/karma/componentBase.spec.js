@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import $ from 'jquery';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import Actions from 'editor/Actions';
 import { $transient } from './TransientElement';

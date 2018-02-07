@@ -1,3 +1,5 @@
+import { expect } from 'chai';
+
 import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
 import MoveComponentStore, {__RewireAPI__ as MoveComponentStoreAPI} from 'editor/stores/MoveComponentStore';
 import Actions from 'editor/Actions';

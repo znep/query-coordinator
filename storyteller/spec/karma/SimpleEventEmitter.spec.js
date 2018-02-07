@@ -1,3 +1,6 @@
+import sinon from 'sinon';
+import { assert } from 'chai';
+
 import SimpleEventEmitter from '../../app/assets/javascripts/editor/SimpleEventEmitter';
 
 describe('SimpleEventEmitter', function() {

@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
 
 import { $transient } from '../TransientElement';
 import 'editor/block-component-renderers/componentEmbeddedHtml';
@@ -10,7 +11,7 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
   var validComponentData = {
     type: 'embeddedHtml',
     value: {
-      url: 'https://imageuploads.com/embedded_fragment.html',
+      url: 'https://example.com/embedded_fragment.html',
       title: 'my title',
       documentId: '4567',
       layout: {
@@ -103,7 +104,7 @@ describe('componentEmbeddedHtml jQuery plugin', function() {
 
       it('should update', function() {
         var updatedComponentData = _.cloneDeep(validComponentData);
-        updatedComponentData.value.url = 'https://updated.imageuploads.com/embedded_fragment.html';
+        updatedComponentData.value.url = 'https://updated.example.com/embedded_fragment.html';
         updatedComponentData.value.title = 'new title';
 
         $component.componentEmbeddedHtml(getProps({

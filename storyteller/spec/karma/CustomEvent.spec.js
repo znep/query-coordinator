@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { assert } from 'chai';
 import { $transient } from './TransientElement';
 import CustomEvent from '../../app/assets/javascripts/CustomEvent';
 
@@ -17,7 +18,7 @@ describe('CustomEvent', function() {
       $('.listener').on('test-event', function(e) {
         assert.isFalse(e.bubbles, 'bubbles is false');
         assert.isFalse(e.cancelable, 'cancelable is false');
-        assert.isUndefined(e.originalEvent.detail, 'detail is undefined');
+        assert.notOk(e.originalEvent.detail, 'detail should be blank');
         done();
       });
 

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { assert } from 'chai';
 
 import Actions from '../../app/assets/javascripts/editor/Actions';
 import ErrorReporter from '../../app/assets/javascripts/services/ErrorReporter';

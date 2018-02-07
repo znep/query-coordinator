@@ -1,4 +1,5 @@
 import { Simulate } from 'react-dom/test-utils';
+import sinon from 'sinon';
 
 import renderComponent from './renderComponent';
 

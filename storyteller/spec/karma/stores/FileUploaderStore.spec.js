@@ -1,3 +1,6 @@
+import sinon from 'sinon';
+import { assert } from 'chai';
+
 import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
 import I18n from 'editor/I18n';
 import Actions from 'editor/Actions';

@@ -1,4 +1,6 @@
 import $ from 'jquery';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import { $transient } from './TransientElement';
 import StorytellerUtils from '../../app/assets/javascripts/StorytellerUtils';
@@ -852,7 +854,8 @@ describe('StorytellerUtils', function() {
           // end up with rounded numbers around 15 digits. These tests basically only check that there
           // has not been a regression resulting in the output of the function being completely wrong
           // (e.g. undefined as opposed to a number-looking string).
-          assert.equal(StorytellerUtils.formatValueWithoutRounding(-1000000000000000.00), '-1000T');
+          // Some of these checks use match() due to browser differences.
+          assert.match(StorytellerUtils.formatValueWithoutRounding(-1000000000000000.00), /-1,?000T/);
           assert.equal(StorytellerUtils.formatValueWithoutRounding(-99999999999999.999), '-100T');
           assert.equal(StorytellerUtils.formatValueWithoutRounding(-99959999999999.599), '-99.9T');
           assert.equal(StorytellerUtils.formatValueWithoutRounding(-99950999999999.509), '-99.9T');
@@ -867,7 +870,7 @@ describe('StorytellerUtils', function() {
           assert.equal(StorytellerUtils.formatValueWithoutRounding(99950999999999.509), '99.9T');
           assert.equal(StorytellerUtils.formatValueWithoutRounding(99959999999999.599), '99.9T');
           assert.equal(StorytellerUtils.formatValueWithoutRounding(99999999999999.999), '100T');
-          assert.equal(StorytellerUtils.formatValueWithoutRounding(1000000000000000.00), '1000T');
+          assert.match(StorytellerUtils.formatValueWithoutRounding(1000000000000000.00), /1,?000T/);
         });
       });
     });
@@ -880,7 +883,7 @@ describe('StorytellerUtils', function() {
     ];
 
     beforeEach(function() {
-      sinon.stub(StorytellerUtils, 'fetchDomainConfigurations', function() {
+      sinon.stub(StorytellerUtils, 'fetchDomainConfigurations').callsFake(function() {
         return Promise.resolve(_.cloneDeep(fakeDomainConfigurationsResponse));
       });
     });

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { assert } from 'chai';
 
 import Actions from 'editor/Actions';
 import Dispatcher from 'editor/Dispatcher';

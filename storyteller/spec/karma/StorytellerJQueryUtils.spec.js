@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import { $transient } from './TransientElement';
 import '../../app/assets/javascripts/editor/StorytellerJQueryUtils';

@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import { $transient } from '../TransientElement';
 import I18nMocker from '../I18nMocker';
@@ -89,7 +91,7 @@ describe('componentGoalTile jQuery plugin', function() {
 
   before(function() {
     componentGoalTileAPI.__Rewire__('I18n', I18nMocker);
-    sinon.stub(StorytellerUtils, 'fetchDomainStrings', function() {
+    sinon.stub(StorytellerUtils, 'fetchDomainStrings').callsFake(function() {
       return Promise.resolve(fakeDomainStrings);
     });
   });

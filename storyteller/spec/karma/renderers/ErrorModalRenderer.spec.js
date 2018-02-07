@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import Actions from 'editor/Actions';
 import Dispatcher from 'editor/Dispatcher';
@@ -61,7 +63,7 @@ describe('ErrorModalRenderer', function() {
       }
     });
 
-    sinon.stub($.fn, 'modal', _.noop);
+    sinon.stub($.fn, 'modal');
 
     new ErrorModalRenderer(); //eslint-disable-line no-new
   });

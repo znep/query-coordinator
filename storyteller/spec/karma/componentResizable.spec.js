@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import Unidragger from 'unidragger';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import { $transient } from './TransientElement';
 import {__RewireAPI__ as componentResizableAPI} from '../../app/assets/javascripts/editor/componentResizable';

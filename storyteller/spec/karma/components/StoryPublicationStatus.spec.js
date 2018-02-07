@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import moment from 'moment-timezone';
 import { Simulate } from 'react-dom/test-utils';
+import sinon from 'sinon';
+import { expect } from 'chai';
 
 import renderComponent from '../renderComponent';
 import I18nMocker from '../I18nMocker';

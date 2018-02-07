@@ -1,6 +1,9 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
+import { stubConsoleError } from '../consoleStub';
 import { $transient } from '../TransientElement';
 import I18nMocker from '../I18nMocker';
 import {__RewireAPI__ as componentSocrataVisualizationVizCanvasAPI} from 'editor/block-component-renderers/componentSocrataVisualizationVizCanvas';
@@ -190,6 +193,8 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
       });
 
       describe('when stored rendered vif becomes unparsable', () => {
+        stubConsoleError();
+
         it('renders error', () => {
           $component.attr('data-rendered-vif', 'unparseable');
           $component.componentSocrataVisualizationVizCanvas(getProps({ componentData: validComponentData }));
@@ -203,6 +208,7 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
     });
 
     describe('when the viz-canvas view returns unauthorized', () => {
+      stubConsoleError();
       stubApiAndCreateComponentWith(403);
 
       it('does not render visualization', () => {
@@ -218,6 +224,7 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
     });
 
     describe('when the viz-canvas view returns not found', () => {
+      stubConsoleError();
       stubApiAndCreateComponentWith(404);
 
       it('does not render visualization', () => {
@@ -233,6 +240,7 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
     });
 
     describe('when the viz-canvas view returns another error', () => {
+      stubConsoleError();
       stubApiAndCreateComponentWith(401);
 
       it('does not render visualization', () => {
@@ -248,6 +256,7 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
     });
 
     describe('when the viz-canvas view does not contain the referenced vif', () => {
+      stubConsoleError();
       let componentDataWithWrongVifId = _.cloneDeep(validComponentData);
       componentDataWithWrongVifId.value.dataset.vifId = 'not-the-right-id-at-all';
 

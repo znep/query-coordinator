@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import { $transient } from '../TransientElement';
 import 'editor/block-component-renderers/componentSocrataVisualizationTimelineChart';
@@ -62,7 +64,7 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
     var socrataTimelineChartStub;
 
     beforeEach(function() {
-      socrataTimelineChartStub = sinon.stub($.fn, 'socrataSvgTimelineChart', function() { return this; });
+      socrataTimelineChartStub = sinon.stub($.fn, 'socrataSvgTimelineChart').callsFake(function() { return this; });
       $component = $component.componentSocrataVisualizationTimelineChart(getProps());
     });
 

@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import _ from 'lodash';
 import React, { Component } from 'react';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import { FeatureFlags } from 'common/feature_flags';
 
@@ -262,13 +264,12 @@ describe('AssetSelectorRenderer', function() {
 
       beforeEach(function() {
         // lotsa stubs!
-        isUploadingFileStub = sinon.stub(assetSelectorStoreMock, 'isUploadingFile', _.constant(true));
-        isHTMLFragmentStub = sinon.stub(assetSelectorStoreMock, 'isHTMLFragment', _.constant(true));
-        fileByIdStub = sinon.stub(
-          fileUploaderStoreMock,
-          'fileById',
-          _.constant({raw: true, status: STATUS.COMPLETED, resource: {}})
-        );
+        isUploadingFileStub = sinon.stub(assetSelectorStoreMock, 'isUploadingFile').
+          callsFake(_.constant(true));
+        isHTMLFragmentStub = sinon.stub(assetSelectorStoreMock, 'isHTMLFragment').
+          callsFake(_.constant(true));
+        fileByIdStub = sinon.stub(fileUploaderStoreMock, 'fileById').
+          callsFake(_.constant({raw: true, status: STATUS.COMPLETED, resource: {}}));
 
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
@@ -302,7 +303,7 @@ describe('AssetSelectorRenderer', function() {
       var getComponentValueStub;
 
       beforeEach(function() {
-        getComponentValueStub = sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+        getComponentValueStub = sinon.stub(assetSelectorStoreMock, 'getComponentValue').callsFake(_.constant({}));
 
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
@@ -358,8 +359,8 @@ describe('AssetSelectorRenderer', function() {
     // });
 
     it('dispatches `ASSET_SELECTOR_TOGGLE_IMAGE_WINDOW_TARGET` when new window checkbox is clicked', function(done) {
-      sinon.stub(assetSelectorStoreMock, 'getComponentType', _.constant('image'));
-      sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+      sinon.stub(assetSelectorStoreMock, 'getComponentType').callsFake(_.constant('image'));
+      sinon.stub(assetSelectorStoreMock, 'getComponentValue').callsFake(_.constant({}));
 
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
@@ -376,8 +377,8 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('dispatches `ASSET_SELECTOR_TOGGLE_STORY_WINDOW_TARGET` when new window checkbox is clicked', function(done) {
-      sinon.stub(assetSelectorStoreMock, 'getComponentType', _.constant('story.tile'));
-      sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+      sinon.stub(assetSelectorStoreMock, 'getComponentType').callsFake(_.constant('story.tile'));
+      sinon.stub(assetSelectorStoreMock, 'getComponentValue').callsFake(_.constant({}));
 
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
@@ -394,8 +395,8 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('dispatches `ASSET_SELECTOR_TOGGLE_GOAL_WINDOW_TARGET` when new window checkbox is clicked', function(done) {
-      sinon.stub(assetSelectorStoreMock, 'getComponentType', _.constant('goal.tile'));
-      sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+      sinon.stub(assetSelectorStoreMock, 'getComponentType').callsFake(_.constant('goal.tile'));
+      sinon.stub(assetSelectorStoreMock, 'getComponentValue').callsFake(_.constant({}));
 
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
@@ -474,8 +475,8 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('renders an image preview with a description (alt attribute) container', function() {
-      var getComponentTypeStub = sinon.stub(assetSelectorStoreMock, 'getComponentType', _.constant('image'));
-      var getComponentValueStub = sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+      var getComponentTypeStub = sinon.stub(assetSelectorStoreMock, 'getComponentType').callsFake(_.constant('image'));
+      var getComponentValueStub = sinon.stub(assetSelectorStoreMock, 'getComponentValue').callsFake(_.constant({}));
 
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
@@ -923,7 +924,10 @@ describe('AssetSelectorRenderer', function() {
         });
 
         it('sets modalFooterChildren', function() {
-          assert.equal(CommonAssetSelectorMock.lastProps.modalFooterChildren.props.className, 'common-asset-selector-modal-footer-button-group');
+          assert.equal(
+            CommonAssetSelectorMock.lastProps.modalFooterChildren.props.className,
+            'common-asset-selector-modal-footer-button-group'
+          );
         });
 
         it('sets showBackButton', function() {
@@ -937,7 +941,7 @@ describe('AssetSelectorRenderer', function() {
       describe('an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
         var tableStub;
         beforeEach(function() {
-          tableStub = sinon.stub($.fn, 'componentSocrataVisualizationTable', _.noop);
+          tableStub = sinon.stub($.fn, 'componentSocrataVisualizationTable');
 
           dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
@@ -1108,17 +1112,17 @@ describe('AssetSelectorRenderer', function() {
 
             if (provider === 'IMAGE') {
               blockId = StandardMocks.imageBlockId;
-              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex', function() {
+              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex').callsFake(function() {
                 return {type: 'image', value: {url: imageUrl}};
               });
             } else if (provider === 'HERO') {
               blockId = StandardMocks.heroBlockId;
-              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex', function() {
+              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex').callsFake(function() {
                 return {type: 'hero', value: {url: imageUrl}};
               });
             } else if (provider === 'AUTHOR') {
               blockId = StandardMocks.authorBlockId;
-              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex', function() {
+              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex').callsFake(function() {
                 return {type: 'author', value: {image: {url: imageUrl}}};
               });
             }

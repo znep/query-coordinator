@@ -1,6 +1,6 @@
 namespace :karma do
   task :phantomjs do
-    cmd = 'RAILS_ENV=karma ./node_modules/karma/bin/karma start spec/karma/karma.conf.js --browsers PhantomJS --singleRun true --reporters=dots,coverage'
+    cmd = 'RAILS_ENV=karma ./node_modules/karma/bin/karma start spec/karma/karma.conf.js --browsers PhantomJS --singleRun true --reporters=dots'
     unless system(cmd)
       fail("Test run failed with exit code: #{$?.exitstatus}")
     end

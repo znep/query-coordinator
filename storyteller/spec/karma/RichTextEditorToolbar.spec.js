@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { assert } from 'chai';
 import RichTextEditorToolbar from '../../app/assets/javascripts/editor/RichTextEditorToolbar.js';
 
 describe('RichTextEditorToolbar', function() {

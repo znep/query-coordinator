@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import sinon from 'sinon';
 
 export default function() {
   var content = 'MOCKED BY SquireMocker';

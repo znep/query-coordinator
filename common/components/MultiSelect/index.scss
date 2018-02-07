@@ -100,7 +100,7 @@ span.multiselect-search-icon {
   padding-right: 0;
 
   & span svg {
-    use, polygon {
+    path {
       fill: $primary-light;
       transition: fill 0.3s;
     }
@@ -108,7 +108,7 @@ span.multiselect-search-icon {
 
   &:hover {
     & span svg {
-      use, polygon {
+      path {
         fill: $multiselect-remove-icon-hover-color;
       }
     }

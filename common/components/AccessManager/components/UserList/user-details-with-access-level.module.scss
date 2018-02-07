@@ -16,14 +16,14 @@
   margin-left: 26px;
   margin-top: 8px;
 
-  & svg use, & svg polygon {
-    fill: $grey !important;
+  & svg path  {
+    fill: $grey;
     transition: fill 0.3s;
   }
 
   &:hover {
-    & svg use, & svg polygon {
-      fill: #a17b19 !important;
+    & svg path {
+      fill: #a17b19;
     }
   }
 }

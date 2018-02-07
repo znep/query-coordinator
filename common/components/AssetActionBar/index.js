@@ -24,47 +24,7 @@ class AssetActionBar extends Component {
       throw new Error('We should not have gotten here without a currentUser.');
     }
 
-    this.grantedPermissionTo = {
-      view: false,
-      edit: false,
-      manage: false
-    };
-
-    const isGrantedMutationRights = () => {
-      const MUTATION_RIGHTS = ['add', 'delete', 'write', 'update_view'];
-      return _.intersection(MUTATION_RIGHTS, this.currentView.rights).length > 0;
-    };
-
-    if (this.currentUser.id === this.currentView.owner.id) {
-      // Owner has all grants.
-      this.grantedPermissionTo = _.mapValues(this.grantedPermissionTo, _.constant(true));
-    } else if (isGrantedMutationRights()) {
-      // Mutation rights were granted by core.
-      this.grantedPermissionTo.edit = true;
-    } else {
-      // See: https://docs.google.com/spreadsheets/d/1oiN0gz-9TfQ_9WQxRBMVT8JkZOV5iH5X2tXrjkWMzGQ/edit#gid=2111165319
-      _.each(_.get(this.currentView, 'grants'), (grant) => {
-        if (grant.userId === this.currentUser.id) {
-          // Code repetition exists because of linting rules.
-          switch (grant.type.toLowerCase()) {
-            case 'owner':
-              this.grantedPermissionTo.manage = true;
-              this.grantedPermissionTo.edit = true;
-              this.grantedPermissionTo.view = true;
-              break;
-            case 'contributor':
-              this.grantedPermissionTo.edit = true;
-              this.grantedPermissionTo.view = true;
-              break;
-            case 'viewer':
-              this.grantedPermissionTo.view = true;
-              break;
-            default:
-              throw new Error(`found a grant type ${grant.type} that does not make sense`);
-          }
-        }
-      });
-    }
+    this.viewRights = _.fromPairs((this.currentView.rights || []).map((right) => [right, true]));
   }
 
   comprehendPublicationState() {
@@ -84,11 +44,12 @@ class AssetActionBar extends Component {
   render() {
     const assetName = _.get(this.currentView, 'name');
     const publicationState = this.comprehendPublicationState();
-    const { edit, manage } = this.grantedPermissionTo;
 
     const rightSideParts = [];
 
-    if (edit || manage) {
+    // This is essentially trying to ask, "Does the user have a view right other than 'view'?"
+    // Feel free to come up with a better way to ask that.
+    if (_.size(this.viewRights) > 1) {
       rightSideParts.push(
         <PublicationAction
           key="publication-action"
@@ -96,11 +57,12 @@ class AssetActionBar extends Component {
           currentViewName={assetName}
           currentViewType={this.currentView.viewType}
           currentViewUid={this.currentView.id}
-          allowedTo={this.grantedPermissionTo} />
+          isOwner={this.currentUser.id === this.currentView.owner.id}
+          viewRights={this.viewRights} />
       );
     }
 
-    if (manage) {
+    if (this.viewRights.grant) {
       rightSideParts.push(<div key="divider" className="divider" />);
       rightSideParts.push(<ManageAccessButton key="manage-access" />);
     }

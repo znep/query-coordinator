@@ -37,6 +37,7 @@ const paths = {
   lineWeight: 'series[0].mapOptions.lineWeight',
   mapCenterAndZoom: 'configuration.mapCenterAndZoom',
   mapFlyoutTitleColumnName: 'series[0].mapOptions.mapFlyoutTitleColumnName',
+  mapPitchAndBearing: 'configuration.mapPitchAndBearing',
   mapType: 'series[0].mapOptions.mapType',
   maxClusteringZoomLevel: 'series[0].mapOptions.maxClusteringZoomLevel',
   maxClusterSize: 'series[0].mapOptions.maxClusterSize',
@@ -545,6 +546,10 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.baseMapOpacity)) {
     dispatch(actions.setBaseMapOpacity(get(paths.baseMapOpacity)));
+  }
+
+  if (has(paths.mapPitchAndBearing)) {
+    dispatch(actions.setPitchAndBearing(get(paths.mapPitchAndBearing)));
   }
 
   dispatch(actions.setDatasetUid(get(paths.datasetUid)));

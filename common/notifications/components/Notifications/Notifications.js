@@ -308,9 +308,7 @@ class Notifications extends Component {
         currentUserRole,
         inProductTransientNotificationsEnabled,
         isSuperAdmin,
-        lockScrollbar,
         mapboxAccessToken,
-        scrollTop,
         showMyAlertPreference,
         showProductNotifications,
         showUserNotifications
@@ -330,7 +328,6 @@ class Notifications extends Component {
         unreadUserNotificationCount,
         viewOlderLink
       } = this.state;
-      const renderingOptions = { lockScrollbar, scrollTop };
 
       return (
         <div className="notifications-panel-wrapper">
@@ -353,7 +350,6 @@ class Notifications extends Component {
             onSeeNewUserNotifications={this.onSeeNewUserNotifications}
             onToggleReadUserNotification={this.onToggleReadUserNotification}
             openClearAllUserNotificationsPrompt={openClearAllUserNotificationsPrompt}
-            renderingOptions={renderingOptions}
             productNotifications={productNotifications}
             showProductNotifications={showProductNotifications}
             showProductNotificationsAsSecondaryPanel={showProductNotificationsAsSecondaryPanel}
@@ -409,8 +405,6 @@ Notifications.propTypes = {
   options: PropTypes.shape({
     currentUserRole: PropTypes.string,
     isSuperAdmin: PropTypes.bool.isRequired,
-    lockScrollbar: PropTypes.bool,
-    scrollTop: PropTypes.number,
     showProductNotifications: PropTypes.bool.isRequired,
     showMyAlertPreference: PropTypes.bool,
     inProductTransientNotificationsEnabled: PropTypes.bool.isRequired,
@@ -420,8 +414,6 @@ Notifications.propTypes = {
 
 Notifications.defaultProps = {
   options: {
-    lockScrollbar: PropTypes.false,
-    scrollTop: 0,
     showMyAlertPreference: false,
     inProductTransientNotificationsEnabled: false
   }

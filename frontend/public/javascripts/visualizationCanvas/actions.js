@@ -39,6 +39,12 @@ export const setMapCenterAndZoom = (data) => ({
   data
 });
 
+export const SET_MAP_PITCH_AND_BEARING = 'SET_MAP_PITCH_AND_BEARING';
+export const setMapPitchAndBearing = (data) => ({
+  type: SET_MAP_PITCH_AND_BEARING,
+  data
+});
+
 export const SET_MAP_NOTIFICATION_DISMISSED = 'SET_MAP_NOTIFICATION_DISMISSED';
 export const setMapNotificationDismissed = (data) => ({
   type: SET_MAP_NOTIFICATION_DISMISSED,

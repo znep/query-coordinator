@@ -150,41 +150,53 @@ module InternalHelper
     @module_notices.include?(feature)
   end
 
-  def bulk_feature_flag_update(flags, options = {})
-    flags.keep_if { |k, _| FeatureFlags.has?(k) }
+  def reset_feature_flags(options = {})
     domain_flags = @domain.feature_flags
-    enabling = flags.any? { |flag, value| domain_flags[flag] != value }
 
-    button_text = options.fetch(:enable_text, 'Enable') if enabling
-    button_text = options.fetch(:disable_text, 'Disable') unless enabling
-    prefix = enabling ? 'feature_flags' : 'reset_to_default'
-
-    button = one_button_form(url: update_feature_flags_path(domain_id: @domain.cname), text: button_text) do
-      flags.inject(nil) do |memo, (flag, value)|
-        html = hidden_field_tag("#{prefix}[#{flag}]", value)
-        if memo.nil? then memo = html else memo << html end
+    button = one_button_form(url: update_feature_flags_path(domain_id: @domain.cname), text: options.fetch(:bundle_name)) do
+      html = hidden_field_tag('bundle', options.fetch(:bundle_name))
+      domain_flags.keys.inject(html) do |memo, flag|
+        memo << hidden_field_tag("reset_to_default[#{flag}]")
       end
     end
 
     html = content_tag(:dt, button)
-    description = content_tag(:span, options.fetch(:feature_description))
-    warning = content_tag(
-      :div,
-      'Warning! Enabling will override any existing values, and resetting will not remember the previous values.',
-      :class => 'warning'
-    )
-    html << content_tag(:dd, description << warning)
+    description = content_tag(:span, options.fetch(:bundle_description))
+    html << content_tag(:dd, description << content_tag(:br))
   end
 
-  def bulk_module_feature_addition(features, options = {})
-    button = one_button_form(url: add_module_feature_path, text: options.fetch(:text)) do
+  def bulk_feature_flag_update(configuration, options = {})
+    flags = configuration[:flags]
+    flags.keep_if { |k, _| FeatureFlags.has?(k) }
+    domain_flags = @domain.feature_flags
+    enabling = flags.any? { |flag, value| domain_flags[flag.to_s] != value}
+
+    action = enabling ? "Enable #{configuration[:name]}" : "Reset from #{configuration[:name]}"
+
+    button = one_button_form(url: update_feature_flags_path(domain_id: @domain.cname), text: action) do
+      html = hidden_field_tag('bundle', action)
+      flags.inject(html) do |memo, (flag, value)|
+        html = hidden_field_tag("feature_flags[#{flag}]", value)
+        html << hidden_field_tag("reset_to_default[#{flag}]") if not enabling
+        memo << html
+      end
+    end
+
+    html = content_tag(:dt, button)
+    description = content_tag(:span, configuration[:description])
+    html << content_tag(:dd, description << content_tag(:br))
+  end
+
+  def bulk_module_feature_addition(configuration, options = {})
+    features = configuration[:features]
+    button = one_button_form(url: add_module_feature_path, text: "#{configuration[:name]}") do
       features.inject(''.html_safe) do |memo, feature|
         memo << hidden_field_tag('features_to_add[]', feature)
       end
     end
 
     html = content_tag(:dt, button)
-    html << content_tag(:dd, content_tag(:span, options.fetch(:feature_description)))
+    html << content_tag(:dd, content_tag(:span, configuration[:description]))
   end
 
   def remove_alias_button(_alias)

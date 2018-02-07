@@ -35,6 +35,7 @@ dataset-landing-page-collocate:
 
 op-measure:
 - op-measure/op-measure
+- visualizations-import-shim
 
 datasets-common:
 - common/datasets

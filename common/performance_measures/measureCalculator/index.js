@@ -5,6 +5,7 @@ import { SoqlDataProvider, SoqlHelpers } from 'common/visualizations/dataProvide
 import ReportingPeriods from '../lib/reportingPeriods';
 import { CalculationTypeNames } from '../lib/constants';
 import { assert, assertIsOneOfTypes } from 'common/js_utils';
+import { UID_REGEX } from 'common/http/constants';
 
 // Returns true if the given column can be used
 // with the given measure, false otherwise.
@@ -48,7 +49,7 @@ const setupSoqlDataProvider = (measure) => {
 /* Helper functions. Should use BigNumbers where possible. */
 
 const columnConditionWhereClause = (fieldName, columnCondition) => {
-  if (columnCondition) {
+  if (columnCondition && fieldName) {
     return SoqlHelpers.filterToWhereClauseComponent({
       columnName: fieldName,
       ...columnCondition
@@ -94,8 +95,12 @@ const excludeNullsFilter = (fieldName) => ({
 /* Measure types
  */
 
-export const calculateCountMeasure = async (errors, measure, dateRangeWhereClause) => {
-  const dataProvider = setupSoqlDataProvider(measure);
+export const calculateCountMeasure = async (
+  errors,
+  measure,
+  dateRangeWhereClause,
+  dataProvider = setupSoqlDataProvider(measure) // For test injection
+) => {
   const dateColumn = _.get(measure, 'metricConfig.dateColumn');
   const column = _.get(measure, 'metricConfig.arguments.column');
 
@@ -117,8 +122,12 @@ export const calculateCountMeasure = async (errors, measure, dateRangeWhereClaus
   return { errors, result: { value } };
 };
 
-export const calculateSumMeasure = async (errors, measure, dateRangeWhereClause) => {
-  const dataProvider = setupSoqlDataProvider(measure);
+export const calculateSumMeasure = async (
+  errors,
+  measure,
+  dateRangeWhereClause,
+  dataProvider = setupSoqlDataProvider(measure) // For test injection
+) => {
   const column = _.get(measure, 'metricConfig.arguments.column');
   const dateColumn = _.get(measure, 'metricConfig.dateColumn');
   const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces');
@@ -126,7 +135,13 @@ export const calculateSumMeasure = async (errors, measure, dateRangeWhereClause)
   let value = null;
 
   if (column && dataProvider && dateRangeWhereClause) {
-    value = (await sum(dataProvider, column, [dateRangeWhereClause])).toFixed(decimalPlaces);
+    const sumResult = await sum(dataProvider, column, [dateRangeWhereClause]);
+
+    // sum() will return null if there are no values to sum
+    value = _.isNil(sumResult) ? sumResult : sumResult.toFixed(decimalPlaces);
+    if (value === null) {
+      errors.notEnoughData = true;
+    }
   } else {
     errors.calculationNotConfigured = !column || !dateColumn;
   }
@@ -151,7 +166,14 @@ export const calculateRecentValueMeasure = async (errors, measure, endDate) => {
       `select ${valueColumn} where ${where} order by ${dateColumn} DESC limit 1`
     );
 
-    value = new BigNumber(_.values(data[0])[0]).toFixed(decimalPlaces);
+    value = _.get(data, [0, valueColumn], null);
+
+    if (_.isNil(value)) {
+      // There are no rows with non-null values for the selected date column
+      errors.noRecentValue = true;
+    } else {
+      value = new BigNumber(value).toFixed(decimalPlaces);
+    }
   } else {
     errors.calculationNotConfigured = !valueColumn || !dateColumn;
   }
@@ -163,7 +185,7 @@ export const calculateRateMeasure = async (
   errors,
   measure,
   dateRangeWhereClause,
-  dataProvider = setupSoqlDataProvider(measure)
+  dataProvider = setupSoqlDataProvider(measure) // For test injection
 ) => {
   const {
     aggregationType,
@@ -222,6 +244,7 @@ export const calculateRateMeasure = async (
             count(
               dataProvider, denominatorColumn, [denominatorColumnConditionWhereClause, dateRangeWhereClause]
             ) : null);
+
         break;
       }
       case CalculationTypeNames.SUM:
@@ -241,6 +264,10 @@ export const calculateRateMeasure = async (
     if (numerator) { numerator = new BigNumber(numerator); }
     if (denominator) { denominator = new BigNumber(denominator); }
 
+    if (numerator === null || denominator === null) {
+      errors.notEnoughData = true;
+    }
+
     const calculation = {};
     if (numerator) { calculation.numerator = numerator.toString(); }
     if (denominator) {
@@ -248,9 +275,13 @@ export const calculateRateMeasure = async (
       errors.dividingByZero = denominator.isZero();
     }
     if (numerator && denominator) {
-      calculation.value = numerator.dividedBy(denominator).
-        times(asPercent ? '100' : '1').
-        toFixed(decimalPlaces);
+      if (errors.dividingByZero) {
+        calculation.value = null;
+      } else {
+        calculation.value = numerator.dividedBy(denominator).
+          times(asPercent ? '100' : '1').
+          toFixed(decimalPlaces);
+      }
     } else {
       errors.calculationNotConfigured = true;
     }
@@ -291,7 +322,7 @@ export const calculateMeasure = async (measure, dateRange) => {
   // ... and if they did, does it give us a valid date range for today's value?
   errors.noReportingPeriodAvailable = !dateRange;
 
-  errors.dataSourceNotConfigured = _.isUndefined(_.get(measure, 'dataSourceLensUid'));
+  errors.dataSourceNotConfigured = !UID_REGEX.test(measure.dataSourceLensUid);
 
   // A blank dateRange can happen if:
   //   * The start date is in the future, or
@@ -333,6 +364,8 @@ export const calculateMeasure = async (measure, dateRange) => {
 //
 //   dividingByZero: Boolean (Rate measures only). Indicates the denominator is zero.
 //   dataSourceNotConfigured: Boolean. If set to true, indicates that the data source is not configured.
+//   noRecentValue: Boolean (Recent Value measures only). If set to true, the selected reference date column
+//     does not contain any non-null values.
 //   noReportingPeriodAvailable: Boolean. If set to true, indicates that no reporting period is usable
 //     (this can happen if the start date is in the future, or we're using closed reporting periods and
 //     no period has closed yet).
@@ -356,9 +389,11 @@ export const getMetricSeries = async (measure) => {
 
   return Promise.resolve(
     measureResultsPerReportingPeriod.map((measureResult, i) => {
-      const startDate = reportingPeriods[i].start.format();
+      const startDate = reportingPeriods[i].start.format('YYYY-MM-DDTHH:mm:ss.SSS');
+      const result = measureResult.result.value;
+      const value = _.isNil(result) ? result : parseFloat(result);
 
-      return [startDate, measureResult.result.value];
+      return [startDate, value];
     }),
   );
 };

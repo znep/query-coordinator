@@ -25,7 +25,7 @@ class AddUser extends Component {
     addSelectedUser: PropTypes.func.isRequired,
     addUsers: PropTypes.func.isRequired,
     currentSearchQuery: PropTypes.string,
-    onAccessLevelDropdownChanged: PropTypes.func.isRequired,
+    onAccessLevelDropdownChanged: PropTypes.func,
     hideAccessLevelDropdown: PropTypes.bool,
     removeSelectedUser: PropTypes.func.isRequired,
     searchResults: PropTypes.arrayOf(UserSearchResultPropType),
@@ -34,6 +34,7 @@ class AddUser extends Component {
   }
 
   static defaultProps = {
+    onAccessLevelDropdownChanged: () => {},
     hideAccessLevelDropdown: false
   }
 

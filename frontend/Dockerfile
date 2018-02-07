@@ -1,4 +1,4 @@
-FROM socrata/rails4-deps:2.3
+FROM socrata/rails4-deps:2.3.6
 
 ENV APP_BASE_DIR /opt
 ENV APP_DIR ${APP_BASE_DIR}/frontend

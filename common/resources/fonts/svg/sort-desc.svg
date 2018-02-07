@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 39.1 (31720) - http://www.bohemiancoding.com/sketch -->
-    <title>sort-desc</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="sort-desc" fill="#020302">
-            <path d="M746.1752,279.850009 L442.526342,279.850009 L442.526342,316.809882 L746.1752,316.809882 L746.1752,451.542172 L901.770356,295.932482 L746.1752,140.320327 L746.1752,279.850009 Z M122,897.219971 L343.059956,897.219971 L343.059956,128 L122,128 L122,897.219971 Z M403.14645,897.219971 L624.206405,897.219971 L624.206405,535.008285 L403.14645,535.008285 L403.14645,897.219971 Z M680.95086,897.219971 L902.012047,897.219971 L902.012047,705.611364 L680.95086,705.611364 L680.95086,897.219971 Z" id="Combined-Shape"></path>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M746.175 279.85H442.526v36.96h303.65v134.732l155.594-155.61L746.175 140.32v139.53zM122 897.22h221.06V128H122v769.22zm281.146 0h221.06V535.008h-221.06V897.22zm277.805 0h221.061V705.611H680.951V897.22z" fill="#020302" fill-rule="evenodd"/>
 </svg>

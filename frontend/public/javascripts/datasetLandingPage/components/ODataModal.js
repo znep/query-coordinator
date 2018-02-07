@@ -37,12 +37,13 @@ class ODataModal extends PureComponent {
 
           <section className="modal-content odata-description">
             <p className="small">{I18n.odata_modal.description}</p>
+            <p className="small tableau">{I18n.odata_modal.description_tableau}</p>
           </section>
 
           <section className="modal-content">
             <a
               className="btn btn-default btn-sm documentation-link"
-              href="https://dev.socrata.com/odata"
+              href="https://support.socrata.com/hc/en-us/articles/115005364207"
               target="_blank">
               <span className="icon-copy-document" />
               {I18n.odata_modal.developer_portal_button}

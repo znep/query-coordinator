@@ -32,7 +32,8 @@ function stubCharts() {
     'socrataSvgTimelineChart',
     'socrataSvgHistogram',
     'socrataSvgFeatureMap',
-    'socrataSvgRegionMap'
+    'socrataSvgRegionMap',
+    'socrataUnifiedMap'
   ];
 
   beforeEach(() => {
@@ -69,6 +70,26 @@ function updatesCenterAndZoom(props) {
       )
     );
     sinon.assert.calledWithExactly(props.onCenterAndZoomChanged, newValue);
+  });
+}
+
+function updatesPitchAndBearing(props) {
+  it('updates the VIF when SOCRATA_VISUALIZATION_PITCH_AND_BEARING_CHANGED is emitted', () => {
+    props.onPitchAndBearingChanged = sinon.spy();
+    const element = renderComponent(VisualizationPreview, props);
+
+    const pitchAndBearing = { pitch: 50, bearing: 30 };
+
+    element.dispatchEvent(
+      new window.CustomEvent(
+        'SOCRATA_VISUALIZATION_PITCH_AND_BEARING_CHANGED',
+        {
+          detail: pitchAndBearing,
+          bubbles: true
+        }
+      )
+    );
+    sinon.assert.calledWithExactly(props.onPitchAndBearingChanged, pitchAndBearing);
   });
 }
 
@@ -184,6 +205,19 @@ describe('VisualizationPreview', () => {
       rendersChartType(props, 'socrataSvgRegionMap');
       updatesCenterAndZoom(props);
     });
+
+    describe('when rendering a unifiedMap', () => {
+      const props = defaultProps();
+
+      _.set(props, 'vif.series[0].type', 'map');
+      _.set(props, 'vif.series[0].dataSource.dimension.columnName', 'example_dimension');
+      _.set(props, 'vif.series[0].dataSource.datasetUid', 'exam-ples');
+      _.set(props, 'vif.series[0].dataSource.domain', 'example.com');
+
+      rendersChartType(props, 'socrataUnifiedMap');
+      updatesCenterAndZoom(props);
+      updatesPitchAndBearing(props);
+    });
   });
 
   describe('shouldComponentUpdate', () => {
@@ -203,6 +237,7 @@ describe('VisualizationPreview', () => {
       _.set(props, 'vif.configuration.computedColumnName', '@computed_column');
       _.set(props, 'vif.configuration.shapefile.uid', 'four-four');
       _.set(props, 'vif.configuration.mapCenterAndZoom', { center: 10, zoom: 10 });
+      _.set(props, 'vif.configuration.mapPitchAndBearing', { pitch: 60, bearing: -60 });
       _.set(props, 'vif.series[0].dataSource.dimension.columnName', 'example_dimension');
       _.set(props, 'vif.series[0].dataSource.measure.aggregationFunction', 'sum');
       _.set(props, 'vif.series[0].dataSource.datasetUid', 'exam-ples');
@@ -220,6 +255,10 @@ describe('VisualizationPreview', () => {
         vif: {
           configuration: {
             computedColumnName: '@new_computed_column_name'
+          },
+          mapPitchAndBearing: {
+            pitch: 60,
+            bearing: -60
           }
         }
       });
@@ -228,12 +267,36 @@ describe('VisualizationPreview', () => {
       expect(shouldComponentUpdateSpy.returnValues[0]).to.equal(true);
     });
 
-    it('does not update when the VIF changes, and mapCenterAndZoom does', () => {
+    it('updates when the VIF changes, but mapPitchAndBearing does not', () => {
+      const newProps = _.merge({}, props, {
+        vif: {
+          configuration: {
+            computedColumnName: '@new_computed_column_name'
+          },
+          mapCenterAndZoom: {
+            center: 20,
+            zoom: 20
+          }
+        }
+      });
+
+      render(container, newProps);
+      expect(shouldComponentUpdateSpy.returnValues[0]).to.equal(true);
+    });
+
+    it('does not update when the VIF changes, and mapCenterAndZoom, mapPitchAndBearing does', () => {
       const newProps = _.merge({}, props, {
         vif: {
           configuration: {
             computedColumnName: '@new_computed_column_name',
-            mapCenterAndZoom: { center: 20, zoom: 20 }
+            mapCenterAndZoom: {
+              center: 20,
+              zoom: 20
+            },
+            mapPitchAndBearing: {
+              pitch: 60,
+              bearing: -60
+            }
           }
         }
       });
@@ -242,11 +305,18 @@ describe('VisualizationPreview', () => {
       expect(shouldComponentUpdateSpy.returnValues[0]).to.equal(false);
     });
 
-    it('does not update when the VIF does not change, and mapCenterAndZoom does', () => {
+    it('does not update when the VIF does not change, and mapCenterAndZoom, mapPitchAndBearing does', () => {
       const newProps = _.merge({}, props, {
         vif: {
           configuration: {
-            mapCenterAndZoom: { center: 20, zoom: 20 }
+            mapCenterAndZoom: {
+              center: 20,
+              zoom: 20
+            },
+            mapPitchAndBearing: {
+              pitch: 60,
+              bearing: -60
+            }
           }
         }
       });
@@ -255,22 +325,44 @@ describe('VisualizationPreview', () => {
       expect(shouldComponentUpdateSpy.returnValues[0]).to.equal(false);
     });
 
-    it('updates when mapCenterAndZoom is undefined in the original VIF', () => {
-      _.unset(props, 'vif.configuration.mapCenterAndZoom');
-      const newProps = _.cloneDeep(props);
-      // make a minor change to the VIF
-      _.set(newProps, 'vif.series[0].dataSource.dimension.columnName', 'something_new');
-      render(container, newProps);
-      expect(shouldComponentUpdateSpy.returnValues[0]).to.equal(true);
+    describe('mapCenterAndZoom', () => {
+      it('updates when mapCenterAndZoom is undefined in the original VIF', () => {
+        _.unset(props, 'vif.configuration.mapCenterAndZoom');
+        const newProps = _.cloneDeep(props);
+        // make a minor change to the VIF
+        _.set(newProps, 'vif.series[0].dataSource.dimension.columnName', 'something_new');
+        render(container, newProps);
+        expect(shouldComponentUpdateSpy.returnValues[0]).to.equal(true);
+      });
+
+      it('updates when the VIF changes and mapCenterAndZoom is undefined in the new VIF', () => {
+        const newProps = _.cloneDeep(props);
+        _.unset(newProps, 'vif.configuration.mapCenterAndZoom');
+        // make a minor change to the VIF
+        _.set(newProps, 'vif.series[0].dataSource.dimension.columnName', 'something_new');
+        render(container, newProps);
+        expect(shouldComponentUpdateSpy.returnValues[0]).to.equal(true);
+      });
     });
 
-    it('updates when the VIF changes and mapCenterAndZoom is undefined in the new VIF', () => {
-      const newProps = _.cloneDeep(props);
-      _.unset(newProps, 'vif.configuration.mapCenterAndZoom');
-      // make a minor change to the VIF
-      _.set(newProps, 'vif.series[0].dataSource.dimension.columnName', 'something_new');
-      render(container, newProps);
-      expect(shouldComponentUpdateSpy.returnValues[0]).to.equal(true);
+    describe('mapPitchAndBearing', () => {
+      it('updates when mapPitchAndBearing is undefined in the original VIF', () => {
+        _.unset(props, 'vif.configuration.mapPitchAndBearing');
+        const newProps = _.cloneDeep(props);
+        // make a minor change to the VIF
+        _.set(newProps, 'vif.series[0].dataSource.dimension.columnName', 'something_new');
+        render(container, newProps);
+        expect(shouldComponentUpdateSpy.returnValues[0]).to.equal(true);
+      });
+
+      it('updates when the VIF changes and mapPitchAndBearing is undefined in the new VIF', () => {
+        const newProps = _.cloneDeep(props);
+        _.unset(newProps, 'vif.configuration.mapPitchAndBearing');
+        // make a minor change to the VIF
+        _.set(newProps, 'vif.series[0].dataSource.dimension.columnName', 'something_new');
+        render(container, newProps);
+        expect(shouldComponentUpdateSpy.returnValues[0]).to.equal(true);
+      });
     });
   });
 });

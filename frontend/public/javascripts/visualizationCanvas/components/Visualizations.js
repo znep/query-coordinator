@@ -6,7 +6,8 @@ import { bindActionCreators } from 'redux';
 import VisualizationWrapper from './VisualizationWrapper';
 import {
   setMapCenterAndZoom,
-  setMapNotificationDismissed
+  setMapNotificationDismissed,
+  setMapPitchAndBearing
 } from '../actions';
 
 export class Visualizations extends Component {
@@ -17,7 +18,8 @@ export class Visualizations extends Component {
       isEditable,
       mapNotificationDismissed,
       onMapCenterAndZoomChange,
-      onMapNotificationDismiss
+      onMapNotificationDismiss,
+      onMapPitchAndBearingChange
     } = this.props;
 
     if (_.isEmpty(vifs)) {
@@ -37,7 +39,8 @@ export class Visualizations extends Component {
         mapNotificationDismissed: mapNotificationDismissed[vifIndex],
         displayShareButton: displayShareButtons,
         onMapCenterAndZoomChange,
-        onMapNotificationDismiss
+        onMapNotificationDismiss,
+        onMapPitchAndBearingChange
       };
 
       return <VisualizationWrapper {...props} />;
@@ -57,7 +60,8 @@ Visualizations.propTypes = {
   displayShareButtons: PropTypes.bool,
   mapNotificationDismissed: PropTypes.array,
   onMapCenterAndZoomChange: PropTypes.func,
-  onMapNotificationDismiss: PropTypes.func
+  onMapNotificationDismiss: PropTypes.func,
+  onMapPitchAndBearingChange: PropTypes.func
 };
 
 Visualizations.defaultProps = {
@@ -65,7 +69,8 @@ Visualizations.defaultProps = {
   displayShareButtons: false,
   mapNotificationDismissed: [],
   onMapCenterAndZoomChange: _.noop,
-  onMapNotificationDismiss: _.noop
+  onMapNotificationDismiss: _.noop,
+  onMapPitchAndBearingChange: _.noop
 };
 
 function mapStateToProps(state) {
@@ -75,7 +80,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     onMapCenterAndZoomChange: setMapCenterAndZoom,
-    onMapNotificationDismiss: setMapNotificationDismissed
+    onMapNotificationDismiss: setMapNotificationDismissed,
+    onMapPitchAndBearingChange: setMapPitchAndBearing
   }, dispatch);
 }
 

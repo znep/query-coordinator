@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { components } from 'common/visualizations';
 
-import { setCenterAndZoom, setDimensionLabelAreaSize } from '../actions';
+import { setCenterAndZoom, setDimensionLabelAreaSize, setPitchAndBearing } from '../actions';
 import {
   hasVisualizationType,
   hasVisualizationDimension,
@@ -39,6 +39,7 @@ export class VisualizationPreview extends Component {
     _.bindAll(this, [
       'onCenterAndZoomChanged',
       'onDimensionLabelAreaSizeChanged',
+      'onPitchAndBearingChanged',
       'isVifValid',
       'renderVisualization'
     ]);
@@ -48,12 +49,16 @@ export class VisualizationPreview extends Component {
     $(this.visualizationPreview).
       on('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
     $(this.visualizationPreview).
+      on('SOCRATA_VISUALIZATION_PITCH_AND_BEARING_CHANGED', this.onPitchAndBearingChanged);
+    $(this.visualizationPreview).
       on('SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED', this.onDimensionLabelAreaSizeChanged);
   }
 
   componentWillUnmount() { // eslint-disable-line react/sort-comp
     $(this.visualizationPreview).
       off('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', this.onCenterAndZoomChanged);
+    $(this.visualizationPreview).
+      off('SOCRATA_VISUALIZATION_PITCH_AND_BEARING_CHANGED', this.onPitchAndBearingChanged);
     $(this.visualizationPreview).
       off('SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED', this.onDimensionLabelAreaSizeChanged);
   }
@@ -68,17 +73,26 @@ export class VisualizationPreview extends Component {
     // care of that for us.
     const nextMapCenterAndZoom = _.get(nextProps.vif, 'configuration.mapCenterAndZoom');
     const mapCenterAndZoom = _.get(vif, 'configuration.mapCenterAndZoom');
+    const nextMapPitchAndBearing = _.get(nextProps.vif, 'configuration.mapPitchAndBearing');
+    const mapPitchAndBearing = _.get(vif, 'configuration.mapPitchAndBearing');
 
-    if (_.isUndefined(nextMapCenterAndZoom) || _.isUndefined(mapCenterAndZoom)) {
+    if (_.isUndefined(nextMapCenterAndZoom) || _.isUndefined(mapCenterAndZoom)
+      || _.isUndefined(nextMapPitchAndBearing) || _.isUndefined(mapPitchAndBearing)) {
       return vifChanged;
     } else {
-      return vifChanged && _.isEqual(mapCenterAndZoom, nextMapCenterAndZoom);
+      return vifChanged && _.isEqual(mapCenterAndZoom, nextMapCenterAndZoom) &&
+        _.isEqual(mapPitchAndBearing, nextMapPitchAndBearing);
     }
   }
 
   onCenterAndZoomChanged(event) {
     const centerAndZoom = _.get(event, 'originalEvent.detail');
     this.props.onCenterAndZoomChanged(centerAndZoom);
+  }
+
+  onPitchAndBearingChanged(event) {
+    const pitchAndBearing = _.get(event, 'originalEvent.detail');
+    this.props.onPitchAndBearingChanged(pitchAndBearing);
   }
 
   onDimensionLabelAreaSizeChanged(event) {
@@ -155,6 +169,9 @@ function mapDispatchToProps(dispatch) {
     },
     onDimensionLabelAreaSizeChanged(width) {
       dispatch(setDimensionLabelAreaSize(width));
+    },
+    onPitchAndBearingChanged(pitchAndBearing) {
+      dispatch(setPitchAndBearing(pitchAndBearing));
     }
   };
 }

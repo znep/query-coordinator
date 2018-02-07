@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 
 import { assert, assertIsNumber, assertIsString, assertIsOneOfTypes } from 'common/js_utils';
 import { CalculationTypeNames, EditTabs } from 'common/performance_measures/lib/constants';
@@ -66,6 +67,7 @@ const setCalculationType = (state, type) => {
 const resetDataSource = (state) => {
   const { measure, errors } = state;
   const defaultCalculationType = CalculationTypeNames.COUNT;
+  const reportingPeriod = _.get(measure, 'metricConfig.reportingPeriod', {});
 
   return {
     ...state,
@@ -73,6 +75,9 @@ const resetDataSource = (state) => {
       ...measure,
       dataSourceLensUid: null,
       metricConfig: {
+        reportingPeriod: {
+          ...reportingPeriod
+        },
         type: defaultCalculationType
       }
     },
@@ -198,7 +203,7 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
     case actions.editor.SET_AGGREGATION_TYPE: {
       assertIsOneOfTypes(action.aggregationType, 'string');
       assert(
-        _.get(state, 'measure.metricConfig.type') === 'rate',
+        _.get(state, 'measure.metricConfig.type') === CalculationTypeNames.RATE,
         'This action only makes sense for rate measures today.'
       );
 
@@ -207,6 +212,11 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
         'metricConfig.arguments.aggregationType',
         action.aggregationType
       );
+
+      // For SUM aggregation types, we need to reset the includeNullValues argument.
+      if (action.aggregationType === CalculationTypeNames.SUM) {
+        _.set(newState, 'measure.metricConfig.arguments.denominatorIncludeNullValues', true);
+      }
 
       // Changing aggregation type changes the set of columns that are valid for the numerator
       // and denominator (i.e., it makes sense to count on a date column, but it does not make
@@ -339,6 +349,12 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       const currentType = _.get(nextState, 'measure.metricConfig.type');
       if (_.isEmpty(currentType)) {
         nextState = setCalculationType(nextState, CalculationTypeNames.COUNT);
+      }
+
+      const currentStartDate = _.get(nextState, 'measure.metricConfig.reportingPeriod.startDate');
+      if (_.isNil(currentStartDate)) {
+        const defaultStartDate = moment().startOf('year').format('YYYY-MM-DD');
+        _.set(nextState, 'measure.metricConfig.reportingPeriod.startDate', defaultStartDate);
       }
 
       return nextState;

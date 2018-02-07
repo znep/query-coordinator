@@ -5,5 +5,5 @@ export default PropTypes.shape({
   owner: PropTypes.shape({
     displayName: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired
-  }).isRequired
+  })
 });

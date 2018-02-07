@@ -31,12 +31,13 @@ const makePrivateByUid = (uid) => {
 
 class PublicationAction extends Component {
   static propTypes = {
-    allowedTo: PropTypes.object.isRequired,
     currentViewName: PropTypes.string,
     currentViewType: PropTypes.string,
     currentViewUid: SocrataUid.isRequired,
+    isOwner: PropTypes.bool,
     publicationState: PropTypes.oneOf(['draft', 'pending', 'published']).isRequired,
-    publishedViewUid: SocrataUid
+    publishedViewUid: SocrataUid,
+    viewRights: PropTypes.object.isRequired
   };
 
   static i18nScope = 'shared.components.asset_action_bar.publication_action';
@@ -44,22 +45,22 @@ class PublicationAction extends Component {
   // This function is called twice and isn't memoized.
   // If you add anything remotely complex, you'll want to add memoization, too.
   moreActionsAllowed() {
-    const { allowedTo, publicationState, publishedViewUid } = this.props;
+    const { isOwner, publicationState, publishedViewUid, viewRights } = this.props;
 
     const currentUserRights = _.get(window, 'socrata.currentUser.rights', []);
 
     return {
-      deleteDataset: allowedTo.manage && publicationState === 'published',
-      discardDraft: allowedTo.manage && publicationState === 'draft',
+      deleteDataset: viewRights.delete && publicationState === 'published',
+      discardDraft: viewRights.delete && publicationState === 'draft',
       // We're not including Revert for now as per ChristianH.
       revert: false, // publicationState === 'draft' && publishedViewUid,
       view: publishedViewUid,
-      changeAudience: allowedTo.manage && publicationState === 'published',
+      changeAudience: isOwner && publicationState === 'published',
 
       // yes, this is the only way people can change owners right now
       // we will probably want to make this more robust in the future
       transferOwnership: currentUserRights.includes('chown_datasets'),
-      withdrawApprovalRequest: allowedTo.edit && publicationState === 'pending'
+      withdrawApprovalRequest: viewRights.write && publicationState === 'pending'
     };
   }
 
@@ -212,33 +213,26 @@ class PublicationAction extends Component {
   }
 
   renderPrimaryActionButton() {
-    const { currentViewUid, currentViewType, allowedTo, publicationState } = this.props;
+    const { currentViewUid, currentViewType, publicationState, viewRights } = this.props;
 
     const actionText = I18n.t(`${publicationState}.primary_action_text`, {
       scope: PublicationAction.i18nScope
     });
 
-    if (allowedTo.edit) {
-      if (_.includes(['published', 'pending'], publicationState)) {
-        return (<EditButton
-          currentViewUid={currentViewUid}
-          currentViewType={currentViewType} />);
-      } else if (publicationState === 'draft') {
-        return (
-          <button
-            className="btn btn-primary btn-dark"
-            onClick={() => window.socrata.showAccessManager('publish')}>
-            {actionText}
-          </button>
-        );
-      }
-    }
 
-    return (
-      <button className="btn btn-primary btn-dark">
-        {actionText}
-      </button>
-    );
+    if (viewRights.write && _.includes(['published', 'pending'], publicationState)) {
+      return (<EditButton
+        currentViewUid={currentViewUid}
+        currentViewType={currentViewType} />);
+    } else if (viewRights.update_view && publicationState === 'draft') {
+      return (
+        <button
+          className="btn btn-primary btn-dark"
+          onClick={() => window.socrata.showAccessManager('publish')}>
+          {actionText}
+        </button>
+      );
+    }
   }
 
   render() {

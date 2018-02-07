@@ -13,7 +13,7 @@ function mapStateToProps({ entities }, { params }) {
   const revision = _.find(entities.revisions, { revision_seq: _.toNumber(params.revisionSeq) });
 
   return {
-    name: _.values(entities.views)[0].name,
+    name: _.get(revision, 'metadata.name', _.values(entities.views)[0].name),
     showPreviewLink,
     revision
   };

@@ -5,7 +5,6 @@ import includes from 'lodash/fp/includes';
 import noop from 'lodash/fp/noop';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { createNewRole, endRenameRole } from '../../actions';
 import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
 import { spring } from 'react-motion';
@@ -29,15 +28,11 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      cancelCreateNewRole: createNewRole.cancel,
-      saveRole: (maxCharacterCount, role) => endRenameRole({ maxCharacterCount, role }),
-      createRole: () => createNewRole()
-    },
-    dispatch
-  );
+const mapDispatchToProps = {
+  cancelCreateNewRole: createNewRole.cancel,
+  saveRole: (maxCharacterCount, role) => endRenameRole({ maxCharacterCount, role }),
+  createRole: createNewRole
+};
 
 class EditCustomRoleModal extends Component {
   render() {

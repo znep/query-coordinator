@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch -->
-    <title>italic2</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="italic2" fill="#000000">
-            <polygon id="Shape" points="895.142857 65 895.142857 128.928571 767.285714 128.928571 447.642857 896.071429 575.5 896.071429 575.5 960 128 960 128 896.071429 255.857143 896.071429 575.5 128.928571 447.642857 128.928571 447.642857 65"></polygon>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M895.143 65v63.929H767.286L447.643 896.07H575.5V960H128v-63.929h127.857L575.5 128.93H447.643V65z" fill-rule="evenodd"/>
 </svg>

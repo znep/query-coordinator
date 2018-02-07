@@ -60,6 +60,16 @@ describe('LegendsAndFlyoutsPane', () => {
     });
   }
 
+  function shouldNotRendersEditableUnits() {
+    it('should not render the units one input', () => {
+      assert.isNull(component.querySelector('#units-one-0'));
+    });
+
+    it('should not render the units other input', () => {
+      assert.isNull(component.querySelector('#units-other-0'));
+    });
+  }
+
   function emitsEventsForUnits() {
     describe('when changing the units for one', () => {
       emitsEvent('#units-one-0', 'onChangeUnitOne');
@@ -256,24 +266,166 @@ describe('LegendsAndFlyoutsPane', () => {
   });
 
   describe('newMap', () => {
-    beforeEach(() => {
-      var renderedParts = render('map');
+    describe('pointMap', () => {
+      describe('pointAggregation: none', () => {
+        beforeEach(() => {
+          props = {};
 
-      component = renderedParts.component;
-      props = renderedParts.props;
-    });
+          _.set(
+            props,
+            'vifAuthoring.vifs.map.series[0].mapOptions.mapType',
+            'pointMap'
+          );
 
-    describe('rendering', () => {
-      rendersEditableUnits();
+          _.set(
+            props,
+            'vifAuthoring.vifs.map.series[0].mapOptions.pointAggregation',
+            'none'
+          );
 
-      it('should render a dropdown with columns', () => {
-        assert.isNotNull(component.querySelector('#flyout-title-column'));
+          var renderedParts = render('map', props);
+
+          component = renderedParts.component;
+          props = renderedParts.props;
+        });
+
+        describe('rendering', () => {
+          rendersEditableUnits();
+
+          it('should render a dropdown with columns', () => {
+            assert.isNotNull(component.querySelector('#flyout-title-column'));
+          });
+        });
+
+        describe('events', () => {
+          emitsEventsForUnits();
+          emitsEvent('#flyout-title-column .picklist-option', 'onSelectMapsFlyoutTitle', 'click');
+        });
+      });
+
+      describe('pointAggregation: region_map', () => {
+        beforeEach(() => {
+          props = {};
+
+          _.set(
+            props,
+            'vifAuthoring.vifs.map.series[0].mapOptions.mapType',
+            'pointMap'
+          );
+
+          _.set(
+            props,
+            'vifAuthoring.vifs.map.series[0].mapOptions.pointAggregation',
+            'region_map'
+          );
+
+          var renderedParts = render('map', props);
+
+          component = renderedParts.component;
+          props = renderedParts.props;
+        });
+
+        describe('rendering', () => {
+          rendersEditableUnits();
+
+          it('should render a dropdown with columns', () => {
+            assert.isNull(component.querySelector('#flyout-title-column'));
+          });
+        });
+      });
+
+      describe('pointAggregation: heat_map', () => {
+        beforeEach(() => {
+          props = {};
+
+          _.set(
+            props,
+            'vifAuthoring.vifs.map.series[0].mapOptions.mapType',
+            'pointMap'
+          );
+
+          _.set(
+            props,
+            'vifAuthoring.vifs.map.series[0].mapOptions.pointAggregation',
+            'heat_map'
+          );
+
+          var renderedParts = render('map', props);
+
+          component = renderedParts.component;
+          props = renderedParts.props;
+        });
+
+        describe('rendering', () => {
+          shouldNotRendersEditableUnits();
+
+          it('should not render a dropdown with columns', () => {
+            assert.isNull(component.querySelector('#flyout-title-column'));
+          });
+        });
       });
     });
 
-    describe('events', () => {
-      emitsEventsForUnits();
-      emitsEvent('#flyout-title-column .picklist-option', 'onSelectMapsFlyoutTitle', 'click');
+    describe('lineMap', () => {
+      let flyoutDetailsPanel;
+
+
+      beforeEach(() => {
+        props = {};
+
+        _.set(
+          props,
+          'vifAuthoring.vifs.map.series[0].mapOptions.mapType',
+          'lineMap'
+        );
+
+        var renderedParts = render('map', props);
+
+        component = renderedParts.component;
+        props = renderedParts.props;
+        flyoutDetailsPanel = component.querySelector('[aria-label="Flyout Details"]');
+      });
+
+      describe('rendering', () => {
+        shouldNotRendersEditableUnits();
+
+        it('renders the flyout details pane', () => {
+          assert.isNotNull(flyoutDetailsPanel);
+        });
+      });
+    });
+
+    describe('boundaryMap', () => {
+      let flyoutDetailsPanel;
+
+      beforeEach(() => {
+        props = {};
+
+        _.set(
+          props,
+          'vifAuthoring.vifs.map.series[0].mapOptions.mapType',
+          'boundaryMap'
+        );
+
+        var renderedParts = render('map', props);
+
+        component = renderedParts.component;
+        props = renderedParts.props;
+      });
+
+      describe('rendering', () => {
+        it('do not renders a units one input', () => {
+          assert.isNull(component.querySelector('#units-one-0'));
+        });
+
+        it('do not renders a units other input', () => {
+          assert.isNull(component.querySelector('#units-other-0'));
+        });
+
+        it('renders the flyout details pane', () => {
+          assert.isNotNull(flyoutDetailsPanel);
+        });
+      });
     });
   });
 

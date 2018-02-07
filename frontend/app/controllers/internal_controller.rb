@@ -87,18 +87,84 @@ class InternalController < ApplicationController
       sort_delta
     end
 
-    @bulk_updates = {
-      :enable_nbe => {
-        disable_legacy_types: true,
-        reenable_ui_for_nbe: true,
-        disable_obe_redirection: true,
-        disable_nbe_redirection_warning_message: true,
-        enable_ingress_geometry_types: true,
-        ingress_strategy: 'nbe'
+    @configurations = {
+      :sgcc => {
+          :name => 'SGCC',
+          :description => 'Socrata Government Connected Cloud configuration. All the latest additions to the platform: DSMUI, Notifications and Alerts, Maps, User Management, Configurable Roles,
+                            Publish to Individuals, Publish to Organization, Teams, New grid view. Resetting to Default configuration first is recommended.
+                            Note: \'Strict\' permissions mode changes default role set on the site, remember to update role assignments in Admin > Users.
+                            Note: Approvals functionality is not included in this bundle because it requires migration. Talk to Disco about `use_fontana_approvals` feature flag.
+                            ',
+          :flags => {
+            core_managed_session: true,
+
+            dsmp_level: 'release',
+            dataset_management_ui_enable_shapefile_upload: true,
+            enable_ingress_geometry_types: true,
+            socrata_py_automate_button: true,
+
+
+            enable_header_notifications: true,
+            enable_user_notifications: true,
+            in_product_transient_notifications: true,
+            enable_alert_notifications_for_admin_users: true,
+            enable_alert_notifications_for_all_users: true,
+            enable_alert_notifications_for_role_users: true,
+
+
+            use_internal_asset_manager: true,
+            enable_internal_asset_manager_beta: true,
+            enable_internal_asset_manager_my_assets: true,
+            enable_internal_asset_manager_on_profile: true,
+
+            enable_2017_grid_view_refresh_for_everyone_except_users_who_can_create_datasets_e_g_anon: true,
+            enable_2017_grid_view_refresh_for_users_who_can_create_datasets: true,
+            disable_creation_of_types_scheduled_for_december_2017_deprecation: true,
+
+            disable_nbe_redirection_warning_message: true,
+            disable_obe_redirection: true,
+
+
+            role_models: true,
+            configurable_roles: true,
+            strict_permissions: true,
+            strict_permissions_role_set: true,
+            legacy_default_role_set: true, #keep for backwards compatibility
+            legacy_stories_default_role_set: true, #keep for backwards compatibility
+
+            enable_new_dataset_sharing_ux: true,
+            enable_asset_action_bar_on_dsmui: false, #TODO: remove when asset action bar is integrated to DSMUI
+            enable_internal_sharing: true,
+            enable_teams: true,
+
+            #use_fontana_approvals: true, #TODO: enabling new approvals requires migration, uncomment when this is resolved
+
+
+            show_govstat_header: true,
+            site_appearance_visible: true,
+            enable_activity_log_soql: true,
+            enable_new_user_management_page: true,
+            stories_enabled: true,
+            enable_new_maps: true
+          }
       },
-      :enable_govstat => [
-        'canvas2', 'canvas_designer', 'govStat', 'govstat_15', 'govstat_target_tolerance'
-      ]
+      :nbe => {
+          :name => 'NBE-only',
+          :description => 'This will bulk-change feature flags to turn on and off NBE-only, effecting imports, redirects, and enabled features. Be careful.',
+          :flags => {
+            disable_legacy_types: true,
+            reenable_ui_for_nbe: true,
+            disable_obe_redirection: true,
+            disable_nbe_redirection_warning_message: true,
+            enable_ingress_geometry_types: true,
+            ingress_strategy: 'nbe'
+          }
+      },
+      :govstat => {
+          :name => 'Enable GovStat',
+          :description => 'Add Open Performance to this domain. You will still need to go to /stat/my/goals, press ~ twice, and type ".bootstrap"',
+          :features => ['canvas2', 'canvas_designer', 'govStat', 'govstat_15', 'govstat_target_tolerance']
+      }
     }
 
     @known_config_types = ExternalConfig.for(:configuration_types).for_autocomplete(params)
@@ -717,6 +783,7 @@ class InternalController < ApplicationController
 
   def update_feature_flags(updates, domain_cname)
     domain = (Domain.find(domain_cname) unless domain_cname.nil?)
+    bundle = updates.key?('bundle')
 
     if FeatureFlags.using_signaller?
       updates['feature_flags'].try(:each) do |flag, value|
@@ -729,13 +796,14 @@ class InternalController < ApplicationController
             message = %Q{set with value "#{processed_value}".}
             FeatureFlags.set_value(flag, processed_value, domain: domain_cname)
           end
-          notices << "#{flag} was #{message}"
+          notices << "#{flag} was #{message}" if not bundle
         rescue => e
           err_msg = "#{flag} could not be #{message}"
           err_msg << " Reason: #{e.message}."
           errors << err_msg
         end
       end
+      notices << "Applied configuration bundle: '#{updates['bundle']}'" if bundle
     else # if not using signaller
 
       config = domain.default_configuration('feature_flags')

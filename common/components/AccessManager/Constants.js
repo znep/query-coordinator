@@ -36,3 +36,18 @@ export const MODES = {
   MANAGE_COLLABORATORS: 'manage_collaborators',
   PUBLISH: 'publish'
 };
+
+export const OWNER_ACCESS_LEVEL = {
+  name: ACCESS_LEVELS.CURRENT_OWNER,
+  version: ACCESS_LEVEL_VERSIONS.ALL
+};
+
+export const ALL_VIEWER_ACCESS_LEVEL = {
+  name: ACCESS_LEVELS.VIEWER,
+  version: ACCESS_LEVEL_VERSIONS.ALL
+};
+
+export const PUBLISHED_VIEWER_ACCESS_LEVEL = {
+  name: ACCESS_LEVELS.VIEWER,
+  version: ACCESS_LEVEL_VERSIONS.PUBLISHED
+};

@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch -->
-    <title>region</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="region" fill="#000000">
-            <path d="M359.625,228.8125 L52,52 L52,795.1875 L359.625,972 L665.8125,795.1875 L972,972 L972,228.8125 L664.375,52 L359.625,228.8125 L359.625,228.8125 Z M358.1875,904.4375 L358.1875,661.5 L112.375,520.625 L113.8125,236 L361.0625,378.3125 L361.0625,522.0625 L586.75,391.25 L588.1875,772.1875 L358.1875,904.4375 L358.1875,904.4375 Z M834,215.875 L834,445.875 L665.8125,348.125 L665.8125,118.125 L834,215.875 L834,215.875 Z" id="Shape"></path>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M359.625 228.813L52 52v743.188L359.625 972l306.188-176.813L972 972V228.812L664.375 52l-304.75 176.813zm-1.438 675.625V661.5L112.375 520.625 113.813 236l247.25 142.313v143.75L586.75 391.25l1.438 380.938-230 132.25zM834 215.875v230l-168.188-97.75v-230L834 215.875z" fill-rule="evenodd"/>
 </svg>

@@ -31,15 +31,13 @@ class StoryPublisher
       raise 'Rejected specified draft story for publication due to staleness.'
     end
 
-    # Linear history enforcement: a draft should only be publishable once.
-    # This can additionally be confirmed by comparing the digests of the draft
-    # and the next published version, since this draft is the latest one (per
-    # previous check) and therefore the only publishable one.
-    @next_published_story = PublishedStory.find_next(@draft_story.uid, @draft_story.created_at)
-    if @next_published_story.present?
-      # at this point, @next_published_story.digest == @draft_story.digest
-      raise 'Rejected specified draft story for publication because it has already been published.'
-    end
+    # Ideally, we would also enforce the constraint that a draft should only be
+    # publishable once. However, changing a story's visibility does not use the
+    # same process in both directions; making a story private only updates the
+    # Core view (without creating a new DraftStory), while making a story public
+    # creates a new PublishedStory. Therefore, for the time being, we must
+    # accept that the same draft can be published multiple times — provided that
+    # it is the latest draft. (EN-19563, EN-21838)
 
     @story = PublishedStory.from_draft_story(@draft_story)
     @story.created_by = creating_user_id

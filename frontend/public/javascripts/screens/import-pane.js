@@ -1230,6 +1230,11 @@ var Interpolator = require('../util/interpolator');
         }
       }
 
+      var deletedAt = $.urlParam(window.location.href, 'deleted_at');
+      if (!_.isEmpty(deletedAt)) {
+          uploadEndpoint += '&deleted_at=' + deletedAt;
+      }
+
       if (blist.feature_flags.domain_locale) {
         uploadEndpoint += '&locale=' + blist.feature_flags.domain_locale;
       }
@@ -1845,9 +1850,9 @@ var Interpolator = require('../util/interpolator');
         urlParams.method = state.operation;
       }
 
-      var deletedAt = $.urlParam(window.location.href, 'deletedAt');
+      var deletedAt = $.urlParam(window.location.href, 'deleted_at');
       if (!_.isEmpty(deletedAt)) {
-        urlParams.deletedAt = deletedAt;
+        urlParams.deleted_at = deletedAt;
       }
 
       if (blist.feature_flags.domain_locale) {

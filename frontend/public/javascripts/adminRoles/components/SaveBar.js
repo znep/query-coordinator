@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { bindActionCreators } from 'redux';
 import cssModules from 'react-css-modules';
 import { connect } from 'react-redux';
 import { spring } from 'react-motion';
@@ -27,14 +26,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      cancelEditCustomRoles: editCustomRoles.cancel,
-      saveRoles: roles => saveRoles({ roles })
-    },
-    dispatch
-  );
+const mapDispatchToProps = {
+  cancelEditCustomRoles: () => editCustomRoles.cancel(),
+  saveRoles: (roles) => saveRoles({ roles })
 };
 
 class SaveBar extends React.Component {
@@ -52,7 +46,7 @@ class SaveBar extends React.Component {
         inverse={!isSaving}
         buttonDisabledStyle={'light'}
         disabled={isSaving}
-        onClick={() => cancelEditCustomRoles()}
+        onClick={cancelEditCustomRoles}
       >
         {translate('screens.admin.roles.buttons.cancel')}
       </Button>

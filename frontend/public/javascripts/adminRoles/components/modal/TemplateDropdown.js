@@ -54,7 +54,7 @@ class TemplateDropdown extends Component {
 
 TemplateDropdown.propTypes = {
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.string
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 export default connectLocalization(connect(mapStateToProps)(cssModules(TemplateDropdown, styles)));

@@ -38,7 +38,9 @@ export default class VifBaseMap {
     if (mapOptions.zoom && mapOptions.center) {
       this._map.flyTo({
         zoom: mapOptions.zoom,
-        center: mapOptions.center
+        center: mapOptions.center,
+        pitch: mapOptions.pitch,
+        bearing: mapOptions.bearing
       });
     }
     this._existingVif = vif;
@@ -47,6 +49,8 @@ export default class VifBaseMap {
   static getMapInitOptions(vif) {
     const center = _.get(vif, 'configuration.mapCenterAndZoom.center');
     const zoom = _.get(vif, 'configuration.mapCenterAndZoom.zoom');
+    const pitch = _.get(vif, 'configuration.mapPitchAndBearing.pitch', 0);
+    const bearing = _.get(vif, 'configuration.mapPitchAndBearing.bearing', 0);
     const centerAndZoomDefined = _.chain(vif).at(
       'configuration.mapCenterAndZoom.center.lat',
       'configuration.mapCenterAndZoom.center.lng',
@@ -57,11 +61,15 @@ export default class VifBaseMap {
       return {
         center: new mapboxgl.LngLat(center.lng, center.lat),
         zoom: zoom,
-        style: getStyleDef(vif)
+        style: getStyleDef(vif),
+        pitch: pitch,
+        bearing: bearing
       };
     } else {
       return {
-        style: getStyleDef(vif)
+        style: getStyleDef(vif),
+        pitch: pitch,
+        bearing: bearing
       };
     }
   }

@@ -26,6 +26,7 @@ import {
   ERROR_BARS_MAX_END_BAR_LENGTH,
   ERROR_BARS_STROKE_WIDTH,
   FONT_STACK,
+  GLYPH_SPACE_HEIGHT,
   LABEL_PADDING_WIDTH,
   LEGEND_BAR_HEIGHT,
   MEASURE_LABELS_FONT_COLOR,
@@ -382,21 +383,7 @@ function SvgColumnChart($element, vif, options) {
     }
 
     function renderReferenceLines() {
-      // Because the line stroke thickness is 2px, the half of the line can be clipped on the top or bottom edge
-      // of the chart area.  This function shifts the clipped line down 1 pixel when at the top edge and up 1 pixel
-      // when at the bottom edge.  All the other lines are rendered in normal positions.
-      const getYPosition = (referenceLine) => {
-        const value = isOneHundredPercentStacked ? (referenceLine.value / 100) : referenceLine.value;
-
-        if (value == maxYValue) {
-          return d3YScale(value) + 1; // shift down a pixel if at the top of chart area
-        } else if (value == minYValue) {
-          return d3YScale(value) - 1; // shift up a pixel if at the bottom of chart area
-        } else {
-          return d3YScale(value);
-        }
-      };
-
+      const getYPosition = (referenceLine) => d3YScale(referenceLine.value);
       const getLineThickness = (referenceLine) => {
         const value = isOneHundredPercentStacked ? (referenceLine.value / 100) : referenceLine.value;
         return self.isInRange(value, minYValue, maxYValue) ? REFERENCE_LINES_STROKE_WIDTH : 0;
@@ -451,14 +438,6 @@ function SvgColumnChart($element, vif, options) {
         return d3YScale(maxValue);
       };
 
-      // Because the line stroke thickness is 2px, the half of the top horizontal bar is clipped.  This function shifts
-      // the clipped bar down 1 pixel.  All the other bars are rendered in normal positions.
-      const getMaxErrorBarYPositionAdjusted = (d, measureIndex, dimensionIndex) => {
-        const errorBarValues = columnDataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
-        const maxValue = _.clamp(d3.max(errorBarValues), minYValue, maxYValue);
-        return (maxValue == maxYValue) ? d3YScale(maxValue) + 1 : d3YScale(maxValue); // shift down a pixel if at top of viewport
-      };
-
       const getMinErrorBarWidth = (d, measureIndex, dimensionIndex) => {
         const errorBarValues = columnDataToRender.errorBars[dimensionIndex][measureIndex + 1]; // 0th column holds the dimension value
         return self.isInRange(d3.min(errorBarValues), minYValue, maxYValue) ? ERROR_BARS_STROKE_WIDTH : 0;
@@ -487,9 +466,9 @@ function SvgColumnChart($element, vif, options) {
         attr('stroke', color).
         attr('stroke-width', getMaxErrorBarWidth).
         attr('x1', getErrorBarXPosition).
-        attr('y1', getMaxErrorBarYPositionAdjusted).
+        attr('y1', getMaxErrorBarYPosition).
         attr('x2', (d, measureIndex) => getErrorBarXPosition(d, measureIndex) + errorBarWidth).
-        attr('y2', getMaxErrorBarYPositionAdjusted);
+        attr('y2', getMaxErrorBarYPosition);
 
       dimensionGroupSvgs.selectAll('.error-bar-middle').
         attr('shape-rendering', 'crispEdges').
@@ -1501,7 +1480,7 @@ function SvgColumnChart($element, vif, options) {
   function generateYScale(minValue, maxValue, height) {
     return d3.scale.linear().
       domain([minValue, maxValue]).
-      range([height, 0]);
+      range([height, GLYPH_SPACE_HEIGHT]);
   }
 
   function generateYAxis(yScale) {

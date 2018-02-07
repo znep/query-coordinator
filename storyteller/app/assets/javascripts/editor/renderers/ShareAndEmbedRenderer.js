@@ -112,7 +112,7 @@ export default function ShareAndEmbedRenderer() {
           I18n.t('editor.modal.buttons.cancel')
         ),
         format(
-          '<button class="btn btn-primary"><span>{0}</span></button>',
+          '<button class="btn btn-primary btn-legacy"><span>{0}</span></button>',
           I18n.t('editor.modal.buttons.save_and_close')
         ),
       '</div>',

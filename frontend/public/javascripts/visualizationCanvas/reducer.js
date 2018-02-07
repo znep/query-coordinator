@@ -235,6 +235,21 @@ export default (state = initialState(), action) => {
         )
       };
 
+    case actions.SET_MAP_PITCH_AND_BEARING:
+      return {
+        ...state,
+        isDirty: true,
+        vifs: updateVifs(
+          state,
+          _.set(
+            state.vifs[action.data.vifIndex],
+            'configuration.mapPitchAndBearing',
+            action.data.pitchAndBearing
+          ),
+          action.data.vifIndex
+        )
+      };
+
     case actions.SET_MAP_NOTIFICATION_DISMISSED:
       return {
         ...state,

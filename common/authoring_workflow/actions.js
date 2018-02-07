@@ -1153,3 +1153,11 @@ export function setSearchBoundaryLowerRightLongitude(searchBoundaryLowerRightLon
     searchBoundaryLowerRightLongitude
   };
 }
+
+export const SET_PITCH_AND_BEARING = 'SET_PITCH_AND_BEARING';
+export function setPitchAndBearing(pitchAndBearing) {
+  return {
+    type: SET_PITCH_AND_BEARING,
+    pitchAndBearing
+  };
+}

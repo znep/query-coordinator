@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { ACCESS_LEVELS, ACCESS_LEVEL_VERSIONS } from 'common/components/AccessManager/Constants';
+import { PUBLISHED_VIEWER_ACCESS_LEVEL } from 'common/components/AccessManager/Constants';
 
 import UserSearchResultPropType from 'common/components/UserSearch/UserSearchResultPropType';
 import SelectedUsersPropType from 'common/components/AccessManager/propTypes/SelectedUsersPropType';
@@ -27,12 +27,6 @@ class AddPublishedTo extends Component {
     selectedUsers: SelectedUsersPropType
   };
 
-  // we pass this in as the "selected" access level for all users who the dataset it "published to"
-  static publishedViewerAccessLevel = {
-    name: ACCESS_LEVELS.VIEWER,
-    version: ACCESS_LEVEL_VERSIONS.PUBLISHED
-  };
-
   render() {
     const {
       addUsers,
@@ -53,7 +47,7 @@ class AddPublishedTo extends Component {
       searchResults,
       selectedUsers,
       userSearchQueryChanged: publishedToSearchQueryChanged,
-      selectedAccessLevel: AddPublishedTo.publishedViewerAccessLevel
+      selectedAccessLevel: PUBLISHED_VIEWER_ACCESS_LEVEL
     };
 
     return (<AddUser {...addUserProps} />);

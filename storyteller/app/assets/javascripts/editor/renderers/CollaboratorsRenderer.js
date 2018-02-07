@@ -106,7 +106,7 @@ export default function CollaboratorsRenderer() {
         '</div>',
         '<div class="modal-button-group r-to-l">',
           StorytellerUtils.format('<button class="btn btn-default" type="button" data-action="{0}">{1}</button>', Actions.COLLABORATORS_CANCEL, t('editor.modal.buttons.cancel')),
-          StorytellerUtils.format('<button type="submit" class="btn btn-primary" data-action="{0}" disabled><span>{1}</span></button>', Actions.COLLABORATORS_SAVE, t('editor.modal.buttons.save')),
+          StorytellerUtils.format('<button type="submit" class="btn btn-primary btn-legacy" data-action="{0}" disabled><span>{1}</span></button>', Actions.COLLABORATORS_SAVE, t('editor.modal.buttons.save')),
         '</div>',
       '</form>'
     ].join('').format({

@@ -542,6 +542,26 @@ describe('Reducer', () => {
       });
     });
 
+    describe('SET_MAP_PITCH_AND_BEARING', () => {
+      let data;
+
+      beforeEach(() => {
+        data = {
+          pitchAndBearing: { pitch: 60, bearing: -60 },
+          vifIndex: 0
+        };
+        state = reducer(state, actions.setMapPitchAndBearing(data));
+      });
+
+      it('sets the pitch and bearing for the provided index', () => {
+        assert.deepEqual(state.vifs[0].configuration.mapPitchAndBearing, data.pitchAndBearing);
+      });
+
+      it('sets isDirty to true', () => {
+        assert.isTrue(state.isDirty);
+      });
+    });
+
     describe('SET_MAP_NOTIFICATION_DISMISSED', () => {
       beforeEach(() => {
         state = reducer(state, actions.setMapNotificationDismissed({ vifIndex: 0 }));

@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 39.1 (31720) - http://www.bohemiancoding.com/sketch -->
-    <title>windows</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="windows" fill="#2C2C2C">
-            <path d="M102,150 L487,150 L487,492 L102,492 L102,150 Z M523,150 L908,150 L908,492 L523,492 L523,150 Z M102,522 L487,522 L487,864 L102,864 L102,522 Z M523,522 L908,522 L908,864 L523,864 L523,522 Z" id="microsoft"></path>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M102 150h385v342H102V150zm421 0h385v342H523V150zM102 522h385v342H102V522zm421 0h385v342H523V522z" fill="#2C2C2C" fill-rule="evenodd"/>
 </svg>

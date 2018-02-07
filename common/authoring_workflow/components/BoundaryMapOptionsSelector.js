@@ -1,47 +1,41 @@
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import { Dropdown } from 'common/components';
 import I18n from 'common/i18n';
 
-import { COLUMN_TYPES } from '../constants';
-import { getBoundaryColorByColumn, getMapType } from '../selectors/vifAuthoring';
-import { getDisplayableColumns } from '../selectors/metadata';
 import { setBoundaryColorByColumn } from '../actions';
+import { COLUMN_TYPES } from '../constants';
+import { getNonGeoLocationColumns } from '../selectors/metadata';
+import { getBoundaryColorByColumn, getMapType } from '../selectors/vifAuthoring';
+
+const scope = 'shared.visualizations.panes.data.fields.boundary_map_options';
 
 export class BoundaryMapOptionsSelector extends Component {
-  getNumericalAndTextColumnAttributes = () => {
-    const {
-      metadata,
-      onSelectBoundaryColorByColumn,
-      vifAuthoring
-    } = this.props;
-    const columnOptions = _.map(getDisplayableColumns(metadata), column => ({
+  getColorByColumnAttributes = () => {
+    const { metadata, onSelectBoundaryColorByColumn, vifAuthoring } = this.props;
+    const columnOptions = _.map(getNonGeoLocationColumns(metadata), column => ({
       title: column.name,
       value: column.fieldName,
       type: column.renderTypeName,
       render: this.renderColumnOption
     }));
     const options = [
-      {
-        title: I18n.t('no_value', { scope: this.scope }),
-        value: null
-      },
+      { title: I18n.t('no_value', { scope }), value: null },
       ...columnOptions
     ];
 
     return {
       disabled: columnOptions.length === 0,
       id: 'color-boundaries-by-column-dropdown',
-      placeholder: I18n.t('no_value', { scope: this.scope }),
       options,
-      onSelection: onSelectBoundaryColorByColumn,
-      value: getBoundaryColorByColumn(vifAuthoring)
+      placeholder: I18n.t('no_value', { scope }),
+      value: getBoundaryColorByColumn(vifAuthoring),
+      onSelection: onSelectBoundaryColorByColumn
     };
   }
-
-  scope = 'shared.visualizations.panes.data.fields.boundary_map_options';
 
   renderColumnOption = (option) => {
     const columnType = _.find(COLUMN_TYPES, { type: option.type });
@@ -55,18 +49,16 @@ export class BoundaryMapOptionsSelector extends Component {
   }
 
   renderBoundaryColorByColumnDropdown = () => {
-    const numericalAndTextColumnAttributes = this.getNumericalAndTextColumnAttributes();
-
     return (
       <div className="authoring-field" id="color-boundaries-by-column-selection">
         <label
           className="block-label"
           htmlFor="color-boundaries-by-column-dropdown">
-          {I18n.t('boundary_color_by_value', { scope: this.scope })}
+          {I18n.t('boundary_color_by_value', { scope })}
         </label>
 
         <div className="color-boundaries-by-column-dropdown-container">
-          <Dropdown {...numericalAndTextColumnAttributes} />
+          <Dropdown {...this.getColorByColumnAttributes()} />
         </div>
       </div>
     );

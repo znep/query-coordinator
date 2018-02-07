@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch -->
-    <title>copy-document</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="copy-document" fill="#000000">
-            <path d="M292,72 L292,237.055 L127,237.055 L127,952 L732,952 L732,787.055 L897.055,787.055 L897.055,253.115 L715.94,72 L292,72 L292,72 Z M347,127 L677,127 L677,292.055 L842,292.055 L842,732.055 L347,732.055 L347,127 L347,127 Z M732,165.885 L803.115,237.055 L732,237.055 L732,165.885 L732,165.885 Z M182,292.055 L292,292.055 L292,787.055 L677,787.055 L677,897 L182,897 L182,292.055 L182,292.055 Z" id="Shape"></path>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M292 72v165.055H127V952h605V787.055h165.055v-533.94L715.94 72H292zm55 55h330v165.055h165v440H347V127zm385 38.885l71.115 71.17H732v-71.17zm-550 126.17h110v495h385V897H182V292.055z" fill-rule="evenodd"/>
 </svg>

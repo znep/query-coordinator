@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.7.1 (28215) - http://www.bohemiancoding.com/sketch -->
-    <title>pulse</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="pulse" fill="#000000">
-            <polygon id="Shape" points="205.120136 670.699601 228.338386 608.591679 327.876301 972 508.548872 335.717743 611.309621 686.130937 963.283118 686.130937 963.283118 608.591663 666.933134 608.591679 508.548868 52 327.876301 702.45501 245.834533 377.766408 157.706329 593.160344 61 593.160327 61 670.699601 205.120136 670.699601"></polygon>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M205.12 670.7l23.218-62.108L327.876 972 508.55 335.718l102.76 350.413h351.974v-77.54h-296.35L508.55 52 327.876 702.455l-82.041-324.689-88.129 215.394H61v77.54h144.12z" fill-rule="evenodd"/>
 </svg>

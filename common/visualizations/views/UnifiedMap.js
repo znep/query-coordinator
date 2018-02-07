@@ -42,6 +42,22 @@ export default class UnifiedMap extends SvgVisualization {
       // Adding Map object to visualization DOM element,
       // to get mapbox gl map for manual and automated testing
       visualizationElement[0].map = map;
+
+      this._map.on('zoomend', () => {
+        this._emitMapCenterAndZoomChange();
+      });
+
+      this._map.on('dragend', () => {
+        this._emitMapCenterAndZoomChange();
+      });
+
+      this._map.on('pitchend', () => {
+        this._emitMapPitchAndBearingChange();
+      });
+
+      this._map.on('rotateend', () => {
+        this._emitMapPitchAndBearingChange();
+      });
     });
 
     this.invalidateSize = () => {
@@ -119,5 +135,28 @@ export default class UnifiedMap extends SvgVisualization {
     } else {
       throw new Error(`Unknown map type ${newMapType}`);
     }
+  }
+
+  _emitMapCenterAndZoomChange() {
+    const center = this._map.getCenter();
+    const zoom = this._map.getZoom();
+    const centerAndZoom = {
+      center: {
+        lat: center.lat,
+        lng: center.lng
+      },
+      zoom: zoom
+    };
+    this.emitEvent('SOCRATA_VISUALIZATION_MAP_CENTER_AND_ZOOM_CHANGED', centerAndZoom);
+  }
+
+  _emitMapPitchAndBearingChange() {
+    const bearing = this._map.getBearing();
+    const pitch = this._map.getPitch();
+    const pitchAndBearing = {
+      pitch: pitch,
+      bearing: bearing
+    };
+    this.emitEvent('SOCRATA_VISUALIZATION_PITCH_AND_BEARING_CHANGED', pitchAndBearing);
   }
 }

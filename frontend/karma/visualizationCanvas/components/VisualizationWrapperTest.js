@@ -137,5 +137,41 @@ describe('VisualizationWrapper', () => {
         sinon.assert.notCalled(spy);
       });
     });
+
+    describe('onMapPitchAndBearingChange', () => {
+      const emitPitchAndBearing = (element) => {
+        element.dispatchEvent(
+          new window.CustomEvent(
+            'SOCRATA_VISUALIZATION_PITCH_AND_BEARING_CHANGED',
+            { detail: { pitch: 60, zoom: -60 } }
+          )
+        );
+      };
+
+      it('is invoked on pitch and bearing change when in edit mode', () => {
+        const spy = sinon.spy();
+        const element = renderComponentWithStore(VisualizationWrapper, getProps({
+          vif: mapVif,
+          isEditable: true,
+          onMapPitchAndBearingChange: spy
+        }));
+
+        emitPitchAndBearing(element);
+
+        sinon.assert.calledOnce(spy);
+      });
+
+      it('is not invoked on pitch and bearing change when not in edit mode', () => {
+        const spy = sinon.spy();
+        const element = renderComponentWithStore(VisualizationWrapper, getProps({
+          vif: mapVif,
+          onMapPitchAndBearingChange: spy
+        }));
+
+        emitPitchAndBearing(element);
+
+        sinon.assert.notCalled(spy);
+      });
+    });
   });
 });

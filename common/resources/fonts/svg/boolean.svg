@@ -1,12 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
-    <title>boolean</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="boolean" fill="#000000">
-            <path d="M542.5,341 L937,341 L937,697 L542.5,697 L92,697 L92,341 L542.5,341 Z M542,391.73 L542,646.27 L880.7125,646.27 L880.7125,391.73 L542,391.73 Z" id="Combined-Shape"></path>
-        </g>
-    </g>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024">
+    <path d="M542.5 341H937v356H92V341h450.5zm-.5 50.73v254.54h338.712V391.73H542z" fill-rule="evenodd"/>
 </svg>

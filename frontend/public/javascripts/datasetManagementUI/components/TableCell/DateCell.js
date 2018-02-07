@@ -25,18 +25,16 @@ const dateFormats = {
   date_yshortmonth: 'YYYY MMM',
   date_monthy: 'MMMM YYYY',
   date_ymonth: 'YYYY MMMM',
-  date_y: 'YYYY'
+  date_y: 'YYYY',
+
+  default_date_time: 'YYYY MMM DD hh:mm:ss A',
+  default_date: 'YYYY MMM DD'
 };
 
 class DateCell extends Component {
   render() {
-    let text = '';
-    const format = dateFormats[this.props.format.view];
-    if (format) {
-      text = moment(this.props.value).format(format);
-    } else {
-      text = this.props.value;
-    }
+    const format = dateFormats[this.props.format.view] || dateFormats.default_date_time;
+    const text = moment(this.props.value).format(format);
 
     return <TypedCell isDropping={this.props.isDropping} value={text} format={this.props.format} />;
   }

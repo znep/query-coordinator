@@ -18,14 +18,11 @@ import cssVariables from '../variables.scss';
 
 const cellHeight = parseInt(cssVariables.cellHeight, 10);
 
-const mapStateToProps = () => ({});
-
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch, { role, rightCategory }) =>
   bindActionCreators(
     {
-      toggleRoleRightCategoryValue: (role, rightCategory) =>
-      toggleRoleRightCategoryValue({ role, rightCategory }),
-      toggleRoleRightValue: (role, right) => toggleRoleRightValue({ role, right })
+      toggleRoleRightCategoryValue: () => toggleRoleRightCategoryValue({ role, rightCategory }),
+      toggleRoleRightValue: right => toggleRoleRightValue({ role, right })
     },
     dispatch
   );
@@ -58,7 +55,7 @@ class RoleRightCategory extends Component {
                 ? <TristateCheckbox
                     id={`${roleName}_${selectors.getTranslationKeyFromRightCategory(rightCategory)}`}
                     checkedState={selectors.rightCategoryStateForRole(role, rightCategory)}
-                    onChange={() => toggleRoleRightCategoryValue(role, rightCategory)}
+                    onChange={toggleRoleRightCategoryValue}
                   />
                 : <TristateIndicator checkedState={selectors.rightCategoryStateForRole(role, rightCategory)} />}
           </Grid.Cell>
@@ -72,7 +69,7 @@ class RoleRightCategory extends Component {
                   ? <TristateCheckbox
                       id={`${roleName}_${selectors.getNameFromRight(right)}`}
                       checkedState={selectors.roleHasRight(role, right)}
-                      onChange={() => toggleRoleRightValue(role, right)}
+                      onChange={() => toggleRoleRightValue(right)}
                     />
                   : <TristateIndicator checkedState={selectors.roleHasRight(role, right)} />}
             </Grid.Cell>
@@ -94,5 +91,5 @@ RoleRightCategory.propTypes = {
 };
 
 export default connectLocalization(
-  connect(mapStateToProps, mapDispatchToProps)(cssModules(RoleRightCategory, styles))
+  connect(null, mapDispatchToProps)(cssModules(RoleRightCategory, styles))
 );

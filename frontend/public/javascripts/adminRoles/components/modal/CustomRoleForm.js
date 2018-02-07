@@ -7,7 +7,6 @@ import bindAll from 'lodash/fp/bindAll';
 import getOr from 'lodash/fp/getOr';
 import omit from 'lodash/fp/omit';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { changeNewRoleName, changeNewRoleTemplate } from '../../actions';
 import { NEW_CUSTOM_ROLE } from '../../appStates';
 import BoundedTextInput from '../util/BoundedTextInput';
@@ -27,14 +26,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      onNameChange: name => changeNewRoleName({ name }),
-      onTemplateChange: value => changeNewRoleTemplate({ value })
-    },
-    dispatch
-  );
+const mapDispatchToProps = {
+  onNameChange: name => changeNewRoleName({ name }),
+  onTemplateChange: value => changeNewRoleTemplate({ value })
+};
 
 class CustomRoleForm extends Component {
   constructor(props) {
@@ -125,7 +120,7 @@ CustomRoleForm.propTypes = {
   onNameChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   onTemplateChange: PropTypes.func.isRequired,
-  template: PropTypes.string
+  template: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 
 export default connectLocalization(

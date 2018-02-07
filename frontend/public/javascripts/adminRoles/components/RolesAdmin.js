@@ -4,7 +4,7 @@ import cssModules from 'react-css-modules';
 import styles from './roles-admin.module.scss';
 import SaveBar from './SaveBar';
 import EditBar from './EditBar';
-import { applyMiddleware, bindActionCreators, compose, createStore } from 'redux';
+import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { connect, Provider } from 'react-redux';
 import noop from 'lodash/fp/noop';
@@ -45,14 +45,10 @@ const mapStateToProps = (state, { localization: { translate } }) => {
   };
 };
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      loadData,
-      dismissNotification: showNotification.end
-    },
-    dispatch
-  );
+const mapDispatchToProps = {
+  loadData,
+  dismissNotification: showNotification.end
+};
 
 class UnstyledRolesAdmin extends Component {
   componentDidMount() {
@@ -112,10 +108,18 @@ const RolesAdmin = connectLocalization(
   connect(mapStateToProps, mapDispatchToProps)(cssModules(UnstyledRolesAdmin, styles))
 );
 
+const devToolsConfig = {
+  actionsBlacklist: ['HOVER_ROW', 'UNHOVER_ROW', 'CHANGE_NEW_ROLE_NAME'],
+  name: 'Roles & Permissions Admin'
+};
+
 const createRolesAdminStore = (serverConfig = {}) => {
   const initialState = getInitialState(serverConfig);
   const middleware = [thunk];
-  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  const composeEnhancers =
+    (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
+      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__(devToolsConfig)) ||
+    compose;
   return createStore(reducer(noop), initialState, composeEnhancers(applyMiddleware(...middleware)));
 };
 

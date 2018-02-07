@@ -291,13 +291,13 @@ Picklist.propTypes = {
   // Disables option selection.
   disabled: PropTypes.bool,
   // Sets the initial value when provided.
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  value: PropTypes.any,
   options: PropTypes.arrayOf(
     PropTypes.shape({
       // Used to render the option title.
       title: PropTypes.string,
       // Used for value comparisons during selection.
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+      value: PropTypes.any,
       // Used to visually group similar options.
       // This value is UI text and should be human-friendly.
       group: PropTypes.string,

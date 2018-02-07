@@ -3,7 +3,6 @@ import React from 'react';
 import cssModules from 'react-css-modules';
 import styles from './edit-bar.module.scss';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { editCustomRoles, newCustomRole } from '../actions';
 import {
   configurableRoleFeatureFlagFromState,
@@ -28,14 +27,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      newCustomRole,
-      startEditCustomRoles: editCustomRoles.start
-    },
-    dispatch
-  );
+const mapDispatchToProps = {
+  newCustomRole,
+  startEditCustomRoles: editCustomRoles.start
+};
 
 class EditBar extends React.Component {
   render() {

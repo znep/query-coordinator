@@ -16,12 +16,10 @@ import cssVariables from '../variables.scss';
 
 const cellHeight = parseInt(cssVariables.cellHeight, 10);
 
-const mapStateToProps = () => ({});
-
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch, { rightCategory }) =>
   bindActionCreators(
     {
-      toggleExpanded: rightCategory => toggleExpanded({ rightCategory })
+      toggleExpanded: () => toggleExpanded({ rightCategory })
     },
     dispatch
   );
@@ -36,7 +34,7 @@ class RightCategory extends Component {
         isExpanded={selectors.getExpandedStateFromRightCategory(rightCategory)}
       >
         <Hoverable name={rightCategory.get('translationKey')}>
-          <Expandable.Trigger styleName="right-cell-trigger" onClick={() => toggleExpanded(rightCategory)}>
+          <Expandable.Trigger styleName="right-cell-trigger" onClick={toggleExpanded}>
             <h6>
               {translate(selectors.getTranslationKeyPathFromRightCategory(rightCategory))}
             </h6>
@@ -60,5 +58,5 @@ RightCategory.propTypes = {
 };
 
 export default connectLocalization(
-  connect(mapStateToProps, mapDispatchToProps)(cssModules(RightCategory, styles))
+  connect(null, mapDispatchToProps)(cssModules(RightCategory, styles))
 );

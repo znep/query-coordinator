@@ -6,12 +6,13 @@ import { Dropdown, AccordionContainer, AccordionPane } from 'common/components';
 import I18n from 'common/i18n';
 import { COLUMN_TYPES, SERIES_TYPE_FLYOUT } from '../../constants';
 import { getMeasureTitle } from '../../helpers';
-import { getDisplayableColumns, hasData, isPointMapColumn } from '../../selectors/metadata';
+import { getDisplayableColumns, hasData } from '../../selectors/metadata';
 
 import {
   getNonFlyoutSeries,
   getRowInspectorTitleColumnName,
   getMapFlyoutTitleColumnName,
+  getMapType,
   getSeries,
   getShowLegend,
   getDimension,
@@ -313,20 +314,24 @@ export class LegendsAndFlyoutsPane extends Component {
   }
 
   renderNewGLMapControls = () => {
-    const { vifAuthoring, metadata } = this.props;
-    const selectedPointAggregation = getPointAggregation(vifAuthoring);
-    const dimension = getDimension(vifAuthoring);
-    const isPointMap = isPointMapColumn(metadata, dimension);
+    const { vifAuthoring } = this.props;
+    const mapType = getMapType(vifAuthoring);
 
-    if (isPointMap) {
+    if (mapType === 'pointMap') {
+      const selectedPointAggregation = getPointAggregation(vifAuthoring);
+
       if (selectedPointAggregation === 'region_map') {
         return this.renderFlyoutUnits();
       } else if (selectedPointAggregation === 'heat_map') {
         return this.renderEmptyPane();
       }
+
+      return [this.renderFlyoutUnits(), this.renderFlyoutDetailsForMaps()];
     }
 
-    return [this.renderFlyoutUnits(), this.renderFlyoutDetailsForMaps()];
+    if (mapType === 'lineMap' || mapType === 'boundaryMap') {
+      return this.renderFlyoutDetailsForMaps();
+    }
   }
 
   renderFeatureMapControls = () => {

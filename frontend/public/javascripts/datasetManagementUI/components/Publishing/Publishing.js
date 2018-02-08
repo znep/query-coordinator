@@ -9,6 +9,7 @@ import NotifyButton from 'datasetManagementUI/containers/NotifyButtonContainer';
 import * as ApplyRevision from 'datasetManagementUI/reduxStuff/actions/applyRevision';
 import ApiCallButton from 'datasetManagementUI/containers/ApiCallButtonContainer';
 import { APPLY_REVISION } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
+import { PERMISSIONS } from 'datasetManagementUI/components/PublishConfirmation/PublishConfirmation';
 import styles from './Publishing.module.scss';
 
 const SubI18n = I18n.home_pane.publish_modal;
@@ -92,7 +93,7 @@ function getProcessingTitle(revision) {
       ? SubI18n.publishing.data_asset_processing
       : SubI18n.publishing.dataset_processing;
   } else {
-    return revision.permission === 'public'
+    return revision.action.permission === PERMISSIONS.PUBLIC
       ? SubI18n.publishing.title_public
       : SubI18n.publishing.title_private;
   }

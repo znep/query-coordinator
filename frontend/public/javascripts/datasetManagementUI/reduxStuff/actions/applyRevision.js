@@ -21,7 +21,7 @@ import * as dsmapiLinks from 'datasetManagementUI/links/dsmapiLinks';
 import * as Links from 'datasetManagementUI/links/links';
 import { parseDate } from 'datasetManagementUI/lib/parseDate';
 import { addNotification } from 'datasetManagementUI/reduxStuff/actions/notifications';
-
+import { PERMISSIONS } from 'datasetManagementUI/components/PublishConfirmation/PublishConfirmation';
 // match DSMAPI: https://github.com/socrata/dsmapi/blob/e4eb96e24e0734b33d5ab6ffb26351a07b1c61d1/web/models/task_set.ex#L30-L35
 export const TASK_SET_INITIALIZING = 'initializing';
 export const TASK_SET_CREATING_COLUMNS = 'creating_columns';
@@ -52,10 +52,10 @@ export function updatePermission(permission, params) {
   return (dispatch, getState) => {
     const { entities } = getState();
     const { id: revisionId } = _.find(entities.revisions, { revision_seq: _.toNumber(params.revisionSeq) });
-    const { permission: oldPermission } = entities.revisions[revisionId];
+    const oldPermission = _.get(entities, `revisions.${revisionId}.action.permission`, PERMISSIONS.PUBLIC);
 
     if (permission === oldPermission) {
-      return;
+      return Promise.resolve();
     }
 
     const update = {
@@ -67,6 +67,7 @@ export function updatePermission(permission, params) {
     return dispatch(updateRevision(update, params)).then(resp => {
       const updatedRevision = shapeRevision(resp.resource);
       dispatch(editRevision(updatedRevision.id, updatedRevision));
+      return updatedRevision;
     });
   };
 }

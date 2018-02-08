@@ -7,90 +7,90 @@ import ApiCallButton from 'datasetManagementUI/containers/ApiCallButtonContainer
 import { APPLY_REVISION } from 'datasetManagementUI/reduxStuff/actions/apiCalls';
 import styles from './PublishConfirmation.module.scss';
 
+export const PERMISSIONS = {
+  PUBLIC: 'public',
+  PRIVATE: 'private'
+};
+
 class PublishConfirmation extends Component {
   constructor(props) {
     super();
+
     this.state = {
-      currentPermission: props.publicSelected ? 'public' : 'private',
+      currentPermission: props.permission,
       showApprovalMessage: false
     };
+
     this.setCurrentPermission = this.setCurrentPermission.bind(this);
   }
-  setCurrentPermission(permission) {
-    this.setState({ currentPermission: permission });
-  }
-  render() {
-    const {
-      doCancel, dispatchApplyRevision, setPermission, btnDisabled, dispatchRevisionError, view
-    } = this.props;
-    const { currentPermission } = this.state;
 
-    const assetWillBePublic = currentPermission === 'public';
+  componentDidUpdate() {
+    const { permission, view } = this.props;
 
-    assetUtils.assetWillEnterApprovalsQueueOnPublish({ coreView: view, assetWillBePublic }).then(
-      (showApprovalMessage) => {
+    const assetWillBePublic = permission === PERMISSIONS.PUBLIC;
+
+    assetUtils
+      .assetWillEnterApprovalsQueueOnPublish({ coreView: view, assetWillBePublic })
+      .then(showApprovalMessage => {
         if (showApprovalMessage !== this.state.showApprovalMessage) {
           this.setState({ showApprovalMessage });
         }
       });
+  }
 
-    const approvalMessage = this.state.showApprovalMessage ?
-      <div className={styles.approvalMessage}>
-        {I18n.home_pane.publish_confirmation.approval_note}
-      </div> : null;
+  // Right now we don't update the revision in the store when you toggle the
+  // permission here. When/if we separate "change permission" and "publish" into
+  // two steps, we need to at least update the redux store on permission toggle.
+  // Ideally "change permission" would call to dsmapi, then we would take the
+  // response and update the store.
+  setCurrentPermission(permission) {
+    this.setState({ currentPermission: permission });
+  }
+
+  render() {
+    const { doCancel, doUpdateAndApply } = this.props;
+
+    const { currentPermission } = this.state;
 
     return (
       <div className="publish-confirmation-modal-inner">
-        <h2>
-          {I18n.home_pane.publish_confirmation.title}
-        </h2>
+        <h2>{I18n.home_pane.publish_confirmation.title}</h2>
         <ModalContent>
           <span
-            onClick={() => this.setCurrentPermission('public')}
+            onClick={() => this.setCurrentPermission(PERMISSIONS.PUBLIC)}
             className={
-              currentPermission === 'public' ? styles.privacySelectorActive : styles.privacySelector
+              currentPermission === PERMISSIONS.PUBLIC ? styles.privacySelectorActive : styles.privacySelector
             }>
             <SocrataIcon name="checkmark3" className={styles.checkbox} />
-            <h3>
-              {I18n.home_pane.publish_confirmation.public}
-            </h3>
+            <h3>{I18n.home_pane.publish_confirmation.public}</h3>
             <SocrataIcon className={styles.icon} name="public-open" />
             {I18n.home_pane.publish_confirmation.public_msg}
           </span>
           <span
-            onClick={() => this.setCurrentPermission('private')}
+            onClick={() => this.setCurrentPermission(PERMISSIONS.PRIVATE)}
             className={
-              currentPermission === 'private' ? styles.privacySelectorActive : styles.privacySelector
+              currentPermission === PERMISSIONS.PRIVATE
+                ? styles.privacySelectorActive
+                : styles.privacySelector
             }>
             <SocrataIcon name="checkmark3" className={styles.checkbox} />
-            <h3>
-              {I18n.home_pane.publish_confirmation.private}
-            </h3>
+            <h3>{I18n.home_pane.publish_confirmation.private}</h3>
             <SocrataIcon className={styles.icon} name="private" />
             {I18n.home_pane.publish_confirmation.private_msg}
           </span>
-          {approvalMessage}
+          {this.state.showApprovalMessage && (
+            <div className={styles.approvalMessage}>{I18n.home_pane.publish_confirmation.approval_note}</div>
+          )}
         </ModalContent>
         <ModalFooter className={styles.modalFooter}>
-          <button onClick={() => doCancel()} className={styles.cancelButton}>
+          <button onClick={doCancel} className={styles.cancelButton}>
             {I18n.common.cancel}
           </button>
           <ApiCallButton
             additionalClassName={styles.mainButton}
             operation={APPLY_REVISION}
-            forceDisable={btnDisabled}
-            onClick={() => {
-              const setPermissionPromise = setPermission(currentPermission);
-              // if there is no promise, it is because the permission never changed
-              if (setPermissionPromise) {
-                setPermissionPromise
-                .then(() => dispatchApplyRevision())
-                .catch(() => dispatchRevisionError());
-              } else {
-                dispatchApplyRevision();
-              }
-            }}>
-              {I18n.home_pane.publish_confirmation.button}
+            onClick={() => doUpdateAndApply(currentPermission)}>
+            {I18n.home_pane.publish_confirmation.button}
           </ApiCallButton>
         </ModalFooter>
       </div>
@@ -100,11 +100,8 @@ class PublishConfirmation extends Component {
 
 PublishConfirmation.propTypes = {
   doCancel: PropTypes.func.isRequired,
-  dispatchApplyRevision: PropTypes.func.isRequired,
-  btnDisabled: PropTypes.bool,
-  setPermission: PropTypes.func,
-  publicSelected: PropTypes.bool.isRequired,
-  dispatchRevisionError: PropTypes.func,
+  doUpdateAndApply: PropTypes.func.isRequired,
+  permission: PropTypes.string.isRequired,
   view: PropTypes.object
 };
 

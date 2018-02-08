@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { assert } from 'chai';
 import sinon from 'sinon';
 
-import { stubConsoleError } from '../consoleStub';
+import { expectConsoleErrorCallCount } from '../consoleStub';
 import { $transient } from '../TransientElement';
 import StorytellerUtils from 'StorytellerUtils';
 import 'editor/block-component-renderers/componentStoryTile';
@@ -114,7 +114,7 @@ describe('componentStoryTile jQuery plugin', function() {
   });
 
   describe('when there is no story with that 4x4', function() {
-    stubConsoleError();
+    expectConsoleErrorCallCount(1);
 
     stubApiAndCreateComponentWith(404, {}, validComponentData);
 

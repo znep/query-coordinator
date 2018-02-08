@@ -33,7 +33,7 @@ describe('CollaboratorsRenderer', () => {
   }
 
   beforeEach(() => {
-    debounceStub = sinon.stub(window._, 'debounce').callsFake((fn) => fn);
+    debounceStub = sinon.stub(window._, 'debounce').callsFake(_.identity);
 
     server = sinon.fakeServer.create();
     server.respondImmediately = true;

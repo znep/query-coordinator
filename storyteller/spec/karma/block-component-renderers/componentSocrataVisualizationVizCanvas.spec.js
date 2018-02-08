@@ -3,7 +3,7 @@ import _ from 'lodash';
 import sinon from 'sinon';
 import { assert } from 'chai';
 
-import { stubConsoleError } from '../consoleStub';
+import { expectConsoleErrorCallCount } from '../consoleStub';
 import { $transient } from '../TransientElement';
 import I18nMocker from '../I18nMocker';
 import {__RewireAPI__ as componentSocrataVisualizationVizCanvasAPI} from 'editor/block-component-renderers/componentSocrataVisualizationVizCanvas';
@@ -71,8 +71,6 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
   let visualizationRendererSpy;
 
   function stubApiAndCreateComponentWith(statusCode, response = {}, componentData = validComponentData) {
-    let server;
-
     beforeEach((done) => {
       visualizationRendererSpy = sinon.spy();
       componentSocrataVisualizationVizCanvasAPI.__Rewire__('VisualizationRenderer', visualizationRendererSpy);
@@ -201,7 +199,7 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
       });
 
       describe('when stored rendered vif becomes unparsable', () => {
-        stubConsoleError();
+        expectConsoleErrorCallCount(1);
 
         it('renders error', () => {
           $component.attr('data-rendered-vif', 'unparseable');
@@ -216,7 +214,7 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
     });
 
     describe('when the viz-canvas view returns unauthorized', () => {
-      stubConsoleError();
+      expectConsoleErrorCallCount(2);
       stubApiAndCreateComponentWith(403);
 
       it('does not render visualization', () => {
@@ -232,7 +230,7 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
     });
 
     describe('when the viz-canvas view returns not found', () => {
-      stubConsoleError();
+      expectConsoleErrorCallCount(2);
       stubApiAndCreateComponentWith(404);
 
       it('does not render visualization', () => {
@@ -248,7 +246,7 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
     });
 
     describe('when the viz-canvas view returns another error', () => {
-      stubConsoleError();
+      expectConsoleErrorCallCount(2);
       stubApiAndCreateComponentWith(401);
 
       it('does not render visualization', () => {
@@ -264,7 +262,7 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
     });
 
     describe('when the viz-canvas view does not contain the referenced vif', () => {
-      stubConsoleError();
+      expectConsoleErrorCallCount(2);
       let componentDataWithWrongVifId = _.cloneDeep(validComponentData);
       componentDataWithWrongVifId.value.dataset.vifId = 'not-the-right-id-at-all';
 

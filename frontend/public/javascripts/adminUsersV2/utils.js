@@ -14,3 +14,18 @@ export const connect = (mapStateToProps, mapDispatchToProps) => flow(
   reduxConnect(mapStateToProps, mapDispatchToProps),
   connectLocalization
 );
+
+/**
+ * If the role is not default, but has the same name as a default role,
+ * we append (Custom) to the end of it to differentiate the two
+ * @param {object} customRole Custom role to get name for
+ * @param {array} rolesList List of all roles, including default and custom roles
+ * @param {object} I18n Translation getter thing
+ */
+export const getCustomRoleName = (customRole, rolesList, I18n) =>
+  rolesList.some(
+    otherRole => otherRole.isDefault &&
+    otherRole.name.toLowerCase() === customRole.name.toLowerCase()
+  ) ?
+    `${customRole.name} (${I18n.t('users.roles.custom')})` :
+    customRole.name;

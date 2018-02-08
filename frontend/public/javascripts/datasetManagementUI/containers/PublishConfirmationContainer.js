@@ -8,16 +8,17 @@ import PublishConfirmation,
 import { addNotification } from 'datasetManagementUI/reduxStuff/actions/notifications';
 
 export function mapStateToProps({ entities }, { params }) {
-  const rev = _.values(entities.revisions).find(r => r.revision_seq === _.toNumber(params.revisionSeq));
+  const rev = _.values(entities.revisions).find(r => r.revision_seq === _.toNumber(params.revisionSeq)) || {};
 
   const { id: revisionId } = rev;
+
+  const view = _.get(entities, ['views', params.fourfour], {});
 
   const permission = _.get(entities, ['revisions', revisionId, 'action', 'permission'], PERMISSIONS.PUBLIC);
 
   return {
-    view: entities.views[params.fourfour],
-    permission,
-    revision: rev
+    view,
+    permission
   };
 }
 

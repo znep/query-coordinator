@@ -228,9 +228,7 @@ class Publishing extends React.Component {
 }
 
 Publishing.propTypes = {
-  revision: PropTypes.shape({
-    permission: PropTypes.string.isRequired
-  }).isRequired,
+  revision: PropTypes.object,
   taskSet: PropTypes.shape({
     status: PropTypes.oneOf(ApplyRevision.TASK_SET_STATUSES),
     created_at: PropTypes.instanceOf(Date)

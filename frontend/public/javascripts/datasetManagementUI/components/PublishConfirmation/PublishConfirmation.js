@@ -24,20 +24,6 @@ class PublishConfirmation extends Component {
     this.setCurrentPermission = this.setCurrentPermission.bind(this);
   }
 
-  componentDidUpdate() {
-    const { permission, view } = this.props;
-
-    const assetWillBePublic = permission === PERMISSIONS.PUBLIC;
-
-    assetUtils
-      .assetWillEnterApprovalsQueueOnPublish({ coreView: view, assetWillBePublic })
-      .then(showApprovalMessage => {
-        if (showApprovalMessage !== this.state.showApprovalMessage) {
-          this.setState({ showApprovalMessage });
-        }
-      });
-  }
-
   // Right now we don't update the revision in the store when you toggle the
   // permission here. When/if we separate "change permission" and "publish" into
   // two steps, we need to at least update the redux store on permission toggle.
@@ -48,9 +34,19 @@ class PublishConfirmation extends Component {
   }
 
   render() {
-    const { doCancel, doUpdateAndApply } = this.props;
+    const { doCancel, doUpdateAndApply, permission, view } = this.props;
 
     const { currentPermission } = this.state;
+
+    const assetWillBePublic = permission === PERMISSIONS.PUBLIC;
+
+    assetUtils
+      .assetWillEnterApprovalsQueueOnPublish({ coreView: view, assetWillBePublic })
+      .then(showApprovalMessage => {
+        if (showApprovalMessage !== this.state.showApprovalMessage) {
+          this.setState({ showApprovalMessage });
+        }
+      });
 
     return (
       <div className="publish-confirmation-modal-inner">

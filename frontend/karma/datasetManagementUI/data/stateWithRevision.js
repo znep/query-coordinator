@@ -113,7 +113,6 @@ export default {
         task_sets: [30],
         attachments: [],
         revision_seq: 0,
-        permission: 'public',
         created_at: new Date('2017-06-15T18:59:35.004186Z'),
         created_by: {
           user_id: 'tugg-ikce',
@@ -194,6 +193,7 @@ export default {
         closed_at: '2017-06-15T19:00:03',
         action: {
           type: 'replace',
+          permission: 'public',
           schema: null
         }
       }

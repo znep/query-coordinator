@@ -1,3 +1,6 @@
+import sinon from 'sinon';
+import { assert } from 'chai';
+
 import ExceptionNotifier, {__RewireAPI__ as ExceptionNotifierAPI} from '../../app/assets/javascripts/services/ExceptionNotifier';
 
 describe('ExceptionNotifier', function() {

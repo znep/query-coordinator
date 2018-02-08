@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+
 import Actions from 'editor/Actions';
 import Dispatcher from 'editor/Dispatcher';
 import GoalTitleProvider, {__RewireAPI__ as GoalTitleProviderAPI} from 'editor/GoalTitleProvider';

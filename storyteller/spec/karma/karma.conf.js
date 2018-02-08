@@ -6,32 +6,27 @@ module.exports = function(config) { //eslint-disable-line no-undef
   config.set({
     basePath: '../../',
 
-    frameworks: ['mocha', 'chai-dom', 'chai', 'sinon'],
-
-    files: ['spec/karma/index.js'],
-
     preprocessors: {
       'spec/karma/index.js': ['webpack', 'sourcemap']
     },
 
-    plugins: [
-      require('karma-mocha'),
-      require('karma-chai'),
-      require('karma-chai-dom'),
-      require('karma-sinon'),
-      require('karma-webpack'),
-      require('karma-sourcemap-loader'),
-      require('karma-chrome-launcher'),
-      require('karma-phantomjs-launcher')
-    ],
+    frameworks: ['mocha'],
+
+    reporters: ['dots'],
+
+
+    files: ['spec/karma/environment.js', 'spec/karma/index.js'],
 
     webpack: webpack,
 
     webpackMiddleware: {
-      noInfo: true
+      noInfo: true,
+      quiet: true
     },
 
-    reporters: ['progress'],
+    mochaReporter: {
+      showDiff: true
+    },
 
     coverageReporter: {
       reporters: [

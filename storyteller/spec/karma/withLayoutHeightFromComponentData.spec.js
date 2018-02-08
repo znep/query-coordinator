@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import { $transient } from './TransientElement';
 import '../../app/assets/javascripts/editor/withLayoutHeightFromComponentData';

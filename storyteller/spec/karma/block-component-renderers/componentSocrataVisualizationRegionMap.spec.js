@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import { $transient } from '../TransientElement';
 import 'editor/block-component-renderers/componentSocrataVisualizationRegionMap';
@@ -57,7 +59,7 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
     var socrataSvgRegionMapStub;
 
     beforeEach(function() {
-      socrataSvgRegionMapStub = sinon.stub($.fn, 'socrataSvgRegionMap', function() { return this; });
+      socrataSvgRegionMapStub = sinon.stub($.fn, 'socrataSvgRegionMap').callsFake(function() { return this; });
       $component = $component.componentSocrataVisualizationRegionMap(getProps());
     });
 
@@ -117,7 +119,7 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
       var socrataSvgRegionMapStub;
 
       beforeEach(function() {
-        socrataSvgRegionMapStub = sinon.stub($.fn, 'socrataSvgRegionMap', function() { return this; });
+        socrataSvgRegionMapStub = sinon.stub($.fn, 'socrataSvgRegionMap').callsFake(function() { return this; });
         $component = $component.componentSocrataVisualizationRegionMap(getProps());
       });
 

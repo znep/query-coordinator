@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
 
+import sinon from 'sinon';
 import { $transient } from '../TransientElement';
 /* eslint-disable no-unused-vars */
 import componentSocrataVisualizationPieChart

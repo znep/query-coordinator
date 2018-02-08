@@ -1,4 +1,6 @@
 import $ from 'jquery';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import { $transient } from '../TransientElement';
 import {__RewireAPI__ as componentHTMLAPI} from 'editor/block-component-renderers/componentHTML';

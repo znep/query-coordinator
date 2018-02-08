@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { assert } from 'chai';
 
 import { $transient } from '../TransientElement';
 import 'editor/components/Modal';

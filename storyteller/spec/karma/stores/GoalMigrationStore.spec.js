@@ -1,3 +1,6 @@
+import sinon from 'sinon';
+import { assert } from 'chai';
+
 import Actions from 'editor/Actions';
 import Dispatcher from 'editor/Dispatcher';
 import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
@@ -162,7 +165,7 @@ describe('GoalMigrationStore', () => {
 
   describe('isMigrating', () => {
     it('becomes true while migrating and becomes false on complete', () => {
-      const delayStub = sinon.stub(window._, 'delay', (fn) => fn());
+      const delayStub = sinon.stub(window._, 'delay').callsFake((fn) => fn());
 
       assert.isFalse(goalMigrationStore.isMigrating());
       dispatcher.dispatch({ action: Actions.GOAL_MIGRATION_START });

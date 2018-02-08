@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import StandardMocks from '../StandardMocks';
 import Constants from 'editor/Constants';
@@ -320,7 +322,7 @@ describe('AssetSelectorStore', function() {
             provider: 'IMAGE'
           });
 
-          isUploadingFileStub = sinon.stub(assetSelectorStore, 'isUploadingFile', _.constant(true));
+          isUploadingFileStub = sinon.stub(assetSelectorStore, 'isUploadingFile').callsFake(_.constant(true));
           fileUploaderStoreMock._emitChange();
 
           dispatcher.dispatch({
@@ -1219,15 +1221,19 @@ describe('AssetSelectorStore', function() {
           dispatch(phrase, continuous);
 
           assert.lengthOf(server.requests, 1);
-          server.respondWith('GET', server.requests[0].url, [200, {'Content-Type': 'application/json'}, '{}']);
+          server.respondWith([200, {'Content-Type': 'application/json'}, '{}']);
           server.respond();
 
           _.delay(function() {
-            sinon.assert.calledTwice(emitChangeSpy);
-            assert.isFalse(assetSelectorStore.isImageSearching());
-            assert.isFalse(assetSelectorStore.hasImageSearchError());
-            assert.isTrue(assetSelectorStore.hasImageSearchResults());
-            assert.lengthOf(assetSelectorStore.getImageSearchResults(), 1);
+            try {
+              sinon.assert.calledTwice(emitChangeSpy);
+              assert.isFalse(assetSelectorStore.isImageSearching());
+              assert.isFalse(assetSelectorStore.hasImageSearchError());
+              assert.isTrue(assetSelectorStore.hasImageSearchResults());
+              assert.lengthOf(assetSelectorStore.getImageSearchResults(), 1);
+            } catch (e) {
+              done(e);
+            }
             done();
           }, 20);
         });
@@ -1276,7 +1282,7 @@ describe('AssetSelectorStore', function() {
       var setComponentTypeAndSetImage = function(componentType) {
         beforeEach(function() {
           _.attempt(_.get(assetSelectorStore.getComponentType, 'restore'));
-          sinon.stub(assetSelectorStore, 'getComponentType', _.constant(componentType));
+          sinon.stub(assetSelectorStore, 'getComponentType').callsFake(_.constant(componentType));
 
           dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
@@ -1336,8 +1342,8 @@ describe('AssetSelectorStore', function() {
       var getImageSearchPhraseStub;
 
       beforeEach(function() {
-        canPageImageSearchNextStub = sinon.stub(assetSelectorStore, 'canPageImageSearchNext', _.constant(true));
-        getImageSearchPhraseStub = sinon.stub(assetSelectorStore, 'getImageSearchPhrase', _.constant('ine'));
+        canPageImageSearchNextStub = sinon.stub(assetSelectorStore, 'canPageImageSearchNext').callsFake(_.constant(true));
+        getImageSearchPhraseStub = sinon.stub(assetSelectorStore, 'getImageSearchPhrase').callsFake(_.constant('ine'));
       });
 
       afterEach(function() {
@@ -1425,7 +1431,7 @@ describe('AssetSelectorStore', function() {
       var crop = {crop: {x: 30, y: 40, width: 50, height: 50}};
 
       beforeEach(function() {
-        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue', _.constant(crop));
+        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(crop));
       });
 
       afterEach(function() {
@@ -1475,7 +1481,7 @@ describe('AssetSelectorStore', function() {
       var getComponentValueStub;
 
       beforeEach(function() {
-        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue', _.constant({}));
+        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant({}));
       });
 
       afterEach(function() {
@@ -1518,7 +1524,7 @@ describe('AssetSelectorStore', function() {
 
       beforeEach(function() {
         value = {test: 'testing'};
-        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue', _.constant(value));
+        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(value));
       });
 
       afterEach(function() {
@@ -1548,11 +1554,7 @@ describe('AssetSelectorStore', function() {
 
     beforeEach(function() {
       value = {};
-      getComponentValueStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentValue',
-        _.constant(value)
-      );
+      getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(value));
 
       dispatcher.dispatch({ action: Actions.ASSET_SELECTOR_IMAGE_CROP_START });
     });
@@ -1577,11 +1579,7 @@ describe('AssetSelectorStore', function() {
     beforeEach(function() {
       value = {crop: {}};
 
-      getComponentValueStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentValue',
-        _.constant(value)
-      );
+      getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(value));
 
       dispatcher.dispatch({ action: Actions.ASSET_SELECTOR_IMAGE_CROP_RESET });
     });
@@ -1695,11 +1693,7 @@ describe('AssetSelectorStore', function() {
     beforeEach(function() {
       value = {crop: {}};
 
-      getComponentValueStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentValue',
-        _.constant(value)
-      );
+      getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(value));
 
       dispatch();
     });
@@ -1746,11 +1740,7 @@ describe('AssetSelectorStore', function() {
 
     beforeEach(function() {
       value = {};
-      getComponentValueStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentValue',
-        _.constant(value)
-      );
+      getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(value));
     });
 
     afterEach(function() {
@@ -1779,17 +1769,9 @@ describe('AssetSelectorStore', function() {
       value = { openInNewWindow: false };
       compType = 'image';
 
-      getComponentValueStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentValue',
-        _.constant(value)
-      );
+      getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(value));
 
-      getComponentTypeStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentType',
-        _.constant(compType)
-      );
+      getComponentTypeStub = sinon.stub(assetSelectorStore, 'getComponentType').callsFake(_.constant(compType));
     });
 
     afterEach(function() {
@@ -1807,11 +1789,7 @@ describe('AssetSelectorStore', function() {
     it('throws an error if the component is not an image', function() {
       getComponentTypeStub.restore();
 
-      getComponentTypeStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentType',
-        _.constant('not-an-image')
-      );
+      getComponentTypeStub = sinon.stub(assetSelectorStore, 'getComponentType').callsFake(_.constant('not-an-image'));
 
       assert.throws(() => dispatch());
     });
@@ -1833,17 +1811,9 @@ describe('AssetSelectorStore', function() {
       value = { openInNewWindow: false };
       compType = 'goal.tile';
 
-      getComponentValueStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentValue',
-        _.constant(value)
-      );
+      getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(value));
 
-      getComponentTypeStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentType',
-        _.constant(compType)
-      );
+      getComponentTypeStub = sinon.stub(assetSelectorStore, 'getComponentType').callsFake(_.constant(compType));
     });
 
     afterEach(function() {
@@ -1861,11 +1831,7 @@ describe('AssetSelectorStore', function() {
     it('throws an error if the component is not a goal', function() {
       getComponentTypeStub.restore();
 
-      getComponentTypeStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentType',
-        _.constant('not-a-goal')
-      );
+      getComponentTypeStub = sinon.stub(assetSelectorStore, 'getComponentType').callsFake(_.constant('not-a-goal'));
 
       assert.throws(() => dispatch());
     });

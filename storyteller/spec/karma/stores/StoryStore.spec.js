@@ -1,3 +1,6 @@
+import sinon from 'sinon';
+import { assert } from 'chai';
+
 import DataGenerators from '../DataGenerators';
 import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
 import Actions from 'editor/Actions';

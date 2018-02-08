@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
 
 import SquireMocker from './SquireMocker';
 import { $transient } from './TransientElement';

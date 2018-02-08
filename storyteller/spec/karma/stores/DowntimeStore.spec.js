@@ -1,5 +1,7 @@
 import _ from 'lodash';
+import { assert } from 'chai';
 
+import sinon from 'sinon';
 import Actions from 'editor/Actions';
 import Dispatcher from 'editor/Dispatcher';
 import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';

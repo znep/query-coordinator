@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import StandardMocks from './StandardMocks';
 import EnvironmentMocker from './StorytellerEnvironmentMocker';
@@ -62,25 +64,36 @@ describe('StoryDraftCreator', () => {
       assert.throws(() => { StoryDraftCreator.saveDraft('notastory'); });
     });
 
-    it('should hit the drafts endpoint with the stories JSON', (done) => {
-      server.respondImmediately = true;
+    it('should hit the drafts endpoint with the stories JSON', () => {
+      server.autoRespond = true;
 
       server.respondWith((request) => {
         assert.propertyVal(request, 'method', 'POST');
-        assert.propertyVal(request, 'url', StorytellerUtils.format('/stories/api/v1/stories/{0}/drafts', StandardMocks.validStoryUid));
-        assert.deepPropertyVal(request, 'requestHeaders.X-Socrata-Host', location.hostname);
-        assert.deepPropertyVal(request, 'requestHeaders.X-CSRF-Token', 'faketoken');
-        assert.deepPropertyVal(request, 'requestHeaders.If-Match', StandardMocks.validStoryDigest);
-        assert.deepPropertyVal(request, 'requestHeaders.X-App-Token', EnvironmentMocker.CORE_SERVICE_APP_TOKEN);
+        assert.propertyVal(
+          request,
+          'url',
+          StorytellerUtils.format('/stories/api/v1/stories/{0}/drafts', StandardMocks.validStoryUid)
+        );
+        assert.nestedPropertyVal(request, 'requestHeaders.X-Socrata-Host', location.hostname);
+        assert.nestedPropertyVal(request, 'requestHeaders.X-CSRF-Token', 'faketoken');
+        assert.nestedPropertyVal(request, 'requestHeaders.If-Match', StandardMocks.validStoryDigest);
+        assert.nestedPropertyVal(request, 'requestHeaders.X-App-Token', EnvironmentMocker.CORE_SERVICE_APP_TOKEN);
         assert.deepEqual(
           JSON.parse(request.requestBody),
           story
         );
-        // Don't bother responding.
-        done();
+
+        request.respond(
+          200,
+          {
+            'Content-Type': 'application/json',
+            'X-Story-Digest': 'fake'
+          },
+          '{}'
+        );
       });
 
-      StoryDraftCreator.saveDraft(StandardMocks.validStoryUid);
+      return StoryDraftCreator.saveDraft(StandardMocks.validStoryUid);
     });
 
     describe('on successful request', () => {
@@ -145,7 +158,7 @@ describe('StoryDraftCreator', () => {
           }
         });
 
-        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid);
+        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).catch(() => {});
       });
 
       it('reject the returned promise', (done) => {
@@ -176,7 +189,7 @@ describe('StoryDraftCreator', () => {
           }
         });
 
-        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid);
+        StoryDraftCreator.saveDraft(StandardMocks.validStoryUid).catch(() => {});
       });
 
       it('reject the returned promise', (done) => {

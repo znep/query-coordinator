@@ -1,3 +1,5 @@
+import { assert } from 'chai';
+
 import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
 import MoveComponentStore, {__RewireAPI__ as MoveComponentStoreAPI} from 'editor/stores/MoveComponentStore';
 import Actions from 'editor/Actions';
@@ -48,20 +50,23 @@ describe('MoveComponentStore', () => {
     });
 
     it('sets isUserChoosingMoveDestination to true', () => {
-      expect(moveComponentStore.isUserChoosingMoveDestination()).to.equal(true);
+      assert.isTrue(moveComponentStore.isUserChoosingMoveDestination());
     });
 
     it('sets sourceComponent to the blockId and componentIndex', () => {
-      expect(moveComponentStore.getSourceMoveComponent()).to.deep.equal({ blockId, componentIndex });
+      assert.deepEqual(
+        moveComponentStore.getSourceMoveComponent(),
+        { blockId, componentIndex }
+      );
     });
 
     describe('isComponentBeingMoved', () => {
       it('returns false for IDs and indexes that don\'t match the source component', () => {
-        expect(moveComponentStore.isComponentBeingMoved('notBlockId', Math.Infinity)).to.equal(false);
+        assert.isFalse(moveComponentStore.isComponentBeingMoved('notBlockId', Math.Infinity));
       });
 
       it('returns true for an ID and index that matches the source component', () => {
-        expect(moveComponentStore.isComponentBeingMoved(blockId, componentIndex)).to.equal(true);
+        assert.isTrue(moveComponentStore.isComponentBeingMoved(blockId, componentIndex));
       });
     });
 
@@ -74,11 +79,11 @@ describe('MoveComponentStore', () => {
       });
 
       it('returns false for the source component', () => {
-        expect(moveComponentStore.isComponentValidMoveDestination(blockId, componentIndex)).to.equal(false);
+        assert.isFalse(moveComponentStore.isComponentValidMoveDestination(blockId, componentIndex));
       });
 
       it('returns true for any media component', () => {
-        expect(moveComponentStore.isComponentValidMoveDestination('notBlockId', Math.Infinity)).to.equal(true);
+        assert.isTrue(moveComponentStore.isComponentValidMoveDestination('notBlockId', Math.Infinity));
       });
     });
   });
@@ -91,7 +96,7 @@ describe('MoveComponentStore', () => {
     });
 
     it('sets isUserChoosingDestination to false', () => {
-      expect(moveComponentStore.isUserChoosingMoveDestination()).to.equal(false);
+      assert.isFalse(moveComponentStore.isUserChoosingMoveDestination());
     });
   });
 
@@ -103,24 +108,27 @@ describe('MoveComponentStore', () => {
     });
 
     it('sets isUserChoosingDestination to false', () => {
-      expect(moveComponentStore.isUserChoosingMoveDestination()).to.equal(false);
+      assert.isFalse(moveComponentStore.isUserChoosingMoveDestination());
     });
 
     it('sets sourceComponent to null for all Object properties', () => {
-      expect(moveComponentStore.getSourceMoveComponent()).to.deep.equal({
-        blockId: null,
-        componentIndex: null
-      });
+      assert.deepEqual(
+        moveComponentStore.getSourceMoveComponent(),
+        {
+          blockId: null,
+          componentIndex: null
+        }
+      );
     });
   });
 
   describe('isComponentValidSource', () => {
     it('returns false for an invalid component type', () => {
-      expect(moveComponentStore.isComponentValidMoveSource('not.valid')).to.equal(false);
+      assert.isFalse(moveComponentStore.isComponentValidMoveSource('not.valid'));
     });
 
     it('returns true for a valid component type', () => {
-      expect(moveComponentStore.isComponentValidMoveSource('youtube.video')).to.equal(true);
+      assert.isTrue(moveComponentStore.isComponentValidMoveSource('youtube.video'));
     });
   });
 });

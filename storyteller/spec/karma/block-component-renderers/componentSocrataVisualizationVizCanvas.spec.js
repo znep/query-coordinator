@@ -1,6 +1,9 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
+import { expectConsoleErrorCallCount } from '../consoleStub';
 import { $transient } from '../TransientElement';
 import I18nMocker from '../I18nMocker';
 import {__RewireAPI__ as componentSocrataVisualizationVizCanvasAPI} from 'editor/block-component-renderers/componentSocrataVisualizationVizCanvas';
@@ -68,23 +71,29 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
   let visualizationRendererSpy;
 
   function stubApiAndCreateComponentWith(statusCode, response = {}, componentData = validComponentData) {
-    let server;
-
     beforeEach((done) => {
       visualizationRendererSpy = sinon.spy();
       componentSocrataVisualizationVizCanvasAPI.__Rewire__('VisualizationRenderer', visualizationRendererSpy);
 
-      server = sinon.fakeServer.create();
-      server.respondImmediately = true;
-      server.respondWith(
-        'GET',
-        `https://example.com/api/views/${componentData.value.dataset.datasetUid}.json?read_from_nbe=true&version=2.1`,
-        [
-          statusCode,
-          { 'Content-Type': 'application/json' },
-          JSON.stringify(response)
-        ]
-      );
+      class MockMetadataProvider {
+        constructor(options) {
+          assert.equal(options.datasetUid, componentData.value.dataset.datasetUid);
+          assert.equal(options.domain, componentData.value.dataset.domain);
+        }
+
+        async getDatasetMetadata() {
+          if (statusCode === 200) {
+            return response;
+          } else {
+            return Promise.reject({
+              status: statusCode
+            });
+          }
+        }
+
+      }
+
+      componentSocrataVisualizationVizCanvasAPI.__Rewire__('MetadataProvider', MockMetadataProvider);
 
       $component = $component.componentSocrataVisualizationVizCanvas(getProps({ componentData }));
 
@@ -93,7 +102,7 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
 
     afterEach(() => {
       componentSocrataVisualizationVizCanvasAPI.__ResetDependency__('VisualizationRenderer');
-      server.restore();
+      componentSocrataVisualizationVizCanvasAPI.__ResetDependency__('MetadataProvider');
     });
   }
 
@@ -190,6 +199,8 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
       });
 
       describe('when stored rendered vif becomes unparsable', () => {
+        expectConsoleErrorCallCount(1);
+
         it('renders error', () => {
           $component.attr('data-rendered-vif', 'unparseable');
           $component.componentSocrataVisualizationVizCanvas(getProps({ componentData: validComponentData }));
@@ -203,6 +214,7 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
     });
 
     describe('when the viz-canvas view returns unauthorized', () => {
+      expectConsoleErrorCallCount(2);
       stubApiAndCreateComponentWith(403);
 
       it('does not render visualization', () => {
@@ -218,6 +230,7 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
     });
 
     describe('when the viz-canvas view returns not found', () => {
+      expectConsoleErrorCallCount(2);
       stubApiAndCreateComponentWith(404);
 
       it('does not render visualization', () => {
@@ -233,6 +246,7 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
     });
 
     describe('when the viz-canvas view returns another error', () => {
+      expectConsoleErrorCallCount(2);
       stubApiAndCreateComponentWith(401);
 
       it('does not render visualization', () => {
@@ -248,6 +262,7 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
     });
 
     describe('when the viz-canvas view does not contain the referenced vif', () => {
+      expectConsoleErrorCallCount(2);
       let componentDataWithWrongVifId = _.cloneDeep(validComponentData);
       componentDataWithWrongVifId.value.dataset.vifId = 'not-the-right-id-at-all';
 

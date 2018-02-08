@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import { $transient } from '../TransientElement';
 import DataGenerators from '../DataGenerators';
@@ -19,7 +21,7 @@ describe('componentHero jQuery plugin', function() {
     type: 'hero',
     value: {
       documentId: '1234',
-      url: 'https://imageuploads.com/valid-upload-image.png',
+      url: 'https://example.com/valid-upload-image.png',
       html: 'some html'
     }
   };
@@ -76,11 +78,11 @@ describe('componentHero jQuery plugin', function() {
       attr('data-block-id', blockId).
       attr('data-component-index', componentIndex);
 
-    mockComponentHTML = sinon.stub($.fn, 'componentHTML', _.noop);
+    mockComponentHTML = sinon.stub($.fn, 'componentHTML');
   });
 
   afterEach(function() {
-    mockComponentHTML.restore();
+    $.fn.componentHTML.restore();
   });
 
   it('should throw when passed invalid arguments', function() {
@@ -256,7 +258,7 @@ describe('componentHero jQuery plugin', function() {
     });
 
     describe('converting from configured to configured (changed/updated)', function() {
-      var url = 'https://hello.com/world.jpg';
+      var url = 'https://example.com/example.jpg';
 
       beforeEach(function() {
         var componentData = _.cloneDeep(validComponentData);

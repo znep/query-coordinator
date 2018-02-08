@@ -442,6 +442,26 @@ $large: 769px;
 
      .reporting-period-size {
        padding: 10px 0 10px 20px;
+
+       .dropdown-container {
+         float: left;
+         min-width: 175px;
+         margin-right: 20px;
+         margin-bottom: 20px;
+       }
+
+       .choose-size-body {
+         margin-bottom: 10px;
+       }
+
+       .grayed-out {
+         filter: opacity(50%) grayscale(100%);
+       }
+
+       .sample-viz {
+         width: 515px;
+         height: 200px;
+       }
      }
   }
 

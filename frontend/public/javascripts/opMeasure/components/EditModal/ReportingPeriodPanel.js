@@ -49,6 +49,7 @@ export class ReportingPeriodPanel extends Component {
       collapsible: !checked,
       options,
       placeholder,
+      type,
       onOptionSelected: (option) => this.props.onChangePeriodSize(option.value)
     };
 

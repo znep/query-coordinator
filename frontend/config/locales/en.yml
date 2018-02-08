@@ -3289,6 +3289,8 @@ en:
             week_to_date: Week-to-date
             year: Year
             year_to_date: Year-to-date
+          sample_open: Sample metric card and visualization for open reporting period
+          sample_closed: Sample metric card and visualization for closed reporting period
           start_date_label: Period start date
           tab_title: Reporting Period
           title: Configure Reporting Period

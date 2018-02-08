@@ -8,13 +8,13 @@ class OauthController < ApplicationController
     }
 
     if @oauth_params[:client_id].blank? || @oauth_params[:response_type].blank?
-      flash.now[:error] = 'An OAuth authentication request must include client_id and response_type!'
+      flash.now[:error] = t('screens.profile.edit.app_tokens.oauth_error_invalid_app_token')
       return render 'shared/error', :status => :invalid_request
     end
 
     @app_token = AppToken.find(params[:client_id])
     if @app_token.nil?
-      flash.now[:error] = 'That is not a valid app token (client_id)!'
+      flash.now[:error] = t('screens.profile.edit.app_tokens.oauth_error_invalid_app_token')
       return render 'shared/error', :status => :not_found
     end
 

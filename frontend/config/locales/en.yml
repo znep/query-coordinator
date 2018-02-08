@@ -6669,6 +6669,8 @@ en:
           description: Description
           description_prompt: Enter a description for your application
           new_app_button: Create New Application
+          oauth_error_invalid_app_token: That is not a valid app token (client_id)!
+          oauth_error_invalid_authentication_request: An OAuth authentication request must include client_id and response_type!
           organization: Organization
           organization_prompt: Enter the organization responsible for this application
           public: Public?

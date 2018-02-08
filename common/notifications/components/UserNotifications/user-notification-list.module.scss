@@ -32,6 +32,19 @@ $viewOlderLinksHeight: $footerBarHeight;
   }
 }
 
+.notifications-loading {
+  padding: 5px 0;
+
+  .notifications-loading-text {
+    color: $view-older-notifications-link-color;
+    display: inline-block;
+    font-size: 13px;
+    line-height: 19px;
+    margin-left: 5px;
+    vertical-align: top;
+  }
+}
+
 .see-new-user-notifications-link-wrapper {
   left: 0;
   padding: 8px 15px;

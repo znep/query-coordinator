@@ -1,26 +1,22 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import connectLocalization from 'common/i18n/components/connectLocalization';
-
 import { SocrataIcon } from 'common/components/SocrataIcon';
+
 import styles from './panel-header.module.scss';
 
 class PanelHeader extends Component {
-  renderNewNotificationsLabel() {
-    const {
-      unreadCount,
-      I18n
-    } = this.props;
+  renderNewNotificationsLabel = () => {
+    const { I18n, unreadCount } = this.props;
+    const scope = 'shared_site_chrome_notifications';
 
     if (unreadCount > 0) {
       return (
-        <em
-          styleName="new-notifications-label"
-          className="new-notifications-label">
+        <em className="new-notifications-label" styleName="new-notifications-label">
           <span>{unreadCount}</span>
-          <span>{I18n.t('shared_site_chrome_notifications.new_label')}</span>
+          <span>{I18n.t('new_label', { scope })}</span>
         </em>
       );
     }
@@ -34,15 +30,8 @@ class PanelHeader extends Component {
 
     return (
       <div styleName="header">
-        <div styleName="header-icon">
-          <SocrataIcon name="bell" />
-        </div>
-
-        <h3>
-          {panelHeaderText}
-          {this.renderNewNotificationsLabel()}
-        </h3>
-
+        <div styleName="header-icon"><SocrataIcon name="bell" /></div>
+        <h3>{panelHeaderText} {this.renderNewNotificationsLabel()}</h3>
         <span
           styleName="close-panel-link"
           className="close-notifications-panel-link"

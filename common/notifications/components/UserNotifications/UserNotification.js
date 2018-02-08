@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import cssModules from 'react-css-modules';
-import classNames from 'classnames';
-import moment from 'moment';
 import _ from 'lodash';
+import classNames from 'classnames';
+import cssModules from 'react-css-modules';
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import connectLocalization from 'common/i18n/components/connectLocalization';
 import { SocrataIcon } from 'common/components/SocrataIcon';
-import { FADE_TRANSIENT_NOTIFICATION_AFTER_MILLISECONDS } from 'common/notifications/constants';
 
+import { FADE_TRANSIENT_NOTIFICATION_AFTER_MILLISECONDS } from 'common/notifications/constants';
 import styles from './user-notification.module.scss';
 
 const scope = 'shared_site_chrome_notifications';
@@ -20,10 +20,8 @@ class UserNotification extends React.Component {
     const { isTransientNotification } = this.props;
 
     if (isTransientNotification) {
-      const { notification, moveTransientNotificationIntoPanel } = this.props;
-      let { fadeAwayTimeoutId } = this.state;
-
-      fadeAwayTimeoutId = setTimeout(() => {
+      const { moveTransientNotificationIntoPanel, notification } = this.props;
+      const fadeAwayTimeoutId = setTimeout(() => {
         moveTransientNotificationIntoPanel(notification.id);
       }, FADE_TRANSIENT_NOTIFICATION_AFTER_MILLISECONDS);
 
@@ -38,19 +36,22 @@ class UserNotification extends React.Component {
     if (isTransientNotification && !_.isNull(fadeAwayTimeoutId)) {
       clearTimeout(fadeAwayTimeoutId);
       fadeAwayTimeoutId = null;
+
       this.setState({ fadeAwayTimeoutId });
     }
   }
 
-  renderAlertLabel() {
+  renderAlertLabel = () => {
     const { I18n, notification } = this.props;
 
     if (notification.type === 'alert') {
       return <em>{I18n.t('filter_alert_notifications_tab_text', { scope })}</em>;
     }
+
+    return null;
   }
 
-  renderSocrataLogo() {
+  renderSocrataLogo = () => {
     const { isTransientNotification } = this.props;
 
     if (isTransientNotification) {
@@ -58,19 +59,15 @@ class UserNotification extends React.Component {
     }
   }
 
-  renderUnreadIcon() {
-    const {
-      notification,
-      onToggleReadUserNotification,
-      I18n
-    } = this.props;
+  renderUnreadIcon = () => {
+    const { I18n, notification, onToggleReadUserNotification } = this.props;
     const { id, read } = notification;
     const linkTitleI18nKey = read ? 'mark_as_read' : 'mark_as_unread';
 
     return (
       <span
-        styleName="link-icon"
         className="toggle-notification-read-state"
+        styleName="link-icon"
         role="button"
         title={I18n.t(linkTitleI18nKey, { scope })}
         onClick={() => onToggleReadUserNotification(id, !read)}>
@@ -79,18 +76,14 @@ class UserNotification extends React.Component {
     );
   }
 
-  renderClearIcon() {
-    const {
-      notification,
-      onClearUserNotification,
-      I18n
-    } = this.props;
+  renderClearIcon = () => {
+    const { I18n, notification, onClearUserNotification } = this.props;
 
     return (
       <span
-        styleName="link-icon"
         className="user-notification-clear-icon"
         role="button"
+        styleName="link-icon"
         title={I18n.t('clear_notification_text', { scope })}
         onClick={() => onClearUserNotification(notification.id)}>
         <SocrataIcon name="close-2" />
@@ -98,7 +91,7 @@ class UserNotification extends React.Component {
     );
   }
 
-  renderUserLink() {
+  renderUserLink = () => {
     const { userName, userProfileLink } = this.props.notification;
 
     if (_.isNull(userProfileLink)) {
@@ -108,11 +101,8 @@ class UserNotification extends React.Component {
     return <a href={userProfileLink} target="_blank">{userName}</a>;
   }
 
-  renderNotificationTitle() {
-    const {
-      notification,
-      I18n
-    } = this.props;
+  renderNotificationTitle = () => {
+    const { I18n, notification } = this.props;
     const {
       activityUniqueKey,
       alertName,
@@ -145,38 +135,29 @@ class UserNotification extends React.Component {
   }
 
   render() {
-    const {
-      notification,
-      isTransientNotification,
-      I18n
-    } = this.props;
-    const {
-      createdAt,
-      id,
-      read,
-      type
-    } = notification;
+    const { I18n, isTransientNotification, notification } = this.props;
+    const { createdAt, id, read, type } = notification;
     const isUnread = !read;
     let notificationByLabel = null;
 
     if (type !== 'alert') {
-      notificationByLabel = <span>{I18n.t('by_label', { scope: 'shared_site_chrome_notifications' })}</span>;
+      notificationByLabel = <span>{I18n.t('by_label', { scope })}</span>;
     }
 
     return (
       <li
+        className={classNames('user-notification-item', { 'unread': isUnread })}
+        data-notification-id={id}
         styleName={classNames('notification-item', type, {
           'unread': isUnread,
           'transient': isTransientNotification
-        })}
-        className={classNames('user-notification-item', { 'unread': isUnread })}
-        data-notification-id={id}>
+        })}>
         {this.renderSocrataLogo()}
 
-        <div styleName="notification-wrapper" className="clearfix">
+        <div className="clearfix" styleName="notification-wrapper">
           <div styleName="notification-info">
             {this.renderNotificationTitle()}
-            <p styleName="timestamp" className="notification-timestamp">
+            <p className="notification-timestamp" styleName="timestamp">
               <span>{moment.utc(createdAt).locale(I18n.locale).fromNow()}</span>
               {notificationByLabel}
               {this.renderUserLink()}
@@ -201,16 +182,16 @@ UserNotification.propTypes = {
     alertName: PropTypes.string,
     createdAt: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
-    read: PropTypes.bool.isRequired,
     link: PropTypes.string,
     messageBody: PropTypes.string.isRequired,
+    read: PropTypes.bool.isRequired,
     type: PropTypes.string.isRequired,
     userName: PropTypes.string.isRequired,
     userProfileLink: PropTypes.string
   }).isRequired,
-  moveTransientNotificationIntoPanel: PropTypes.func,
   onClearUserNotification: PropTypes.func.isRequired,
-  onToggleReadUserNotification: PropTypes.func.isRequired
+  onToggleReadUserNotification: PropTypes.func.isRequired,
+  moveTransientNotificationIntoPanel: PropTypes.func
 };
 
 UserNotification.defaultProps = {

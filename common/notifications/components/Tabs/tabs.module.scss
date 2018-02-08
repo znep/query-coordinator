@@ -23,7 +23,8 @@
     float: left;
     height: 30px;
     text-align: center;
-    width: calc((100% - 2px) / 3);
+    max-width: calc((100% - 1px) / 2);
+    min-width: 90px;
 
     &:not(:last-child) {
       margin-right: 1px;
@@ -52,7 +53,7 @@
         vertical-align: top;
         width: 10px;
 
-        &.status-dot {
+        &.activity-dot {
           background-color: #2d74fa;
           background-image: linear-gradient(
             to right,

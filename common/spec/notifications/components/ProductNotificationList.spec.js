@@ -4,7 +4,7 @@ import ProductNotificationList from 'common/notifications/components/ProductNoti
 
 describe('Product Notification List', () => {
   const defaultProps = {
-    areNotificationsLoading: false,
+    areProductNotificationsLoading: false,
     hasError: false,
     notifications: [],
     viewOlderLink: ''

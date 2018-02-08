@@ -1,18 +1,20 @@
+import _ from 'lodash';
 import $ from 'jquery';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import cssModules from 'react-css-modules';
 import classNames from 'classnames';
+import cssModules from 'react-css-modules';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import connectLocalization from 'common/i18n/components/connectLocalization';
+import Tabs from 'common/notifications/components/Tabs/Tabs';
 
 import PanelHeader from './PanelHeader';
 import ProductNotificationList from 'common/notifications/components/ProductNotificationList/ProductNotificationList';
 import PanelFooter from './PanelFooter';
-import UserNotificationList from 'common/notifications/components/UserNotifications/UserNotificationList';
-import Tabs from 'common/notifications/components/Tabs/Tabs';
-import { FILTER_TABS } from 'common/notifications/constants';
 import styles from './notification-list.module.scss';
+import UserNotificationList from 'common/notifications/components/UserNotifications/UserNotificationList';
+
+const scope = 'shared_site_chrome_notifications';
 
 class NotificationList extends Component {
   componentWillMount() {
@@ -40,62 +42,56 @@ class NotificationList extends Component {
     }
   }
 
-  renderPanelHeader() {
+  renderPanelHeader = () => {
     const {
+      I18n,
       showUserNotifications,
-      toggleNotificationPanel,
-      I18n
+      toggleNotificationPanel
     } = this.props;
+    let panelHeaderText;
+    let unreadCount;
 
     if (showUserNotifications) {
-      const { unreadUserNotificationCount } = this.props;
-      const panelHeaderText = I18n.t('shared_site_chrome_notifications.user_notifications');
-
-      return (
-        <PanelHeader
-          panelHeaderText={panelHeaderText}
-          onClosePanel={toggleNotificationPanel}
-          unreadCount={unreadUserNotificationCount} />
-      );
+      unreadCount = this.props.unreadUserNotificationCount;
+      panelHeaderText = I18n.t('user_notifications', { scope });
+    } else {
+      unreadCount = this.props.unreadProductNotificationCount;
+      panelHeaderText = I18n.t('product_updates', { scope });
     }
-
-    const { unreadProductNotificationCount } = this.props;
-    const panelHeaderText = I18n.t('shared_site_chrome_notifications.product_updates');
 
     return (
       <PanelHeader
-        panelHeaderText={panelHeaderText}
         onClosePanel={toggleNotificationPanel}
-        unreadCount={unreadProductNotificationCount} />
+        panelHeaderText={panelHeaderText}
+        unreadCount={unreadCount} />
     );
   }
 
-  renderUserNotifications() {
+  renderUserNotifications = () => {
     const { showUserNotifications } = this.props;
 
     if (showUserNotifications) {
       const {
         filterUserNotifications,
         filterUserNotificationsBy,
-        hasMoreNotifications,
         hasEnqueuedUserNotifications,
         onClearUserNotification,
         onLoadMoreUserNotifications,
         onSeeNewUserNotifications,
         onToggleReadUserNotification,
-        userNotifications,
-        showProductNotifications
+        showProductNotifications,
+        userNotifications
       } = this.props;
+      const filterTabs = _.keys(userNotifications);
 
       return (
         <Tabs
           filterNotifications={filterUserNotifications}
           hasSecondaryPanel={showProductNotifications}
           selectedTab={filterUserNotificationsBy}
-          tabs={FILTER_TABS}>
+          tabs={filterTabs}>
           <UserNotificationList
             filterNotificationsBy={filterUserNotificationsBy}
-            hasMoreNotifications={hasMoreNotifications}
             hasEnqueuedUserNotifications={hasEnqueuedUserNotifications}
             onClearUserNotification={onClearUserNotification}
             onLoadMoreUserNotifications={onLoadMoreUserNotifications}
@@ -107,23 +103,23 @@ class NotificationList extends Component {
     }
   }
 
-  renderProductNotifications() {
+  renderProductNotifications = () => {
     const {
-      areNotificationsLoading,
+      areProductNotificationsLoading,
       hasError,
       isSecondaryPanelOpen,
       productNotifications,
       showProductNotificationsAsSecondaryPanel,
       showProductNotifications,
-      unreadProductNotificationCount,
       toggleProductNotificationsSecondaryPanel,
+      unreadProductNotificationCount,
       viewOlderLink
     } = this.props;
 
     if (showProductNotifications) {
       return (
         <ProductNotificationList
-          areNotificationsLoading={areNotificationsLoading}
+          areProductNotificationsLoading={areProductNotificationsLoading}
           hasError={hasError}
           isSecondaryPanelOpen={isSecondaryPanelOpen}
           notifications={productNotifications}
@@ -135,39 +131,40 @@ class NotificationList extends Component {
     }
   }
 
-  renderPanelFooter() {
+  renderPanelFooter = () => {
     const {
-      currentUserRole,
-      isSuperAdmin,
-      isSecondaryPanelOpen,
-      showProductNotificationsAsSecondaryPanel,
-      showProductNotifications,
-      showUserNotifications,
       currentDomainFeatures,
-      showMyAlertPreference,
+      currentUserRole,
       inProductTransientNotificationsEnabled,
+      isSecondaryPanelOpen,
+      isSuperAdmin,
       onShowTransientNotificationsChange,
+      showMyAlertPreference,
+      showProductNotifications,
+      showProductNotificationsAsSecondaryPanel,
+      showUserNotifications,
       mapboxAccessToken
     } = this.props;
 
-    if ((showProductNotifications && !showUserNotifications) || (showProductNotificationsAsSecondaryPanel && isSecondaryPanelOpen)) {
+    if ((showProductNotifications && !showUserNotifications) ||
+      (showProductNotificationsAsSecondaryPanel && isSecondaryPanelOpen)) {
       const {
         markAllProductNotificationsAsRead,
         unreadProductNotificationCount
       } = this.props;
 
       return (<PanelFooter
-        markAllProductNotificationsAsRead={markAllProductNotificationsAsRead}
-        hasUnreadNotifications={unreadProductNotificationCount > 0}
-        forUserNotifications={false}
-        currentUserRole={currentUserRole}
-        showUserNotifications={showUserNotifications}
         currentDomainFeatures={currentDomainFeatures}
-        showMyAlertPreference={showMyAlertPreference}
+        currentUserRole={currentUserRole}
+        forUserNotifications={false}
+        hasUnreadNotifications={unreadProductNotificationCount > 0}
         inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
-        onShowTransientNotificationsChange={onShowTransientNotificationsChange}
+        isSuperAdmin={isSuperAdmin}
         mapboxAccessToken={mapboxAccessToken}
-        isSuperAdmin={isSuperAdmin} />);
+        markAllProductNotificationsAsRead={markAllProductNotificationsAsRead}
+        onShowTransientNotificationsChange={onShowTransientNotificationsChange}
+        showMyAlertPreference={showMyAlertPreference}
+        showUserNotifications={showUserNotifications} />);
     } else if (showUserNotifications) {
       const {
         clearAllUserNotifications,
@@ -176,20 +173,23 @@ class NotificationList extends Component {
         userNotifications
       } = this.props;
 
+      const hasUserNotifications = userNotifications.activity.notifications.length > 0 ||
+        (!_.isUndefined(userNotifications.alert) && userNotifications.alert.notifications.length > 0);
+
       return (<PanelFooter
         clearAllUserNotifications={clearAllUserNotifications}
-        forUserNotifications
-        hasUserNotifications={userNotifications.length > 0}
-        openClearAllUserNotificationsPrompt={openClearAllUserNotificationsPrompt}
-        toggleClearAllUserNotificationsPrompt={toggleClearAllUserNotificationsPrompt}
-        showUserNotifications={showUserNotifications}
-        currentUserRole={currentUserRole}
         currentDomainFeatures={currentDomainFeatures}
-        showMyAlertPreference={showMyAlertPreference}
+        currentUserRole={currentUserRole}
+        forUserNotifications
+        hasUserNotifications={hasUserNotifications}
         inProductTransientNotificationsEnabled={inProductTransientNotificationsEnabled}
-        onShowTransientNotificationsChange={onShowTransientNotificationsChange}
+        isSuperAdmin={isSuperAdmin}
         mapboxAccessToken={mapboxAccessToken}
-        isSuperAdmin={isSuperAdmin} />);
+        onShowTransientNotificationsChange={onShowTransientNotificationsChange}
+        openClearAllUserNotificationsPrompt={openClearAllUserNotificationsPrompt}
+        showMyAlertPreference={showMyAlertPreference}
+        showUserNotifications={showUserNotifications}
+        toggleClearAllUserNotificationsPrompt={toggleClearAllUserNotificationsPrompt} />);
     }
   }
 
@@ -209,35 +209,34 @@ class NotificationList extends Component {
 }
 
 NotificationList.propTypes = {
-  areNotificationsLoading: PropTypes.bool.isRequired,
+  areProductNotificationsLoading: PropTypes.bool.isRequired,
   clearAllUserNotifications: PropTypes.func.isRequired,
   currentUserRole: PropTypes.string,
   filterUserNotificationsBy: PropTypes.string.isRequired,
+  hasEnqueuedUserNotifications: PropTypes.func.isRequired,
   hasError: PropTypes.bool.isRequired,
-  hasMoreNotifications: PropTypes.bool.isRequired,
-  hasEnqueuedUserNotifications: PropTypes.bool.isRequired,
-  isSuperAdmin: PropTypes.bool.isRequired,
+  inProductTransientNotificationsEnabled: PropTypes.bool,
   isSecondaryPanelOpen: PropTypes.bool.isRequired,
+  isSuperAdmin: PropTypes.bool.isRequired,
   markAllProductNotificationsAsRead: PropTypes.func.isRequired,
   onClearUserNotification: PropTypes.func.isRequired,
   onLoadMoreUserNotifications: PropTypes.func.isRequired,
   onSeeNewUserNotifications: PropTypes.func.isRequired,
+  onShowTransientNotificationsChange: PropTypes.func.isRequired,
   onToggleReadUserNotification: PropTypes.func.isRequired,
   openClearAllUserNotificationsPrompt: PropTypes.bool.isRequired,
   productNotifications: PropTypes.array.isRequired,
+  showMyAlertPreference: PropTypes.bool,
   showProductNotifications: PropTypes.bool.isRequired,
-  showUserNotifications: PropTypes.bool.isRequired,
   showProductNotificationsAsSecondaryPanel: PropTypes.bool.isRequired,
-  toggleNotificationPanel: PropTypes.func.isRequired,
+  showUserNotifications: PropTypes.bool.isRequired,
   toggleClearAllUserNotificationsPrompt: PropTypes.func.isRequired,
+  toggleNotificationPanel: PropTypes.func.isRequired,
   toggleProductNotificationsSecondaryPanel: PropTypes.func.isRequired,
-  userNotifications: PropTypes.array.isRequired,
   unreadProductNotificationCount: PropTypes.number.isRequired,
   unreadUserNotificationCount: PropTypes.number.isRequired,
-  viewOlderLink: PropTypes.string,
-  showMyAlertPreference: PropTypes.bool,
-  inProductTransientNotificationsEnabled: PropTypes.bool,
-  onShowTransientNotificationsChange: PropTypes.func.isRequired
+  userNotifications: PropTypes.object.isRequired,
+  viewOlderLink: PropTypes.string
 };
 
 export default connectLocalization(cssModules(NotificationList, styles, { allowMultiple: true }));

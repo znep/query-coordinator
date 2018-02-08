@@ -626,6 +626,7 @@ en:
         user_notifications: Notifications
         view_older: View Older News
         load_more_items: Load more items...
+        loading: loading...
         see_new_notifications: See New Notifications
         mark_as_read: Mark as read
         mark_as_unread: Mark as unread
@@ -640,9 +641,8 @@ en:
         setting: Settings
         no_unread_notifications: You have no unread notifications
         has_unread_notifications: You have unread notifications
-        filter_all_notifications_tab_text: all
-        filter_status_notifications_tab_text: status
-        filter_alert_notifications_tab_text: alert
+        filter_activity_notifications_tab_text: Updates
+        filter_alert_notifications_tab_text: Alerts
         working_copy_initial_view_published_default_key: Working Copy Initial View Published
         draft_working_copy_initial_view_published: Draft Published
         data_lens_working_copy_initial_view_published: Data Lens Published

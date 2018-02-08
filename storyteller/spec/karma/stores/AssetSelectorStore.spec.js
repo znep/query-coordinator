@@ -1221,7 +1221,7 @@ describe('AssetSelectorStore', function() {
           dispatch(phrase, continuous);
 
           assert.lengthOf(server.requests, 1);
-          server.respondWith('GET', server.requests[0].url, [200, {'Content-Type': 'application/json'}, '{}']);
+          server.respondWith([200, {'Content-Type': 'application/json'}, '{}']);
           server.respond();
 
           _.delay(function() {

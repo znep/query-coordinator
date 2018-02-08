@@ -296,6 +296,7 @@ export class FilterItem extends Component {
     //       way to do this.
     return (
       <div className="filter-bar-filter">
+        <label className="filter-control-label">{this.props.column.name}</label>
         <div
           className="filter-control-container"
           ref={(ref) => this.controlContainer = ref}

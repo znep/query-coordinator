@@ -214,6 +214,9 @@ export const calculateRateMeasure = async (
 
   const numeratorOk = !!numeratorColumn;
   const denominatorOk = (denominatorColumn || !_.isEmpty(fixedDenominator));
+
+  errors.calculationNotConfigured = !numeratorOk || !denominatorOk;
+
   if (aggregationType && (numeratorOk || denominatorOk) && dataProvider && dateRangeWhereClause) {
     const numeratorColumnConditionWhereClause =
       columnConditionWhereClause(numeratorColumn, numeratorColumnCondition);
@@ -264,10 +267,6 @@ export const calculateRateMeasure = async (
     if (numerator) { numerator = new BigNumber(numerator); }
     if (denominator) { denominator = new BigNumber(denominator); }
 
-    if (numerator === null || denominator === null) {
-      errors.notEnoughData = true;
-    }
-
     const calculation = {};
     if (numerator) { calculation.numerator = numerator.toString(); }
     if (denominator) {
@@ -283,7 +282,7 @@ export const calculateRateMeasure = async (
           toFixed(decimalPlaces);
       }
     } else {
-      errors.calculationNotConfigured = true;
+      errors.notEnoughData = true;
     }
 
     return { errors, result: { ...calculation } };

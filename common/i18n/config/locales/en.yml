@@ -10,7 +10,7 @@ en:
       measure:
         as_of_last: as of last closed reporting period
         as_of_today: as of today
-        dividing_by_zero: PLACEHOLDER - Division by zero
+        dividing_by_zero: Denominator of the rate's fraction is zero
     asset_browser:
       alert_messages:
         resource_approved:
@@ -433,7 +433,7 @@ en:
         advanced_search:
           alert_title: Create your own alert
           description: Please enter your SoQL statement. An alert will be sent when the dataset is updated and the SoQL statement returns one or more rows.
-          text_box_description: Enter your SoQL statement      
+          text_box_description: Enter your SoQL statement
         alert_name_label: Name
         alert_name_placeholder: Name this Alert
         edit_mode_title: Manage Alerts

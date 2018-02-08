@@ -1,0 +1,85 @@
+<%= content_for :head do %>
+  <%= rendered_stylesheet_tag 'administration-catalog-configuration' %>
+  <title><%= t('catalog_configuration.breadcrumbs.title') %> | <%= get_site_title %></title>
+<%- end %>
+
+<% content_for :breadcrumb do %>
+  <%= admin_nav_link_to('catalog_configuration.breadcrumbs.title', :controller => 'catalog_configurations', :action => 'edit' ) %>
+<% end %>
+
+<div class="data_catalog">
+  <%= form_tag('/admin/catalog_configuration', :method => 'PUT') do %>
+    <div class="actions">
+      <div class="form_buttons">
+        <button type="submit" class="btn btn-sm btn-primary btn-dark">
+          <span class="btn-title"><%= t('save', scope: 'approvals.settings') %></span>
+          <span class="spinner-default spinner-btn-primary hidden"></span>
+        </button>
+        <button type="button" class="cancel btn btn-sm">
+          <span class="btn-title"><%= t('cancel', scope: 'approvals.settings') %></span>
+          <span class="spinner-default spinner-btn-secondary hidden"></span>
+        </button>
+      </div>
+    </div>
+
+    <section>
+      <div class="change_settings">
+        <div class="configuration_title">
+          <h6>
+            <a href="https://support.socrata.com/hc/en-us/articles/115002201008--Community-Badges"><span class="socrata-icon-question" /></a>
+            <%= t('title', scope: 'catalog_configuration.community_assets') %>
+            <span class="socrata-icon-community" />
+          </h6>
+          <p>
+            <%= t('subtitle', scope: 'catalog_configuration.community_assets') %>
+          </p>
+        </div>
+        <div class="configuration_options">
+          <ul>
+            <%= content_tag(:li, nil, :class => @catalog_configuration.properties.community_assets_hidden_from_catalog ? nil : 'selected') do %>
+              <%= radio_button_tag('community_assets_hidden_from_catalog', false, !@catalog_configuration.properties.community_assets_hidden_from_catalog) %>
+              <label class="radio_label" for="community_assets_hidden_from_catalog_false">
+                <%= t('title', scope: 'catalog_configuration.community_assets.appear') %>
+              </label>
+              <div>
+                <%= t('subtitle', scope: 'catalog_configuration.community_assets.appear') %>
+              </div>
+            <% end %>
+            <%= content_tag(:li, nil, :class => @catalog_configuration.properties.community_assets_hidden_from_catalog ? 'selected' : nil) do %>
+              <%= radio_button_tag('community_assets_hidden_from_catalog', true, @catalog_configuration.properties.community_assets_hidden_from_catalog) %>
+              <label class="radio_label" for="community_assets_hidden_from_catalog_true">
+                <%= t('title', scope: 'catalog_configuration.community_assets.not_appear') %>
+              </label>
+              <div>
+                <%= t('subtitle', scope: 'catalog_configuration.community_assets.not_appear') %>
+              </div>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </section>
+  <% end %>
+</div>
+
+<% content_for :scripts do %>
+  <script>
+    $(document).ready(function() {
+      $('.form_buttons button').on('click', function(event) {
+        $(event.target).parent('button').addClass('btn-busy');
+      });
+      $('.form_buttons button.cancel').on('click', function(event) {
+        document.location.href = '/admin';
+      });
+      $('.change_settings input').on('change', function(event) {
+        $(event.target).closest('ul').children('li').removeClass('selected');
+        if (event.target.checked) {
+          $(event.target).parent('li').addClass('selected');
+        }
+      });
+      // If any Rails alerts, keep them for 3s and then fade them over 2s
+      setTimeout(function() {
+        $('.styleguide-alert').fadeTo(2000, 0)
+      }, 3000);
+    });
+  </script>
+<% end %>

@@ -1,13 +1,16 @@
-#site-chrome-admin-header + #noticeContainer .styleguide-alert {
-  margin-top: 3rem;
-}
+@import 'styleguide-colors';
+@import 'common/styleguide/partials/admin/_breadcrumbs';
 
-.approvals_settings {
+.data_catalog {
+
+  form {
+    margin: 0;
+  }
 
   section {
     background-color: $white;
     border-top: 1px solid $panel-border-color;
-    padding: 1rem 26%;
+    padding: 1rem 25%;
     font-size: 80%;
   }
 
@@ -15,27 +18,10 @@
     margin: 0 0 1rem 0;
   }
 
-  .introduction {
-    margin-top: 1.5rem;
-
-    p {
-      font-weight: bold;
-    }
-
-    .section-title {
-      font-size: 120%;
-    }
-  }
-
-  .learn_more {
-    margin: 1rem 0;
-  }
-
   .actions {
     display: flex;
     justify-content: flex-end;
     margin: 1rem;
-    padding-top: 1rem;
 
     button {
       width: 6rem;
@@ -48,14 +34,17 @@
         border: 2px solid $btn-primary-border-color;
         border-right-color: $alternate-3-light;
       }
+
       &.btn-busy {
         padding: 8px 13px !important;
         height: 38px !important;
         position: relative;
         top: 2px; // TODO: Unshit busy button stupidity
+
         .spinner-default.hidden {
           display: inline-block;
         }
+
         .btn-title {
           display: none;
         }
@@ -63,7 +52,7 @@
     }
   }
 
-  .settings_group {
+  .change_settings {
     margin: 0rem 0 2rem 0;
 
     .socrata-icon-official2,
@@ -105,11 +94,6 @@
       input {
         position: relative;
         top: 1px;
-
-        &.embiggen {
-          font-size: 200%;
-          top: 12px;
-        }
       }
 
       label.radio_label {
@@ -126,31 +110,5 @@
         }
       }
     }
-
-    .subtext {
-      color: $light-grey-2;
-      margin-bottom: 1rem;
-    }
-
-    .email_address {
-      color: $light-grey-2;
-    }
-  }
-
-  .checkbox_label {
-    margin-left: 0.5rem;
   }
 }
-
-// To get Rails flashes to render similar to the ToastNotification component
-// See EN-21271
-#noticeContainer {
-  opacity: 0.95;
-  position: fixed;
-  width: max-content;
-  margin: 0 auto;
-  left: 0;
-  right: 0;
-  text-align: center;
-}
-

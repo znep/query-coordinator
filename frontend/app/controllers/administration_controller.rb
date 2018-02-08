@@ -1316,14 +1316,4 @@ class AdministrationController < ApplicationController
     AppHelper.instance
   end
 
-  @@default_embed_options = {
-    :suppressed_facets => {
-      :type => false,
-      :category => false,
-      :topic => false
-    },
-    :disable => { },
-    :defaults => { },
-    :limit => 10
-  }
 end

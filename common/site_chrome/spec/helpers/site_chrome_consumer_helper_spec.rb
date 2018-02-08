@@ -5,7 +5,6 @@ describe SiteChromeConsumerHelpers do
   let(:config) { site_chrome_config }
 
   before do
-    # allow(helper).to receive(:site_chrome_instance).and_return(SocrataSiteChrome::SiteChrome.new(:content => config))
     stub_current_domain_with('localhost')
   end
 

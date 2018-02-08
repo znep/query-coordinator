@@ -162,6 +162,11 @@ module TestHelperMethods
       .to_return(status: 200,
                  body: authentication_body.to_json,
                  headers: { 'Set-Cookie' => cookie_string })
+
+      # It's not enough to set current_user_session, we often need to set the actual current_user instance.
+      # Setting the value of @stubbed_user below, allows tests to opt-in to stubbing the current_user method
+      # by writing e.g.: allow(controller).to receive(:current_user).and_return(@stubbed_user)
+      @stubbed_user = User.parse(authentication_body.to_json)
   end
 
   def stub_non_roled_user
@@ -174,6 +179,7 @@ module TestHelperMethods
       .to_return(status: 200,
                  body: authentication_body.except('roleName').to_json,
                  headers: { 'Set-Cookie' => cookie_string })
+      @stubbed_user = User.parse(authentication_body.to_json)
   end
 
   def stub_anonymous_user
@@ -185,6 +191,7 @@ module TestHelperMethods
                           'X-User-Agent'=>'Rails Testing'})
       .to_return(status: 403,
                  headers: { 'Set-Cookie' => empty_cookie_string })
+      @stubbed_user = User.parse(authentication_body.to_json)
   end
 
   def stub_logout
@@ -197,6 +204,7 @@ module TestHelperMethods
       .to_return(status: 200,
                  body: authentication_body.to_json,
                  headers: { 'Set-Cookie' => empty_cookie_string })
+      @stubbed_user = nil
   end
 
   def stub_authenticate_success

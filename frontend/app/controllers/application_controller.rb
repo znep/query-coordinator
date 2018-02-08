@@ -288,6 +288,18 @@ class ApplicationController < ActionController::Base
   end
 
   # +before_filter+
+  # TODO Factor out duplicate but differently named method in storyteller: "require_super_admin_user"
+  def require_superadmin
+    unless current_user.try(:flags).to_a.any? { |flag| flag.to_s == 'admin' }
+      redirect_to_login_and_return
+    end
+  end
+
+  def redirect_to_login_and_return
+    redirect_to "/login?return_to=#{Rack::Utils.escape(request.fullpath)}"
+  end
+
+  # +before_filter+
   def adjust_format
     request.format = :data if request.xhr?
   end

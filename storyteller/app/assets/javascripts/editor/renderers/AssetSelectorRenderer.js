@@ -1318,7 +1318,7 @@ export default function AssetSelectorRenderer(options) {
     }).text(I18n.t('editor.asset_selector.back_button_text'));
 
     const insertButton = $('<button>', {
-      'class': 'btn btn-primary image-crop-upload-btn'
+      'class': 'btn btn-primary image-crop-upload-btn btn-legacy'
     }).append(
       $('<span>').text(_insertButtonText)
     );

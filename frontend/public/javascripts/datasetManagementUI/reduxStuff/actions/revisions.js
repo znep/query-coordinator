@@ -1,5 +1,4 @@
 import uuid from 'uuid';
-import _ from 'lodash';
 import { parseDate } from 'datasetManagementUI/lib/parseDate';
 import {
   apiCallStarted,
@@ -24,25 +23,13 @@ export const setRevisionValue = (path, value) => ({
   value
 });
 
-// TODO: remove once https://github.com/socrata/dsmapi/pull/402 is deployed
-// and we can count on revision.action.permission being there
 export function shapeRevision(apiResponse) {
   let revision = apiResponse;
 
-  if (revision.action && revision.action.permission) {
-    const permission = revision.action.permission;
-
-    revision = {
-      ..._.omit(revision, 'action'),
-      created_at: parseDate(revision.created_at),
-      permission
-    };
-  } else {
-    revision = {
-      ...revision,
-      permission: 'public'
-    };
-  }
+  revision = {
+    ...revision,
+    created_at: parseDate(revision.created_at)
+  };
 
   return revision;
 }

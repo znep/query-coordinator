@@ -13,13 +13,9 @@ describe('components/PublishConfirmation', () => {
 
   beforeEach(() => {
     defaultProps = {
-      outputSchemaId: 174,
-      btnDisabled: false,
-      publicSelected: true,
-      dispatchApplyRevision: sinon.spy(),
+      permission: 'public',
       doCancel: sinon.spy(),
-      setPermission: sinon.spy(),
-      params: {}
+      doUpdateAndApply: sinon.spy(),
     }
   });
 
@@ -64,8 +60,8 @@ describe('components/PublishConfirmation', () => {
 
     it('calls setPermission callback when you click publish button', () => {
       component.find('Connect(ApiCallButton)').first().simulate('click');
-      assert.isTrue(defaultProps.setPermission.calledOnce);
-      assert.isTrue(defaultProps.setPermission.calledWith(component.state('currentPermission')));
+      assert.isTrue(defaultProps.doUpdateAndApply.calledOnce);
+      assert.isTrue(defaultProps.doUpdateAndApply.calledWith(component.state('currentPermission')));
     });
 
     it('calls cancel callback when you click cancel button', () => {

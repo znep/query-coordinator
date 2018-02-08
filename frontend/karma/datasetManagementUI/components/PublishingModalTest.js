@@ -90,7 +90,7 @@ describe('components/Publishing', () => {
   describe('component', () => {
     const defaultProps = {
       revision: {
-        permission: 'public'
+        action: {permission: 'public'}
       },
       taskSet: {},
       rowsToBeUpserted,
@@ -185,7 +185,7 @@ describe('components/Publishing', () => {
       it("says your dataset will be private if revision's permission is private", () => {
         const propsWithPrivate = dotProp.set(
           propsWithSetLog,
-          'revision.permission',
+          'revision.action.permission',
           'private'
         );
         const component = shallow(<Publishing {...propsWithPrivate} />);

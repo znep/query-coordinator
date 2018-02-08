@@ -65,6 +65,7 @@ export const getRoleNameTranslationKeyPathFromRole = role =>
 export const getIdFromRole = role => role.get('id');
 export const getRightsFromRole = role => role.get('rights', Immutable.List());
 export const getNumberOfUsersFromRole = role => role.get('numberOfUsers', 0);
+export const getNumberOfInvitedUsersFromRole = role => role.get('numberOfFutureAccounts', 0);
 
 const sortRights = (r1, r2) => {
   return getSortOrderFromRight(r1) - getSortOrderFromRight(r2);

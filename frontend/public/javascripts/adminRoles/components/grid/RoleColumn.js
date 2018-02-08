@@ -69,9 +69,11 @@ class RoleColumn extends Component {
         )}
         <Grid.Cell styleName="role-footer-cell">
           <a href={`/admin/users?roleId=${selectors.getIdFromRole(role)}`}>
-            {translate('screens.admin.roles.index_page.grid.user_count', {
-              count: selectors.getNumberOfUsersFromRole(role)
-            })}
+            {selectors.getNumberOfUsersFromRole(role)}
+          </a>
+          {' / '}
+          <a href={`/admin/users/invited?roleId=${selectors.getIdFromRole(role)}`}>
+            {`${selectors.getNumberOfInvitedUsersFromRole(role)} ${translate('screens.admin.roles.index_page.grid.invited')}`}
           </a>
         </Grid.Cell>
       </Grid.Column>

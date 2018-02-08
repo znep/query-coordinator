@@ -1322,11 +1322,11 @@ module ApplicationHelper
     view_model
   end
 
-  def internal_asset_manager_enabled?
+  def asset_browser_enabled?
     feature_flag?(:enable_internal_asset_manager_beta, request)
   end
 
-  def internal_asset_manager_on_profile_enabled?
+  def asset_browser_on_profile_enabled?
     feature_flag?(:enable_internal_asset_manager_on_profile, request)
   end
 

@@ -46,7 +46,7 @@ class ProfileController < ApplicationController
       end
       @app_tokens = @user.app_tokens
 
-      if internal_asset_manager_on_profile_enabled?
+      if asset_browser_on_profile_enabled?
         @asset_browser_config = {
           :target_user_id => params[:id]
         }

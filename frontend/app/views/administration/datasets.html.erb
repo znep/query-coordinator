@@ -20,7 +20,7 @@
       :title_translation_key => 'screens.admin.datasets.view_as_a_dataset' %>
   </div>
 
-  <% if internal_asset_manager_enabled? %>
+  <% if asset_browser_enabled? %>
     <div class="internal-asset-manager-preview">
       <span class="header"><%= t("screens.admin.datasets.internal_asset_manager_beta.preview_message") %></span>
       <%= link_to(t("screens.admin.datasets.internal_asset_manager_beta.preview"), '/admin/assets') %>

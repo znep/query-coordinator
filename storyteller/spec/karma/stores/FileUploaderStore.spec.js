@@ -200,10 +200,14 @@ describe('FileUploaderStore', function() {
 
       function behavesLikeAnExceptionHandler() {
         it('changes file status', function(done) {
-          _.defer(function() {
-            assert.propertyVal(fileUploaderStore.fileById(1), 'status', STATUS.ERRORED);
+          _.delay(function() {
+            try {
+              assert.propertyVal(fileUploaderStore.fileById(1), 'status', STATUS.ERRORED);
+            } catch (e) {
+              done(e);
+            }
             done();
-          });
+          }, 100);
         });
       }
 

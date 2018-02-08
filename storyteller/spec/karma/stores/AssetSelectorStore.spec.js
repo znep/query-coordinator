@@ -1225,11 +1225,15 @@ describe('AssetSelectorStore', function() {
           server.respond();
 
           _.delay(function() {
-            sinon.assert.calledTwice(emitChangeSpy);
-            assert.isFalse(assetSelectorStore.isImageSearching());
-            assert.isFalse(assetSelectorStore.hasImageSearchError());
-            assert.isTrue(assetSelectorStore.hasImageSearchResults());
-            assert.lengthOf(assetSelectorStore.getImageSearchResults(), 1);
+            try {
+              sinon.assert.calledTwice(emitChangeSpy);
+              assert.isFalse(assetSelectorStore.isImageSearching());
+              assert.isFalse(assetSelectorStore.hasImageSearchError());
+              assert.isTrue(assetSelectorStore.hasImageSearchResults());
+              assert.lengthOf(assetSelectorStore.getImageSearchResults(), 1);
+            } catch (e) {
+              done(e);
+            }
             done();
           }, 20);
         });

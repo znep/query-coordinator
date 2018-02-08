@@ -48,7 +48,8 @@ class ProfileController < ApplicationController
 
       if asset_browser_on_profile_enabled?
         @asset_browser_config = {
-          :target_user_id => params[:id]
+          :target_user_id => @user.id,
+          :target_user_display_name => @user.displayName
         }
 
         render :layout => 'styleguide'

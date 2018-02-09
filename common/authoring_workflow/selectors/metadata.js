@@ -230,8 +230,8 @@ export const hasRegions = createSelector(
 );
 
 export const getAnyLocationColumn = createSelector(
-  getDatasetMetadata,
-  (datasetMetadata) => _.find(datasetMetadata.columns, { renderTypeName: 'point' })
+  getDisplayableColumns,
+  (columns) => _.find(columns, { renderTypeName: 'point' })
 );
 
 export const getNonGeoLocationColumns = createSelector(
@@ -240,12 +240,8 @@ export const getNonGeoLocationColumns = createSelector(
 );
 
 export const getFirstOccurringGeoLocationColumn = createSelector(
-  getDatasetMetadata,
-  (datasetMetadata) => {
-    return _.find(datasetMetadata.columns, column => {
-      return isGeoLocationColumn(column);
-    });
-  }
+  getDisplayableColumns,
+  (columns) => _.find(columns, isGeoLocationColumn)
 );
 
 export const getSoqlDataProvider = createSelector(

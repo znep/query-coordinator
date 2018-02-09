@@ -267,16 +267,23 @@ export const calculateRateMeasure = async (
     if (numerator) { numerator = new BigNumber(numerator); }
     if (denominator) { denominator = new BigNumber(denominator); }
 
-    const calculation = {};
-    if (numerator) { calculation.numerator = numerator.toString(); }
+    const calculation = {
+      value: null,
+      numerator: null,
+      denominator: null
+    };
+
+    if (numerator) {
+      calculation.numerator = numerator.toString();
+    }
+
     if (denominator) {
       calculation.denominator = denominator.toString();
       errors.dividingByZero = denominator.isZero();
     }
+
     if (numerator && denominator) {
-      if (errors.dividingByZero) {
-        calculation.value = null;
-      } else {
+      if (!errors.dividingByZero) {
         calculation.value = numerator.dividedBy(denominator).
           times(asPercent ? '100' : '1').
           toFixed(decimalPlaces);
@@ -286,6 +293,7 @@ export const calculateRateMeasure = async (
     }
 
     return { errors, result: { ...calculation } };
+
   } else {
     errors.calculationNotConfigured =
       !numeratorOk || !denominatorOk || !aggregationType || !dateColumn;
@@ -389,7 +397,9 @@ export const getMetricSeries = async (measure) => {
   return Promise.resolve(
     measureResultsPerReportingPeriod.map((measureResult, i) => {
       const startDate = reportingPeriods[i].start.format('YYYY-MM-DDTHH:mm:ss.SSS');
-      const result = measureResult.result.value;
+      // Must always return null for a value that cant be calculated since charts dont know how to deal with
+      // other nil-y values like undefined
+      const result = _.get(measureResult, 'result.value', null);
       const value = _.isNil(result) ? result : parseFloat(result);
 
       return [startDate, value];

@@ -268,7 +268,7 @@ describe('measureCalculator', () => {
             {}, countFixed, fakeDateRangeWhereClause, nullDataProvider
           );
           assert.propertyVal(result, 'denominator', '10');
-          assert.notProperty(result, 'numerator');
+          assert.propertyVal(result, 'numerator', null);
         });
 
         it('computes numerator and divides by the fixed denominator', async () => {
@@ -414,7 +414,7 @@ describe('measureCalculator', () => {
             {}, countComputed, fakeDateRangeWhereClause, dataProvider
           );
           assert.propertyVal(result, 'denominator', '40');
-          assert.notProperty(result, 'numerator');
+          assert.propertyVal(result, 'numerator', null);
         });
 
         it('computes numerator and divides by the denominator', async () => {
@@ -459,7 +459,7 @@ describe('measureCalculator', () => {
             {}, sumComputed, fakeDateRangeWhereClause, dataProvider
           );
           assert.propertyVal(result, 'denominator', '66');
-          assert.notProperty(result, 'numerator');
+          assert.propertyVal(result, 'numerator', null);
         });
 
         it('computes numerator and divides by the denominator', async () => {

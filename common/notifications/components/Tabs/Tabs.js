@@ -9,19 +9,14 @@ import styles from './tabs.module.scss';
 
 class Tabs extends React.Component {
   renderTabs() {
-    const {
-      tabs,
-      selectedTab,
-      filterNotifications,
-      I18n
-    } = this.props;
+    const { filterNotifications, I18n, selectedTab, tabs } = this.props;
     const scope = 'shared_site_chrome_notifications';
 
     return tabs.map((tab, index) =>
       <li key={index} styleName="tab">
         <button
           className="notification-tab"
-          styleName={classNames({ 'selected': tab === selectedTab })}
+          styleName={classNames({ selected: tab === selectedTab })}
           onClick={() => filterNotifications(tab)}>
           <span styleName={classNames('type-indicator', `${tab}-dot`)} />
           {I18n.t(`filter_${tab}_notifications_tab_text`, { scope })}

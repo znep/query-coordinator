@@ -3831,6 +3831,7 @@ en:
             options:
               all: All
               approval_changed: Approval Changed
+              approval_process_completed: Approval Process Completed
               asset_created: Asset Created
               asset_deleted: Asset Deleted
               asset_restored: Asset Restored

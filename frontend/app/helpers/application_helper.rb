@@ -1322,7 +1322,7 @@ module ApplicationHelper
     view_model
   end
 
-  def asset_browser_enabled?
+  def enable_internal_asset_manager_beta?
     feature_flag?(:enable_internal_asset_manager_beta, request)
   end
 

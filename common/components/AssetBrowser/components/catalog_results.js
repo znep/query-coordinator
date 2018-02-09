@@ -127,15 +127,14 @@ export class CatalogResults extends Component {
       showTitle: false
     };
 
+    const { targetUserId, targetUserDisplayName } = _.get(window.socrata.assetBrowser, 'staticData', {});
+
     const allAssetsButtonTitle = viewingOwnProfile ?
       I18n.t('view_all', { scope }) :
-      I18n.t('view_user_assets', { scope, userName: _.get(window, 'socrata.assetBrowser.staticData.targetUserDisplayName') });
+      I18n.t('view_user_assets', { scope, userName: targetUserDisplayName });
 
-    const assetUrl = viewingOwnProfile ?
-      `/admin/assets?tab=${constants.MY_ASSETS_TAB}` :
-      `/admin/assets?tab=${constants.MY_ASSETS_TAB}&` +
-      `ownerId=${window.socrata.assetBrowser.staticData.targetUserId}&` +
-      `ownerName=${escape(window.socrata.assetBrowser.staticData.targetUserDisplayName)}`;
+    const extraParams = viewingOwnProfile ? '' : `&ownerId=${targetUserId}&ownerName=${escape(targetUserDisplayName)}`;
+    const assetUrl = `/admin/assets?tab=${constants.MY_ASSETS_TAB}${extraParams}`;
 
     const allAssetsButton = showManageAssets ? (
       <div className="manage-assets-link">

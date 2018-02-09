@@ -134,8 +134,8 @@ export class CatalogResults extends Component {
     const assetUrl = viewingOwnProfile ?
       `/admin/assets?tab=${constants.MY_ASSETS_TAB}` :
       `/admin/assets?tab=${constants.MY_ASSETS_TAB}&` +
-      `ownerId=${socrata.assetBrowser.staticData.targetUserId}&` +
-      `ownerName=${escape(socrata.assetBrowser.staticData.targetUserDisplayName)}`;
+      `ownerId=${window.socrata.assetBrowser.staticData.targetUserId}&` +
+      `ownerName=${escape(window.socrata.assetBrowser.staticData.targetUserDisplayName)}`;
 
     const allAssetsButton = showManageAssets ? (
       <div className="manage-assets-link">

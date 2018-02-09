@@ -48,7 +48,12 @@ module SocrataSiteChrome
     end
 
     def get_feature_flag(flag)
-      Signaller.for(flag: flag).value(on_domain: request.host) rescue false
+      case ENV.fetch('FEATURE_FLAG_SERVICE', :signaller).to_sym
+      when :signaller
+        Signaller.for(flag: flag).value(on_domain: request.host) rescue false
+      when :monitor
+        FeatureFlagMonitor.flag(name: flag, on_domain: request.host) rescue false
+      end
     end
 
 

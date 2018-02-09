@@ -11,9 +11,7 @@
     <li><a href='/internal/orgs'>Organizations</a></li>
     <li><a href='/internal/analytics'>Analytics</a></li>
     <li><a href='/internal/config_info'>Configuration Info</a></li>
-    <%- if Signaller.healthy? %>
-      <li><a href='/internal/feature_flag_report'>Feature Flag Report</a></li>
-    <%- end %>
+    <li><a href='/internal/feature_flag_report'>Feature Flag Report</a></li>
     <%# Note: This link is intentionally accessible by direct navigation without requiring login. %>
     <li><a class="highlight" href='/internal/demos'>Component Demos</a></li>
   </ul>

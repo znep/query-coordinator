@@ -7,10 +7,12 @@
 <%= render '/internal/left_nav' %>
 
 <div class="contentBox withLeftNavigation internalPanelRedesign featureFlagReport">
+  <%- if FeatureFlags.service == :signaller %>
   <div class="signallerEnvironment" title="According to Feature Flag Signaller">
     <label>Current Environment:</label>
     <span><%= Signaller.environment %></span>
   </div>
+  <%- end %>
   <h1>Feature Flag Report for <%= select_tag('for', list_of_feature_flags_as_options) %></h1>
   <%= display_standard_flashes %>
   <%- if defined? @default %>

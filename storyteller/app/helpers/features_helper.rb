@@ -39,7 +39,10 @@ module FeaturesHelper
   private
 
   def feature_flag_enabled?(flag)
-    Signaller.for(flag: flag).value(on_domain: request.host)
+    case Rails.application.config.feature_flag_service
+    when :signaller then Signaller.for(flag: flag).value(on_domain: request.host)
+    when :monitor then FeatureFlagMonitor.flag(name: flag, on_domain: request.host)
+    end
   end
 
   def feature_enabled?(name)

@@ -14,6 +14,9 @@ class CoreServerConnectionMiddleware
     if defined?(Signaller)
       Signaller::Connection.request_id = env['action_dispatch.request_id'].to_s.gsub('-', '')
     end
+    if defined?(FeatureFlagMonitor)
+      FeatureFlagMonitor.request_id = env['action_dispatch.request_id'].to_s.gsub('-', '')
+    end
     @app.call(env)
   end
 end

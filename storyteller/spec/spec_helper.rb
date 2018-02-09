@@ -4,8 +4,10 @@ require 'webmock/rspec'
 require 'database_cleaner'
 require 'os'
 require 'signaller/test/helpers'
+require 'feature_flag_monitor/test/helpers'
 
 include Signaller::Test::Helpers
+include FeatureFlagMonitor::Test::Helpers
 
 SimpleCov.profiles.define 'filtered' do
   load_profile 'rails'
@@ -343,11 +345,18 @@ Signaller::Test::Helpers.defaults = {
   'enable_storyteller_mixpanel' => true,
   'show_govstat_header' => false
 }
+FeatureFlagMonitor::Test::Helpers.defaults = {
+  'enable_getty_images_gallery' => true,
+  'enable_filtered_tables_in_ax' => true,
+  'enable_storyteller_mixpanel' => true,
+  'show_govstat_header' => false
+}
 
 # Set feature flags to the given values. Example:
 # set_feature_flags( 'use_awesomeness' => true )
 def set_feature_flags(flags_hash = {})
   init_signaller(with: flags_hash)
+  stub_feature_flags(flags_hash)
 end
 
 # Set features (modules) to be considered enabled.

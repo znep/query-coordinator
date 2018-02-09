@@ -10,8 +10,10 @@ WebMock.disable_net_connect!
 # This is the fastest way to deal with it, but it WILL come back
 # to bite us someday.
 require 'signaller'
+require 'feature_flag_monitor'
 require 'hashie'
 Signaller::Utils.wrapper_class = Hashie::Mash
+FeatureFlagMonitor::Utils.wrapper_class = Hashie::Mash
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|

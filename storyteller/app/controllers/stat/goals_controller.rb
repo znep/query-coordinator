@@ -134,11 +134,19 @@ class Stat::GoalsController < StoriesController
   end
 
   def using_storyteller_editor?
-    signaller_value = Signaller.for(flag: 'open_performance_narrative_editor').
-      value(on_domain: request.host)
     url_param_value = request.params['open_performance_narrative_editor']
+    case Rails.application.config.feature_flag_service
+    when :signaller
+      signaller_value = Signaller.for(flag: 'open_performance_narrative_editor').
+        value(on_domain: request.host)
 
-    (url_param_value || signaller_value) == 'storyteller'
+      (url_param_value || signaller_value) == 'storyteller'
+    when :monitor
+      monitor_value = FeatureFlagMonitor.flag(name: 'open_performance_narrative_editor',
+                                               on_domain: request.host)
+
+      (url_param_value || monitor_value) == 'storyteller'
+    end
   end
 
   def story_metadata

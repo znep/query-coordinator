@@ -4,23 +4,50 @@ class FeatureFlags
 
   class << self
 
-    def using_signaller?
-      Signaller.healthy?
+    def service
+      (APP_CONFIG.feature_flag_service || :signaller).to_sym
+    end
+
+    def service_class
+      case service
+      when :signaller then Signaller
+      when :monitor then FeatureFlagMonitor
+      end
+    end
+
+    def service_healthy?
+      case service
+      when :signaller then Signaller.healthy?
+      when :monitor then true
+      end
     end
 
     def on_domain(domain_or_cname)
-      Signaller::FeatureFlags.on_domain(domain_or_cname)
+      case service
+      when :signaller then Signaller::FeatureFlags.on_domain(domain_or_cname)
+      when :monitor then FeatureFlagMonitor.flags_on(domain: domain_or_cname)
+      end
     end
 
     def get_value(flag_name, options = {})
-      return unless using_signaller?
+      if service == :monitor
+        domain = options[:domain] || CurrentDomain.cname
+        return FeatureFlagMonitor.flag(name: flag_name, domain: domain)
+      end
+      return unless service_healthy?
 
       domain = options[:domain] || CurrentDomain.cname
       Signaller.for(flag: flag_name).value(on_domain: domain)
     end
 
     def set_value(flag_name, flag_value, options = {})
-      return unless using_signaller?
+      if service == :monitor
+        auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }
+        domain = options[:domain] || CurrentDomain.cname
+        return FeatureFlagMonitor.set(flag: flag_name, value: flag_value,
+                            domain: domain, authorization: auth_header)
+      end
+      return unless service_healthy?
 
       auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }
       Signaller.for(flag: flag_name).set(on_domain: options[:domain],
@@ -34,6 +61,11 @@ class FeatureFlags
     end
 
     def reset_value(flag_name, options = {})
+      if service == :monitor
+        auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }
+        domain = options[:domain] || CurrentDomain.cname
+        return FeatureFlagMonitor.reset(flag: flag_name, domain: domain, authorization: auth_header)
+      end
       auth_header = { 'Cookie' => "_core_session_id=#{User.current_user.session_token}" }
       Signaller.for(flag: flag_name).reset(on_domain: options[:domain],
                                            authorization: auth_header)
@@ -44,12 +76,18 @@ class FeatureFlags
       end
     end
 
-    def descriptions
-      Signaller::FeatureFlags.configs.with_indifferent_access
+    def descriptions(full: true)
+      case service
+      when :signaller then Signaller::FeatureFlags.configs.with_indifferent_access
+      when :monitor then FeatureFlagMonitor.list(with_descriptions: full).with_indifferent_access
+      end
     end
 
     def report(flag)
-      Signaller.for(flag: flag).report
+      case service
+      when :signaller then Signaller.for(flag: flag).report
+      when :monitor then FeatureFlagMonitor.report(for_flag: flag)
+      end
     end
 
     def each(&block)
@@ -64,10 +102,6 @@ class FeatureFlags
       descriptions.key?(key)
     end
 
-    def categories
-      descriptions.categories
-    end
-
     def config_for(flag)
       descriptions[flag]
     end
@@ -77,7 +111,10 @@ class FeatureFlags
     end
 
     def default_for(flag)
-      Signaller.for(flag: flag).default_value
+      case service
+      when :signaller then Signaller.for(flag: flag).default_value
+      when :monitor then FeatureFlagMonitor.list[flag]['defaultValue']
+      end
     end
 
     def iframe_parameters(referer)
@@ -96,7 +133,8 @@ class FeatureFlags
         flag_set << iframe_parameters(request.referer) if is_iframe
       end
 
-      Signaller::Utils.derive(*flag_set, configs: descriptions)
+      return flag_set.first if service == :monitor && flag_set.size == 1
+      service_class::Utils.derive(*flag_set, configs: descriptions(full: false))
     end
   end
 end

@@ -1,13 +1,16 @@
 require 'signaller/test/helpers'
+require 'feature_flag_monitor/test/helpers'
 
 # Add more helper methods to be used by all tests here...
 module TestHelperMethods
   include Signaller::Test::Helpers
+  include FeatureFlagMonitor::Test::Helpers
   include SocrataSiteChrome::Test::Helpers
 
   # TODO Change this method name in feature flag signaller gem
   def init_feature_flag_signaller(args = {})
     init_signaller(args)
+    stub_feature_flags(args[:with] || args)
   end
 
   def init_current_domain

@@ -107,10 +107,13 @@ module ApplicationHelper
   # Places feature flags at window.socrata.featureFlags
   # for consumption by the FeatureFlags module in frontend-utils.
   def render_feature_flags_for_javascript
+    flags = case Rails.application.config.feature_flag_service
+            when :signaller then Signaller::FeatureFlags.on_domain(request.host)
+            when :monitor then FeatureFlagMonitor.flags(on_domain: request.host)
+            end
     javascript_tag(<<~OUT, :id => 'feature-flags'
       window.socrata = window.socrata || {};
-      window.socrata.featureFlags =
-        #{Signaller::FeatureFlags.on_domain(request.host).to_json};
+      window.socrata.featureFlags = #{flags.to_json};
     OUT
     )
   end

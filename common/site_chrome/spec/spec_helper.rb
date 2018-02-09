@@ -18,9 +18,11 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'signaller/test/helpers'
+require 'feature_flag_monitor/test/helpers'
 
 RSpec.configure do |config|
   include Signaller::Test::Helpers
+  include FeatureFlagMonitor::Test::Helpers
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
@@ -143,5 +145,6 @@ def stub_configurations(response = { status: 200, body: '[{ "stuff": true }]' })
 end
 
 def init_feature_flag_signaller(args = {})
-  init_signaller(args)
+  init_signaller(args) # signaller
+  stub_feature_flags(args[:with] || args) # monitor
 end

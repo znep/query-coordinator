@@ -18,8 +18,8 @@ const scope = 'shared_site_chrome_notifications';
 
 class NotificationList extends Component {
   componentWillMount() {
-    if (!this.props.isSuperAdmin) {
-      // disable page scrolling for non admins as notification panel won't be docked
+    if (this.isNotSiteChromeAdminHeader) {
+      // disable page scrolling when site chrome admin header is not present
 
       $('html').scrollTop(0);
       $('body').css('overflow', 'hidden');
@@ -27,20 +27,22 @@ class NotificationList extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.isSuperAdmin) {
-      // reposition the notification panel with respect to the header bar
+    if (this.isNotSiteChromeAdminHeader) {
+      // reposition the notification panel below the site chrome header
 
       $('#notifications-sidebar').css('top', $('#site-chrome-header').outerHeight());
     }
   }
 
   componentWillUnmount() {
-    if (!this.props.isSuperAdmin) {
+    if (this.isNotSiteChromeAdminHeader) {
       // enable page scrolling once the notification panel is closed
 
       $('body').css('overflow', '');
     }
   }
+
+  isNotSiteChromeAdminHeader = !$('#site-chrome-admin-header').is(':visible');
 
   renderPanelHeader = () => {
     const {

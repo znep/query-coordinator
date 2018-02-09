@@ -3,10 +3,8 @@
   <title><%= @user.displayName %> | <%= get_site_title %></title>
 <% end %>
 
-<% using_styleguide = internal_asset_manager_on_profile_enabled? %>
-
-<div id="profile" class="profileContent clearfix <%= 'styleguide' if using_styleguide %>">
-  <% unless using_styleguide %>
+<div id="profile" class="profileContent clearfix <%= 'styleguide' if asset_browser_on_profile_enabled? %>">
+  <% unless asset_browser_on_profile_enabled? %>
     <div class="mainFlash">
       <%= display_standard_flashes %>
     </div>
@@ -59,7 +57,7 @@
       </div>
     <%- end -%>
 
-    <% if internal_asset_manager_on_profile_enabled? %>
+    <% if asset_browser_on_profile_enabled? %>
       <div id="user-profile-asset-browser"></div>
     <% else %>
       <div class="datasetsList content">
@@ -119,7 +117,7 @@
   <%= include_webpack_bundle 'open-data/screen-profile.js' %>
 <% end %>
 
-<% if internal_asset_manager_on_profile_enabled? %>
+<% if asset_browser_on_profile_enabled? %>
   <%= content_for :scripts do %>
     <script type="text/javascript" src="/javascripts/plugins/lodash.js"></script>
     <script type="text/javascript">var I18n = I18n || {};</script>

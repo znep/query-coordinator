@@ -10,6 +10,7 @@ MAIN SITE:
 9998 bt-wrapper canvas
 9999 bt-content
 9999 modal overlay
+9999 #noticeContainer
 10000 menu
 10100 maintenance notification
 

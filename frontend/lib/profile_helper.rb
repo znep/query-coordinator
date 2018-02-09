@@ -79,9 +79,7 @@ module ProfileHelper
   end
 
   def profile_asset_browser_initial_state
-    {
-      :targetUserId => @asset_browser_config[:target_user_id]
-    }
+    @asset_browser_config.slice(:target_user_id, :target_user_display_name).camelize_keys
   end
 
   private

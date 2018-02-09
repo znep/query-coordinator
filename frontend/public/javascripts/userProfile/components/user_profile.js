@@ -9,6 +9,7 @@ import { getCurrentUserId } from 'common/components/AssetBrowser/lib/helpers/cet
 export default class UserProfile extends Component {
   render() {
     const targetUserId = _.get(window, 'socrata.assetBrowser.staticData.targetUserId');
+    const viewingOwnProfile = _.eq(getCurrentUserId(), targetUserId);
 
     const tabs = {
       [constants.MY_ASSETS_TAB]: {
@@ -22,7 +23,7 @@ export default class UserProfile extends Component {
     };
 
     // Only show SHARED_TO_ME_TAB if user is on their own profile
-    if (_.eq(getCurrentUserId(), targetUserId)) {
+    if (viewingOwnProfile) {
       tabs[constants.SHARED_TO_ME_TAB] = {
         component: ResultsAndFilters,
         props: {
@@ -56,7 +57,8 @@ export default class UserProfile extends Component {
         showHeader
         showManageAssets={showManageAssets}
         showSearchField
-        tabs={tabs} />
+        tabs={tabs}
+        viewingOwnProfile={viewingOwnProfile} />
     );
   }
 }

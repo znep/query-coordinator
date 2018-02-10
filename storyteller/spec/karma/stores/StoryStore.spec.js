@@ -1986,6 +1986,10 @@ describe('HistoryStore', function() {
     dispatch({ action: Actions.STORY_CREATE, data: storyState1 });
   });
 
+  afterEach(() => {
+    StoreAPI.__ResetDependency__('dispatcher');
+  });
+
   function dispatch(action) {
     dispatcher.dispatch(action);
   }

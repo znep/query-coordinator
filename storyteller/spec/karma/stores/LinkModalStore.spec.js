@@ -22,6 +22,10 @@ describe('LinkModalStore', function() {
     linkModalStore = new LinkModalStore();
   });
 
+  afterEach(() => {
+    StoreAPI.__ResetDependency__('dispatcher');
+  });
+
   describe('Actions.LINK_MODAL_OPEN', function() {
     describe('when given an incorrect payload', function() {
       it('should throw', function() {

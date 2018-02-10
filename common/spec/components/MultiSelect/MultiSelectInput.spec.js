@@ -8,6 +8,7 @@ describe('<MultiSelectInput />', () => {
   const defaultProps = {
     currentQuery: '',
     inputRef: () => {},
+    inputPlaceholder: 'input placeholder',
     onCurrentQueryChanged: () => {},
     onOptionsVisibilityChanged: () => {},
     onSelectedOptionIndexChange: () => {}

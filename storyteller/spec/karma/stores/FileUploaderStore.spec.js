@@ -36,6 +36,7 @@ describe('FileUploaderStore', function() {
   });
 
   afterEach(function() {
+    StoreAPI.__ResetDependency__('dispatcher');
     exceptionNotifierMock.notify.reset();
   });
 

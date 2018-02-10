@@ -37,6 +37,10 @@ export const WIZARD_STEP = {
   SELECT_TABLE_FROM_CATALOG: 'SELECT_TABLE_FROM_CATALOG',
   // You choose a map or chart visualization.
   SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG: 'SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG',
+  // You choose to embed a measure.
+  SELECT_MEASURE_FROM_CATALOG: 'SELECT_MEASURE_FROM_CATALOG',
+  // Do you want a card or chart?
+  CONFIGURE_MEASURE: 'CONFIGURE_MEASURE',
   // You walk through the new authorship workflow.
   AUTHOR_VISUALIZATION: 'AUTHOR_VISUALIZATION',
   // You chose a map or chart. Please edit it to your liking.
@@ -93,6 +97,11 @@ export default function AssetSelectorStore() {
         _editExisting(payload);
         break;
 
+      case Actions.ASSET_SELECTOR_UPDATE_COMPONENT_TYPE:
+        _setComponentType(payload.type);
+        self._emitChange();
+        break;
+
       case Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE:
         _updateImageAltAttribute(payload);
         break;
@@ -135,6 +144,9 @@ export default function AssetSelectorStore() {
           case 'INSERT_VISUALIZATION':
             _chooseInsertVisualization();
             break;
+          case 'INSERT_MEASURE':
+            _chooseInsertMeasure();
+            break;
           case 'INSERT_TABLE':
             _visualizeAsTable();
             break;
@@ -142,6 +154,10 @@ export default function AssetSelectorStore() {
             _chooseCreateVisualization();
             break;
         }
+        break;
+
+      case Actions.ASSET_SELECTOR_CHOOSE_MEASURE:
+        _measureChosen(payload);
         break;
 
       case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
@@ -694,6 +710,8 @@ export default function AssetSelectorStore() {
       case 'socrata.visualization.table': return WIZARD_STEP.TABLE_PREVIEW;
       case 'socrata.visualization.classic': return WIZARD_STEP.CONFIGURE_MAP_OR_CHART;
       case 'socrata.visualization.vizCanvas': return WIZARD_STEP.CONFIGURE_MAP_OR_CHART;
+      case 'measure.card': return WIZARD_STEP.CONFIGURE_MEASURE;
+      case 'measure.chart': return WIZARD_STEP.CONFIGURE_MEASURE;
     }
 
     if (type.indexOf('socrata.visualization.') === 0) {
@@ -796,6 +814,11 @@ export default function AssetSelectorStore() {
     self._emitChange();
   }
 
+  function _chooseInsertMeasure() {
+    _state.step = WIZARD_STEP.SELECT_MEASURE_FROM_CATALOG;
+    self._emitChange();
+  }
+
   function _visualizeAsTable() {
     _state.step = WIZARD_STEP.SELECT_TABLE_FROM_CATALOG;
     _state.componentType = 'socrata.visualization.table';
@@ -846,6 +869,23 @@ export default function AssetSelectorStore() {
       _state.step = WIZARD_STEP.AUTHOR_VISUALIZATION;
     }
 
+    self._emitChange();
+  }
+
+  function _measureChosen(payload) {
+    assertIsOneOfTypes(payload.domain, 'string', 'Payload must include "domain"');
+    assertIsOneOfTypes(payload.uid, 'string', 'Payload must include "uid"');
+
+    _state.componentType = 'measure.card';
+    _state.componentProperties = _state.componentProperties || {};
+    _.extend(_state.componentProperties, {
+      measure: {
+        domain: payload.domain,
+        uid: payload.uid
+      }
+    });
+
+    _state.step = WIZARD_STEP.CONFIGURE_MEASURE;
     self._emitChange();
   }
 

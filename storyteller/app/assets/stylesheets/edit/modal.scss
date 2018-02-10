@@ -44,6 +44,10 @@
     margin-bottom: 2rem;
     box-shadow: 0 0 14px -3px $modal-box-shadow-color;
 
+    &.modal-dialog-auto-width {
+      width: auto;
+    }
+
     &.modal-dialog-wide {
       width: $modal-wide-static-width;
       max-width: 100%;

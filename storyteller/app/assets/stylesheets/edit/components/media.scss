@@ -62,6 +62,8 @@
   .component-asset-selector,
   .component-embedded-html,
   .component-image,
+  .component-measure-card,
+  .component-measure-chart,
   .component-socrata-visualization-choropleth-map, // legacy
   .component-socrata-visualization-region-map,
   .component-socrata-visualization-classic,
@@ -92,6 +94,8 @@
 .component-asset-selector,
 .component-embedded-html,
 .component-image,
+.component-measure-card,
+.component-measure-chart,
 .component-socrata-visualization-choropleth-map, // legacy
 .component-socrata-visualization-region-map,
 .component-socrata-visualization-classic,
@@ -183,6 +187,8 @@
 .col3 {
   .component-asset-selector,
   .component-embedded-html,
+  .component-measure-card,
+  .component-measure-chart,
   .component-socrata-visualizaiton-choropleth-map, // legacy
   .component-socrata-visualizaiton-region-map,
   .component-socrata-visualization-classic,
@@ -213,6 +219,8 @@
 .col4 {
   .component-asset-selector,
   .component-embedded-html,
+  .component-measure-card,
+  .component-measure-chart,
   .component-socrata-visualization-choropleth-map, // legacy
   .component-socrata-visualization-region-map,
   .component-socrata-visualization-classic,
@@ -250,6 +258,8 @@
 
   .col12 {
     .component-asset-selector,
+    .component-measure-card,
+    .component-measure-chart,
     .component-socrata-visualization-choropleth-map, // legacy
     .component-socrata-visualization-region-map,
     .component-socrata-visualization-classic,
@@ -274,6 +284,8 @@
   }
 
   .component-asset-selector,
+  .component-measure-card,
+  .component-measure-chart,
   .component-socrata-visualization-choropleth-map, // legacy
   .component-socrata-visualization-region-map,
   .component-socrata-visualization-classic,
@@ -314,6 +326,8 @@
   $extra-large-height: $col8-block-edit-content-width-extra-large * (3/5);
 
   .component-asset-selector,
+  .component-measure-card,
+  .component-measure-chart,
   .component-socrata-visualization-choropleth-map, // legacy
   .component-socrata-visualization-region-map,
   .component-socrata-visualization-classic,
@@ -355,6 +369,8 @@
   $extra-large-height: $col12-block-edit-content-width-extra-large * (3/5);
 
   .component-asset-selector,
+  .component-measure-card,
+  .component-measure-chart,
   .component-socrata-visualization-choropleth-map, // legacy
   .component-socrata-visualization-region-map,
   .component-socrata-visualization-classic,

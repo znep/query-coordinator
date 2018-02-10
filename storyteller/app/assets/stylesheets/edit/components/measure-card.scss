@@ -1,0 +1,17 @@
+@import 'lib/variables';
+@import 'measure-common';
+
+.component-measure-card {
+  @include measure-common;
+
+  border: 1px solid $light-grey-3;
+
+  .measure-result-card {
+    border: none; // We add our own.
+    min-height: 0; // Default fights with our layout.
+  }
+
+  .component-content {
+    height: 100%;
+  }
+}

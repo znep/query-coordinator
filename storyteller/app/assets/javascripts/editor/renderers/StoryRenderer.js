@@ -898,6 +898,9 @@ export default function StoryRenderer(options) {
         return 'componentGoalTile';
       case 'goal.embed':
         return 'componentGoalEmbed';
+      case 'measure.card':
+      case 'measure.chart':
+        return 'componentMeasure';
       case 'youtube.video':
         return 'componentYoutubeVideo';
       case 'socrata.visualization.classic':

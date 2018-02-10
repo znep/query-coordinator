@@ -108,6 +108,8 @@ en:
         insert_btn: 'Insert'
       hero:
         set_cover_image: 'Set Cover Image'
+      performance_measures:
+        generic_error: 'An error occurred when rendering this measure. It may have been deleted or made private.'
       goal_embed:
         edit_btn: 'Edit'
         edit_title: 'Edit Goal'

@@ -1,0 +1,31 @@
+// Styles common to measure charts and measure cards.
+@import 'lib/variables';
+
+@mixin measure-common {
+  .component-error {
+    visibility: collapse;
+
+    display: flex;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    padding: 1em;
+
+    color: $error;
+    border: 1px solid $light-grey-4;
+    background: $error-light;
+  }
+
+  &.load-error {
+    .component-error {
+      visibility: visible;
+    }
+
+    .component-title, .component-content {
+      display: none;
+    }
+  }
+}

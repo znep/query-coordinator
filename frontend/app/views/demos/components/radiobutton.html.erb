@@ -1,0 +1,67 @@
+<% content_for :head do %>
+  <title>Example Usage: Radiobutton</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
+  <%= rendered_stylesheet_tag 'component_example_pages' %>
+<% end %>
+
+<section class="styleguide-section" id="radiobutton">
+  <p>
+    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+  </p>
+  <h2 class="styleguide-header">Radiobutton</h2>
+  <div class="styleguide-example">
+    <b>The radiobutton MUST be in a &lt;form&gt; tag!</b>
+    <form id="radiobutton-container"></form>
+  </div>
+  <div class="styleguide-code-example" id="styleguide-code-example-1"></div>
+</section>
+
+<% content_for :scripts do %>
+  <%= render_demos_javascript_environment %>
+  <%= include_webpack_bundle 'shared/componentExamplePagesMain' %>
+
+  <script type="text/javascript" id="example-1">
+    let checked = null;
+
+    function go() {
+      let children1 = [
+        checked === 1 ? 'Thanks!' : 'Click me!'
+      ];
+      let children2 = [
+        checked === 2 ? 'Thanks!' : 'Click me!'
+      ];
+
+      const props1 = {
+        id: 'radiobutton-1',
+        children: children1,
+        checked: checked === 1,
+        onChange: () => {
+          checked = 1;
+          go();
+        }
+      };
+
+      const props2 = {
+        id: 'radiobutton-2',
+        children: children2,
+        checked: checked === 2,
+        onChange: () => {
+          checked = 2;
+          go();
+        }
+      };
+
+      ReactDOM.render(
+        React.createElement(
+          'div',
+          null,
+          React.createElement(components.Radiobutton, props1),
+          React.createElement(components.Radiobutton, props2)
+        ),
+        document.getElementById('radiobutton-container')
+      );
+    }
+
+    $(go);
+  </script>
+<% end %>

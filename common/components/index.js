@@ -59,6 +59,7 @@ import Checkbox from './Checkbox';
 import MultiSelect from './MultiSelect';
 import SimpleMultiSelect from './SimpleMultiSelect';
 import ToastNotification from './ToastNotification';
+import Radiobutton from './Radiobutton';
 
 module.exports = {
   attachTo: function(element) {
@@ -118,5 +119,6 @@ module.exports = {
   Slider,
   SocrataIcon,
   ToastNotification,
-  ViewCard
+  ViewCard,
+  Radiobutton
 };

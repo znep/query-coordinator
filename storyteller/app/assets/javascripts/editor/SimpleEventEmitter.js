@@ -35,10 +35,15 @@ export default function SimpleEventEmitter() {
    * Execute each of the listeners in order. No arguments are provided.
    */
   this.emit = function() {
-    var listenerCount = _listeners.length;
+    const listeners = [].concat(_listeners);
+    var listenerCount = listeners.length;
 
     for (var i = 0; i < listenerCount; i++) {
-      _listeners[i]();
+      const listener = listeners[i];
+      if (_listeners.indexOf(listener) >= 0) {
+        // Listener may have been removed by another listener.
+        listeners[i]();
+      }
     }
   };
 }

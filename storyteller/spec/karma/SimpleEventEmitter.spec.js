@@ -26,9 +26,9 @@ describe('SimpleEventEmitter', function() {
       });
 
       it('should invoke the listener once', function() {
-        assert.isFalse(listener.called);
+        sinon.assert.notCalled(listener);
         emitter.emit();
-        assert.isTrue(listener.calledOnce);
+        sinon.assert.calledOnce(listener);
       });
 
       describe('which has been removed', function() {
@@ -38,7 +38,7 @@ describe('SimpleEventEmitter', function() {
 
         it('should not invoke the listener', function() {
           emitter.emit();
-          assert.isFalse(listener.called);
+          sinon.assert.notCalled(listener);
         });
       });
     });
@@ -58,11 +58,11 @@ describe('SimpleEventEmitter', function() {
         });
 
         it('should invoke each listener once', function() {
-          assert.isFalse(listener1.called);
-          assert.isFalse(listener2.called);
+          sinon.assert.notCalled(listener1);
+          sinon.assert.notCalled(listener2);
           emitter.emit();
-          assert.isTrue(listener1.calledOnce);
-          assert.isTrue(listener2.calledOnce);
+          sinon.assert.calledOnce(listener1);
+          sinon.assert.calledOnce(listener2);
         });
 
         describe('one of which has been removed', function() {
@@ -71,10 +71,10 @@ describe('SimpleEventEmitter', function() {
           });
 
           it('should only invoke the remaining listener', function() {
-            assert.isFalse(listener1.called);
+            sinon.assert.notCalled(listener1);
             emitter.emit();
-            assert.isTrue(listener1.calledOnce);
-            assert.isFalse(listener2.called);
+            sinon.assert.calledOnce(listener1);
+            sinon.assert.notCalled(listener2);
           });
         });
       });
@@ -86,9 +86,9 @@ describe('SimpleEventEmitter', function() {
         });
 
         it('should invoke each listener the number of times the listener has been added', function() {
-          assert.isFalse(listener1.called);
+          sinon.assert.notCalled(listener1);
           emitter.emit();
-          assert.isTrue(listener1.calledTwice);
+          sinon.assert.calledTwice(listener1);
         });
 
         describe('one of which has been removed', function() {
@@ -97,12 +97,36 @@ describe('SimpleEventEmitter', function() {
           });
 
           it('should invoke the listener once', function() {
-            assert.isFalse(listener1.called);
+            sinon.assert.notCalled(listener1);
             emitter.emit();
-            assert.isTrue(listener1.calledOnce);
+            sinon.assert.calledOnce(listener1);
           });
         });
+      });
 
+      // We honor the removal immediately.
+      //
+      // This is a tricky case. We _could_ force all the listeners
+      // that were registered at the beginning of the .emit() call
+      // to run, but that would potentially cause surprising results.
+      describe('which get removed during events', () => {
+        beforeEach(function() {
+          // I want to use .callsFake() but our sinon is so ancient it doesn't
+          // support it :(
+          listener1 = sinon.spy(() => {
+            emitter.removeListener(listener2);
+          });
+          emitter.addListener(listener1);
+          emitter.addListener(listener2);
+        });
+
+        it('should honor the removal', function() {
+          sinon.assert.notCalled(listener1);
+          sinon.assert.notCalled(listener2);
+          emitter.emit();
+          sinon.assert.calledOnce(listener1);
+          sinon.assert.notCalled(listener2);
+        });
       });
 
     });
@@ -141,9 +165,9 @@ describe('SimpleEventEmitter', function() {
         emitter.addListener(otherListener);
         emitter.removeListener(function() {});
 
-        assert.isFalse(otherListener.called);
+        sinon.assert.notCalled(otherListener);
         emitter.emit();
-        assert.isTrue(otherListener.calledOnce);
+        sinon.assert.calledOnce(otherListener);
       });
     });
   });

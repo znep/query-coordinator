@@ -19,6 +19,24 @@ describe('withComputedMeasure', () => {
     _.set(measure, 'metricConfig.type', 'count');
   });
 
+  describe('when no measure is provided', () => {
+    it('passes through props and does not crash', () => {
+      const thrower = sinon.stub().throws();
+      const Wrapped = withComputedMeasure(false, thrower, thrower)(MockComponent);
+      const element = shallow(<Wrapped foo="bar" />);
+
+      const child = element.find('MockComponent');
+      assert.deepEqual(
+        {
+          computedMeasure: undefined,
+          dataRequestInFlight: undefined,
+          foo: 'bar'
+        },
+        child.props()
+      );
+    });
+  });
+
   describe('when includeSeries is false', () => {
     const includeSeries = false;
 

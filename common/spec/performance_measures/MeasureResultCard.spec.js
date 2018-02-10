@@ -6,6 +6,7 @@ import { assert } from 'chai';
 
 import I18n from 'common/i18n';
 
+import { MeasureTitle } from 'common/performance_measures/components/MeasureTitle';
 import { MeasureResultCard } from 'common/performance_measures/components/MeasureResultCard';
 
 describe('MeasureResultCard', () => {
@@ -27,6 +28,37 @@ describe('MeasureResultCard', () => {
   };
 
   const getRenderedValue = (element) => element.find('.measure-result-big-number').nodes[0].props.children;
+
+  describe('showMetadata', () => {
+    const props = getProps({
+      computedMeasure: {
+        series: [],
+        errors: {}
+      },
+      lens: { name: 'foo' },
+      measure: { metadata: { shortName: 'bar' } }
+    });
+
+    it('set to true should render a title', () => {
+      const element = shallow(<MeasureResultCard showMetadata {...props} />);
+      const title = element.find(MeasureTitle);
+      assert.lengthOf(title, 1);
+      assert.equal(
+        props.lens,
+        title.prop('lens')
+      );
+      assert.equal(
+        props.measure,
+        title.prop('measure')
+      );
+    });
+
+    it('not set should render no title', () => {
+      const element = shallow(<MeasureResultCard {...props} />);
+      const title = element.find(MeasureTitle);
+      assert.lengthOf(title, 0);
+    });
+  });
 
   it('renders result if it is set in computedMeasure', () => {
     const computedMeasure = getComputedMeasure({
@@ -110,6 +142,12 @@ describe('MeasureResultCard', () => {
 
     const card = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
     assert.equal(getRenderedValue(card), '1.23B');
+  });
+
+  it('renders a spinner if measure is not set', () => {
+    const element = shallow(<MeasureResultCard />);
+
+    assert.lengthOf(element.find('.spinner-default'), 1);
   });
 
   it('renders a spinner if dataRequestInFlight is set', () => {

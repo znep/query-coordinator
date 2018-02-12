@@ -15,6 +15,7 @@ describe('components/TablePreview', () => {
     view: {
       id: 'm6u6-r357',
       name: 'ok',
+      displayType: 'draft',
       owner: {},
       lastUpdatedAt: {},
       dataLastUpdatedAt: {},
@@ -34,6 +35,7 @@ describe('components/TablePreview', () => {
         'm6u6-r357': {
           id: 'm6u6-r357',
           name: 'ok',
+          displayType: 'draft',
           owner: {
             id: 'tugg-ikce',
             displayName: 'branweb',

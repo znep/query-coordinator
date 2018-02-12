@@ -15,7 +15,8 @@ export const NoDataYetView = ({ params }) => (
       <h2>{I18n.home_pane.table_preview}</h2>
       <div className="button-group">
         <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
-          <SocrataIcon name="plus2" isBtnIcon /><span>{I18n.home_pane.add_data}</span>
+          <SocrataIcon name="plus2" isBtnIcon />
+          <span>{I18n.home_pane.add_data}</span>
         </Link>
       </div>
     </div>
@@ -38,10 +39,12 @@ export const HrefView = ({ params }) => (
       <h2>{I18n.home_pane.table_preview}</h2>
       <div className="button-group">
         <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
-          <SocrataIcon name="plus2" isBtnIcon /><span>{I18n.home_pane.add_data}</span>
+          <SocrataIcon name="plus2" isBtnIcon />
+          <span>{I18n.home_pane.add_data}</span>
         </Link>
         <Link to={Links.hrefSource(params)} className="btn btn-sm btn-default btn-alternate-2">
-          <SocrataIcon name="eye" isBtnIcon /><span>{I18n.home_pane.href_view_btn}</span>
+          <SocrataIcon name="eye" isBtnIcon />
+          <span>{I18n.home_pane.href_view_btn}</span>
         </Link>
       </div>
     </div>
@@ -69,7 +72,7 @@ function generatePreviewDataPath({ entities, outputSchema, blob, params }) {
   }
 }
 
-export const PreviewDataView = ({ entities, outputSchema, blob, params }) => {
+export const PreviewDataView = ({ entities, outputSchema, blob, isPublished, params }) => {
   const previewDataPath = generatePreviewDataPath({ entities, outputSchema, blob, params });
 
   if (previewDataPath) {
@@ -78,9 +81,12 @@ export const PreviewDataView = ({ entities, outputSchema, blob, params }) => {
         <div className="header-wrapper">
           <h2>{I18n.home_pane.table_preview}</h2>
           <div className="button-group">
-            <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
-              <SocrataIcon name="plus2" isBtnIcon /><span>{I18n.home_pane.add_data}</span>
-            </Link>
+            {isPublished || (
+              <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
+                <SocrataIcon name="plus2" isBtnIcon />
+                <span>{I18n.home_pane.add_data}</span>
+              </Link>
+            )}
             <Link to={previewDataPath} className="btn btn-sm btn-default btn-alternate-2">
               {I18n.home_pane.review_data}
             </Link>
@@ -101,6 +107,7 @@ PreviewDataView.propTypes = {
   entities: PropTypes.object.isRequired,
   outputSchema: PropTypes.object,
   blob: PropTypes.object,
+  isPublished: PropTypes.bool.isRequired,
   params: PropTypes.object.isRequired
 };
 

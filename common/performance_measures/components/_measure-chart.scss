@@ -1,4 +1,4 @@
-@import 'measure-variables';
+@import 'measure-shared';
 
 .measure-chart {
   position: relative;
@@ -16,5 +16,10 @@
     }
   }
 
-
+  // Placeholder content.
+  .measure-result-placeholder {
+    @include measure-placeholder;
+    width: 100%;
+    height: 100%;
+  }
 }

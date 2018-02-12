@@ -653,28 +653,27 @@ export default function AssetSelectorRenderer(options) {
     const authorVisualizationDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_description'));
 
+    const optionsList = [
+      $('<li>', { 'data-visualization-option': 'INSERT_VISUALIZATION' }).
+        append(insertVisualizationHeader, insertVisualizationDescription),
+      $('<li>', { 'data-visualization-option': 'INSERT_TABLE' }).
+        append(insertTableHeader, insertTableDescription)
+    ];
+
+    if (FeatureFlags.value('open_performance_standalone_measures')) {
+      optionsList.push(
+        $(
+          '<li>',
+          {'data-visualization-option': 'INSERT_MEASURE'}
+        ).append(insertMeasureHeader, insertMeasureDescription)
+      );
+    }
+
     const visualizationOptions =
       $(
         '<ul>',
         {'class': 'asset-selector-button-list visualization-options'}
-      ).
-        append([
-          $(
-            '<li>',
-            {'data-visualization-option': 'INSERT_VISUALIZATION'}
-          ).
-            append(insertVisualizationHeader, insertVisualizationDescription),
-          $(
-            '<li>',
-            {'data-visualization-option': 'INSERT_TABLE'}
-          ).
-            append(insertTableHeader, insertTableDescription),
-          $(
-            '<li>',
-            {'data-visualization-option': 'INSERT_MEASURE'}
-          ).
-            append(insertMeasureHeader, insertMeasureDescription)
-        ]);
+      ).append(optionsList);
 
     visualizationOptions.append(
       $(

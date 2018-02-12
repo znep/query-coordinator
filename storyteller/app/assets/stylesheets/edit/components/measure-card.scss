@@ -9,6 +9,7 @@
   .measure-result-card {
     border: none; // We add our own.
     min-height: 0; // Default fights with our layout.
+    min-width: 0; // Default fights with our layout.
   }
 
   .component-content {

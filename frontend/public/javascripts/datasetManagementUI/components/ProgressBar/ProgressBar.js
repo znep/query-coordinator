@@ -57,6 +57,6 @@ ProgressBar.propTypes = {
   percent: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   ariaLabel: PropTypes.string,
   ariaLabeledBy: PropTypes.string,
-  type: PropTypes.oneOf(_.values(COL_STATUS)),
+  type: PropTypes.oneOf(['success', ..._.values(COL_STATUS)]),
   className: PropTypes.string
 };

@@ -55,7 +55,7 @@ export class ShowOutputSchema extends Component {
   }
 
   render() {
-    const { canApplyRevision, fatalError, goToRevisionBase, params } = this.props;
+    const { canApplyRevision, fatalError, goToRevisionBase, isPublished, params } = this.props;
 
     const currentPane = getCurrentPane(this.props.location);
     const onTablePreview = currentPane === 'tablePreview';
@@ -68,7 +68,7 @@ export class ShowOutputSchema extends Component {
           </ModalHeader>
 
           <ModalContent className={styles.modalContent}>
-            <OutputSchemaSidebar params={params} />
+            <OutputSchemaSidebar isPublished={isPublished} params={params} />
             {this.props.children &&
               React.cloneElement(this.props.children, {
                 ...this.props
@@ -96,6 +96,7 @@ ShowOutputSchema.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   inputSchema: PropTypes.object.isRequired,
   outputSchema: PropTypes.object.isRequired,
+  isPublished: PropTypes.bool.isRequired,
   displayState: DisplayState.propType.isRequired,
   canApplyRevision: PropTypes.bool.isRequired,
   fatalError: PropTypes.bool.isRequired,
@@ -139,6 +140,7 @@ export function mapStateToProps(state, ownProps) {
   return {
     revision,
     source,
+    isPublished: entities.views[params.fourfour].displayType !== 'draft',
     inputSchema,
     outputSchema,
     latestOutputSchema,

@@ -36,7 +36,7 @@ export class ReportingPeriodPanel extends Component {
   }
 
   renderPeriodTypeOption(params) {
-    const { type, options, label, body, checked, onChange, placeholder } = params;
+    const { type, options, size, label, body, checked, onChange, placeholder } = params;
     const inputAttributes = {
       id: `period-type-${type}`,
       type: 'radio',
@@ -49,6 +49,7 @@ export class ReportingPeriodPanel extends Component {
       collapsible: !checked,
       options,
       placeholder,
+      size,
       type,
       onOptionSelected: (option) => this.props.onChangePeriodSize(option.value)
     };
@@ -83,7 +84,8 @@ export class ReportingPeriodPanel extends Component {
       checked: type === CLOSED,
       onChange: () => onChangePeriodType(CLOSED),
       options: PeriodSizes.map(sizeValue => ({ value: sizeValue, title: t(`size.${sizeValue}`) })),
-      placeholder: size ? t(`size.${size}`) : t('select_size')
+      placeholder: size ? t(`size.${size}`) : t('select_size'),
+      size
     });
 
     const openOption = this.renderPeriodTypeOption({
@@ -93,7 +95,8 @@ export class ReportingPeriodPanel extends Component {
       checked: type === OPEN,
       onChange: () => onChangePeriodType(OPEN),
       options: PeriodSizes.map(sizeValue => ({ value: sizeValue, title: t(`size.${sizeValue}_to_date`) })),
-      placeholder: size ? t(`size.${size}_to_date`) : t('select_size')
+      placeholder: size ? t(`size.${size}_to_date`) : t('select_size'),
+      size
     });
 
     return (

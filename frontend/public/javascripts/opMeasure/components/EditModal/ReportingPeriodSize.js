@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import I18n from 'common/i18n';
 import { Dropdown } from 'common/components';
 
-import { PeriodTypes } from 'common/performance_measures/lib/constants';
+import { PeriodTypes, PeriodSizes } from 'common/performance_measures/lib/constants';
 const { OPEN, CLOSED } = PeriodTypes;
 
 function t(subkey) {
@@ -19,10 +19,11 @@ export class ReportingPeriodSize extends Component {
   }
 
   renderOpen() {
-    const { options, placeholder, onOptionSelected, collapsible, type } = this.props;
+    const { options, placeholder, size, onOptionSelected, collapsible, type } = this.props;
     const dropdownAttributes = {
       options,
       placeholder,
+      value: size,
       showOptionsBelowHandle: true,
       onSelection: onOptionSelected,
       disabled: collapsible
@@ -75,6 +76,7 @@ ReportingPeriodSize.propTypes = {
   collapsible: PropTypes.bool,
   options: PropTypes.array.isRequired,
   placeholder: PropTypes.string,
+  size: PropTypes.oneOf(PeriodSizes),
   type: PropTypes.oneOf([OPEN, CLOSED]),
   onOptionSelected: PropTypes.func.isRequired
 };

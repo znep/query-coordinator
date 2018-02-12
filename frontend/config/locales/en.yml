@@ -4605,6 +4605,8 @@ en:
           edit_custom_roles: Edit Custom Roles
           new_custom_role: New Custom Role
           save: Save
+        confirmation:
+          delete_role: "Are you sure want to delete the role '%{name}'?"
         errors:
           role_name_empty: Role Name cannot be empty
           role_name_length: "Role Name cannot exceed %{maxCharacterCount} characters"
@@ -4612,6 +4614,7 @@ en:
           title: "Roles & Permissions"
           page_title: "Roles & Permissions"
           custom_role_modal:
+            rename_title: Rename Custom Role
             title: New Custom Role
             form:
               role_name:

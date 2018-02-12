@@ -1,10 +1,11 @@
+import Immutable from 'immutable';
 import cond from 'lodash/fp/cond';
 import constant from 'lodash/fp/constant';
 import curry from 'lodash/fp/curry';
 import negate from 'lodash/fp/negate';
 import stubFalse from 'lodash/fp/stubFalse';
 import stubTrue from 'lodash/fp/stubTrue';
-import Immutable from 'immutable';
+
 import * as appStates from './appStates';
 import { invert } from './lib/utils';
 

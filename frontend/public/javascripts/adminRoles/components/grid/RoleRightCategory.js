@@ -1,20 +1,20 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Grid from '../util/Grid';
+import { bindActionCreators } from 'redux';
 
+import { connectLocalization } from 'common/components/Localization';
+
+import * as Actions from '../../actions';
+import * as selectors from '../../adminRolesSelectors';
 import Expandable from '../util/Expandable';
+import Grid from '../util/Grid';
 import Hoverable from '../util/Hoverable';
 import TristateCheckbox from '../util/TristateCheckbox';
 import TristateIndicator from '../util/TristateIndicator';
-import * as Actions from '../../actions';
-import { connectLocalization } from 'common/components/Localization';
-import * as selectors from '../../adminRolesSelectors';
-
-import styles from './roles-grid.module.scss';
 import cssVariables from '../variables.scss';
+import styles from './roles-grid.module.scss';
 
 const cellHeight = parseInt(cssVariables.cellHeight, 10);
 

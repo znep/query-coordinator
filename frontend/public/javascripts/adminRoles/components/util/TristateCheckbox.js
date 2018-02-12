@@ -1,13 +1,14 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import cond from 'lodash/fp/cond';
 import constant from 'lodash/fp/constant';
 import eq from 'lodash/fp/eq';
 import stubTrue from 'lodash/fp/stubTrue';
-import styles from './tristate-checkbox.module.scss';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 
 import { SocrataIcon } from 'common/components/SocrataIcon';
+
+import styles from './tristate-checkbox.module.scss';
 
 class TristateCheckbox extends Component {
   render() {

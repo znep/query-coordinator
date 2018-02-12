@@ -1,13 +1,14 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import cx from 'classnames';
-import cssModules from 'react-css-modules';
-import styles from './bounded-text-input.module.scss';
 import bindAll from 'lodash/fp/bindAll';
 import cond from 'lodash/fp/cond';
 import constant from 'lodash/fp/constant';
 import noop from 'lodash/fp/noop';
 import omit from 'lodash/fp/omit';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import cssModules from 'react-css-modules';
+
+import styles from './bounded-text-input.module.scss';
 
 class BoundedTextInput extends Component {
   constructor() {

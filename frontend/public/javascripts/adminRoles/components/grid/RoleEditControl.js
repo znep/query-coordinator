@@ -1,21 +1,24 @@
+import bindAll from 'lodash/fp/bindAll';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { bindActionCreators } from 'redux';
 import cssModules from 'react-css-modules';
-import styles from './role-edit-control.module.scss';
-import { SocrataIcon } from 'common/components/SocrataIcon';
-import { Button } from 'common/components';
-import * as Actions from '../../actions';
 import { connect } from 'react-redux';
-import bindAll from 'lodash/fp/bindAll';
+import { bindActionCreators } from 'redux';
+
+import Button from 'common/components/Button';
 import { connectLocalization } from 'common/components/Localization';
+import { SocrataIcon } from 'common/components/SocrataIcon';
+
+import * as Actions from '../../actions';
+import * as Selectors from '../../adminRolesSelectors';
+import styles from './role-edit-control.module.scss';
 
 const mapDispatchToProps = (dispatch, { role }) =>
   bindActionCreators(
     {
       deleteRole: () => Actions.deleteRole(role),
       editRole: () => Actions.editRoleStart(role),
-      renameRole: () => Actions.renameRoleStart(role)
+      renameRole: () => Actions.renameRole(role)
     },
     dispatch
   );
@@ -65,16 +68,27 @@ class RoleEditControl extends React.Component {
     this.toggleDocumentMouseDown(false);
   }
 
-  hideDropdown() {
+  hideDropdown = () => {
     this.setState({ showDropdown: false });
-  }
+  };
 
-  toggleDropdown() {
-    this.setState({ showDropdown: !this.state.showDropdown });
-  }
+  toggleDropdown = () => {
+    const { showDropdown } = this.state;
+    this.setState({ showDropdown: !showDropdown });
+  };
+
+  handleDeleteRole = () => {
+    const { deleteRole, localization: { translate }, role } = this.props;
+    const confirmationMessage = translate('screens.admin.roles.confirmation.delete_role', {
+      name: Selectors.getRoleNameFromRole(role)
+    });
+    if (window.confirm(confirmationMessage)) {
+      deleteRole();
+    }
+  };
 
   render() {
-    const { deleteRole, editRole, renameRole, localization: { translate } } = this.props;
+    const { editRole, renameRole, localization: { translate } } = this.props;
     const { showDropdown } = this.state;
 
     return (
@@ -87,7 +101,7 @@ class RoleEditControl extends React.Component {
         >
           <SocrataIcon name="kebab" />
         </Button>
-        {showDropdown &&
+        {showDropdown && (
           <ul>
             <DropdownItem
               name={translate('screens.admin.roles.index_page.edit_controls.rename_role')}
@@ -102,9 +116,10 @@ class RoleEditControl extends React.Component {
             <DropdownItem
               name={translate('screens.admin.roles.index_page.edit_controls.delete_role')}
               hideDropdown={this.hideDropdown}
-              onClick={deleteRole}
+              onClick={this.handleDeleteRole}
             />
-          </ul>}
+          </ul>
+        )}
       </div>
     );
   }
@@ -117,6 +132,4 @@ RoleEditControl.propTypes = {
   role: PropTypes.object.isRequired
 };
 
-export default connectLocalization(
-  connect(null, mapDispatchToProps)(cssModules(RoleEditControl, styles))
-);
+export default connectLocalization(connect(null, mapDispatchToProps)(cssModules(RoleEditControl, styles)));

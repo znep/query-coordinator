@@ -1,12 +1,14 @@
-import PropTypes from 'prop-types';
-import React, { cloneElement, Children, Component } from 'react';
 import cx from 'classnames';
-import cssModules from 'react-css-modules';
-import styles from './expandable.module.scss';
-import { Motion, spring } from 'react-motion';
 import getOr from 'lodash/fp/getOr';
 import isString from 'lodash/fp/isString';
+import PropTypes from 'prop-types';
+import React, { Children, cloneElement, Component } from 'react';
+import cssModules from 'react-css-modules';
+import { Motion, spring } from 'react-motion';
+
 import { SocrataIcon } from 'common/components/SocrataIcon';
+
+import styles from './expandable.module.scss';
 
 class Expandable extends Component {
   render() {

@@ -1,6 +1,6 @@
+import Immutable from 'immutable';
 import identity from 'lodash/fp/identity';
 import negate from 'lodash/fp/negate';
-import Immutable from 'immutable';
 
 export const invert = negate(identity);
 

@@ -1,10 +1,11 @@
-import React from 'react'; // eslint-disable-line no-unused-vars
-import ReactDOM from 'react-dom';
-import App, { createRolesAdminStore } from './components/RolesAdmin';
 import forEach from 'lodash/fp/forEach';
 import getOr from 'lodash/fp/getOr';
 import merge from 'lodash/fp/merge';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
+
+import App, { createRolesAdminStore } from './components/RolesAdmin';
 
 window.addEventListener('load', function() {
   forEach(mountPoint => {
@@ -24,7 +25,7 @@ window.addEventListener('load', function() {
     // Hot Module Replacement API
     if (module.hot) {
       module.hot.accept('./components/RolesAdmin', () => {
-        const NextApp = require('./components/RolesAdmin').default; //eslint-disable-line
+        const NextApp = require('./components/RolesAdmin').default;
         ReactDOM.render(
           <AppContainer>
             <NextApp serverConfig={config} store={store} />

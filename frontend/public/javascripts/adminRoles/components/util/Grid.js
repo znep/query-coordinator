@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
+
 import styles from './grid.module.scss';
 
 class Grid extends Component {

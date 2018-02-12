@@ -1,23 +1,28 @@
+import noop from 'lodash/fp/noop';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
-import styles from './roles-admin.module.scss';
-import SaveBar from './SaveBar';
-import EditBar from './EditBar';
-import { applyMiddleware, compose, createStore } from 'redux';
-import thunk from 'redux-thunk';
 import { connect, Provider } from 'react-redux';
-import noop from 'lodash/fp/noop';
-import reducer from '../reducers/RolesAdminReducer';
-import EditCustomRoleModal from './modal/EditCustomRoleModal';
-import { LOAD_DATA_FAILURE, LOADING } from '../appStates';
-import * as Actions from '../actions';
-import LoadingSpinner from '../../adminActivityFeed/components/LoadingSpinner';
-import ToastNotification from 'common/components/ToastNotification';
-import AppError from './util/AppError';
-import RolesGrid from './grid/RolesGrid';
-import { getAppState, getInitialState, getNotificationFromState } from '../adminRolesSelectors';
+import { applyMiddleware, compose, createStore } from 'redux';
+import createSagaMiddleware from 'redux-saga';
+
 import Localization, { connectLocalization } from 'common/components/Localization';
+import ToastNotification from 'common/components/ToastNotification';
+
+import LoadingSpinner from '../../adminActivityFeed/components/LoadingSpinner';
+import * as Actions from '../actions';
+import * as Selectors from '../adminRolesSelectors';
+import { LOAD_DATA_FAILURE, LOADING } from '../appStates';
+import reducer from '../reducers/RolesAdminReducer';
+import sagas from '../sagas';
+import EditBar from './EditBar';
+import SaveBar from './SaveBar';
+import RolesGrid from './grid/RolesGrid';
+import EditCustomRoleModal from './modal/EditCustomRoleModal';
+import styles from './roles-admin.module.scss';
+import AppError from './util/AppError';
+
+const sagaMiddleware = createSagaMiddleware();
 
 const renderWithLocalization = ({ translations, locale, localePrefix }, children) => {
   return (
@@ -33,8 +38,8 @@ const renderWithLocalization = ({ translations, locale, localePrefix }, children
 };
 
 const mapStateToProps = (state, { localization: { translate } }) => {
-  const appState = getAppState(state);
-  const notificationObj = getNotificationFromState(state);
+  const appState = Selectors.getAppState(state);
+  const notificationObj = Selectors.getNotificationFromState(state);
   const notification = notificationObj
     .update('content', content => translate(content, notificationObj.toJS()))
     .toJS();
@@ -113,14 +118,20 @@ const devToolsConfig = {
   name: 'Roles & Permissions Admin'
 };
 
+// TODO: standardize redux/react app bootstrapping - EN-22364
 const createRolesAdminStore = (serverConfig = {}) => {
-  const initialState = getInitialState(serverConfig);
-  const middleware = [thunk];
+  const initialState = Selectors.getInitialState(serverConfig);
+  const middleware = [
+    sagaMiddleware
+  ];
+
   const composeEnhancers =
     (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
       window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__(devToolsConfig)) ||
     compose;
-  return createStore(reducer(noop), initialState, composeEnhancers(applyMiddleware(...middleware)));
+  const store = createStore(reducer(noop), initialState, composeEnhancers(applyMiddleware(...middleware)));
+  sagaMiddleware.run(sagas);
+  return store;
 };
 
 const App = ({store, serverConfig = {}}) =>

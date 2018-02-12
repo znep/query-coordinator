@@ -1,17 +1,17 @@
+import cond from 'lodash/fp/cond';
+import constant from 'lodash/fp/constant';
+import stubTrue from 'lodash/fp/stubTrue';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import { connect } from 'react-redux';
-import cond from 'lodash/fp/cond';
-import constant from 'lodash/fp/constant';
-import stubTrue from 'lodash/fp/stubTrue';
 
-import Grid from '../util/Grid';
-import RoleRightCategory from './RoleRightCategory';
-import RoleEditControl from './RoleEditControl';
 import { connectLocalization } from 'common/components/Localization';
-import * as selectors from '../../adminRolesSelectors';
 
+import * as selectors from '../../adminRolesSelectors';
+import Grid from '../util/Grid';
+import RoleEditControl from './RoleEditControl';
+import RoleRightCategory from './RoleRightCategory';
 import styles from './roles-grid.module.scss';
 
 const mapStateToProps = state => ({

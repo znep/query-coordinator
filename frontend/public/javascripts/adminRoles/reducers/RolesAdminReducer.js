@@ -1,10 +1,11 @@
-import * as actions from '../actions';
+import Immutable from 'immutable';
 import find from 'lodash/fp/find';
 import get from 'lodash/fp/get';
 import isEmpty from 'lodash/fp/isEmpty';
-import * as appStates from '../appStates';
-import Immutable from 'immutable';
+
+import * as actions from '../actions';
 import * as selectors from '../adminRolesSelectors';
+import * as appStates from '../appStates';
 
 export default () => {
   function toggleExpanded(state, { payload: { rightCategory } }) {
@@ -145,7 +146,7 @@ export default () => {
       .set('appState', appStates.EDIT_INDIVIDUAL_CUSTOM_ROLE);
   }
 
-  function startRenameRole(state, { payload: { role } }) {
+  function handleRenameRole(state, { payload: { role } }) {
     return state
       .set('previousState', state.delete('previousState').set('appState', appStates.DEFAULT))
       .set('editingRole', role)
@@ -164,7 +165,7 @@ export default () => {
     return state.set('appState', appStates.LOAD_DATA_FAILURE);
   }
 
-  function showNotificationStart(state, { payload }) {
+  function showNotification(state, { payload }) {
     return state.mergeIn(['notification'], {
       showNotification: true,
       ...payload
@@ -228,8 +229,8 @@ export default () => {
       case actions.EDIT_ROLE_START:
         return startEditRole(state, action);
 
-      case actions.RENAME_ROLE_START:
-        return startRenameRole(state, action);
+      case actions.RENAME_ROLE:
+        return handleRenameRole(state, action);
 
       case actions.LOAD_DATA_START:
         return startLoadData(state, action);
@@ -238,8 +239,8 @@ export default () => {
       case actions.LOAD_DATA_FAILURE:
         return loadDataFailure(state, action);
 
-      case actions.SHOW_NOTIFICATION_START:
-        return showNotificationStart(state, action);
+      case actions.SHOW_NOTIFICATION:
+        return showNotification(state, action);
       case actions.SHOW_NOTIFICATION_END:
         return showNotificationEnd(state, action);
 

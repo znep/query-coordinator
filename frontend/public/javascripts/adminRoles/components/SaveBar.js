@@ -1,26 +1,27 @@
+import bindAll from 'lodash/fp/bindAll';
+import includes from 'lodash/fp/includes';
 import PropTypes from 'prop-types';
 import React from 'react';
 import cssModules from 'react-css-modules';
-import { connect } from 'react-redux';
 import { spring } from 'react-motion';
-import includes from 'lodash/fp/includes';
-import bindAll from 'lodash/fp/bindAll';
+import { connect } from 'react-redux';
 
-import { connectLocalization } from 'common/components/Localization';
+import Button from 'common/components/Button';
 import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
+import { connectLocalization } from 'common/components/Localization';
+
 import * as Actions from '../actions';
-import { getAppState, getDirtyRolesFromState, stateHasCustomRoles } from '../adminRolesSelectors';
-import { EDIT_CUSTOM_ROLES, SAVING, EDIT_INDIVIDUAL_CUSTOM_ROLE } from '../appStates';
-import { Button } from 'common/components';
+import * as Selectors from '../adminRolesSelectors';
+import { EDIT_CUSTOM_ROLES, EDIT_INDIVIDUAL_CUSTOM_ROLE, SAVING } from '../appStates';
 import styles from './save-bar.module.scss';
 
 const mapStateToProps = state => {
-  const appState = getAppState(state);
-  const dirtyRoles = getDirtyRolesFromState(state);
+  const appState = Selectors.getAppState(state);
+  const dirtyRoles = Selectors.getDirtyRolesFromState(state);
   return {
     isEditMode: includes(appState, [EDIT_CUSTOM_ROLES, SAVING, EDIT_INDIVIDUAL_CUSTOM_ROLE]),
     isSaving: appState === SAVING,
-    hasCustomRoles: stateHasCustomRoles(state),
+    hasCustomRoles: Selectors.stateHasCustomRoles(state),
     dirtyRoles,
     hasDirtyRoles: dirtyRoles.size
   };

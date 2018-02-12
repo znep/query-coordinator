@@ -1,12 +1,13 @@
+import bindAll from 'lodash/fp/bindAll';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { findDOMNode } from 'react-dom';
 import cssModules from 'react-css-modules';
-import styles from './scroll-container.module.scss';
-import bindAll from 'lodash/fp/bindAll';
-import scrollIntoView from 'scroll-into-view';
+import { findDOMNode } from 'react-dom';
 import { connect } from 'react-redux';
-import { scrollToNewRole } from '../../adminRolesSelectors';
+import scrollIntoView from 'scroll-into-view';
+
+import * as Selectors from '../../adminRolesSelectors';
+import styles from './scroll-container.module.scss';
 
 /** ScrollView / ScrollElement
  * Inspired by https://codedaily.io/tutorials/8/Build-a-Reusable-Scroll-List-Component-with-Animated-scrollTo-in-React
@@ -78,7 +79,7 @@ ScrollElement.contextTypes = {
 };
 
 const mapStateToProps = state => ({
-  scrollTo: scrollToNewRole(state)
+  scrollTo: Selectors.scrollToNewRole(state)
 });
 
 class ScrollContainer extends React.Component {

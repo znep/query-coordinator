@@ -1,29 +1,26 @@
+import includes from 'lodash/fp/includes';
 import PropTypes from 'prop-types';
 import React from 'react';
 import cssModules from 'react-css-modules';
-import styles from './edit-bar.module.scss';
 import { connect } from 'react-redux';
-import * as Actions from '../actions';
-import {
-  configurableRoleFeatureFlagFromState,
-  getAppState,
-  getFaqUrlFromState,
-  stateHasCustomRoles
-} from '../adminRolesSelectors';
-import { DEFAULT, EDIT_CUSTOM_ROLES } from '../appStates';
-import includes from 'lodash/fp/includes';
-import { Button } from 'common/components';
+
+import Button from 'common/components/Button';
 import { connectLocalization } from 'common/components/Localization';
 
+import * as Actions from '../actions';
+import * as Selectors from '../adminRolesSelectors';
+import { DEFAULT, EDIT_CUSTOM_ROLES } from '../appStates';
+import styles from './edit-bar.module.scss';
+
 const mapStateToProps = state => {
-  const appState = getAppState(state);
-  const hasCustomRoles = stateHasCustomRoles(state);
+  const appState = Selectors.getAppState(state);
+  const hasCustomRoles = Selectors.stateHasCustomRoles(state);
 
   return {
-    hasConfigurableRoleFeature: configurableRoleFeatureFlagFromState(state),
+    hasConfigurableRoleFeature: Selectors.configurableRoleFeatureFlagFromState(state),
     isEditCustomRolesEnabled: hasCustomRoles && includes(appState, [DEFAULT]),
     isAddCustomRoleEnabled: includes(appState, [DEFAULT, EDIT_CUSTOM_ROLES]),
-    faqUrl: getFaqUrlFromState(state)
+    faqUrl: Selectors.getFaqUrlFromState(state)
   };
 };
 

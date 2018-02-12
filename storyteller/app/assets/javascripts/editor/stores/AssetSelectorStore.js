@@ -894,7 +894,7 @@ export default function AssetSelectorStore() {
 
     assert(_.isString(payload.domain), 'Payload must include "domain"');
     assert(_.isString(payload.mapOrChartUid), 'Payload must include "mapOrChartUid"');
-    assert(_.isString(payload.viewData), 'Payload must include "viewData"');
+    assert(_.isObject(payload.viewData), 'Payload must include "viewData"');
 
     const mapChartError = () => {
       alert(t('visualization.choose_map_or_chart_error')); // eslint-disable-line no-alert

@@ -21,9 +21,11 @@
         a.context.currentUserRating.thumbUp === false) ? ' ratedDown' : '';
     },
     '.commentActions@class+': function(a) {
+      // if comment parent is a view, use MODERATE_COMMENTS right, else parent is a nominated dataset so use EDIT_NOMINATIONS
+      var moderateRight = a.context.viewId ? blist.rights.user.MODERATE_COMMENTS : blist.rights.user.EDIT_NOMINATIONS;
       return _.compact([(_.get(a.context, 'user.id') == blist.currentUserId) ? 'ownItem' : null,
         ((!_.isUndefined(blist.currentUser) &&
-          _.include(blist.currentUser.rights, blist.rights.user.MODERATE_COMMENTS)) ? 'isModerator' : null)
+          _.include(blist.currentUser.rights, moderateRight)) ? 'isModerator' : null)
       ]).join(' ');
     }
   };

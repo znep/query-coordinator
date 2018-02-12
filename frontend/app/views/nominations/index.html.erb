@@ -11,7 +11,7 @@
       {:text => t('controls.nominate.approved'), :value => 'approved'},
       {:text => t('controls.nominate.rejected'), :value => 'rejected'}] -%>
     <%-
-    if !current_user.nil? && current_user.has_right?(UserRights::MODERATE_COMMENTS)
+    if !current_user.nil? && current_user.has_right?(UserRights::EDIT_NOMINATIONS)
       statuses = statuses.insert(2,
         {:text => t('controls.nominate.needs_moderation'), :value => 'unmoderated'})
     end

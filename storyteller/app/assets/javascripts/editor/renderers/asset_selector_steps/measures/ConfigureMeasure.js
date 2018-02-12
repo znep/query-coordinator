@@ -37,7 +37,7 @@ export class ConfigureMeasure extends Component {
         <button
           className="btn btn-default back-btn"
           data-resume-from-step={WIZARD_STEP.SELECT_MEASURE_FROM_CATALOG}>
-          {I18n.t('editor.modal.buttons.cancel')}
+          {I18n.t('editor.asset_selector.back_button_text')}
         </button>
         <button className="btn btn-primary btn-apply">
           {I18n.t('editor.asset_selector.insert_button_text')}

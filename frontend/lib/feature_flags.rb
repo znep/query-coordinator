@@ -54,9 +54,16 @@ class FeatureFlags
                                          to_value: flag_value,
                                          authorization: auth_header)
       if APP_CONFIG.feature_flag_monitor_uri
-        poke_ffm = [ '/poke', options[:domain] ].compact.join('/') << '.json'
-        HTTParty.post(URI.join(APP_CONFIG.feature_flag_monitor_uri, poke_ffm),
-                      body: {}.to_json, headers: auth_header)
+        begin
+          poke_ffm = [ '/poke', options[:domain] ].compact.join('/') << '.json'
+          HTTParty.post(URI.join(APP_CONFIG.feature_flag_monitor_uri, poke_ffm),
+                        body: {}.to_json, headers: auth_header)
+        rescue Errno::ECONNREFUSED => e
+          Rails.logger.warn('===========================================================================')
+          Rails.logger.warn('Hello! It looks like you do not have Feature Flag Monitor running!')
+          Rails.logger.warn('Please consider doing so at https://github.com/socrata/feature-flag-monitor')
+          Rails.logger.warn('===========================================================================')
+        end
       end
     end
 
@@ -70,9 +77,16 @@ class FeatureFlags
       Signaller.for(flag: flag_name).reset(on_domain: options[:domain],
                                            authorization: auth_header)
       if APP_CONFIG.feature_flag_monitor_uri
-        poke_ffm = [ '/poke', options[:domain] ].compact.join('/') << '.json'
-        HTTParty.post(URI.join(APP_CONFIG.feature_flag_monitor_uri, poke_ffm),
-                      body: {}.to_json, headers: auth_header)
+        begin
+          poke_ffm = [ '/poke', options[:domain] ].compact.join('/') << '.json'
+          HTTParty.post(URI.join(APP_CONFIG.feature_flag_monitor_uri, poke_ffm),
+                        body: {}.to_json, headers: auth_header)
+        rescue Errno::ECONNREFUSED => e
+          Rails.logger.warn('===========================================================================')
+          Rails.logger.warn('Hello! It looks like you do not have Feature Flag Monitor running!')
+          Rails.logger.warn('Please consider doing so at https://github.com/socrata/feature-flag-monitor')
+          Rails.logger.warn('===========================================================================')
+        end
       end
     end
 

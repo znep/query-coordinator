@@ -28,6 +28,13 @@ const GEOSPATIAL_TYPES = [
   'polygon'
 ];
 
+export const COL_STATUS = {
+  UNLOADED: 'unloaded',
+  ERROR: 'error',
+  DONE: 'done',
+  IN_PROGRESS: 'inProgress'
+};
+
 const GeospatialShortcut = ({ flyoutId }) => (
   <Link className={styles.geoBadge} onClick={() => console.warn('not implemented!')} data-flyout={flyoutId}>
      <SocrataIcon name="geo" />
@@ -121,13 +128,13 @@ export class TransformStatus extends Component {
     const { transform, source, isPublishedDataset } = this.props;
 
     if (transform.failed_at) {
-      return 'error';
+      return COL_STATUS.ERROR;
     } else if (transform.finished_at || transform.completed_at) {
-      return 'done';
+      return COL_STATUS.DONE;
     } else if (isPublishedDataset && source.source_type.type === 'view' && !source.finished_at) {
-      return 'unloaded';
+      return COL_STATUS.UNLOADED;
     } else {
-      return 'inProgress';
+      return COL_STATUS.IN_PROGRESS;
     }
   }
 
@@ -158,7 +165,7 @@ export class TransformStatus extends Component {
     const colStatus = this.determineColStatus();
     const progressbarType = colStatus;
 
-    if (colStatus !== 'unloaded') {
+    if (colStatus !== COL_STATUS.UNLODED) {
       inErrorMode = displayState.type === DisplayState.inErrorMode(displayState, transform);
 
       rowsProcessed = transform.contiguous_rows_processed || 0;
@@ -170,7 +177,7 @@ export class TransformStatus extends Component {
       // progressbarType = colStatus === 'inProgress' ? colStatus : 'done';
 
       errorStatusMessage =
-        colStatus === 'done'
+        colStatus === COL_STATUS.DONE
           ? singularOrPlural(transform.error_count, SubI18n.error_exists, SubI18n.errors_exist)
           : singularOrPlural(
               transform.error_count,
@@ -180,17 +187,17 @@ export class TransformStatus extends Component {
     }
 
     switch (colStatus) {
-      case 'error':
+      case COL_STATUS.ERROR:
         thClasses = styles.failedColumn;
         progressbarPercent = 0;
         statusTextMessage = SubI18n.transform_failed;
         break;
-      case 'done':
+      case COL_STATUS.DONE:
         thClasses = styles.colErrors;
         progressbarPercent = percentage;
         statusTextMessage = SubI18n.no_errors_exist;
         break;
-      case 'unloaded':
+      case COL_STATUS.UNLOADED:
         thClasses = styles.colErrors;
         progressbarPercent = 100;
         statusTextMessage = SubI18n.not_loaded;

@@ -1,16 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import SocrataIcon from '../../../common/components/SocrataIcon';
+import { COL_STATUS } from 'datasetManagementUI/components/TransformStatus/TransformStatus';
 import styles from './StatusText.module.scss';
 
 const StatusText = ({ message, status }) => {
   let icon;
 
   switch (status) {
-    case 'done':
+    case COL_STATUS.DONE:
       icon = <SocrataIcon name="checkmark3" className={styles.successIcon} />;
       break;
-    case 'inProgress':
+    case COL_STATUS.IN_PROGRESS:
       icon = <span className={styles.spinner} />;
       break;
     default:

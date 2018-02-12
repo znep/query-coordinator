@@ -134,7 +134,7 @@ export function subscribeToTransforms(os) {
       // we only want to subscribe to transforms that are NOT completed since,
       // if completed, we don't need to know about their progress. This check
       // is the reason this will be more efficient than what we are curently doing
-      // if (!oc.transform.finished_at) {
+      if (!oc.transform.finished_at) {
         const transform = oc.transform;
         const channel = socket.channel(`transform:${oc.transform.id}`);
 
@@ -151,7 +151,7 @@ export function subscribeToTransforms(os) {
         ));
 
         channel.join();
-      // }
+      }
     });
   };
 }

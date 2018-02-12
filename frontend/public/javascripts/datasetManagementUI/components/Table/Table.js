@@ -63,6 +63,7 @@ class Table extends Component {
     const numRowErrors = inputSchema.num_row_errors;
     const canTransform =
       entities.sources[inputSchema.source_id] && !entities.sources[inputSchema.source_id].failed_at;
+    const isPublishedDataset = entities.views[params.fourfour].displayType !== 'draft';
 
     return (
       <table className={styles.table}>
@@ -86,6 +87,8 @@ class Table extends Component {
                 outputSchema={outputSchema}
                 key={column.id}
                 params={params}
+                source={entities.sources[params.sourceId]}
+                isPublishedDataset={isPublishedDataset}
                 transform={column.transform}
                 displayState={displayState}
                 columnId={column.id}

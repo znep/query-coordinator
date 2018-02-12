@@ -2458,6 +2458,7 @@ en:
         move_right: Move Right
         move_left: Move Left
         can_geocode: Data in this column can be geocoded
+        not_loaded: Data in this column is not yet loaded
         click_for_options: Click for more options
         drop_column: Remove column
         data_transforms: Data Transforms

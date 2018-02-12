@@ -7,9 +7,6 @@ const StatusText = ({ message, status }) => {
   let icon;
 
   switch (status) {
-    case 'isIgnored':
-      icon = <SocrataIcon name="eye-blocked" className={styles.disabledIcon} />;
-      break;
     case 'done':
       icon = <SocrataIcon name="checkmark3" className={styles.successIcon} />;
       break;

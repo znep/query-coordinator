@@ -117,11 +117,15 @@ export class TransformStatus extends Component {
     }
   }
 
-  determineColStatus(transform) {
+  determineColStatus() {
+    const { transform, source, isPublishedDataset } = this.props;
+
     if (transform.failed_at) {
-      return 'failed';
+      return 'error';
     } else if (transform.finished_at || transform.completed_at) {
       return 'done';
+    } else if (isPublishedDataset && source.source_type.type === 'view' && !source.finished_at) {
+      return 'unloaded';
     } else {
       return 'inProgress';
     }
@@ -139,27 +143,11 @@ export class TransformStatus extends Component {
       isDropping
     } = this.props;
 
-    const inErrorMode = displayState.type === DisplayState.inErrorMode(displayState, transform);
-
-    const rowsProcessed = transform.contiguous_rows_processed || 0;
-
-    const percentage = Math.round(rowsProcessed / totalRows * 100);
-
-    const colStatus = this.determineColStatus(transform);
-
-    const hasErrors = this.hasTransformErrors();
-
-    const progressbarType = colStatus === 'inProgress' ? colStatus : 'done';
-
-    const errorStatusMessage =
-      colStatus === 'done'
-        ? singularOrPlural(transform.error_count, SubI18n.error_exists, SubI18n.errors_exist)
-        : singularOrPlural(
-            transform.error_count,
-            SubI18n.error_exists_scanning,
-            SubI18n.errors_exist_scanning
-          );
-
+    let inErrorMode;
+    let rowsProcessed;
+    let percentage;
+    let hasErrors;
+    let errorStatusMessage;
     let thClasses;
     let progressbarPercent;
     let statusTextMessage;
@@ -167,8 +155,32 @@ export class TransformStatus extends Component {
       ref: flyoutParentEl => (this.flyoutParentEl = flyoutParentEl)
     };
 
+    const colStatus = this.determineColStatus();
+    const progressbarType = colStatus;
+
+    if (colStatus !== 'unloaded') {
+      inErrorMode = displayState.type === DisplayState.inErrorMode(displayState, transform);
+
+      rowsProcessed = transform.contiguous_rows_processed || 0;
+
+      percentage = Math.round(rowsProcessed / totalRows * 100);
+
+      hasErrors = this.hasTransformErrors();
+
+      // progressbarType = colStatus === 'inProgress' ? colStatus : 'done';
+
+      errorStatusMessage =
+        colStatus === 'done'
+          ? singularOrPlural(transform.error_count, SubI18n.error_exists, SubI18n.errors_exist)
+          : singularOrPlural(
+              transform.error_count,
+              SubI18n.error_exists_scanning,
+              SubI18n.errors_exist_scanning
+            );
+    }
+
     switch (colStatus) {
-      case 'failed':
+      case 'error':
         thClasses = styles.failedColumn;
         progressbarPercent = 0;
         statusTextMessage = SubI18n.transform_failed;
@@ -177,6 +189,11 @@ export class TransformStatus extends Component {
         thClasses = styles.colErrors;
         progressbarPercent = percentage;
         statusTextMessage = SubI18n.no_errors_exist;
+        break;
+      case 'unloaded':
+        thClasses = styles.colErrors;
+        progressbarPercent = 100;
+        statusTextMessage = SubI18n.not_loaded;
         break;
       default:
         thClasses = styles.colErrors;
@@ -249,7 +266,9 @@ TransformStatus.propTypes = {
   totalRows: PropTypes.number,
   shortcuts: PropTypes.array.isRequired,
   flyouts: PropTypes.bool.isRequired,
-  onClickError: PropTypes.func.isRequired
+  onClickError: PropTypes.func.isRequired,
+  source: PropTypes.object.isRequired,
+  isPublishedDataset: PropTypes.bool.isRequired
 };
 
 export default TransformStatus;

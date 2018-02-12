@@ -32,6 +32,9 @@ export default function ProgressBar({ percent, ariaLabel, ariaLabeledBy, type, c
     case 'done':
       progressBar = styles.progressBarDone;
       break;
+    case 'unloaded':
+      progressBar = styles.progressBarDone;
+      break;
     default:
       progressBar = styles.progressBarDefault;
   }
@@ -52,6 +55,6 @@ ProgressBar.propTypes = {
   percent: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   ariaLabel: PropTypes.string,
   ariaLabeledBy: PropTypes.string,
-  type: PropTypes.oneOf(['success', 'error', 'inProgress', 'done']),
+  type: PropTypes.oneOf(['success', 'error', 'inProgress', 'done', 'unloaded']),
   className: PropTypes.string
 };

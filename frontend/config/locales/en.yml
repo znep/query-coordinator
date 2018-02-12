@@ -2149,6 +2149,7 @@ en:
       columns: Columns
       rows: Rows
       title: Data Preview
+      table_placeholder_message: So far you have only edited metadata, so your data has not yet been loaded. You can publish your metadata-only changes, or you can make further edits here, which will cause your data to load. This may take some time if your dataset is large.
       parse_error: We had trouble parsing these rows. Please check your inputs for invalid data.
     blob_preview:
       whats_this: What's This?

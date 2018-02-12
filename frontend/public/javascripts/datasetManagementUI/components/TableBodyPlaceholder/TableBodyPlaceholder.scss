@@ -1,0 +1,27 @@
+#table-body-placeholder {
+  flex-grow: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
+
+  .dsmp-message-section {
+    height: 100%;
+    position: relative;
+    width: 100%;
+    max-width: calc(100vw - 250px);
+
+    @media (max-width: 750px) {
+      width: 100vw;
+    }
+  }
+
+  .dsmp-tablebody-message {
+    position: absolute;
+    width: 70%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: normal;
+  }
+}

@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import ColumnHeader from 'datasetManagementUI/containers/ColumnHeaderContainer';
 import TransformStatus from 'datasetManagementUI/components/TransformStatus/TransformStatus';
 import TableBody from 'datasetManagementUI/containers/TableBodyContainer';
+import TableBodyPlaceholder from 'datasetManagementUI/components/TableBodyPlaceholder/TableBodyPlaceholder';
 import * as DisplayState from 'datasetManagementUI/lib/displayState';
 import RowErrorsLink from 'datasetManagementUI/components/RowErrorsLink/RowErrorsLink';
 import styles from './Table.module.scss';
@@ -64,6 +65,8 @@ class Table extends Component {
     const canTransform =
       entities.sources[inputSchema.source_id] && !entities.sources[inputSchema.source_id].failed_at;
     const isPublishedDataset = entities.views[params.fourfour].displayType !== 'draft';
+    const source = entities.sources[params.sourceId];
+    const unloadedViewSource = source.source_type.type === 'view' && !source.finished_at;
 
     return (
       <table className={styles.table}>
@@ -87,7 +90,7 @@ class Table extends Component {
                 outputSchema={outputSchema}
                 key={column.id}
                 params={params}
-                source={entities.sources[params.sourceId]}
+                unloadedViewSource={unloadedViewSource}
                 isPublishedDataset={isPublishedDataset}
                 transform={column.transform}
                 displayState={displayState}
@@ -107,12 +110,14 @@ class Table extends Component {
               inRowErrorMode={inRowErrorMode} />
           )}
         </thead>
-        <TableBody
-          entities={entities}
-          columns={outputColumns}
-          displayState={displayState}
-          dropping={this.state.dropping}
-          inputSchemaId={inputSchema.id} />
+        {unloadedViewSource && isPublishedDataset
+          ? <TableBodyPlaceholder />
+          : <TableBody
+            entities={entities}
+            columns={outputColumns}
+            displayState={displayState}
+            dropping={this.state.dropping}
+            inputSchemaId={inputSchema.id} />}
       </table>
     );
   }

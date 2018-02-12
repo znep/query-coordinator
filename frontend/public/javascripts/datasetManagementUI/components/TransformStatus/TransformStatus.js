@@ -125,13 +125,13 @@ export class TransformStatus extends Component {
   }
 
   determineColStatus() {
-    const { transform, source, isPublishedDataset } = this.props;
+    const { transform, unloadedViewSource, isPublishedDataset } = this.props;
 
     if (transform.failed_at) {
       return COL_STATUS.ERROR;
     } else if (transform.finished_at || transform.completed_at) {
       return COL_STATUS.DONE;
-    } else if (isPublishedDataset && source.source_type.type === 'view' && !source.finished_at) {
+    } else if (isPublishedDataset && unloadedViewSource) {
       return COL_STATUS.UNLOADED;
     } else {
       return COL_STATUS.IN_PROGRESS;
@@ -274,7 +274,7 @@ TransformStatus.propTypes = {
   shortcuts: PropTypes.array.isRequired,
   flyouts: PropTypes.bool.isRequired,
   onClickError: PropTypes.func.isRequired,
-  source: PropTypes.object.isRequired,
+  unloadedViewSource: PropTypes.bool.isRequired,
   isPublishedDataset: PropTypes.bool.isRequired
 };
 

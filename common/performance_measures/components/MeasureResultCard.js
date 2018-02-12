@@ -152,7 +152,12 @@ export class MeasureResultCard extends Component {
 
     const spinner = (
       <div className="measure-result-spinner-container">
-        <div className="spinner-default spinner-large"></div>
+        {/*
+            This used to be a real spinner, but we ran into baffling IE behavior at the last minute
+            (EN-22336). Due to time pressure, we replaced the spinner with static text. EN-22374 tracks
+            the real fix.
+         */}
+        <div>{I18n.t('shared.performance_measures.calculating')}</div>
       </div>
     );
 

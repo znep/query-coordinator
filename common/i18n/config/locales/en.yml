@@ -7,6 +7,7 @@ en:
       no_reporting_period: Reporting period has not been configured
       no_visualization: Metric calculation not available
       not_enough_data: Not enough data for current reporting period
+      calculating: Calculating...
       measure:
         as_of_last: as of last closed reporting period
         as_of_today: as of today

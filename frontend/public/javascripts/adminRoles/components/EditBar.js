@@ -30,6 +30,14 @@ const mapDispatchToProps = {
 };
 
 class EditBar extends React.Component {
+  static propTypes = {
+    isAddCustomRoleEnabled: PropTypes.bool.isRequired,
+    isEditCustomRolesEnabled: PropTypes.bool.isRequired,
+    startEditCustomRoles: PropTypes.func.isRequired,
+    newCustomRole: PropTypes.func.isRequired,
+    faqUrl: PropTypes.string
+  };
+
   render() {
     const {
       isAddCustomRoleEnabled,
@@ -43,44 +51,32 @@ class EditBar extends React.Component {
 
     return (
       <div styleName="edit-bar">
-        {faqUrl
-          ? <a href={faqUrl} target="_blank" styleName="faq-button">
-              <i className="socrata-icon-question" />
-              {translate('screens.admin.roles.index_page.faq_modal.title')}
-            </a>
-          : null}
-        {hasConfigurableRoleFeature
-          ? <Button
-              variant="default"
-              buttonDisabledStyle="light"
-              disabled={!isEditCustomRolesEnabled}
-              onClick={startEditCustomRoles}
-            >
-              <i className="socrata-icon-edit" />
-              {translate('screens.admin.roles.buttons.edit_custom_roles')}
-            </Button>
-          : null}
-        {hasConfigurableRoleFeature
-          ? <Button
-              variant="primary"
-              disabled={!isAddCustomRoleEnabled}
-              onClick={newCustomRole}
-            >
-              <i className="socrata-icon-plus3" />
-              {translate('screens.admin.roles.buttons.new_custom_role')}
-            </Button>
-          : null}
+        {faqUrl ? (
+          <a href={faqUrl} target="_blank" styleName="faq-button">
+            <i className="socrata-icon-question" />
+            {translate('screens.admin.roles.index_page.faq_modal.title')}
+          </a>
+        ) : null}
+        {hasConfigurableRoleFeature ? (
+          <Button
+            variant="default"
+            buttonDisabledStyle="light"
+            disabled={!isEditCustomRolesEnabled}
+            onClick={startEditCustomRoles}
+          >
+            <i className="socrata-icon-edit" />
+            {translate('screens.admin.roles.buttons.edit_custom_roles')}
+          </Button>
+        ) : null}
+        {hasConfigurableRoleFeature ? (
+          <Button variant="primary" disabled={!isAddCustomRoleEnabled} onClick={newCustomRole}>
+            <i className="socrata-icon-plus3" />
+            {translate('screens.admin.roles.buttons.new_custom_role')}
+          </Button>
+        ) : null}
       </div>
     );
   }
 }
-
-EditBar.propTypes = {
-  isAddCustomRoleEnabled: PropTypes.bool.isRequired,
-  isEditCustomRolesEnabled: PropTypes.bool.isRequired,
-  startEditCustomRoles: PropTypes.func.isRequired,
-  newCustomRole: PropTypes.func.isRequired,
-  faqUrl: PropTypes.string
-};
 
 export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(cssModules(EditBar, styles)));

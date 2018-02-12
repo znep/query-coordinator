@@ -56,6 +56,13 @@ const mapDispatchToProps = {
 };
 
 class UnstyledRolesAdmin extends Component {
+  static propTypes = {
+    hasLoadDataFailure: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    notification: PropTypes.object.isRequired,
+    dismissNotification: PropTypes.func.isRequired
+  };
+
   componentDidMount() {
     this.props.loadData();
   }
@@ -73,41 +80,34 @@ class UnstyledRolesAdmin extends Component {
         <ToastNotification {...notification} onDismiss={dismissNotification}>
           <span dangerouslySetInnerHTML={{ __html: notification.content }} />
         </ToastNotification>
-        {hasLoadDataFailure
-          ? <AppError />
-          : <div>
-              <EditCustomRoleModal />
-              <EditBar />
-              <div styleName="content">
-                <div styleName="description">
-                  <h2>
-                    {translate('screens.admin.roles.index_page.description.title')}
-                  </h2>
-                  <p>
-                    {translate('screens.admin.roles.index_page.description.content')}
-                  </p>
-                </div>
-                {isLoading
-                  ? <div styleName="loading-spinner">
-                      <LoadingSpinner />
-                    </div>
-                  : <div>
-                      <RolesGrid />
-                    </div>}
+        {hasLoadDataFailure ? (
+          <AppError />
+        ) : (
+          <div>
+            <EditCustomRoleModal />
+            <EditBar />
+            <div styleName="content">
+              <div styleName="description">
+                <h2>{translate('screens.admin.roles.index_page.description.title')}</h2>
+                <p>{translate('screens.admin.roles.index_page.description.content')}</p>
               </div>
-              <SaveBar />
-            </div>}
+              {isLoading ? (
+                <div styleName="loading-spinner">
+                  <LoadingSpinner />
+                </div>
+              ) : (
+                <div>
+                  <RolesGrid />
+                </div>
+              )}
+            </div>
+            <SaveBar />
+          </div>
+        )}
       </div>
     );
   }
 }
-
-UnstyledRolesAdmin.propTypes = {
-  hasLoadDataFailure: PropTypes.bool.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  notification: PropTypes.object.isRequired,
-  dismissNotification: PropTypes.func.isRequired
-};
 
 const RolesAdmin = connectLocalization(
   connect(mapStateToProps, mapDispatchToProps)(cssModules(UnstyledRolesAdmin, styles))
@@ -121,9 +121,7 @@ const devToolsConfig = {
 // TODO: standardize redux/react app bootstrapping - EN-22364
 const createRolesAdminStore = (serverConfig = {}) => {
   const initialState = Selectors.getInitialState(serverConfig);
-  const middleware = [
-    sagaMiddleware
-  ];
+  const middleware = [sagaMiddleware];
 
   const composeEnhancers =
     (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
@@ -134,7 +132,7 @@ const createRolesAdminStore = (serverConfig = {}) => {
   return store;
 };
 
-const App = ({store, serverConfig = {}}) =>
+const App = ({ store, serverConfig = {} }) =>
   renderWithLocalization(
     serverConfig,
     <Provider store={store}>

@@ -1,4 +1,3 @@
-import bindAll from 'lodash/fp/bindAll';
 import PropTypes from 'prop-types';
 import React from 'react';
 import cssModules from 'react-css-modules';
@@ -42,23 +41,26 @@ class DropdownItem extends React.Component {
 }
 
 class RoleEditControl extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      showDropdown: false
-    };
-    bindAll(['hideDropdown', 'toggleDropdown', 'toggleDocumentMouseDown', 'onMouseDown'], this);
-  }
+  static propTypes = {
+    deleteRole: PropTypes.func.isRequired,
+    editRole: PropTypes.func.isRequired,
+    renameRole: PropTypes.func.isRequired,
+    role: PropTypes.object.isRequired
+  };
 
-  toggleDocumentMouseDown(isMounted) {
+  state = {
+    showDropdown: false
+  };
+
+  toggleDocumentMouseDown = isMounted => {
     window.document[isMounted ? 'addEventListener' : 'removeEventListener']('mousedown', this.onMouseDown);
-  }
+  };
 
-  onMouseDown(ev) {
+  onMouseDown = ev => {
     if (!(this.dropdownRef === ev.target || this.dropdownRef.contains(ev.target))) {
       this.setState({ showDropdown: false });
     }
-  }
+  };
 
   componentDidMount() {
     this.toggleDocumentMouseDown(true);
@@ -93,12 +95,7 @@ class RoleEditControl extends React.Component {
 
     return (
       <div styleName="container" ref={ref => (this.dropdownRef = ref)}>
-        <Button
-          variant="simple"
-          size="xs"
-          styleName="role-edit-control"
-          onClick={() => this.setState({ showDropdown: !showDropdown })}
-        >
+        <Button variant="simple" size="xs" styleName="role-edit-control" onClick={this.toggleDropdown}>
           <SocrataIcon name="kebab" />
         </Button>
         {showDropdown && (
@@ -124,12 +121,5 @@ class RoleEditControl extends React.Component {
     );
   }
 }
-
-RoleEditControl.propTypes = {
-  deleteRole: PropTypes.func.isRequired,
-  editRole: PropTypes.func.isRequired,
-  renameRole: PropTypes.func.isRequired,
-  role: PropTypes.object.isRequired
-};
 
 export default connectLocalization(connect(null, mapDispatchToProps)(cssModules(RoleEditControl, styles)));

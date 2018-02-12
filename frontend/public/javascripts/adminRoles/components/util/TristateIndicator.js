@@ -8,6 +8,10 @@ import React, { Component } from 'react';
 import { SocrataIcon } from 'common/components/SocrataIcon';
 
 class TristateIndicator extends Component {
+  static propTypes = {
+    checkedState: PropTypes.oneOf([true, false, 'partial']).isRequired
+  };
+
   render() {
     const { checkedState } = this.props;
     return cond([
@@ -17,9 +21,5 @@ class TristateIndicator extends Component {
     ])(checkedState);
   }
 }
-
-TristateIndicator.propTypes = {
-  checkedState: PropTypes.oneOf([true, false, 'partial']).isRequired
-};
 
 export default TristateIndicator;

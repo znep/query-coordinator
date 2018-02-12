@@ -1,5 +1,4 @@
 import cx from 'classnames';
-import bindAll from 'lodash/fp/bindAll';
 import cond from 'lodash/fp/cond';
 import constant from 'lodash/fp/constant';
 import noop from 'lodash/fp/noop';
@@ -11,20 +10,27 @@ import cssModules from 'react-css-modules';
 import styles from './bounded-text-input.module.scss';
 
 class BoundedTextInput extends Component {
-  constructor() {
-    super();
-    bindAll(['onChange', 'updateCharacterCount'], this);
-    this.state = {
-      characterCount: 0,
-      characterCountLevel: null
-    };
-  }
+  static propTypes = {
+    maxCharacterCount: PropTypes.number.isRequired,
+    inputRef: PropTypes.func
+  };
+
+  static defaultProps = {
+    inputRef: noop,
+    onChange: noop,
+    value: ''
+  };
+
+  state = {
+    characterCount: 0,
+    characterCountLevel: null
+  };
 
   componentDidMount() {
     this.updateCharacterCount();
   }
 
-  updateCharacterCount() {
+  updateCharacterCount = () => {
     const { maxCharacterCount } = this.props;
     const characterCount = this.inputRef.value.length;
     const characterCountLevel = cond([
@@ -33,12 +39,12 @@ class BoundedTextInput extends Component {
       [() => true, constant(null)]
     ])();
     this.setState({ characterCount, characterCountLevel });
-  }
+  };
 
-  onChange(ev) {
+  onChange = ev => {
     this.updateCharacterCount();
     this.props.onChange(ev);
-  }
+  };
 
   render() {
     const { maxCharacterCount, className, inputRef, ...inputProps } = omit(
@@ -72,16 +78,5 @@ class BoundedTextInput extends Component {
     );
   }
 }
-
-BoundedTextInput.propTypes = {
-  maxCharacterCount: PropTypes.number.isRequired,
-  inputRef: PropTypes.func
-};
-
-BoundedTextInput.defaultProps = {
-  inputRef: noop,
-  onChange: noop,
-  value: ''
-};
 
 export default cssModules(BoundedTextInput, styles);

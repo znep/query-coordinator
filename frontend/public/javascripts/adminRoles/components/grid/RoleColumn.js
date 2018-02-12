@@ -22,6 +22,14 @@ const mapStateToProps = state => ({
 });
 
 class RoleColumn extends Component {
+  static propTypes = {
+    editingRole: PropTypes.object.isRequired,
+    isEditCustomRolesAppState: PropTypes.bool.isRequired,
+    isEditIndividualRoleAppState: PropTypes.bool.isRequired,
+    rightCategories: PropTypes.object.isRequired,
+    role: PropTypes.object.isRequired
+  };
+
   render() {
     const {
       editingRole,
@@ -50,14 +58,12 @@ class RoleColumn extends Component {
     return (
       <Grid.Column styleName={styleName}>
         <Grid.Header styleName="role-header-cell">
-          <h6>
-            {roleDisplayName}
-          </h6>
-          {isDefault || isEditCustomRolesAppState || isEditIndividualRoleAppState
-            ? null
-            : <RoleEditControl role={role} />}
+          <h6>{roleDisplayName}</h6>
+          {isDefault || isEditCustomRolesAppState || isEditIndividualRoleAppState ? null : (
+            <RoleEditControl role={role} />
+          )}
         </Grid.Header>
-        {rightCategories.map(rightCategory =>
+        {rightCategories.map(rightCategory => (
           <RoleRightCategory
             key={`${roleName}_${selectors.getTranslationKeyFromRightCategory(rightCategory)}`}
             rightCategory={rightCategory}
@@ -66,7 +72,7 @@ class RoleColumn extends Component {
             editingColumn={editingColumn}
             isDefault={isDefault}
           />
-        )}
+        ))}
         <Grid.Cell styleName="role-footer-cell">
           <a href={`/admin/users?roleId=${selectors.getIdFromRole(role)}`}>
             {selectors.getNumberOfUsersFromRole(role)}
@@ -80,13 +86,5 @@ class RoleColumn extends Component {
     );
   }
 }
-
-RoleColumn.propTypes = {
-  editingRole: PropTypes.object.isRequired,
-  isEditCustomRolesAppState: PropTypes.bool.isRequired,
-  isEditIndividualRoleAppState: PropTypes.bool.isRequired,
-  rightCategories: PropTypes.object.isRequired,
-  role: PropTypes.object.isRequired
-};
 
 export default connectLocalization(connect(mapStateToProps)(cssModules(RoleColumn, styles)));

@@ -1,4 +1,3 @@
-import bindAll from 'lodash/fp/bindAll';
 import includes from 'lodash/fp/includes';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -33,12 +32,15 @@ const mapDispatchToProps = {
 };
 
 class SaveBar extends React.Component {
-  constructor() {
-    super();
-    bindAll(['renderCancelButton', 'renderSaveButton'], this);
-  }
+  static propTypes = {
+    editCustomRolesCancel: PropTypes.func.isRequired,
+    dirtyRoles: PropTypes.object.isRequired,
+    isSaving: PropTypes.bool.isRequired,
+    saveRoles: PropTypes.func.isRequired,
+    style: PropTypes.object.isRequired
+  };
 
-  renderCancelButton() {
+  renderCancelButton = () => {
     const { editCustomRolesCancel, isSaving, localization: { translate } } = this.props;
 
     return (
@@ -52,9 +54,9 @@ class SaveBar extends React.Component {
         {translate('screens.admin.roles.buttons.cancel')}
       </Button>
     );
-  }
+  };
 
-  renderSaveButton() {
+  renderSaveButton = () => {
     const { dirtyRoles, isSaving, saveRoles, localization: { translate } } = this.props;
 
     return (
@@ -68,13 +70,14 @@ class SaveBar extends React.Component {
         <div style={{ visibility: isSaving ? 'hidden' : 'inline' }}>
           {translate('screens.admin.roles.buttons.save')}
         </div>
-        {isSaving &&
+        {isSaving && (
           <div styleName="spinner-container">
             <span className="spinner-default spinner-btn-primary" />
-          </div>}
+          </div>
+        )}
       </Button>
     );
-  }
+  };
 
   render() {
     const { style } = this.props;
@@ -87,14 +90,6 @@ class SaveBar extends React.Component {
     );
   }
 }
-
-SaveBar.propTypes = {
-  editCustomRolesCancel: PropTypes.func.isRequired,
-  dirtyRoles: PropTypes.object.isRequired,
-  isSaving: PropTypes.bool.isRequired,
-  saveRoles: PropTypes.func.isRequired,
-  style: PropTypes.object.isRequired
-};
 
 const StyledActionBar = cssModules(SaveBar, styles);
 

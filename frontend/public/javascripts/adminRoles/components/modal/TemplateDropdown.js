@@ -26,6 +26,11 @@ const mapStateToProps = (state, { localization: { translate } }) => ({
 });
 
 class TemplateDropdown extends Component {
+  static propTypes = {
+    onChange: PropTypes.func.isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  };
+
   render() {
     const { onChange, templates, value, localization: { translate } } = this.props;
     const dropdownProps = {
@@ -47,10 +52,5 @@ class TemplateDropdown extends Component {
     );
   }
 }
-
-TemplateDropdown.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-};
 
 export default connectLocalization(connect(mapStateToProps)(cssModules(TemplateDropdown, styles)));

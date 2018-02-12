@@ -28,6 +28,16 @@ const mapDispatchToProps = (dispatch, { role, rightCategory }) =>
   );
 
 class RoleRightCategory extends Component {
+  static propTypes = {
+    role: PropTypes.object.isRequired,
+    rightCategory: PropTypes.object.isRequired,
+    roleName: PropTypes.string.isRequired,
+    editingColumn: PropTypes.bool.isRequired,
+    isDefault: PropTypes.bool.isRequired,
+    toggleRoleRightCategoryValue: PropTypes.func.isRequired,
+    toggleRoleRightValue: PropTypes.func.isRequired
+  };
+
   render() {
     const {
       editingColumn,
@@ -49,47 +59,39 @@ class RoleRightCategory extends Component {
       >
         <Hoverable name={rightCategory.get('translationKey')}>
           <Grid.Cell styleName="role-cell">
-            {isDefault
-              ? <TristateIndicator checkedState={selectors.rightCategoryStateForRole(role, rightCategory)} />
-              : editingColumn
-                ? <TristateCheckbox
-                    id={`${roleName}_${selectors.getTranslationKeyFromRightCategory(rightCategory)}`}
-                    checkedState={selectors.rightCategoryStateForRole(role, rightCategory)}
-                    onChange={toggleRoleRightCategoryValue}
-                  />
-                : <TristateIndicator checkedState={selectors.rightCategoryStateForRole(role, rightCategory)} />}
+            {isDefault ? (
+              <TristateIndicator checkedState={selectors.rightCategoryStateForRole(role, rightCategory)} />
+            ) : editingColumn ? (
+              <TristateCheckbox
+                id={`${roleName}_${selectors.getTranslationKeyFromRightCategory(rightCategory)}`}
+                checkedState={selectors.rightCategoryStateForRole(role, rightCategory)}
+                onChange={toggleRoleRightCategoryValue}
+              />
+            ) : (
+              <TristateIndicator checkedState={selectors.rightCategoryStateForRole(role, rightCategory)} />
+            )}
           </Grid.Cell>
         </Hoverable>
-        {selectors.getRightsFromRightCategory(rightCategory).map(right =>
-          <Hoverable name={right.get('name')} key={`${roleName}_${selectors.getNameFromRight(right)}`} >
+        {selectors.getRightsFromRightCategory(rightCategory).map(right => (
+          <Hoverable name={right.get('name')} key={`${roleName}_${selectors.getNameFromRight(right)}`}>
             <Grid.Cell styleName="role-cell">
-              {isDefault
-                ? <TristateIndicator checkedState={selectors.roleHasRight(role, right)} />
-                : editingColumn
-                  ? <TristateCheckbox
-                      id={`${roleName}_${selectors.getNameFromRight(right)}`}
-                      checkedState={selectors.roleHasRight(role, right)}
-                      onChange={() => toggleRoleRightValue(right)}
-                    />
-                  : <TristateIndicator checkedState={selectors.roleHasRight(role, right)} />}
+              {isDefault ? (
+                <TristateIndicator checkedState={selectors.roleHasRight(role, right)} />
+              ) : editingColumn ? (
+                <TristateCheckbox
+                  id={`${roleName}_${selectors.getNameFromRight(right)}`}
+                  checkedState={selectors.roleHasRight(role, right)}
+                  onChange={() => toggleRoleRightValue(right)}
+                />
+              ) : (
+                <TristateIndicator checkedState={selectors.roleHasRight(role, right)} />
+              )}
             </Grid.Cell>
           </Hoverable>
-        )}
+        ))}
       </Expandable>
     );
   }
 }
 
-RoleRightCategory.propTypes = {
-  role: PropTypes.object.isRequired,
-  rightCategory: PropTypes.object.isRequired,
-  roleName: PropTypes.string.isRequired,
-  editingColumn: PropTypes.bool.isRequired,
-  isDefault: PropTypes.bool.isRequired,
-  toggleRoleRightCategoryValue: PropTypes.func.isRequired,
-  toggleRoleRightValue: PropTypes.func.isRequired
-};
-
-export default connectLocalization(
-  connect(null, mapDispatchToProps)(cssModules(RoleRightCategory, styles))
-);
+export default connectLocalization(connect(null, mapDispatchToProps)(cssModules(RoleRightCategory, styles)));

@@ -70,7 +70,10 @@ export default () => {
   }
 
   function editCustomRolesEnd(state) {
-    return state.set('appState', appStates.DEFAULT).delete('previousState').delete('editingRole');
+    return state
+      .set('appState', appStates.DEFAULT)
+      .delete('previousState')
+      .delete('editingRole');
   }
 
   function changeNewRoleName(state, { payload: { name } }) {

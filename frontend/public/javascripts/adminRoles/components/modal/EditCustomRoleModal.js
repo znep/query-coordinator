@@ -33,6 +33,14 @@ const mapDispatchToProps = {
 };
 
 class EditCustomRoleModal extends Component {
+  static propTypes = {
+    cancelCreateNewRole: PropTypes.func.isRequired,
+    saveRole: PropTypes.func.isRequired,
+    createRole: PropTypes.func.isRequired,
+    editingNewRole: PropTypes.bool.isRequired,
+    showModal: PropTypes.bool.isRequired
+  };
+
   render() {
     const {
       cancelCreateNewRole,
@@ -92,13 +100,5 @@ class EditCustomRoleModal extends Component {
     );
   }
 }
-
-EditCustomRoleModal.propTypes = {
-  cancelCreateNewRole: PropTypes.func.isRequired,
-  saveRole: PropTypes.func.isRequired,
-  createRole: PropTypes.func.isRequired,
-  editingNewRole: PropTypes.bool.isRequired,
-  showModal: PropTypes.bool.isRequired
-};
 
 export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(EditCustomRoleModal));

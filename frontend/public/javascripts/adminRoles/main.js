@@ -9,10 +9,7 @@ import App, { createRolesAdminStore } from './components/RolesAdmin';
 
 window.addEventListener('load', function() {
   forEach(mountPoint => {
-    const config = merge(
-      { translations: getOr({}, 'translations', window.blist) },
-      window.serverConfig
-    );
+    const config = merge({ translations: getOr({}, 'translations', window.blist) }, window.serverConfig);
     const store = createRolesAdminStore(config);
 
     ReactDOM.render(

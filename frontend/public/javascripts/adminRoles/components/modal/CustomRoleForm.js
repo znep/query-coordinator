@@ -1,5 +1,4 @@
 import cx from 'classnames';
-import bindAll from 'lodash/fp/bindAll';
 import getOr from 'lodash/fp/getOr';
 import omit from 'lodash/fp/omit';
 import PropTypes from 'prop-types';
@@ -34,14 +33,21 @@ const mapDispatchToProps = {
 };
 
 class CustomRoleForm extends Component {
-  constructor(props) {
-    super(props);
-    bindAll(['focusInput']);
-  }
+  static propTypes = {
+    editingNewRole: PropTypes.bool.isRequired,
+    error: PropTypes.object,
+    hasError: PropTypes.bool,
+    maxCharacterCount: PropTypes.number.isRequired,
+    name: PropTypes.string,
+    onNameChange: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    onTemplateChange: PropTypes.func.isRequired,
+    template: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  };
 
-  focusInput() {
+  focusInput = () => {
     this.nameInput.focus();
-  }
+  };
 
   componentDidMount() {
     this.focusInput();
@@ -99,31 +105,21 @@ class CustomRoleForm extends Component {
           onChange={event => onNameChange(event.target.value)}
           value={name}
         />
-        {hasError &&
+        {hasError && (
           <div className="alert error">
             {translate(getOr('', 'message', error), omit(['message'], error))}
-          </div>}
-        {editingNewRole &&
+          </div>
+        )}
+        {editingNewRole && (
           <label className="block-label" htmlFor="template-name">
             {translate('screens.admin.roles.index_page.custom_role_modal.form.template.label')}
-          </label>}
+          </label>
+        )}
         {editingNewRole && <TemplateDropdown onChange={value => onTemplateChange(value)} value={template} />}
       </form>
     );
   }
 }
-
-CustomRoleForm.propTypes = {
-  editingNewRole: PropTypes.bool.isRequired,
-  error: PropTypes.object,
-  hasError: PropTypes.bool,
-  maxCharacterCount: PropTypes.number.isRequired,
-  name: PropTypes.string,
-  onNameChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  onTemplateChange: PropTypes.func.isRequired,
-  template: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-};
 
 export default connectLocalization(
   connect(mapStateToProps, mapDispatchToProps)(cssModules(CustomRoleForm, styles))

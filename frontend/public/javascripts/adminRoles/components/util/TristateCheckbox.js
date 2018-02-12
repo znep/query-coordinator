@@ -11,6 +11,13 @@ import { SocrataIcon } from 'common/components/SocrataIcon';
 import styles from './tristate-checkbox.module.scss';
 
 class TristateCheckbox extends Component {
+  static propTypes = {
+    checkedState: PropTypes.oneOf([true, false, 'partial']).isRequired,
+    disabled: PropTypes.bool,
+    id: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired
+  };
+
   render() {
     const { checkedState, disabled, id, onChange } = this.props;
     const isChecked = checkedState !== false;
@@ -25,21 +32,12 @@ class TristateCheckbox extends Component {
         <div className="checkbox">
           <input id={id} type="checkbox" checked={isChecked} disabled={disabled} readOnly />
           <label htmlFor={id} onClick={ev => !disabled && onChange(ev)}>
-            <span className="fake-checkbox">
-              {icon}
-            </span>
+            <span className="fake-checkbox">{icon}</span>
           </label>
         </div>
       </form>
     );
   }
 }
-
-TristateCheckbox.propTypes = {
-  checkedState: PropTypes.oneOf([true, false, 'partial']).isRequired,
-  disabled: PropTypes.bool,
-  id: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired
-};
 
 export default cssModules(TristateCheckbox, styles);

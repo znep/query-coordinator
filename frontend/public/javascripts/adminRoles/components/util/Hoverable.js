@@ -11,7 +11,7 @@ import { connectLocalization } from 'common/components/Localization';
 import * as Actions from '../../actions';
 import styles from './hoverable.module.scss';
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   hovered: state.get('hovered')
 });
 
@@ -25,19 +25,21 @@ const mapDispatchToProps = (dispatch, { name }) =>
   );
 
 class Hoverable extends Component {
+  static propTypes = {
+    name: PropTypes.string.isRequired,
+    hoverRow: PropTypes.func.isRequired,
+    unhoverRow: PropTypes.func.isRequired,
+    hovered: PropTypes.string
+  };
+
   render() {
-    const {
-      children,
-      name,
-      hoverRow,
-      unhoverRow,
-      hovered,
-      ...props
-    } = this.props;
+    const { children, name, hoverRow, unhoverRow, hovered, ...props } = this.props;
 
     const className = cx({ hovered: name === hovered });
 
-    const childrenWithExtraProp = React.Children.map(children, child => React.cloneElement(child, omit('styles', props)));
+    const childrenWithExtraProp = React.Children.map(children, child =>
+      React.cloneElement(child, omit('styles', props))
+    );
 
     return (
       <div className={className} onMouseEnter={hoverRow} onMouseLeave={unhoverRow}>
@@ -47,13 +49,6 @@ class Hoverable extends Component {
   }
 }
 
-Hoverable.propTypes = {
-  name: PropTypes.string.isRequired,
-  hoverRow: PropTypes.func.isRequired,
-  unhoverRow: PropTypes.func.isRequired,
-  hovered: PropTypes.string
-};
-
 export default connectLocalization(
-    connect(mapStateToProps, mapDispatchToProps)(cssModules(Hoverable, styles))
+  connect(mapStateToProps, mapDispatchToProps)(cssModules(Hoverable, styles))
 );

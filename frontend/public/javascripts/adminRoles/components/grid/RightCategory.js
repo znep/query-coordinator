@@ -25,6 +25,11 @@ const mapDispatchToProps = (dispatch, { rightCategory }) =>
   );
 
 class RightCategory extends Component {
+  static propTypes = {
+    rightCategory: PropTypes.object.isRequired,
+    toggleExpanded: PropTypes.func.isRequired
+  };
+
   render() {
     const { rightCategory, toggleExpanded, localization: { translate } } = this.props;
     return (
@@ -35,28 +40,19 @@ class RightCategory extends Component {
       >
         <Hoverable name={rightCategory.get('translationKey')}>
           <Expandable.Trigger styleName="right-cell-trigger" onClick={toggleExpanded}>
-            <h6>
-              {translate(selectors.getTranslationKeyPathFromRightCategory(rightCategory))}
-            </h6>
+            <h6>{translate(selectors.getTranslationKeyPathFromRightCategory(rightCategory))}</h6>
           </Expandable.Trigger>
         </Hoverable>
-        {selectors.getRightsFromRightCategory(rightCategory).map(right =>
+        {selectors.getRightsFromRightCategory(rightCategory).map(right => (
           <Hoverable name={right.get('name')} key={selectors.getNameFromRight(right)}>
             <Grid.Cell styleName="right-cell-item">
               {translate(selectors.getNameTranslationKeyPathFromRight(right))}
             </Grid.Cell>
           </Hoverable>
-        )}
+        ))}
       </Expandable>
     );
   }
 }
 
-RightCategory.propTypes = {
-  rightCategory: PropTypes.object.isRequired,
-  toggleExpanded: PropTypes.func.isRequired
-};
-
-export default connectLocalization(
-  connect(null, mapDispatchToProps)(cssModules(RightCategory, styles))
-);
+export default connectLocalization(connect(null, mapDispatchToProps)(cssModules(RightCategory, styles)));

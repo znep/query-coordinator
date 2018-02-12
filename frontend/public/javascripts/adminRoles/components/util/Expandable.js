@@ -11,6 +11,12 @@ import { SocrataIcon } from 'common/components/SocrataIcon';
 import styles from './expandable.module.scss';
 
 class Expandable extends Component {
+  static propTypes = {
+    isExpanded: PropTypes.bool,
+    itemHeight: PropTypes.number.isRequired,
+    itemContainerClassName: PropTypes.string
+  };
+
   render() {
     const { itemHeight, isExpanded, styles } = this.props;
     const className = cx(this.props.itemContainerClassName, getOr('', 'expandable', styles));
@@ -23,30 +29,30 @@ class Expandable extends Component {
       <div className={this.props.className}>
         {FirstItem}
         <Motion style={{ height: spring(isExpanded ? numItems * itemHeight : 0) }}>
-          {style =>
+          {style => (
             <div className={className} style={style}>
               {children}
-            </div>}
+            </div>
+          )}
         </Motion>
       </div>
     );
   }
 }
 
-Expandable.propTypes = {
-  isExpanded: PropTypes.bool,
-  itemHeight: PropTypes.number.isRequired,
-  itemContainerClassName: PropTypes.string
-};
-
 const ExpanderIcon = ({ isExpanded }) => <SocrataIcon name={isExpanded ? 'arrow-up' : 'arrow-down'} />;
 
 class Trigger extends Component {
+  static propTypes = {
+    isExpanded: PropTypes.bool,
+    onClick: PropTypes.func.isRequired
+  };
+
   render() {
     const { className, isExpanded, onClick } = this.props;
     return (
       <div styleName="trigger">
-        <div className={className + (isExpanded ? ' expanded' : '')} onClick={onClick} >
+        <div className={className + (isExpanded ? ' expanded' : '')} onClick={onClick}>
           <ExpanderIcon isExpanded={isExpanded} />
           {this.props.children}
         </div>
@@ -54,11 +60,6 @@ class Trigger extends Component {
     );
   }
 }
-
-Trigger.propTypes = {
-  isExpanded: PropTypes.bool,
-  onClick: PropTypes.func.isRequired
-};
 
 Expandable.Trigger = cssModules(Trigger, styles);
 

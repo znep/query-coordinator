@@ -15,6 +15,10 @@ const mapStateToProps = state => ({
 });
 
 class RolesGrid extends Component {
+  static propTypes = {
+    roles: PropTypes.object.isRequired
+  };
+
   render() {
     const { roles } = this.props;
 
@@ -22,21 +26,17 @@ class RolesGrid extends Component {
       <Grid styleName="roles-grid">
         <RightsColumn />
         <ScrollContainer styleName="scroll-container">
-          {roles.map(role =>
+          {roles.map(role => (
             <RoleColumn
               name={selectors.getRoleNameFromRole(role)}
               key={selectors.getRoleNameFromRole(role)}
               role={role}
             />
-          )}
+          ))}
         </ScrollContainer>
       </Grid>
     );
   }
 }
-
-RolesGrid.propTypes = {
-  roles: PropTypes.object.isRequired
-};
 
 export default connect(mapStateToProps)(cssModules(RolesGrid, styles));

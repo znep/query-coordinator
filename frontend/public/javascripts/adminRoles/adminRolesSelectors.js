@@ -46,13 +46,19 @@ export const addRightToRole = curry((role, right) =>
 
 export const addAllRightsInCategoryToRole = curry((role, category) =>
   role.update('rights', Immutable.List(), rights =>
-    rights.toSet().union(getRightNamesFromRightCategory(category)).toList()
+    rights
+      .toSet()
+      .union(getRightNamesFromRightCategory(category))
+      .toList()
   )
 );
 
 export const removeAllRightsInCategoryFromRole = curry((role, category) =>
   role.update('rights', Immutable.List(), rights =>
-    rights.toSet().subtract(getRightNamesFromRightCategory(category)).toList()
+    rights
+      .toSet()
+      .subtract(getRightNamesFromRightCategory(category))
+      .toList()
   )
 );
 
@@ -107,7 +113,10 @@ export const rightCategoryStateForRole = curry((role, category) =>
 export const getPreviousState = state => state.get('previousState', Immutable.Map());
 
 export const getDirtyRolesFromState = state =>
-  getRolesFromState(state).toSet().subtract(getRolesFromState(getPreviousState(state)).toSet()).toList();
+  getRolesFromState(state)
+    .toSet()
+    .subtract(getRolesFromState(getPreviousState(state)).toSet())
+    .toList();
 
 export const getEditingRoleFromState = state => state.get('editingRole', Immutable.Map());
 export const getEditingRoleTemplateIdFromState = state =>

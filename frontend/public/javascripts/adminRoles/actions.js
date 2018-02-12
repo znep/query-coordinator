@@ -46,7 +46,7 @@ export const toggleRoleRightCategoryValue = (role, rightCategory) => ({
 });
 
 export const DELETE_ROLE = 'DELETE_ROLE';
-export const deleteRole = role => ({ type: DELETE_ROLE, payload: { role }});
+export const deleteRole = role => ({ type: DELETE_ROLE, payload: { role } });
 export const DELETE_ROLE_START = 'DELETE_ROLE_START';
 export const deleteRoleStart = role => ({ type: DELETE_ROLE_START, payload: { role } });
 export const DELETE_ROLE_END = 'DELETE_ROLE_END';

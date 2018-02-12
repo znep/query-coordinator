@@ -172,7 +172,6 @@ export class ColumnHeader extends Component {
 
   updateColumnType(newType) {
     const { dispatch, params, outputSchema, outputColumn } = this.props;
-
     return dispatch(
       ShowActions.updateColumnType(outputSchema, outputColumn, newType)
     ).then(

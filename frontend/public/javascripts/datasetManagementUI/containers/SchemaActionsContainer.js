@@ -13,6 +13,7 @@ const mapStateToProps = ({ entities }, { params }) => {
 
   return {
     oss: _.orderBy(schemas, 'finished_at', 'desc'),
+    sources: entities.sources,
     iss: entities.input_schemas
   };
 };

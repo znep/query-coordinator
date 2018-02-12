@@ -133,7 +133,7 @@ export function getRowData(
       input_schema_id: inputSchemaId
     }).map(rowError => rowError.offset);
 
-    // This ternary is necessary because we load row errors in an inconstent way:
+    // This ternary is necessary because we load row errors in an inconsistent way:
     // if you upload a file, we have all the row-errors client side, so we need to
     // slice off a chunk of them here (rowOffsets.slice) to display 1 page at a time.
     // However, on a hard-reload of the page, we make an api call with `offset` and

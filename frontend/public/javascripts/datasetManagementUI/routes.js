@@ -69,8 +69,7 @@ export default function rootRoute(store) {
       </Route>
       <Route
         path="sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId"
-        component={ShowOutputSchema}
-        onEnter={checkIfPublished(store)}>
+        component={ShowOutputSchema}>
         <IndexRoute component={TablePane} />
         <Route path="page/:pageNo" component={TablePane} />
         <Route path="parse_options" component={ParseOptionsPane} />

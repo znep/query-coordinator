@@ -19,7 +19,7 @@ export class ShowRevision extends Component {
     this.setState({ recentActionsOpened: !this.state.recentActionsOpened });
   }
   render() {
-    const { params, isPublishedDataset, isParentRevision, hasOutputSchema } = this.props;
+    const { params, isParentRevision, hasOutputSchema } = this.props;
     return (
       <div className={`${styles.homeContainer} show-revision-container`}>
         <div className={`${styles.homeContent} show-revision-content`}>
@@ -39,7 +39,7 @@ export class ShowRevision extends Component {
               fourfour={params.fourfour}
               revisionSeq={_.toNumber(params.revisionSeq)} />}
           </div>)}
-          {isPublishedDataset || isParentRevision || (
+          {isParentRevision || (
             <TablePreview params={params} />
           )}
         </div>
@@ -50,24 +50,20 @@ export class ShowRevision extends Component {
 
 ShowRevision.propTypes = {
   params: PropTypes.object.isRequired,
-  isPublishedDataset: PropTypes.bool.isRequired,
   isParentRevision: PropTypes.bool,
   hasOutputSchema: PropTypes.bool
 };
 
 const mapStateToProps = ({ entities }, { params }) => {
-  const view = entities.views[params.fourfour];
+  // const view = entities.views[params.fourfour];
   const revision = _.values(entities.revisions).find(
     rev => rev.revision_seq === _.toNumber(params.revisionSeq)
   );
 
-  const isPublishedDataset = view.displayType !== 'draft';
   const isParentRevision = revision.is_parent;
 
-  // use == in case osid is 0
   return {
     params,
-    isPublishedDataset,
     isParentRevision,
     hasOutputSchema: !_.isNil(revision.output_schema_id)
   };

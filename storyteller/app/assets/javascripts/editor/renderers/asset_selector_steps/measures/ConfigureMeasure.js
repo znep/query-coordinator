@@ -5,10 +5,10 @@ import classNames from 'classnames';
 import I18n from 'common/i18n';
 import { Radiobutton } from 'common/components';
 
-import connectFlux from '../../../connectFlux';
-import { WIZARD_STEP, assetSelectorStore } from '../../../stores/AssetSelectorStore';
+import connectFlux from 'editor/connectFlux';
+import { WIZARD_STEP, assetSelectorStore } from 'editor/stores/AssetSelectorStore';
 
-import Actions from '../../../Actions';
+import Actions from 'editor/Actions';
 
 const CHART = 'measure.chart';
 const CARD = 'measure.card';
@@ -89,11 +89,7 @@ export class ConfigureMeasure extends Component {
 
 export default connectFlux(
   { assetSelectorStore },
-  (stores) => {
-    return {
-      componentType: stores.assetSelectorStore.getComponentType()
-    };
-  },
+  (stores) => ({ componentType: stores.assetSelectorStore.getComponentType() }),
   (dispatch) => ({
     onSetComponentType: (type) => {
       dispatch({

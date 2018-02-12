@@ -5,7 +5,7 @@ import { Radiobutton } from 'common/components';
 import { shallow } from 'enzyme';
 
 describe('components/Radiobutton', () => {
-  it('applies the `id` prop to the input tag', () => {
+  it('applies the id prop to the input tag', () => {
     const element = shallow(<Radiobutton id="foo" checked />);
     assert.lengthOf(element.find('input#foo'), 1);
   });

@@ -34,6 +34,7 @@ Radiobutton.propTypes = {
 };
 
 Radiobutton.defaultProps = {
+  disabled: false,
   onChange: _.noop
 };
 

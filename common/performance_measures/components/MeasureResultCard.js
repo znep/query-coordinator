@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import I18n from 'common/i18n';
 import { formatNumber } from 'common/js_utils';
@@ -51,11 +51,11 @@ export class MeasureResultCard extends Component {
   renderTitle() {
     const { showMetadata, lens, measure } = this.props;
 
-    if (showMetadata) {
-      return <MeasureTitle lens={lens} measure={measure} />;
-    } else {
+    if (!showMetadata) {
       return null;
     }
+
+    return <MeasureTitle lens={lens} measure={measure} />;
   }
 
   renderResult(result) {
@@ -69,7 +69,7 @@ export class MeasureResultCard extends Component {
     // Default value of -1 for decimalPlaces indicates that no precision was set.
     const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces', -1);
 
-    const resultClassNames = classnames(
+    const resultClassNames = classNames(
       'measure-result-big-number',
       { percent: asPercent }
     );
@@ -161,23 +161,27 @@ export class MeasureResultCard extends Component {
       </div>
     );
 
-    const content = result && result.value ?
-      this.renderResult(result.value) :
-      this.renderError();
+    const busy = dataRequestInFlight || !measure;
 
-    const showSpinner = dataRequestInFlight || !measure;
-
-    const rootClasses = classnames(
+    const rootClasses = classNames(
       'measure-result-card',
       {
         'with-metadata': showMetadata
       }
     );
 
+    const title = busy ? null : this.renderTitle();
+
+    let content = result && result.value ?
+      this.renderResult(result.value) :
+      this.renderError();
+    content = busy ? spinner : content;
+
+
     return (
       <div className={rootClasses}>
-        {!showSpinner && this.renderTitle()}
-        {showSpinner ? spinner : content}
+        {title}
+        {content}
       </div>
     );
   }

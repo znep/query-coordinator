@@ -17,6 +17,7 @@ class InnerComponent extends Component {
 describe('connectFlux HOC', () => {
   // Dispatcher.register gives us tokens that we should use to unregister when we're done.
   const registeredTokens = [];
+
   afterEach(() => {
     _.each(registeredTokens, (token) => dispatcher.unregister(token));
     registeredTokens.length = 0;

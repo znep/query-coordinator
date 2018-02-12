@@ -30,6 +30,7 @@ describe('MeasureChart', () => {
     it('set to true should render a title', () => {
       const element = shallow(<MeasureChart showMetadata {...props} />);
       const title = element.find(MeasureTitle);
+
       assert.lengthOf(title, 1);
       assert.equal(
         props.lens,
@@ -44,6 +45,7 @@ describe('MeasureChart', () => {
     it('not set should render no title', () => {
       const element = shallow(<MeasureChart {...props} />);
       const title = element.find(MeasureTitle);
+
       assert.lengthOf(title, 0);
     });
   });

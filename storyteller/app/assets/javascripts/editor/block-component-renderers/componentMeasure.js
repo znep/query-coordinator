@@ -47,6 +47,7 @@ function renderTemplate($element, props) {
   const className = StorytellerUtils.typeToClassNameForComponentType(componentData.type);
   const $componentContent = $('<div>', { class: 'component-content' });
   const $componentError = $('<div>', { class: 'component-error' });
+
   $componentError.text(I18n.t('editor.components.performance_measures.generic_error'));
 
   assertHasProperty(componentData, 'type');

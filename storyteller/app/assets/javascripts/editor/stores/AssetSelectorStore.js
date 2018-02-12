@@ -873,8 +873,8 @@ export default function AssetSelectorStore() {
   }
 
   function _measureChosen(payload) {
-    assertIsOneOfTypes(payload.domain, 'string', 'Payload must include "domain"');
-    assertIsOneOfTypes(payload.uid, 'string', 'Payload must include "uid"');
+    assert(_.isString(payload.domain), 'Payload must include "domain"');
+    assert(_.isString(payload.uid), 'Payload must include "uid"');
 
     _state.componentType = 'measure.card';
     _state.componentProperties = _state.componentProperties || {};
@@ -892,9 +892,9 @@ export default function AssetSelectorStore() {
   function _chooseVisualizationMapOrChart(payload) {
     _state.step = WIZARD_STEP.CONFIGURE_MAP_OR_CHART;
 
-    assertIsOneOfTypes(payload.domain, 'string', 'Payload must include "domain"');
-    assertIsOneOfTypes(payload.mapOrChartUid, 'string', 'Payload must include "mapOrChartUid"');
-    assertIsOneOfTypes(payload.viewData, 'object', 'Payload must include "viewData"');
+    assert(_.isString(payload.domain), 'Payload must include "domain"');
+    assert(_.isString(payload.mapOrChartUid), 'Payload must include "mapOrChartUid"');
+    assert(_.isString(payload.viewData), 'Payload must include "viewData"');
 
     const mapChartError = () => {
       alert(t('visualization.choose_map_or_chart_error')); // eslint-disable-line no-alert

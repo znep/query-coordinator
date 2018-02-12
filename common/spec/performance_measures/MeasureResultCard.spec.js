@@ -42,6 +42,7 @@ describe('MeasureResultCard', () => {
     it('set to true should render a title', () => {
       const element = shallow(<MeasureResultCard showMetadata {...props} />);
       const title = element.find(MeasureTitle);
+
       assert.lengthOf(title, 1);
       assert.equal(
         props.lens,
@@ -56,6 +57,7 @@ describe('MeasureResultCard', () => {
     it('not set should render no title', () => {
       const element = shallow(<MeasureResultCard {...props} />);
       const title = element.find(MeasureTitle);
+
       assert.lengthOf(title, 0);
     });
   });
@@ -66,6 +68,7 @@ describe('MeasureResultCard', () => {
     });
     const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
     const bigNumber = element.find('.measure-result-big-number');
+
     assert.lengthOf(bigNumber, 1);
     assert.equal(bigNumber.text(), '33.00');
   });
@@ -76,6 +79,7 @@ describe('MeasureResultCard', () => {
     });
 
     const defaultPercentMeasure = {};
+
     assert.lengthOf(
       shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={defaultPercentMeasure} />).
         find('.measure-result-big-number.percent'),
@@ -83,6 +87,7 @@ describe('MeasureResultCard', () => {
     );
 
     const explicitNonPercent = _.set({}, 'metricConfig.display.asPercent', false);
+
     assert.lengthOf(
       shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={explicitNonPercent} />).
         find('.measure-result-big-number.percent'),
@@ -90,6 +95,7 @@ describe('MeasureResultCard', () => {
     );
 
     const percentMeasure = _.set({}, 'metricConfig.display.asPercent', true);
+
     assert.lengthOf(
       shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={percentMeasure} />).
         find('.measure-result-big-number.percent'),
@@ -108,11 +114,13 @@ describe('MeasureResultCard', () => {
     describe('when decimal place display is specified', () => {
       it('renders # of decimal places as long as total string length is below the default maxLength', () => {
         const card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithFixedDecimalPlaces} />);
+
         assert.equal(getRenderedValue(card), '33.1');
       });
 
       it('renders a string of maxLength if # of decimal places creates string greater than maxLength', () => {
         const card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithManyDecimalPlaces} />);
+
         assert.equal(getRenderedValue(card), '33.123'); // Still truncates at a maxLength.
       });
     });
@@ -120,6 +128,7 @@ describe('MeasureResultCard', () => {
     describe('when decimal place display is not specified', () => {
       it('renders up to the maxLength when no decimal places are specified in display options', () => {
         const card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithoutDecimalPlaces} />);
+
         assert.equal(getRenderedValue(card), '33.123'); // Truncates to the default maxLength of 6.
       });
     });
@@ -127,6 +136,7 @@ describe('MeasureResultCard', () => {
     describe('when a different maxLength is provided', () => {
       it('allows a longer string to be rendered', () => {
         const card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithManyDecimalPlaces} maxLength={100} />);
+
         assert.equal(getRenderedValue(card), computedMeasure.result.value);
       });
     });
@@ -141,6 +151,7 @@ describe('MeasureResultCard', () => {
     });
 
     const card = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+
     assert.equal(getRenderedValue(card), '1.23B');
   });
 
@@ -152,11 +163,13 @@ describe('MeasureResultCard', () => {
 
   it('renders a spinner if dataRequestInFlight is set', () => {
     const element = shallow(<MeasureResultCard dataRequestInFlight {...getProps()} />);
+
     assert.lengthOf(element.find('.measure-result-spinner-container'), 1);
   });
 
   it('renders no spinner if dataRequestInFlight is not set', () => {
     const element = shallow(<MeasureResultCard {...getProps()} />);
+
     assert.lengthOf(element.find('.measure-result-spinner-container'), 0);
   });
 
@@ -168,6 +181,7 @@ describe('MeasureResultCard', () => {
         const computedMeasure = getComputedMeasure();
         const measure = {};
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure, measure })} />);
+
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_dataset'));
       });
     });
@@ -178,6 +192,7 @@ describe('MeasureResultCard', () => {
           errors: { dataSourceNotConfigured: true }
         });
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_dataset'));
       });
     });
@@ -188,6 +203,7 @@ describe('MeasureResultCard', () => {
           errors: { calculationNotConfigured: true }
         });
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_calculation'));
       });
     });
@@ -198,6 +214,7 @@ describe('MeasureResultCard', () => {
           errors: { noReportingPeriodConfigured: true }
         });
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_reporting_period'));
       });
     });
@@ -212,6 +229,7 @@ describe('MeasureResultCard', () => {
           }
         });
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.no_reporting_period'));
       });
     });
@@ -222,6 +240,7 @@ describe('MeasureResultCard', () => {
           errors: { noReportingPeriodAvailable: true }
         });
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.not_enough_data'));
       });
     });
@@ -247,6 +266,7 @@ describe('MeasureResultCard', () => {
           errors: { notEnoughData: true }
         });
         const element = shallow(<MeasureResultCard {...getProps({ computedMeasure })} />);
+
         assert.include(getSubtitle(element), I18n.t('shared.performance_measures.not_enough_data'));
       });
     });

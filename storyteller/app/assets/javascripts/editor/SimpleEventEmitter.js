@@ -35,7 +35,7 @@ export default function SimpleEventEmitter() {
    * Execute each of the listeners in order. No arguments are provided.
    */
   this.emit = function() {
-    const listeners = [].concat(_listeners);
+    const listeners = _listeners.slice(0); // Shallow clone.
     var listenerCount = listeners.length;
 
     for (var i = 0; i < listenerCount; i++) {

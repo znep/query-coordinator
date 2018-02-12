@@ -2,7 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import moment from 'moment';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import I18n from 'common/i18n';
 import { components } from 'common/visualizations';
@@ -92,12 +92,11 @@ export class MeasureChart extends Component {
 
   renderTitle() {
     const { showMetadata, lens, measure } = this.props;
-
-    if (showMetadata) {
-      return <MeasureTitle lens={lens} measure={measure} />;
-    } else {
+    if (!showMetadata) {
       return null;
     }
+
+    return <MeasureTitle lens={lens} measure={measure} />;
   }
 
   renderChart(series) {
@@ -145,25 +144,28 @@ export class MeasureChart extends Component {
       </div>
     );
 
-    // TODO: Ideally we can render a blank timeline chart with the date range applied, however the
-    // current implementation of SvgTimelineChart does not play well with no data (error states, flyouts),
-    // so we'll have to carefully introduce that capability later
-    // For now, prevent the metric viz chart from rendering if only null data is available
-    const content = onlyNullValues ? this.renderPlaceholder() : this.renderChart(series);
+    const busy = dataRequestInFlight || !measure;
 
-    const showSpinner = dataRequestInFlight || !measure;
-
-    const rootClasses = classnames(
+    const rootClasses = classNames(
       'measure-chart',
       {
         'with-metadata': showMetadata
       }
     );
 
+    const title = busy ? null : this.renderTitle();
+
+    // TODO: Ideally we can render a blank timeline chart with the date range applied, however the
+    // current implementation of SvgTimelineChart does not play well with no data (error states, flyouts),
+    // so we'll have to carefully introduce that capability later
+    // For now, prevent the metric viz chart from rendering if only null data is available
+    let content = onlyNullValues ? this.renderPlaceholder() : this.renderChart(series);
+    content = busy ? spinner : content;
+
     return (
       <div className={rootClasses}>
-        {!showSpinner && this.renderTitle()}
-        {showSpinner ? spinner : content}
+        {title}
+        {content}
       </div>
     );
   }

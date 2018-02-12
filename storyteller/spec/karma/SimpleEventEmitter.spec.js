@@ -109,11 +109,11 @@ describe('SimpleEventEmitter', function() {
       // This is a tricky case. We _could_ force all the listeners
       // that were registered at the beginning of the .emit() call
       // to run, but that would potentially cause surprising results.
+      // Instead, we call all handlers that were registered at the moment
+      // emit() was called.
       describe('which get removed during events', () => {
         beforeEach(function() {
-          // I want to use .callsFake() but our sinon is so ancient it doesn't
-          // support it :(
-          listener1 = sinon.spy(() => {
+          listener1.callsFake(() => {
             emitter.removeListener(listener2);
           });
           emitter.addListener(listener1);

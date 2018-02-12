@@ -5,11 +5,11 @@
  *
  *  const MyConnectedComponent = connect(
  *    { assetSelectorStore, storyStore }, // Passed back as args to mapStoresToProps
- *    (stores) => {
+ *    ({ assetSelectorStore, storyStore }) => {
  *      // This function is called every time the store emits a change.
  *      // The returned object gets applied as props to MyComponent.
  *      return {
- *        componentType: stores.assetSelectorStore.getComponentType(),
+ *        componentType: assetSelectorStore.getComponentType(),
  *        ownerUid: storyStore.getStoryPrimaryOwnerUid()
  *      };
  *    },

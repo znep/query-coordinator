@@ -6,7 +6,10 @@
 
 <section class="styleguide-section" id="radiobutton">
   <p>
-    <a class="btn btn-default" href='/internal/demos/components'><span class="socrata-icon-arrow-left"></span> Components</a>
+    <a class="btn btn-default" href='/internal/demos/components'>
+      <span class="socrata-icon-arrow-left"></span>
+      Components
+    </a>
   </p>
   <h2 class="styleguide-header">Radiobutton</h2>
   <div class="styleguide-example">
@@ -23,7 +26,7 @@
   <script type="text/javascript" id="example-1">
     let checked = null;
 
-    function go() {
+    function render() {
       let children1 = [
         checked === 1 ? 'Thanks!' : 'Click me!'
       ];
@@ -37,7 +40,7 @@
         checked: checked === 1,
         onChange: () => {
           checked = 1;
-          go();
+          render();
         }
       };
 
@@ -47,7 +50,7 @@
         checked: checked === 2,
         onChange: () => {
           checked = 2;
-          go();
+          render();
         }
       };
 
@@ -62,6 +65,6 @@
       );
     }
 
-    $(go);
+    $(render);
   </script>
 <% end %>

@@ -114,12 +114,12 @@ describe('MeasureResultCard', () => {
 
   it('renders a spinner if dataRequestInFlight is set', () => {
     const element = shallow(<MeasureResultCard dataRequestInFlight {...getProps()} />);
-    assert.lengthOf(element.find('.spinner-default'), 1);
+    assert.lengthOf(element.find('.measure-result-spinner-container'), 1);
   });
 
   it('renders no spinner if dataRequestInFlight is not set', () => {
     const element = shallow(<MeasureResultCard {...getProps()} />);
-    assert.lengthOf(element.find('.spinner-default'), 0);
+    assert.lengthOf(element.find('.measure-result-spinner-container'), 0);
   });
 
   describe('Error messages', () => {

@@ -174,8 +174,6 @@ export class TransformStatus extends Component {
 
       hasErrors = this.hasTransformErrors();
 
-      // progressbarType = colStatus === 'inProgress' ? colStatus : 'done';
-
       errorStatusMessage =
         colStatus === COL_STATUS.DONE
           ? singularOrPlural(transform.error_count, SubI18n.error_exists, SubI18n.errors_exist)

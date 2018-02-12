@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { COL_STATUS } from 'datasetManagementUI/components/TransformStatus/TransformStatus';
@@ -56,6 +57,6 @@ ProgressBar.propTypes = {
   percent: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   ariaLabel: PropTypes.string,
   ariaLabeledBy: PropTypes.string,
-  type: PropTypes.oneOf(['success', 'error', 'inProgress', 'done', 'unloaded']),
+  type: PropTypes.oneOf(_.values(COL_STATUS)),
   className: PropTypes.string
 };

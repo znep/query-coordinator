@@ -55,7 +55,6 @@ ShowRevision.propTypes = {
 };
 
 const mapStateToProps = ({ entities }, { params }) => {
-  // const view = entities.views[params.fourfour];
   const revision = _.values(entities.revisions).find(
     rev => rev.revision_seq === _.toNumber(params.revisionSeq)
   );

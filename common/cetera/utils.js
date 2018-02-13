@@ -72,7 +72,7 @@ export const ceteraUtils = (() => {
     console.warn('WARNING: window.serverConfig is undefined.');
   }
 
-  const domain = _.get(window, 'serverConfig.domain', window.location.hostname); // TODO: federation?
+  const currentDomain = _.get(window, 'serverConfig.domain', window.location.hostname);
 
   const assetTypeMapping = (assetType) => (assetType === 'new_view' ? 'datalenses' : assetType);
 
@@ -81,7 +81,7 @@ export const ceteraUtils = (() => {
   const fetchOptions = {
     credentials: 'same-origin',
     headers: {
-      'X-Socrata-Host': domain,
+      'X-Socrata-Host': currentDomain,
       'User-Agent': 'SocrataFrontend/1.0 (+https://socrata.com/)'
     }
   };
@@ -92,6 +92,7 @@ export const ceteraUtils = (() => {
     category = null,
     customMetadataFilters = {},
     derivedFrom = null,
+    domains = currentDomain,
     forUser = null,
     idFilters = [],
     limit = DEFAULT_LIMIT,
@@ -101,6 +102,7 @@ export const ceteraUtils = (() => {
     provenance = null,
     published = null,
     q = null,
+    searchContext = currentDomain,
     sharedTo = null,
     showVisibility = null,
     tags = null,
@@ -111,7 +113,7 @@ export const ceteraUtils = (() => {
       categories: category,
       ...customMetadataFilters,
       derived_from: derivedFrom,
-      domains: domain,
+      domains,
       for_user: forUser,
       ids: mapIdFiltersToParam(idFilters),
       limit,
@@ -121,7 +123,7 @@ export const ceteraUtils = (() => {
       published,
       provenance,
       q,
-      search_context: domain,
+      search_context: searchContext,
       shared_to: sharedTo,
       show_visibility: showVisibility,
       tags,
@@ -203,7 +205,7 @@ export const ceteraUtils = (() => {
 
     facetCountsQuery: (queryOptions) => {
       const queryString = ceteraQueryString(queryOptions);
-      const ceteraFacetsPath = `${CETERA_DOMAINS_PATH}/${domain}/facets`;
+      const ceteraFacetsPath = `${CETERA_DOMAINS_PATH}/${currentDomain}/facets`;
       const fetchUrl = `${ceteraFacetsPath}?${queryString}`;
 
       // Calls whatwg-fetch and returns the promise

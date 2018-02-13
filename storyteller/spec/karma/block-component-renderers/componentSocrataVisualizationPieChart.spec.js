@@ -8,6 +8,7 @@ import { $transient } from '../TransientElement';
 import componentSocrataVisualizationPieChart
   from 'editor/block-component-renderers/componentSocrataVisualizationPieChart';
 /* eslint-enable no-unused-vars */
+import { updateVifWithDefaults, updateVifWithFederatedFromDomain } from 'VifUtils';
 
 describe('componentSocrataVisualizationPieChart jQuery plugin', function() {
   var $component;
@@ -31,7 +32,7 @@ describe('componentSocrataVisualizationPieChart jQuery plugin', function() {
   var getProps = (props) => {
     return _.extend({
       blockId: null,
-      componentData: validComponentData,
+      componentData: _.cloneDeep(validComponentData),
       componentIndex: null,
       theme: null
     }, props);
@@ -63,6 +64,36 @@ describe('componentSocrataVisualizationPieChart jQuery plugin', function() {
     });
   });
 
+  describe('when component data contains `federatedFromDomain`', function() {
+    var socrataPieChartStub;
+
+    beforeEach(function() {
+      socrataPieChartStub = sinon.stub($.fn, 'socrataSvgPieChart');
+
+      const componentData = _.merge(_.cloneDeep(validComponentData), {
+        value: {
+          dataset: {
+            federatedFromDomain: 'example.com'
+          }
+        }
+      });
+      $component = $component.componentSocrataVisualizationPieChart(getProps({ componentData }));
+    });
+
+    afterEach(function() {
+      socrataPieChartStub.restore();
+    });
+
+    it('should call into socrataSvgPieChart with the correct arguments', function() {
+      const expectedVif = updateVifWithDefaults(updateVifWithFederatedFromDomain(_.cloneDeep(validComponentData).value.vif, 'example.com'));
+      sinon.assert.calledWithExactly(
+        socrataPieChartStub,
+        expectedVif,
+        sinon.match.any
+      );
+    });
+  });
+
   describe('given a valid component type and value', function() {
     var socrataPieChartStub;
 
@@ -82,7 +113,7 @@ describe('componentSocrataVisualizationPieChart jQuery plugin', function() {
     it('should call into socrataSvgPieChart with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataPieChartStub,
-        validComponentData.value.vif,
+        updateVifWithDefaults(validComponentData.value.vif),
         sinon.match.any
       );
     });
@@ -93,11 +124,11 @@ describe('componentSocrataVisualizationPieChart jQuery plugin', function() {
 
         var changedData = _.cloneDeep(validComponentData);
         _.set(changedData, 'value.vif.columnName', 'test2');
-        $component.componentSocrataVisualizationPieChart(getProps({ componentData: changedData }));
+        $component.componentSocrataVisualizationPieChart(getProps({ componentData: _.cloneDeep(changedData) }));
 
         sinon.assert.calledWithExactly(
           socrataPieChartStub,
-          changedData.value.vif,
+          updateVifWithDefaults(changedData.value.vif),
           sinon.match.any
         );
       });

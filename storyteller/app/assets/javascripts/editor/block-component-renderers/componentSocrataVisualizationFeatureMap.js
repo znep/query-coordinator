@@ -5,8 +5,8 @@ import '../componentBase';
 import '../componentWithMapBounds';
 import Constants from '../Constants';
 import StorytellerUtils from 'StorytellerUtils';
-import { vifsAreEquivalent } from 'VifUtils';
-import { assert, assertHasProperty } from 'common/js_utils';
+import { updateFeatureMapVifWithDefaults, updateVifWithDefaults, updateVifWithFederatedFromDomain, vifsAreEquivalent } from 'VifUtils';
+import { assert, assertHasProperty, parseJsonOrEmpty } from 'common/js_utils';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
 $.fn.componentSocrataVisualizationFeatureMap = componentSocrataVisualizationFeatureMap;
@@ -69,32 +69,18 @@ function _updateVisualization($element, props) {
   assertHasProperty(props, 'componentData.value.vif');
 
   const { componentData } = props;
-  const renderedVif = $element.attr('data-rendered-vif') || '{}';
+  const renderedVif = $element.attr('data-rendered-vif');
   const $componentContent = $element.find('.component-content');
-  const vif = componentData.value.vif;
-  const areNotEquivalent = !vifsAreEquivalent(JSON.parse(renderedVif), vif);
+  const federatedFromDomain = _.get(componentData, 'value.dataset.federatedFromDomain');
 
+  let vif = componentData.value.vif;
+  vif = updateVifWithFederatedFromDomain(vif, federatedFromDomain);
+
+  const areNotEquivalent = !vifsAreEquivalent(parseJsonOrEmpty(renderedVif), vif);
   if (areNotEquivalent) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));
-
-    vif.unit = {
-      one: 'record',
-      other: 'records'
-    };
-
-    // At some point in the future we may want to do a check to see if the
-    // datasetUid is available on `tileserver[1..n].api.us.socrata.com` before
-    // falling back to the dataset's host domain.
-    //
-    // For now, this should be sufficient.
-    vif.configuration.tileserverHosts = [
-      'https://' + _.get(vif, 'series[0].dataSource.domain', vif.domain)
-    ];
-    vif.configuration.baseLayerUrl = _.get(vif, 'configuration.baseLayerUrl', Constants.SOCRATA_VISUALIZATION_FEATURE_MAP_DEFAULT_BASE_LAYER);
-    vif.configuration.baseLayerOpacity = _.get(vif, 'configuration.baseLayerOpacity', 0.8);
-    vif.configuration.hover = _.get(vif, 'configuration.hover', true);
-    vif.configuration.locateUser = _.get(vif, 'configuration.locateUser', true);
-    vif.configuration.panAndZoom = _.get(vif, 'configuration.panAndZoom', true);
+    vif = updateVifWithDefaults(vif);
+    vif = updateFeatureMapVifWithDefaults(vif);
 
     // EN-7517 - Title and description of VisualizationAddController V1 vifs are not useful.
     //

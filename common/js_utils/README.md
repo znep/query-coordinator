@@ -207,3 +207,15 @@ Returns `true` if the given value is not `null`, `undefined`, or the empty strin
 **Returns**
 
 _(Boolean)_ `true` for non-blank values, `false` otherwise.
+
+#### parseJsonOrEmpty(json)
+
+Returns an empty Object if the given JSON is not parseable; returns the parsed JSON otherwise.
+
+**Arguments**
+
+* `json` _(String)_: The json to parse.
+
+**Returns**
+
+_(Object)_ Empty object if JSON is unparseable, parsed JSON object otherwise.

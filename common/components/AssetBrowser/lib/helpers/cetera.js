@@ -1,4 +1,7 @@
 import _ from 'lodash';
+
+import { fetchJsonWithDefaultHeaders } from 'common/http';
+import airbrake from 'common/airbrake';
 import ceteraUtils from 'common/cetera/utils';
 import * as ceteraActions from 'common/components/AssetBrowser/actions/cetera';
 import { APPROVAL_STATUS_PENDING } from 'common/components/AssetBrowser/lib/constants';
@@ -77,6 +80,7 @@ export const translateFiltersToQueryParameters = (filters) => {
     assetTypes,
     authority,
     category,
+    domains,
     forUser,
     ids,
     onlyRecentlyViewed,
@@ -122,12 +126,13 @@ export const translateFiltersToQueryParameters = (filters) => {
     approvalStatus,
     category,
     customMetadataFilters,
+    domains,
     forUser: forUser || _.get(ownedBy, 'id'),
     idFilters: ids || lastAccessedUids,
     limit: pageSize,
     mixpanelContext: {
       eventName: translateParamsToMixpanelEvent(filters),
-      params: _.omit(filters, 'action')
+      params: _.omit(filters, 'action', 'domains')
     },
     only: assetTypes,
     order: ceteraOrder(),
@@ -196,45 +201,81 @@ export const fetchProvenanceCounts = (dispatch, getState, parameters = {}) => {
   });
 };
 
+// Tried to _.memoize these results, but it interfered with being able to test this functionality.
+// If you feel like trying to fix that, please do. Otherwise, the call to /api/federations is pretty
+// quick and small so we're not too worried about calling it every time.
+const fetchFederatedDomains = () => {
+  const fetchOptions = { credentials: 'same-origin' };
+  return fetchJsonWithDefaultHeaders('/api/federations', fetchOptions);
+};
+
 export const fetchResults = (dispatch, getState, parameters = {}, onSuccess = _.noop) => {
+  const { includeFederatedAssets } = _.merge({}, getState().assetBrowserProps, parameters);
   const { onlyRecentlyViewed } = _.merge({}, getState().filters, parameters);
   let { sortByRecentlyViewed } = _.merge({}, getState().filters, parameters);
+  const currentDomain = _.get(window, 'serverConfig.domain', window.location.hostname);
 
   const activeTab = _.get(getState(), 'header.activeTab');
 
   dispatch(ceteraActions.fetchingResults());
 
-  return ceteraUtils.query(mergedCeteraQueryParameters(getState, parameters)).then((response) => {
-    if (_.isObject(response)) {
-      /* EN-17000: If user checks "Only recently viewed", any active sort is cleared and the results are
-       * automatically sorted by most recently viewed (in the catalog.js reducer).
-       * If the user then clicks a column to sort again, we remove the sortByRecentlyViewed override and
-       * let them sort the onlyRecentlyViewed results however they want. */
-      const explicitOrder = _.get(parameters, 'order') || _.get(getState(), 'catalog.order');
-      sortByRecentlyViewed = sortByRecentlyViewed || (onlyRecentlyViewed && _.isEmpty(explicitOrder));
+  async function getDomains() {
+    let domains = [currentDomain];
 
-      dispatch(ceteraActions.updateCatalogResults(
-        response,
-        onlyRecentlyViewed,
-        sortByRecentlyViewed
-      ));
-      dispatch(ceteraActions.fetchingResultsSuccess());
-      onSuccess(response.results.length > 0);
-
-      const showAssetCounts = _.get(getState(), 'assetBrowserProps.showAssetCounts');
-      if (showAssetCounts) {
-        fetchAssetCounts(dispatch, getState, parameters);
+    if (includeFederatedAssets) {
+      try {
+        let apiResponse = await fetchFederatedDomains();
+        domains = domains.concat(_.map(apiResponse, 'sourceDomainCName'));
+      } catch (error) {
+        // Airbrake, but don't prevent the user from getting non-federated search results
+        const errorMessage = 'Error fetching federated domains for cetera results:';
+        airbrake.notify({
+          error: `${errorMessage} ${error}`,
+          context: { component: 'AssetSelector' }
+        });
+        console.error(errorMessage, error);
       }
-      if (_.get(getState(), `assetBrowserProps.tabs[${activeTab}].props.showProvenanceCounts`) === true) {
-        fetchProvenanceCounts(dispatch, getState, parameters);
-      }
-    } else {
-      dispatch(ceteraActions.fetchingResultsError());
     }
-  }).catch((err) => {
-    console.error(err);
-    dispatch(ceteraActions.fetchingResultsError(err.message));
-  });
+
+    return domains;
+  }
+
+  return getDomains().
+    then((domains) => {
+      parameters = _.merge({}, parameters, { domains: domains.join(',') });
+
+      return ceteraUtils.query(mergedCeteraQueryParameters(getState, parameters)).then((response) => {
+        if (_.isObject(response)) {
+          /* EN-17000: If user checks "Only recently viewed", any active sort is cleared and the results are
+           * automatically sorted by most recently viewed (in the catalog.js reducer).
+           * If the user then clicks a column to sort again, we remove the sortByRecentlyViewed override and
+           * let them sort the onlyRecentlyViewed results however they want. */
+          const explicitOrder = _.get(parameters, 'order') || _.get(getState(), 'catalog.order');
+          sortByRecentlyViewed = sortByRecentlyViewed || (onlyRecentlyViewed && _.isEmpty(explicitOrder));
+
+          dispatch(ceteraActions.updateCatalogResults(
+            response,
+            onlyRecentlyViewed,
+            sortByRecentlyViewed
+          ));
+          dispatch(ceteraActions.fetchingResultsSuccess());
+          onSuccess(response.results.length > 0);
+
+          const showAssetCounts = _.get(getState(), 'assetBrowserProps.showAssetCounts');
+          if (showAssetCounts) {
+            fetchAssetCounts(dispatch, getState, parameters);
+          }
+          if (_.get(getState(), `assetBrowserProps.tabs[${activeTab}].props.showProvenanceCounts`) === true) {
+            fetchProvenanceCounts(dispatch, getState, parameters);
+          }
+        } else {
+          dispatch(ceteraActions.fetchingResultsError());
+        }
+      }).catch((err) => {
+        console.error(err);
+        dispatch(ceteraActions.fetchingResultsError(err.message));
+      });
+    });
 };
 
 export const fetchInitialResults = (parameters = {}) => (dispatch, getState) => {

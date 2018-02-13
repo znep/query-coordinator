@@ -5,6 +5,7 @@ import sinon from 'sinon';
 
 import { $transient } from '../TransientElement';
 import 'editor/block-component-renderers/componentSocrataVisualizationTimelineChart';
+import { updateVifWithDefaults, updateVifWithFederatedFromDomain } from 'VifUtils';
 
 describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() {
   var $component;
@@ -20,7 +21,7 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
         datasetUid: 'test-test',
         domain: 'example.com',
         filters: [],
-        type: 'timelineChart'
+        type: 'pieChart'
       }
     }
   };
@@ -28,7 +29,7 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
   var getProps = (props) => {
     return _.extend({
       blockId: null,
-      componentData: validComponentData,
+      componentData: _.cloneDeep(validComponentData),
       componentIndex: null,
       theme: null
     }, props);
@@ -60,12 +61,42 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
     });
   });
 
+  describe('when component data contains `federatedFromDomain`', function() {
+    var socrataTimelineChartStub;
+
+    beforeEach(function() {
+      socrataTimelineChartStub = sinon.stub($.fn, 'socrataSvgTimelineChart');
+
+      const componentData = _.merge(_.cloneDeep(validComponentData), {
+        value: {
+          dataset: {
+            federatedFromDomain: 'example.com'
+          }
+        }
+      });
+      $component = $component.componentSocrataVisualizationTimelineChart(getProps({ componentData }));
+    });
+
+    afterEach(function() {
+      socrataTimelineChartStub.restore();
+    });
+
+    it('should call into socrataSvgTimelineChart with the correct arguments', function() {
+      const expectedVif = updateVifWithDefaults(updateVifWithFederatedFromDomain(_.cloneDeep(validComponentData).value.vif, 'example.com'));
+      sinon.assert.calledWithExactly(
+        socrataTimelineChartStub,
+        expectedVif,
+        sinon.match.any
+      );
+    });
+  });
+
   describe('given a valid component type and value', function() {
     var socrataTimelineChartStub;
 
     beforeEach(function() {
       socrataTimelineChartStub = sinon.stub($.fn, 'socrataSvgTimelineChart').callsFake(function() { return this; });
-      $component = $component.componentSocrataVisualizationTimelineChart(getProps());
+      $component = $component.componentSocrataVisualizationTimelineChart(_.cloneDeep(getProps()));
     });
 
     afterEach(function() {
@@ -79,7 +110,7 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
     it('should call into socrataSvgTimelineChart with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataTimelineChartStub,
-        validComponentData.value.vif,
+        updateVifWithDefaults(validComponentData.value.vif),
         sinon.match.any
       );
     });
@@ -90,11 +121,11 @@ describe('componentSocrataVisualizationTimelineChart jQuery plugin', function() 
 
         var changedData = _.cloneDeep(validComponentData);
         _.set(changedData, 'value.vif.columnName', 'test2');
-        $component.componentSocrataVisualizationTimelineChart(getProps({ componentData: changedData }));
+        $component.componentSocrataVisualizationTimelineChart(getProps({ componentData: _.cloneDeep(changedData) }));
 
         sinon.assert.calledWithExactly(
           socrataTimelineChartStub,
-          changedData.value.vif,
+          updateVifWithDefaults(changedData.value.vif),
           sinon.match.any
         );
       });

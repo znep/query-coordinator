@@ -7,6 +7,7 @@ import { $transient } from '../TransientElement';
 /* eslint-disable no-unused-vars */
 import componentSocrataVisualizationComboChart from 'editor/block-component-renderers/componentSocrataVisualizationComboChart';
 /* eslint-enable no-unused-vars */
+import { updateVifWithDefaults, updateVifWithFederatedFromDomain } from 'VifUtils';
 
 describe('componentSocrataVisualizationComboChart jQuery plugin', function() {
   var $component;
@@ -30,7 +31,7 @@ describe('componentSocrataVisualizationComboChart jQuery plugin', function() {
   var getProps = (props) => {
     return _.extend({
       blockId: null,
-      componentData: validComponentData,
+      componentData: _.cloneDeep(validComponentData),
       componentIndex: null,
       theme: null
     }, props);
@@ -62,6 +63,36 @@ describe('componentSocrataVisualizationComboChart jQuery plugin', function() {
     });
   });
 
+  describe('when component data contains `federatedFromDomain`', function() {
+    var socrataComboChartStub;
+
+    beforeEach(function() {
+      socrataComboChartStub = sinon.stub($.fn, 'socrataSvgComboChart');
+
+      const componentData = _.merge(_.cloneDeep(validComponentData), {
+        value: {
+          dataset: {
+            federatedFromDomain: 'example.com'
+          }
+        }
+      });
+      $component = $component.componentSocrataVisualizationComboChart(getProps({ componentData }));
+    });
+
+    afterEach(function() {
+      socrataComboChartStub.restore();
+    });
+
+    it('should call into socrataSvgComboChart with the correct arguments', function() {
+      const expectedVif = updateVifWithDefaults(updateVifWithFederatedFromDomain(_.cloneDeep(validComponentData).value.vif, 'example.com'));
+      sinon.assert.calledWithExactly(
+        socrataComboChartStub,
+        expectedVif,
+        sinon.match.any
+      );
+    });
+  });
+
   describe('given a valid component type and value', function() {
     var socrataComboChartStub;
 
@@ -81,7 +112,7 @@ describe('componentSocrataVisualizationComboChart jQuery plugin', function() {
     it('should call into socrataSvgComboChart with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataComboChartStub,
-        validComponentData.value.vif,
+        updateVifWithDefaults(validComponentData.value.vif),
         sinon.match.any
       );
     });
@@ -92,11 +123,11 @@ describe('componentSocrataVisualizationComboChart jQuery plugin', function() {
 
         var changedData = _.cloneDeep(validComponentData);
         _.set(changedData, 'value.vif.columnName', 'test2');
-        $component.componentSocrataVisualizationComboChart(getProps({ componentData: changedData }));
+        $component.componentSocrataVisualizationComboChart(getProps({ componentData: _.cloneDeep(changedData) }));
 
         sinon.assert.calledWithExactly(
           socrataComboChartStub,
-          changedData.value.vif,
+          updateVifWithDefaults(changedData.value.vif),
           sinon.match.any
         );
       });

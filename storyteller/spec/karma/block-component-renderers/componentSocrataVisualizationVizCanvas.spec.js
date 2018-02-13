@@ -7,6 +7,7 @@ import { expectConsoleErrorCallCount } from '../consoleStub';
 import { $transient } from '../TransientElement';
 import I18nMocker from '../I18nMocker';
 import {__RewireAPI__ as componentSocrataVisualizationVizCanvasAPI} from 'editor/block-component-renderers/componentSocrataVisualizationVizCanvas';
+import { updateVifWithDefaults } from 'VifUtils';
 
 describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
   let $component;
@@ -183,16 +184,11 @@ describe('componentSocrataVisualizationVizCanvas jQuery plugin', () => {
       });
 
       it('calls VisualizationRenderer with the correct parameters', () => {
-        let vif = validVizCanvasViewData.displayFormat.visualizationCanvasMetadata.vifs[0];
-
-        // our code makes sure we have default values for units and filters before rendering
-        _.set(vif, 'unit.one', 'Translation for: editor.visualizations.default_unit.one');
-        _.set(vif, 'unit.other', 'Translation for: editor.visualizations.default_unit.other');
-        _.set(vif, 'series[0].dataSource.filters', []);
+        let vif = _.cloneDeep(validVizCanvasViewData.displayFormat.visualizationCanvasMetadata.vifs[0]);
 
         sinon.assert.calledWithExactly(
           visualizationRendererSpy,
-          vif,
+          updateVifWithDefaults(vif), // our code makes sure we have default values for units and filters before rendering
           $component.find('.component-content'),
           { displayFilterBar: true }
         );

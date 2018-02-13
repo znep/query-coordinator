@@ -505,6 +505,20 @@ describe('SvgVisualization', () => {
           done();
         });
       });
+
+      it('renders link with federated domain', (done) => {
+        const federatedFromDomain = 'example.gov';
+        const vif = _.cloneDeep(mockVif);
+        vif.origin = { federatedFromDomain };
+        const viz = new SvgVisualization($element, vif);
+        viz.showViewSourceDataLink();
+
+        _.defer(() => {
+          validateLink(`https://${federatedFromDomain}/d/nbe4-four`);
+          done();
+        });
+
+      });
     });
 
     describe('when migration data does not exist', () => {
@@ -535,6 +549,19 @@ describe('SvgVisualization', () => {
           done();
         });
       });
+
+      it('renders link with federated domain', (done) => {
+        const federatedFromDomain = 'example.gov';
+        const vif = _.cloneDeep(mockVif);
+        vif.origin = { federatedFromDomain };
+        const viz = new SvgVisualization($element, vif);
+        viz.showViewSourceDataLink();
+
+        _.defer(() => {
+          validateLink(`https://${federatedFromDomain}/d/${mockVifDatasetUid}`);
+          done();
+        });
+      });
     });
 
     describe('when origin.url exists', () => {
@@ -556,6 +583,16 @@ describe('SvgVisualization', () => {
 
         assert.isFalse($element.hasClass('socrata-visualization-view-source-data'));
         assert.lengthOf($element.find('.socrata-visualization-view-source-data a:visible'), 0);
+      });
+
+      it('uses url when federatedFromDomain exists', () => {
+        const vif = _.cloneDeep(mockVif);
+        vif.origin = { url: 'url-override', federatedFromDomain: 'example.gov' };
+
+        const viz = new SvgVisualization($element, vif);
+        viz.showViewSourceDataLink();
+
+        validateLink('url-override');
       });
     });
 

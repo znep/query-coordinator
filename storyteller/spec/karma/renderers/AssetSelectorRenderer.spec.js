@@ -340,24 +340,6 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
-    // TODO add tests for handling the dataset/chart/map chosen...
-
-    // it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART` on a mapOrChartSelected event', function(done) {
-    //   dispatcher.register(function(payload) {
-    //     var action = payload.action;
-    //     assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART);
-    //     // the values will be empty, but assert that the event adds the keys
-    //     assert.propertyVal(payload, 'mapOrChartUid', 'mapc-hart');
-    //     assert.propertyVal(payload, 'domain', window.location.hostname);
-    //     done();
-    //   });
-    //
-    //   container.find('.modal-dialog').trigger('mapOrChartSelected', {
-    //     id: 'mapc-hart',
-    //     domainCName: undefined
-    //   });
-    // });
-
     it('dispatches `ASSET_SELECTOR_TOGGLE_IMAGE_WINDOW_TARGET` when new window checkbox is clicked', function(done) {
       sinon.stub(assetSelectorStoreMock, 'getComponentType').callsFake(_.constant('image'));
       sinon.stub(assetSelectorStoreMock, 'getComponentValue').callsFake(_.constant({}));
@@ -699,7 +681,7 @@ describe('AssetSelectorRenderer', function() {
           server.respondImmediately = true;
           server.respondWith(
             'GET',
-            `https://${assetData.domain}/api/views/${assetData.id}.json`,
+            `https://${window.location.hostname}/api/views/${assetData.id}.json`,
             [
               200,
               {'Content-Type': 'application/json'},
@@ -712,17 +694,23 @@ describe('AssetSelectorRenderer', function() {
 
         it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART`', (done) => {
           dispatcher.register((payload) => {
-            const { action, domain, mapOrChartUid, viewData } = payload;
-            assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART);
-            assert.equal(domain, assetData.domain, 'domain is set from assetData');
-            assert.equal(mapOrChartUid, assetData.id, 'mapOrChartUid is set from assetData');
-            assert.deepEqual(
-              viewData,
-              _.extend({}, visualizationView, { domain: assetData.domain }),
-              'viewData is saved from response with `domain` added'
-            );
-            done();
+            try {
+              const { action, domain, federatedFromDomain, mapOrChartUid, viewData } = payload;
+              assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART);
+              assert.equal(domain, window.location.hostname, 'domain is set from window.location');
+              assert.equal(mapOrChartUid, assetData.id, 'mapOrChartUid is set from assetData');
+              assert.equal(federatedFromDomain, assetData.domain, 'federatedFromDomain is set from assetData');
+              assert.deepEqual(
+                viewData,
+                _.extend({}, visualizationView, { domain: window.location.hostname }),
+                'viewData is saved from response with `domain` added'
+              );
+              done();
+            } catch (error) {
+              done(error);
+            }
           });
+
           triggerAssetSelected();
         });
       });
@@ -777,7 +765,7 @@ describe('AssetSelectorRenderer', function() {
             server.respondImmediately = true;
             server.respondWith(
               'GET',
-              `https://${assetData.domain}/api/views/${assetData.id}.json`,
+              `https://${window.location.hostname}/api/views/${nbeView.id}.json`,
               [
                 statusCode,
                 {'Content-Type': 'application/json'},
@@ -785,27 +773,65 @@ describe('AssetSelectorRenderer', function() {
               ]
             );
           });
+
+          afterEach(() => {
+            server.restore();
+          });
         }
 
         describe('when selected asset is an nbe dataset', () => {
-          assetData = {
-            displayType: 'dataset',
-            domain: nbeView.domainCName,
-            id: nbeView.id
-          };
-
-          describe('and successfully gets view', () => {
+          describe('and successfully gets view from federated domain', () => {
             stubGetDatasetMetadata(200, nbeView);
 
-            it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` with viewData', (done) => {
+            it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET`', (done) => {
+              assetData = {
+                displayType: 'dataset',
+                domain: nbeView.domainCName,
+                id: nbeView.id
+              };
+
               dispatcher.register((payload) => {
-                const { action, viewData } = payload;
-                assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
-                assert.deepEqual(
-                  viewData,
-                  _.extend({}, nbeView, { domain: assetData.domain })
-                );
-                done();
+                try {
+                  const { action, federatedFromDomain, viewData } = payload;
+                  assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
+                  assert.equal(federatedFromDomain, assetData.domain, 'federatedFromDomain is set from assetData');
+                  assert.deepEqual(
+                    viewData,
+                    _.extend({}, nbeView, { domain: window.location.hostname })
+                  );
+                  done();
+                } catch (error) {
+                  done(error);
+                }
+              });
+
+              triggerAssetSelected();
+            });
+          });
+
+          describe('and successfully gets view from same domain', () => {
+            stubGetDatasetMetadata(200, nbeView);
+
+            it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET`', (done) => {
+              assetData = {
+                displayType: 'dataset',
+                domain: window.location.hostname,
+                id: nbeView.id
+              };
+
+              dispatcher.register((payload) => {
+                try {
+                  const { action, federatedFromDomain, viewData } = payload;
+                  assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
+                  assert.isUndefined(federatedFromDomain, 'federatedFromDomain is not set');
+                  assert.deepEqual(
+                    viewData,
+                    _.extend({}, nbeView, { domain: window.location.hostname })
+                  );
+                  done();
+                } catch (error) {
+                  done(error);
+                }
               });
 
               triggerAssetSelected();

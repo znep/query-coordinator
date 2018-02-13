@@ -833,6 +833,7 @@ export default function AssetSelectorStore() {
     const isCreatingTable = _state.componentType === 'socrata.visualization.table';
 
     _setComponentPropertiesFromViewData(payload.viewData);
+    _setComponentPropertiesForFederatedAssets(payload.federatedFromDomain);
 
     if (isCreatingTable) {
       _setUpTableFromSelectedDataset();
@@ -881,6 +882,7 @@ export default function AssetSelectorStore() {
 
     if (isChartOrMapView) {
       _setComponentPropertiesFromViewData(viewData);
+      _setComponentPropertiesForFederatedAssets(payload.federatedFromDomain);
       if (viewData.displayType === 'visualization' && vifId) {
         const vizProps = {
           vifId
@@ -922,10 +924,6 @@ export default function AssetSelectorStore() {
       format: {
         type: 'visualization_interchange_format',
         version: 1
-      },
-      origin: {
-        url: window.location.toString().replace(/\/edit$/, ''),
-        type: 'storyteller_asset_selector'
       },
       filters: [],
       createdAt: (new Date()).toISOString(),
@@ -969,6 +967,18 @@ export default function AssetSelectorStore() {
     // Not going into _state.componentProperties, as we don't want this blob
     // to end up stored in the story component data.
     _state.dataset = _.cloneDeep(viewData);
+  }
+
+  // Given a federatedFromDomain, sets:
+  // * _state.componentProperties.dataset.federatedFromDomain
+  function _setComponentPropertiesForFederatedAssets(federatedFromDomain) {
+    if (federatedFromDomain) {
+      _state.componentProperties = _state.componentProperties || {};
+      const dataset = _state.componentProperties.dataset;
+      if (dataset) {
+        dataset.federatedFromDomain = federatedFromDomain;
+      }
+    }
   }
 
   // Sets componentProperties.visualization for viz-canvas visualizations

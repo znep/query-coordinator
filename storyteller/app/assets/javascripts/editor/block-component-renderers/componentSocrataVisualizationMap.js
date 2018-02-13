@@ -5,8 +5,8 @@ import '../componentBase';
 import '../componentWithMapBounds';
 import Constants from '../Constants';
 import StorytellerUtils from 'StorytellerUtils';
-import { vifsAreEquivalent } from 'VifUtils';
-import { assert, assertHasProperty } from 'common/js_utils';
+import { updateVifWithFederatedFromDomain, vifsAreEquivalent } from 'VifUtils';
+import { assert, assertHasProperty, parseJsonOrEmpty } from 'common/js_utils';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
 $.fn.componentSocrataVisualizationMap = componentSocrataVisualizationMap;
@@ -70,11 +70,14 @@ function _updateVisualization($element, props) {
   assertHasProperty(props, 'componentData.value.vif');
 
   const { componentData } = props;
-  const renderedVif = $element.attr('data-rendered-vif') || '{}';
+  const renderedVif = $element.attr('data-rendered-vif');
   const $componentContent = $element.find('.component-content');
-  const vif = componentData.value.vif;
-  const areNotEquivalent = !vifsAreEquivalent(JSON.parse(renderedVif), vif);
+  const federatedFromDomain = _.get(componentData, 'value.dataset.federatedFromDomain');
 
+  let vif = componentData.value.vif;
+  vif = updateVifWithFederatedFromDomain(vif, federatedFromDomain);
+
+  const areNotEquivalent = !vifsAreEquivalent(parseJsonOrEmpty(renderedVif), vif);
   if (areNotEquivalent) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));
 

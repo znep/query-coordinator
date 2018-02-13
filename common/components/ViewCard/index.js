@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import 'dotdotdot';
 import purify from 'common/purify';
+import SocrataIcon from 'common/components/SocrataIcon';
 
 /**
  * ViewCard
@@ -73,6 +74,7 @@ export class ViewCard extends Component {
       description,
       icon,
       imageUrl,
+      isFederated,
       isPrivate,
       linkProps,
       metadataLeft,
@@ -83,7 +85,10 @@ export class ViewCard extends Component {
     } = this.props;
 
     const privateIcon = isPrivate ?
-      <span className="icon socrata-icon-private" /> : null;
+      <SocrataIcon name="private" /> : null;
+
+    const federationIcon = isFederated ?
+      <SocrataIcon name="linked" /> : null;
 
     const previewImageStyling = { backgroundImage: `url(${imageUrl})` };
     const image = _.isString(imageUrl) && !_.isEmpty(imageUrl) ? (
@@ -101,6 +106,7 @@ export class ViewCard extends Component {
               <a {...linkProps} href={url} onClick={onClick} ref={el => this.name = el}>
                 {name}
               </a>
+              {federationIcon}
             </h3>
           </div>
           <div aria-hidden className="entry-view-type">
@@ -167,6 +173,8 @@ ViewCard.propTypes = {
    * available area.
    */
   imageUrl: PropTypes.string,
+
+  isFederated: PropTypes.bool,
 
   /**
    * If the isPrivate prop is set to true, a yellow private icon will be rendered to the left of

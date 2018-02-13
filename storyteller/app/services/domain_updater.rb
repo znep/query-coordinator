@@ -8,6 +8,7 @@ class DomainUpdater
 
     # Various components are aware of domains, but some of them store the domain
     # at a different path in the blob than others.
+    # NOTE vizCanvas components don't include federatedFromDomain
     DOMAIN_AWARE_COMPONENT_TYPES = {
       'value.link' => %w(
         image
@@ -18,20 +19,34 @@ class DomainUpdater
         goal.tile
       ),
       'value.dataset.domain' => %w(
-        socrata.visualization.classic
         socrata.visualization.choroplethMap
-        socrata.visualization.regionMap
+        socrata.visualization.classic
         socrata.visualization.columnChart
         socrata.visualization.comboChart
         socrata.visualization.featureMap
         socrata.visualization.histogram
         socrata.visualization.map
         socrata.visualization.pieChart
+        socrata.visualization.regionMap
         socrata.visualization.table
         socrata.visualization.timelineChart
         socrata.visualization.vizCanvas
       )
     }
+
+    FEDERATED_DOMAIN_AWARE_COMPONENTS = %w(
+      socrata.visualization.choroplethMap
+      socrata.visualization.classic
+      socrata.visualization.columnChart
+      socrata.visualization.comboChart
+      socrata.visualization.featureMap
+      socrata.visualization.histogram
+      socrata.visualization.map
+      socrata.visualization.pieChart
+      socrata.visualization.regionMap
+      socrata.visualization.table
+      socrata.visualization.timelineChart
+    )
 
     # Convert usages of the old domain to the new domain.
     def migrate(old_domain, new_domain)
@@ -100,11 +115,12 @@ class DomainUpdater
         # domain A and another pointing to domain B, and the latter should not
         # update when A changes to X!
         is_affected_component = has_domain_reference(component, source_domains)
+        is_affected_federated_component = has_federated_domain_reference(component, source_domains)
 
         # In plain English:
         # * If the component isn't affected, return it.
         # * If the component is affected, perform the appropriate migration.
-        if is_affected_component
+        if is_affected_component || is_affected_federated_component
           case component['type']
 
           when 'story.tile'
@@ -114,20 +130,25 @@ class DomainUpdater
             migrate_goal_tile(component, destination_domain)
 
           when 'socrata.visualization.classic'
-            migrate_classic_visualization(component, destination_domain)
+            # There are a multiple possible migrations here
+            component = migrate_classic_visualization(component, destination_domain) if is_affected_component
+            component = migrate_classic_visualization_federated_domain(component, destination_domain) if is_affected_federated_component
+            component
 
           when 'socrata.visualization.vizCanvas'
             migrate_viz_canvas_visualization(component, destination_domain)
 
           when /^socrata.visualization/
+            component = migrate_vif_federated_domain(component, destination_domain) if is_affected_federated_component
+
             vif_version = component.dig('value', 'vif', 'format', 'version').to_i
             case vif_version
 
             when 1
-              migrate_v1_vif(component, destination_domain)
+              migrate_v1_vif(component, destination_domain) if is_affected_component
 
             when 2
-              migrate_v2_vif(component, destination_domain)
+              migrate_v2_vif(component, destination_domain) if is_affected_component
 
             else
               error_message = 'Failed to find valid VIF version during component migration!'
@@ -193,6 +214,16 @@ class DomainUpdater
       )
     end
 
+    def migrate_classic_visualization_federated_domain(component, destination_domain)
+      component.deep_merge(
+        'value' => {
+          'dataset' => {
+            'federatedFromDomain' => destination_domain
+          }
+        }
+      )
+    end
+
     def migrate_viz_canvas_visualization(component, destination_domain)
       component.deep_merge(
         'value' => {
@@ -242,6 +273,16 @@ class DomainUpdater
       )
     end
 
+    def migrate_vif_federated_domain(component, destination_domain)
+      component.deep_merge(
+        'value' => {
+          'dataset' => {
+            'federatedFromDomain' => destination_domain
+          }
+        }
+      )
+    end
+
     def migrate_image(component, destination_domain)
       new_url = replace_url_domain(component.dig('value', 'link'), destination_domain)
 
@@ -257,6 +298,9 @@ class DomainUpdater
       uri = Addressable::URI.parse(url)
       uri.hostname = domain
       uri.to_s
+    rescue => error
+      Rails.logger.error("Error replacing domain in #{url} with #{domain}: #{error}")
+      uri
     end
 
     # Figure out whether a component refers to a source domain.
@@ -273,6 +317,15 @@ class DomainUpdater
         component_domain = Addressable::URI.parse(component_domain).hostname
       end
 
+      source_domains.include?(component_domain)
+    end
+
+    # Figure out whether a component refers to a federated source domain.
+    def has_federated_domain_reference(component, source_domains)
+      return false unless FEDERATED_DOMAIN_AWARE_COMPONENTS.include?(component['type'])
+
+      domain_path = 'value.dataset.federatedFromDomain'
+      component_domain = component.dig(*domain_path.split('.'))
       source_domains.include?(component_domain)
     end
 
@@ -308,7 +361,7 @@ class DomainUpdater
     # describe why we have more than one convention.
 
     def candidate_blocks_using_pure_json(domains, offset)
-      # To create the component matchers for "vd" and "vdd", we need to generate
+      # To create the component matchers for "vd", "vfd", and "vdd", we need to generate
       # a cross product of all the affected types and all the affected domains.
       #
       # Then we format it for the containment predicate (the right side of @>).
@@ -322,9 +375,13 @@ class DomainUpdater
       vdd_domain_hashes = domains.map { |domain| {value: {dataset: {domain: domain}}} }
       vdd_component_matchers = vdd_type_hashes.product(vdd_domain_hashes).map(&combine_and_format)
 
+      vfd_type_hashes = FEDERATED_DOMAIN_AWARE_COMPONENTS.map { |type| {type: type} }
+      vfd_domain_hashes = domains.map { |domain| {value: {dataset: {federatedFromDomain: domain}}} }
+      vfd_component_matchers = vfd_type_hashes.product(vfd_domain_hashes).map(&combine_and_format)
+
       Block.where(
         'deleted_at IS NULL AND id > :offset AND components @> ANY (ARRAY [:matchers]::jsonb[])',
-        matchers: vd_component_matchers.concat(vdd_component_matchers),
+        matchers: vd_component_matchers.concat(vdd_component_matchers).concat(vfd_component_matchers),
         offset: offset
       ).order(:id).limit(RESULT_WINDOW_SIZE)
     end

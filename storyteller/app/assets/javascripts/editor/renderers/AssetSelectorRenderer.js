@@ -2228,6 +2228,7 @@ export default function AssetSelectorRenderer(options) {
 
     const defaultAssetSelectorProps = {
       closeOnSelect: false,
+      includeFederatedAssets: true,
       modalFooterChildren,
       onClose: handleClose,
       resultsPerPage: 6,
@@ -2241,10 +2242,12 @@ export default function AssetSelectorRenderer(options) {
   function _handleDatasetAssetSelected(assetData) {
     // We don't want to get the initial view with the `read_from_nbe` flags. We get the migration and nbe view later.
     const datasetConfig = {
-      domain: assetData.domain,
+      domain: window.location.hostname, // We want to support viz on federated datasets, so we're reading from current domain with federation headers
       datasetUid: assetData.id,
       readFromNbe: false
     };
+
+    const isFederated = assetData.domain !== window.location.hostname;
 
     // Check for the NBE version of the dataset we're choosing
     const metadataProvider = new MetadataProvider(datasetConfig);
@@ -2299,11 +2302,17 @@ export default function AssetSelectorRenderer(options) {
           // We'd have to pass it around like 5 methods otherwise. (still true?)
           nbeViewData.domain = datasetConfig.domain;
 
-          // This dataset view is fit for visualization!
-          dispatcher.dispatch({
+          const payload = {
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
             viewData: nbeViewData
-          });
+          };
+
+          if (isFederated) {
+            payload.federatedFromDomain = assetData.domain;
+          }
+
+          // This dataset view is fit for visualization!
+          dispatcher.dispatch(payload);
 
           _closeAssetSelectorModal();
         } else {
@@ -2370,24 +2379,33 @@ export default function AssetSelectorRenderer(options) {
     // We don't want to get the initial view with the `read_from_nbe` flags. That will cause
     // problems when we try to generate a preview of a classic visualization.
     const visualizationConfig = {
-      domain: assetData.domain,
+      domain: window.location.hostname, // We want to support federated visualizations, so we're reading from current domain with federation headers
       datasetUid: assetData.id,
       readFromNbe: false
     };
 
+    const isFederated = assetData.domain !== window.location.hostname;
+
     const metadataProvider = new MetadataProvider(visualizationConfig);
     metadataProvider.getDatasetMetadata().
       then((viewData) => {
+
+        const payload = {
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
+          domain: visualizationConfig.domain,
+          mapOrChartUid: visualizationConfig.datasetUid,
+          viewData
+        };
+
         // Retcon the domain into the view data.
         // We'd have to pass it around like 5 methods otherwise. (still true?)
-        viewData.domain = assetData.domain;
+        viewData.domain = visualizationConfig.domain;
 
-        dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
-          domain: assetData.domain,
-          mapOrChartUid: assetData.id,
-          viewData
-        });
+        if (isFederated) {
+          payload.federatedFromDomain = assetData.domain;
+        }
+
+        dispatcher.dispatch(payload);
 
         _closeAssetSelectorModal();
       }).

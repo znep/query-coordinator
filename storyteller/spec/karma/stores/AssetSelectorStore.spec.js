@@ -524,6 +524,22 @@ describe('AssetSelectorStore', function() {
         });
       });
 
+      it('should add federatedFromDomain to _currentComponentProperities', (done) => {
+        assetSelectorStore.addChangeListener(() => {
+          assert.equal(
+            assetSelectorStore.getComponentValue().dataset.federatedFromDomain,
+            'federated.example.com'
+          );
+          done();
+        });
+
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+          viewData: nbeView,
+          federatedFromDomain: 'federated.example.com'
+        });
+      });
+
       describe('when in the Authoring Workflow', function() {
         beforeEach(function() {
           bootstrap();
@@ -602,7 +618,8 @@ describe('AssetSelectorStore', function() {
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
             domain: 'example.com',
             mapOrChartUid: StandardMocks.classicChartId,
-            viewData: classicChartView
+            viewData: classicChartView,
+            federatedFromDomain: 'federated.example.com'
           });
         }
 
@@ -625,7 +642,8 @@ describe('AssetSelectorStore', function() {
               {
                 dataset: {
                   domain: 'example.com',
-                  datasetUid: StandardMocks.classicChartId
+                  datasetUid: StandardMocks.classicChartId,
+                  federatedFromDomain: 'federated.example.com'
                 }
               }
             );
@@ -673,7 +691,8 @@ describe('AssetSelectorStore', function() {
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
             domain: vizCanvasView.domain,
             mapOrChartUid: vizCanvasView.id,
-            viewData: vizCanvasView
+            viewData: vizCanvasView,
+            federatedFromDomain: 'federation.example.com'
           });
         }
 
@@ -697,7 +716,8 @@ describe('AssetSelectorStore', function() {
                 dataset: {
                   domain: vizCanvasView.domain,
                   datasetUid: StandardMocks.vizCanvasId,
-                  vifId: StandardMocks.vizCanvasChartId
+                  vifId: StandardMocks.vizCanvasChartId,
+                  federatedFromDomain: 'federation.example.com'
                 }
               }
             );

@@ -5,10 +5,11 @@ import '../componentBase';
 import Actions from '../Actions';
 import Constants from '../Constants';
 import StorytellerUtils from '../../StorytellerUtils';
-import { assert, assertHasProperty } from 'common/js_utils';
+import { assert, assertHasProperty, parseJsonOrEmpty } from 'common/js_utils';
 import { storyStore } from '../stores/StoryStore';
 import { dispatcher } from '../Dispatcher';
 import { flyoutRenderer } from '../FlyoutRenderer';
+import { updateVifWithFederatedFromDomain } from 'VifUtils';
 
 $.fn.componentSocrataVisualizationTable = componentSocrataVisualizationTable;
 
@@ -95,7 +96,7 @@ function _renderTemplate($element, props) {
 function _updateVisualization($element, componentData) {
   let vif;
   const $componentContent = $element.find('.component-content');
-  const renderedVif = JSON.parse($element.attr('data-rendered-vif') || '{}');
+  const renderedVif = parseJsonOrEmpty($element.attr('data-rendered-vif'));
 
   function getVifType(vifToCheck) {
     let type;
@@ -112,6 +113,9 @@ function _updateVisualization($element, componentData) {
 
   assertHasProperty(componentData, 'value.vif');
   vif = componentData.value.vif;
+  const federatedFromDomain = _.get(componentData, 'value.dataset.federatedFromDomain');
+
+  vif = updateVifWithFederatedFromDomain(vif, federatedFromDomain);
 
   $element.attr('data-rendered-vif', JSON.stringify(vif));
 

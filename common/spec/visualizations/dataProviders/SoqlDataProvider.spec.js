@@ -203,12 +203,13 @@ describe('SoqlDataProvider', () => {
       });
 
       describe('cross-domain request', () => {
-        it('should not provide the X-Socrata-Federation header', () => {
+        it('should provide the X-Socrata-Federation header', () => {
           soqlDataProvider.query(QUERY_STRING, NAME_ALIAS, VALUE_ALIAS);
           assert.lengthOf(server.requests, 1);
-          assert.notProperty(
+          assert.propertyVal(
             server.requests[0].requestHeaders,
-            'X-Socrata-Federation'
+            'X-Socrata-Federation',
+            'Honey Badger'
           );
         });
       });
@@ -504,12 +505,13 @@ describe('SoqlDataProvider', () => {
       });
 
       describe('cross-domain request', () => {
-        it('should not provide the X-Socrata-Federation header', () => {
+        it('should provide the X-Socrata-Federation header', () => {
           soqlDataProvider.getRows(QUERY_COLUMNS, QUERY_STRING);
           assert.lengthOf(server.requests, 1);
-          assert.notProperty(
+          assert.propertyVal(
             server.requests[0].requestHeaders,
-            'X-Socrata-Federation'
+            'X-Socrata-Federation',
+            'Honey Badger'
           );
         });
       });
@@ -726,12 +728,13 @@ describe('SoqlDataProvider', () => {
       });
 
       describe('cross-domain request', () => {
-        it('should not provide the X-Socrata-Federation header', () => {
+        it('should provide the X-Socrata-Federation header', () => {
           soqlDataProvider.getTableData(['a'], [{ columnName: 'a', ascending: true }], 0, 10);
           assert.lengthOf(server.requests, 1);
-          assert.notProperty(
+          assert.propertyVal(
             server.requests[0].requestHeaders,
-            'X-Socrata-Federation'
+            'X-Socrata-Federation',
+            'Honey Badger'
           );
         });
       });

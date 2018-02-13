@@ -27,7 +27,6 @@ $external-blue: #1c6387;;
   .entry-header {
     .socrata-icon-private {
       color: $warning;
-      font-size: 18px;
     }
 
     .entry-title {
@@ -39,6 +38,10 @@ $external-blue: #1c6387;;
 
         .socrata-icon-private {
           margin-right: 4px;
+        }
+
+        .socrata-icon-linked {
+          margin-left: 4px;
         }
 
         a div {

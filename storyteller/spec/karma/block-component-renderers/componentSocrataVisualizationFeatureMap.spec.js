@@ -5,6 +5,7 @@ import sinon from 'sinon';
 
 import { $transient } from '../TransientElement';
 import 'editor/block-component-renderers/componentSocrataVisualizationFeatureMap';
+import { updateFeatureMapVifWithDefaults, updateVifWithDefaults, updateVifWithFederatedFromDomain } from 'VifUtils';
 
 describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
 
@@ -20,8 +21,7 @@ describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
         configuration: {},
         datasetUid: 'test-test',
         domain: 'example.com',
-        filters: [],
-        type: 'timelineChart'
+        filters: []
       }
     }
   };
@@ -29,7 +29,7 @@ describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
   var getProps = (props) => {
     return _.extend({
       blockId: null,
-      componentData: validComponentData,
+      componentData: _.cloneDeep(validComponentData),
       componentIndex: null,
       theme: null
     }, props);
@@ -61,6 +61,36 @@ describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
     });
   });
 
+  describe('when component data contains `federatedFromDomain`', function() {
+    var socrataSvgFeatureMapStub;
+
+    beforeEach(function() {
+      socrataSvgFeatureMapStub = sinon.stub($.fn, 'socrataSvgFeatureMap');
+
+      const componentData = _.merge(_.cloneDeep(validComponentData), {
+        value: {
+          dataset: {
+            federatedFromDomain: 'example.com'
+          }
+        }
+      });
+      $component = $component.componentSocrataVisualizationFeatureMap(getProps({ componentData }));
+    });
+
+    afterEach(function() {
+      socrataSvgFeatureMapStub.restore();
+    });
+
+    it('should call into socrataSvgFeatureMap with the correct arguments', function() {
+      const expectedVif = updateVifWithDefaults(updateVifWithFederatedFromDomain(_.cloneDeep(validComponentData).value.vif, 'example.com'));
+      sinon.assert.calledWithExactly(
+        socrataSvgFeatureMapStub,
+        expectedVif,
+        sinon.match.any
+      );
+    });
+  });
+
   describe('given a valid component type and value', function() {
     var socrataSvgFeatureMapStub;
 
@@ -78,9 +108,10 @@ describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
     });
 
     it('should call into socrataSvgFeatureMap with the correct arguments', function() {
+      const expectedVif = updateFeatureMapVifWithDefaults(updateVifWithDefaults(validComponentData.value.vif));
       sinon.assert.calledWithExactly(
         socrataSvgFeatureMapStub,
-        validComponentData.value.vif,
+        expectedVif,
         sinon.match.any
       );
     });
@@ -93,9 +124,10 @@ describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
         _.set(changedData, 'value.vif.columnName', 'test2');
         $component.componentSocrataVisualizationFeatureMap(getProps({ componentData: changedData }));
 
+        const expectedVif = updateFeatureMapVifWithDefaults(updateVifWithDefaults(changedData.value.vif));
         sinon.assert.calledWithExactly(
           socrataSvgFeatureMapStub,
-          changedData.value.vif,
+          expectedVif,
           sinon.match.any
         );
       });

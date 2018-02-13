@@ -44,7 +44,7 @@ describe('components/ResultCard', () => {
   it('renders a card with correct data', () => {
     const wrapper = mount(<ResultCard {...resultCardProps()} />);
     assert.isDefined(wrapper);
-    assert.equal(wrapper.find('.entry-title').text(), 'David Hasselhoff');
+    assert.match(wrapper.find('.entry-title').text(), /David Hasselhoff/);
     assert.equal(wrapper.find('.entry-description').text(), 'jorts and other denim articles of clothing');
     assert.equal(wrapper.find('.first').find('.date').text(), 'December 15, 2016');
     assert.lengthOf(wrapper.find('.entry-view-type .socrata-icon-dataset'), 1);

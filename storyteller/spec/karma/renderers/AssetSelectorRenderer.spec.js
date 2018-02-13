@@ -59,7 +59,8 @@ describe('AssetSelectorRenderer', function() {
     FeatureFlags.useTestFixture({
       enable_getty_images_gallery: true,
       enable_filtered_tables_in_ax: false,
-      enable_new_maps: false
+      enable_new_maps: false,
+      open_performance_standalone_measures: true
     });
 
     server = sinon.fakeServer.create();

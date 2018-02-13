@@ -21,7 +21,7 @@ describe('SimpleEventEmitter', function() {
       var listener;
 
       beforeEach(function() {
-        listener = sinon.spy();
+        listener = sinon.stub();
         emitter.addListener(listener);
       });
 
@@ -47,8 +47,8 @@ describe('SimpleEventEmitter', function() {
       var listener1;
       var listener2;
       beforeEach(function() {
-        listener1 = sinon.spy();
-        listener2 = sinon.spy();
+        listener1 = sinon.stub();
+        listener2 = sinon.stub();
       });
 
       describe('which are all distinct', function() {
@@ -160,7 +160,7 @@ describe('SimpleEventEmitter', function() {
 
     describe('given a callback which has not been added', function() {
       it('should have no effect', function() {
-        var otherListener = sinon.spy();
+        var otherListener = sinon.stub();
 
         emitter.addListener(otherListener);
         emitter.removeListener(function() {});

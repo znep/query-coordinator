@@ -252,6 +252,31 @@ describe('AssetSelectorStore', function() {
       });
     });
 
+    describe('after an `ASSET_SELECTOR_UPDATE_COMPONENT_TYPE` action', function() {
+      describe('.getComponentType()', function() {
+        beforeEach(function() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
+            blockId: '',
+            componentIndex: '',
+            initialComponentProperties: {}
+          });
+
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_UPDATE_COMPONENT_TYPE,
+            type: 'new.type'
+          });
+        });
+
+        it('returns new type', function() {
+          assert.equal(
+            assetSelectorStore.getComponentType(),
+            'new.type'
+          );
+        });
+      });
+    });
+
     describe('after an `ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT` action with `initialComponentProperties` set', function() {
 
       var testBlockId = 'testBlock1';
@@ -564,6 +589,72 @@ describe('AssetSelectorStore', function() {
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
             viewData: nbeView
           });
+        });
+      });
+    });
+
+    describe('after an `ASSET_SELECTOR_CHOOSE_MEASURE` action', () => {
+      it('validates payload has domain', () => {
+        assert.throws(() => {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_MEASURE,
+            // domain: 'example.com',
+            uid: 'test-test'
+          });
+        });
+      });
+
+      it('validates payload has mapOrChartUid', () => {
+        assert.throws(() => {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_MEASURE,
+            domain: 'example.com'
+            // uid: 'test-test'
+          });
+        });
+      });
+
+      describe('when selected asset is valid', () => {
+        function dispatchAction() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_MEASURE,
+            domain: 'example.com',
+            uid: 'test-test'
+          });
+        }
+
+        it('sets the wizard step', (done) => {
+          assetSelectorStore.addChangeListener(() => {
+            assert.equal(
+              assetSelectorStore.getStep(),
+              WIZARD_STEP.CONFIGURE_MEASURE
+            );
+            done();
+          });
+
+          dispatchAction();
+        });
+
+        it('sets dataset component properties and initial type', (done) => {
+          assetSelectorStore.addChangeListener(() => {
+            assert.equal(
+              assetSelectorStore.getComponentType(),
+              'measure.card'
+            );
+
+            assert.deepEqual(
+              assetSelectorStore.getComponentValue(),
+              {
+                measure: {
+                  domain: 'example.com',
+                  uid: 'test-test'
+                }
+              }
+            );
+            done();
+          });
+
+          dispatchAction();
         });
       });
     });

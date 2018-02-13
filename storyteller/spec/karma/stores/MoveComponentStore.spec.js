@@ -23,6 +23,7 @@ describe('MoveComponentStore', () => {
   };
 
   const resets = () => {
+    StoreAPI.__ResetDependency__('dispatcher');
     MoveComponentStoreAPI.__ResetDependency__('dispatcher');
     MoveComponentStoreAPI.__ResetDependency__('storyStore');
   };

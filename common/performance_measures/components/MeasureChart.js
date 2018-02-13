@@ -2,11 +2,13 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import moment from 'moment';
+import classNames from 'classnames';
 
 import I18n from 'common/i18n';
 import { components } from 'common/visualizations';
 import SocrataIcon from 'common/components/SocrataIcon';
 
+import { MeasureTitle } from './MeasureTitle';
 import { CalculationTypeNames, PeriodTypes } from '../lib/constants';
 import withComputedMeasure from './withComputedMeasure';
 import computedMeasurePropType from '../propTypes/computedMeasurePropType';
@@ -88,6 +90,15 @@ export class MeasureChart extends Component {
     };
   }
 
+  renderTitle() {
+    const { showMetadata, lens, measure } = this.props;
+    if (!showMetadata) {
+      return null;
+    }
+
+    return <MeasureTitle lens={lens} measure={measure} />;
+  }
+
   renderChart(series) {
     if (!series) {
       return null;
@@ -114,7 +125,7 @@ export class MeasureChart extends Component {
   }
 
   render() {
-    const { computedMeasure, dataRequestInFlight } = this.props;
+    const { measure, computedMeasure, dataRequestInFlight, showMetadata } = this.props;
     const { series } = computedMeasure;
     const onlyNullValues = _.chain(series)
       .map((pairs) => pairs[1])
@@ -133,15 +144,28 @@ export class MeasureChart extends Component {
       </div>
     );
 
+    const busy = dataRequestInFlight || !measure;
+
+    const rootClasses = classNames(
+      'measure-chart',
+      {
+        'with-metadata': showMetadata
+      }
+    );
+
+    const title = busy ? null : this.renderTitle();
+
     // TODO: Ideally we can render a blank timeline chart with the date range applied, however the
     // current implementation of SvgTimelineChart does not play well with no data (error states, flyouts),
     // so we'll have to carefully introduce that capability later
     // For now, prevent the metric viz chart from rendering if only null data is available
-    const content = onlyNullValues ? this.renderPlaceholder() : this.renderChart(series);
+    let content = onlyNullValues ? this.renderPlaceholder() : this.renderChart(series);
+    content = busy ? spinner : content;
 
     return (
-      <div className="measure-chart">
-        {dataRequestInFlight ? spinner : content}
+      <div className={rootClasses}>
+        {title}
+        {content}
       </div>
     );
   }
@@ -150,16 +174,26 @@ export class MeasureChart extends Component {
 MeasureChart.propTypes = {
   measure: PropTypes.shape({
     vif: PropTypes.object // TODO: Q: Should the measure have a vif?
-  }).isRequired,
+  }),
   computedMeasure: computedMeasurePropType,
-  dataRequestInFlight: PropTypes.bool
+  dataRequestInFlight: PropTypes.bool,
+  showMetadata: PropTypes.bool // Metadata included: Title.
 };
 
 MeasureChart.defaultProps = {
   computedMeasure: {
     result: {},
     errors: {}
-  }
+  },
+  // NOTE! Ideally we'd refactor withComputedMeasure to optionally
+  // take a measure UID which it would use to automatically fetch
+  // both the lens and the computedMeasure props.
+  // For now, all usages of MeasureResultCard either don't need
+  // lens info, or already have the lens data anyway.
+  lens: PropTypes.shape({
+    name: PropTypes.string
+  }),
+  showMetadata: false
 };
 
 const includeSeries = true;

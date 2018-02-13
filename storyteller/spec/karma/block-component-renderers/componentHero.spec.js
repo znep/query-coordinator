@@ -82,6 +82,7 @@ describe('componentHero jQuery plugin', function() {
   });
 
   afterEach(function() {
+    StoreAPI.__ResetDependency__('dispatcher');
     $.fn.componentHTML.restore();
   });
 

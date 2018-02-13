@@ -81,7 +81,7 @@ export const fetchJsonWithDefaultHeaders = (apiPath, options) =>
     {
       ...options,
       headers: {
-        ...options.headers,
+        ...(options || {}).headers || {},
         ...defaultHeaders
       }
     }

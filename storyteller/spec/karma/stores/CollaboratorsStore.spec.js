@@ -123,6 +123,10 @@ describe('CollaboratorsStore', function() {
     collaboratorsStore = new CollaboratorsStore();
   });
 
+  afterEach(() => {
+    StoreAPI.__ResetDependency__('dispatcher');
+  });
+
   describe('COLLABORATORS_LOAD', function() {
 
     describeMalformedCollaborators('COLLABORATORS_LOAD');

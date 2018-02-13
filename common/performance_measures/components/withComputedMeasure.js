@@ -52,7 +52,7 @@ export default function withComputedMeasure(
       // When the measure changes, we need to initiate a backend request. If there is
       // already an outstanding request, we defer processing the new measure until
       // the outstanding request completes.
-      onMeasureChanged() {
+      onMeasureChanged(props) {
         if (this.state.dataRequestInFlight) {
           // Do nothing - makeRequest() will automatically call checkProps()
           // when the request completes. That will cause onMeasureChanged to be
@@ -60,9 +60,14 @@ export default function withComputedMeasure(
           return;
         }
 
+        if (!props.measure) {
+          // Do nothing. Component essentially becomes a pass-through.
+          return;
+        }
+
         this.setState(
-          (prevState, props) => ({
-            lastRequestedMeasure: props.measure,
+          (prevState, newProps) => ({
+            lastRequestedMeasure: newProps.measure,
             dataRequestInFlight: true
           }),
           this.makeRequest
@@ -74,7 +79,7 @@ export default function withComputedMeasure(
         const measureHasChanged = !_.isEqual(this.state.lastRequestedMeasure, props.measure);
 
         if (measureHasChanged) {
-          this.onMeasureChanged();
+          this.onMeasureChanged(props);
         }
       }
 
@@ -143,7 +148,7 @@ export default function withComputedMeasure(
       }
 
       static propTypes = {
-        measure: PropTypes.object.isRequired
+        measure: PropTypes.object
       };
     };
   };

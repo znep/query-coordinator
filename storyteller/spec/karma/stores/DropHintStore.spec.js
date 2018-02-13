@@ -60,6 +60,12 @@ describe('DropHintStore', function() {
     dropHintStore = new DropHintStore();
   });
 
+  afterEach(() => {
+    StoreAPI.__ResetDependency__('dispatcher');
+    DropHintStoreAPI.__ResetDependency__('dispatcher');
+    DropHintStoreAPI.__ResetDependency__('storyStore');
+  });
+
   describe('given STORY_DRAG_OVER action', function() {
     describe('with a valid storyUid and blockId', function() {
       it('should update its hint position', function(done) {

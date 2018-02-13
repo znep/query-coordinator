@@ -37,6 +37,21 @@
 }
 
 #asset-selector-container {
+  .configure-measure {
+    .tile-preview-image {
+      display: block;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+
+      &.tile-card {
+        content: asset-url('editor/measures/card.png');
+      }
+      &.tile-chart {
+        content: asset-url('editor/measures/chart.png');
+      }
+    }
+  }
+
   .visualization-choice {
     position: relative;
     width: 100%;

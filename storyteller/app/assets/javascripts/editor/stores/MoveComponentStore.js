@@ -91,25 +91,27 @@ export default function MoveComponentStore() {
   function isComponentTypeMovable(componentType) {
     return _.includes([
       'assetSelector',
-      'image',
-      'story.tile',
-      'story.widget',
+      'embeddedHtml',
       'goal.tile',
-      'youtube.video',
-      'socrata.visualization.classic',
-      'socrata.visualization.regionMap',
+      'image',
+      'measure.card',
+      'measure.chart',
+      'socrata.visualization.barChart',
       'socrata.visualization.choroplethMap', // legacy
+      'socrata.visualization.classic',
       'socrata.visualization.columnChart',
       'socrata.visualization.comboChart',
-      'socrata.visualization.barChart',
-      'socrata.visualization.pieChart',
-      'socrata.visualization.timelineChart',
-      'socrata.visualization.histogram',
-      'socrata.visualization.table',
       'socrata.visualization.featureMap',
+      'socrata.visualization.histogram',
       'socrata.visualization.map',
+      'socrata.visualization.pieChart',
+      'socrata.visualization.regionMap',
+      'socrata.visualization.table',
+      'socrata.visualization.timelineChart',
       'socrata.visualization.vizCanvas',
-      'embeddedHtml'
+      'story.tile',
+      'story.widget',
+      'youtube.video'
     ], componentType);
   }
 }

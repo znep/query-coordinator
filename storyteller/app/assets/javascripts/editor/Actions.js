@@ -219,6 +219,9 @@ export default {
   // No payload
   ASSET_SELECTOR_CLOSE: 'ASSET_SELECTOR_CLOSE',
 
+  // {String} type. New component type.
+  ASSET_SELECTOR_UPDATE_COMPONENT_TYPE: 'ASSET_SELECTOR_UPDATE_COMPONENT_TYPE',
+
   // The user chose an asset provider.
   // {String} provider. One of:
   //  - 'SOCRATA_VISUALIZATION'
@@ -266,6 +269,10 @@ export default {
 
   // No payload
   ASSET_SELECTOR_CHOOSE_VISUALIZATION: 'ASSET_SELECTOR_CHOOSE_VISUALIZATION',
+
+  // {String} datasetUid
+  // {String} domain
+  ASSET_SELECTOR_CHOOSE_MEASURE: 'ASSET_SELECTOR_CHOOSE_MEASURE',
 
   // {String} datasetUid
   // {boolean} isNewBackend

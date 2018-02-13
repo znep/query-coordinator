@@ -9,27 +9,41 @@ import { cancelEditModal, acceptEditModalChanges } from 'opMeasure/actions/edito
 import EditModalTab from 'opMeasure/components/EditModal/EditModalTab';
 import EditModalPanel from 'opMeasure/components/EditModal/EditModalPanel';
 import { EditModal } from 'opMeasure/components/EditModal/EditModal';
+import { EditTabs } from 'opMeasure/lib/constants';
 
 describe('EditModal', () => {
+  const getProps = (props) => {
+    return _.defaultsDeep(props, {
+      isEditing: true,
+      validation: {
+        calculation: {},
+        dataSource: {},
+        reportingPeriod: {}
+      }
+    });
+  };
+
   const getAcceptButton = (element) => element.
     find(Modal).dive().find(ModalFooter).dive().find('.modal-footer-actions .done');
   const getCancelButton = (element) => element.
     find(Modal).dive().find(ModalFooter).dive().find('.modal-footer-actions .cancel');
 
   it('does not render when not in editing mode', () => {
-    const element = shallow(<EditModal isEditing={false} />);
+    const props = { isEditing: false };
+    const element = shallow(<EditModal {...getProps(props)} />);
     assert.isTrue(element.isEmptyRender());
   });
 
   it('renders', () => {
-    const element = shallow(<EditModal isEditing />);
+    const element = shallow(<EditModal {...getProps()} />);
     assert.lengthOf(element.find('.measure-edit-modal-tabs'), 1);
     assert.lengthOf(element.find('.measure-edit-modal-panels'), 1);
   });
 
   it('calls back on onTabClick when a tab is clicked', () => {
     const onTabClick = sinon.stub();
-    const element = shallow(<EditModal isEditing activePanel="general-info" onTabClick={onTabClick} />);
+    const props = { activePanel: EditTabs.GENERAL_INFO, onTabClick };
+    const element = shallow(<EditModal {...getProps(props)} />);
     const getCurrentness = (tabId) => element.find({ id: tabId }).filter(EditModalTab).prop('isSelected');
     const getVisibility = (tabId) =>
       element.find({ id: tabId }).filter(EditModalPanel).prop('isSelected');
@@ -45,17 +59,16 @@ describe('EditModal', () => {
 
   describe('accept button', () => {
     it('is disabled if the measure has not been changed', () => {
-      const measure = {};
-      const element = shallow(<EditModal isEditing measure={measure} pristineMeasure={measure} />);
+      const props = { measure: {}, pristineMeasure: {} };
+      const element = shallow(<EditModal {...getProps(props)} />);
       const button = getAcceptButton(element);
       assert.isTrue(button.is('.btn-disabled'));
       assert.isTrue(button.prop('disabled'));
     });
 
     it('is enabled if the measure has been changed ', () => {
-      const pristineMeasure = {};
-      const measure = { dataSourceLensUid: 'test-test' };
-      const element = shallow(<EditModal isEditing measure={measure} pristineMeasure={pristineMeasure} />);
+      const props = { measure: { dataSourceLensUid: 'test-test' }, pristineMeasure: {} };
+      const element = shallow(<EditModal {...getProps(props)} />);
       const button = getAcceptButton(element);
       assert.isFalse(button.is('.btn-disabled'));
       assert.isFalse(button.prop('disabled'));
@@ -65,7 +78,8 @@ describe('EditModal', () => {
   describe('actions', () => {
     it('invokes the cancel callback on all affordances for closing', () => {
       const cancelStub = sinon.stub();
-      const element = shallow(<EditModal isEditing onCancel={cancelStub} />);
+      const props = { onCancel: cancelStub };
+      const element = shallow(<EditModal {...getProps(props)} />);
 
       element.find(Modal).prop('onDismiss')();
       element.find(Modal).dive().find(ModalHeader).prop('onDismiss')();
@@ -75,7 +89,8 @@ describe('EditModal', () => {
 
     it('invokes the complete callback on the accept button', () => {
       const completeStub = sinon.stub();
-      const element = shallow(<EditModal isEditing onComplete={completeStub} />);
+      const props = { onComplete: completeStub };
+      const element = shallow(<EditModal {...getProps(props)} />);
 
       getAcceptButton(element).simulate('click');
       sinon.assert.calledOnce(completeStub);

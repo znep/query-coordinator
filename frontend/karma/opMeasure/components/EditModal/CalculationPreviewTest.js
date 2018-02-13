@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
 import { shallow } from 'enzyme';
 
-import { CalculationTypeNames } from 'common/performance_measures/lib/constants';
+import { CalculationTypes } from 'common/performance_measures/lib/constants';
 import { CalculationPreview, mapStateToProps } from 'opMeasure/components/EditModal/CalculationPreview';
 
 describe('CalculationPreview', () => {
@@ -63,8 +63,8 @@ describe('CalculationPreview', () => {
   });
 
   describe('display as percent checkbox', () => {
-    _(CalculationTypeNames).values().each((calculationType) => {
-      const shouldShow = calculationType === CalculationTypeNames.RATE;
+    _(CalculationTypes).values().each((calculationType) => {
+      const shouldShow = calculationType === CalculationTypes.RATE;
 
       describe(`${calculationType} measures`, () => {
         it(shouldShow ? 'should show' : 'should not show', () => {
@@ -80,7 +80,7 @@ describe('CalculationPreview', () => {
     it('calls onToggleDisplayAsPercent when clicked', () => {
       const props = {
         onToggleDisplayAsPercent: sinon.stub(),
-        calculationType: CalculationTypeNames.RATE,
+        calculationType: CalculationTypes.RATE,
       };
 
       const element = shallow(<CalculationPreview {...props} />);

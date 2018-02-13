@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import { assert } from 'chai';
-import { CalculationTypeNames } from 'common/performance_measures/lib/constants';
+import { CalculationTypes } from 'common/performance_measures/lib/constants';
 import DateRange from 'common/performance_measures/lib/dateRange';
 import {
   calculateMeasure,
@@ -19,13 +19,13 @@ describe('measureCalculator', () => {
   const rowCountDataProvider = { rawQuery: async () => [{ __measure_count_alias__: 50 }] };
 
   describe('isColumnUsableWithMeasureArgument', () => {
-    const countMeasure = _.set({}, 'metricConfig.type', CalculationTypeNames.COUNT);
-    const sumMeasure = _.set({}, 'metricConfig.type', CalculationTypeNames.SUM);
-    const countRateMeasure = _.set({}, 'metricConfig.type', CalculationTypeNames.RATE);
+    const countMeasure = _.set({}, 'metricConfig.type', CalculationTypes.COUNT);
+    const sumMeasure = _.set({}, 'metricConfig.type', CalculationTypes.SUM);
+    const countRateMeasure = _.set({}, 'metricConfig.type', CalculationTypes.RATE);
     _.set(countRateMeasure, 'metricConfig.arguments.aggregationType', 'count');
-    const sumRateMeasure = _.set({}, 'metricConfig.type', CalculationTypeNames.RATE);
+    const sumRateMeasure = _.set({}, 'metricConfig.type', CalculationTypes.RATE);
     _.set(sumRateMeasure, 'metricConfig.arguments.aggregationType', 'sum');
-    const recentValueMeasure = _.set({}, 'metricConfig.type', CalculationTypeNames.RECENT);
+    const recentValueMeasure = _.set({}, 'metricConfig.type', CalculationTypes.RECENT);
 
     const dateCol = { renderTypeName: 'calendar_date' };
     const numberCol = { renderTypeName: 'number' };
@@ -120,9 +120,9 @@ describe('measureCalculator', () => {
       it('returns null result value and notEnoughData error', async () => {
         const measure = {
           metricConfig: {
-            type: CalculationTypeNames.RATE,
+            type: CalculationTypes.RATE,
             arguments: {
-              aggregationType: CalculationTypeNames.SUM,
+              aggregationType: CalculationTypes.SUM,
               numeratorColumn: 'numeratorCol',
               denominatorColumn: 'denominatorCol'
             }
@@ -139,9 +139,9 @@ describe('measureCalculator', () => {
       it('returns a result value of 0 and does not include notEnoughData error', async () => {
         const measure = {
           metricConfig: {
-            type: CalculationTypeNames.RATE,
+            type: CalculationTypes.RATE,
             arguments: {
-              aggregationType: CalculationTypeNames.COUNT,
+              aggregationType: CalculationTypes.COUNT,
               numeratorColumn: 'numeratorCol',
               fixedDenominator: '10' // Using fixed to avoid dividing by zero
             }
@@ -160,7 +160,7 @@ describe('measureCalculator', () => {
       it('returns null result value and notEnoughData error', async () => {
         const measure = {
           metricConfig: {
-            type: CalculationTypeNames.SUM,
+            type: CalculationTypes.SUM,
             arguments: {
               column: 'col',
               dateColumn: 'dateCol'
@@ -178,7 +178,7 @@ describe('measureCalculator', () => {
       it('returns a result value of 0 and does not include notEnoughData error', async () => {
         const measure = {
           metricConfig: {
-            type: CalculationTypeNames.COUNT,
+            type: CalculationTypes.COUNT,
             arguments: {
               column: 'col',
               dateColumn: 'dateCol'
@@ -202,7 +202,7 @@ describe('measureCalculator', () => {
           metricConfig: {
             type: 'rate',
             arguments: {
-              aggregationType: CalculationTypeNames.COUNT,
+              aggregationType: CalculationTypes.COUNT,
               numeratorColumn: 'numeratorCol',
               fixedDenominator: '0'
             }
@@ -224,7 +224,7 @@ describe('measureCalculator', () => {
           metricConfig: {
             type: 'rate',
             arguments: {
-              aggregationType: CalculationTypeNames.COUNT,
+              aggregationType: CalculationTypes.COUNT,
               numeratorColumn: 'numeratorCol',
               fixedDenominator: '10'
             }
@@ -259,7 +259,7 @@ describe('measureCalculator', () => {
         const countFixed = {};
         _.set(countFixed, 'metricConfig.type', 'rate');
         _.set(countFixed, 'metricConfig.arguments', {
-          aggregationType: CalculationTypeNames.COUNT,
+          aggregationType: CalculationTypes.COUNT,
           fixedDenominator: '10'
         });
 
@@ -307,9 +307,9 @@ describe('measureCalculator', () => {
         describe('with missing denominator and include nulls checkbox is off', () => {
           const measure = {
             metricConfig: {
-              type: CalculationTypeNames.RATE,
+              type: CalculationTypes.RATE,
               arguments: {
-                aggregationType: CalculationTypeNames.COUNT,
+                aggregationType: CalculationTypes.COUNT,
                 numeratorColumn: 'numeratorCol',
                 denominatorIncludeNullValues: false
               }
@@ -335,7 +335,7 @@ describe('measureCalculator', () => {
         const sumFixed = {};
         _.set(sumFixed, 'metricConfig.type', 'rate');
         _.set(sumFixed, 'metricConfig.arguments', {
-          aggregationType: CalculationTypeNames.SUM,
+          aggregationType: CalculationTypes.SUM,
           fixedDenominator: '20'
         });
 
@@ -402,7 +402,7 @@ describe('measureCalculator', () => {
         const countComputed = {};
         _.set(countComputed, 'metricConfig.type', 'rate');
         _.set(countComputed, 'metricConfig.arguments', {
-          aggregationType: CalculationTypeNames.COUNT,
+          aggregationType: CalculationTypes.COUNT,
           denominatorColumn: 'denominatorCol'
         });
 
@@ -445,7 +445,7 @@ describe('measureCalculator', () => {
         const sumComputed = {};
         _.set(sumComputed, 'metricConfig.type', 'rate');
         _.set(sumComputed, 'metricConfig.arguments', {
-          aggregationType: CalculationTypeNames.SUM,
+          aggregationType: CalculationTypes.SUM,
           denominatorColumn: 'denominatorCol'
         });
 

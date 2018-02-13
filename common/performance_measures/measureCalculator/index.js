@@ -3,7 +3,7 @@ import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import { SoqlDataProvider, SoqlHelpers } from 'common/visualizations/dataProviders';
 import ReportingPeriods from '../lib/reportingPeriods';
-import { CalculationTypeNames } from '../lib/constants';
+import { CalculationTypes } from '../lib/constants';
 import { assert, assertIsOneOfTypes } from 'common/js_utils';
 import { UID_REGEX } from 'common/http/constants';
 
@@ -20,7 +20,7 @@ export const isColumnUsableWithMeasureArgument = (column, measure, argument) => 
     return renderTypeName === 'calendar_date';
   }
 
-  if (type === CalculationTypeNames.RECENT) {
+  if (type === CalculationTypes.RECENT) {
     // Special enough to be clearer as a separate path.
     return argument === 'valueColumn' && columnIsNumeric;
   } else {
@@ -201,7 +201,7 @@ export const calculateRateMeasure = async (
     true
   );
 
-  if (aggregationType && aggregationType !== CalculationTypeNames.COUNT) {
+  if (aggregationType && aggregationType !== CalculationTypes.COUNT) {
     assert(
       denominatorIncludeNullValues,
       'Excluding null values from non-count Rate measure numerator is nonsensical'
@@ -232,7 +232,7 @@ export const calculateRateMeasure = async (
     // partial results in edit mode even if half of the fraction
     // is not fully-specified.
     switch (aggregationType) {
-      case CalculationTypeNames.COUNT: {
+      case CalculationTypes.COUNT: {
         numeratorPromise = numeratorColumn ?
           count(
             dataProvider, numeratorColumn, [numeratorColumnConditionWhereClause, dateRangeWhereClause]
@@ -250,7 +250,7 @@ export const calculateRateMeasure = async (
 
         break;
       }
-      case CalculationTypeNames.SUM:
+      case CalculationTypes.SUM:
         numeratorPromise = numeratorColumn ?
           sum(dataProvider, numeratorColumn, [numeratorColumnConditionWhereClause, dateRangeWhereClause]) :
           null;
@@ -338,18 +338,18 @@ export const calculateMeasure = async (measure, dateRange) => {
   const dateRangeWhereClause = (dateRange && dateColumn) ? dateRange.asSoQL(dateColumn) : null;
 
   switch (calculationType) {
-    case CalculationTypeNames.COUNT:
+    case CalculationTypes.COUNT:
       return calculateCountMeasure(errors, measure, dateRangeWhereClause);
-    case CalculationTypeNames.SUM:
+    case CalculationTypes.SUM:
       return calculateSumMeasure(errors, measure, dateRangeWhereClause);
-    case CalculationTypeNames.RECENT:
+    case CalculationTypes.RECENT:
       return calculateRecentValueMeasure(
         errors,
         measure,
         dateRange ? dateRange.end : null,
         dateColumn
       );
-    case CalculationTypeNames.RATE:
+    case CalculationTypes.RATE:
       return calculateRateMeasure(errors, measure, dateRangeWhereClause);
     case undefined:
       errors.calculationNotConfigured = true;

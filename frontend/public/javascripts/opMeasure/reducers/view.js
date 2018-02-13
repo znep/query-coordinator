@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { ModeStates, SaveStates } from 'common/performance_measures/lib/constants';
+import { ModeStates, SaveStates } from '../lib/constants';
 import actions from '../actions';
 
 // Initial state for the view reducer augments the state passed via ERB.

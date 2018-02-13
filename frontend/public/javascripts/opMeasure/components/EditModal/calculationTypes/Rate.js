@@ -22,7 +22,7 @@ import { getIconForDataType } from 'common/icons';
 import { SoqlDataProvider } from 'common/visualizations/dataProviders';
 
 import withComputedMeasure from 'common/performance_measures/components/withComputedMeasure';
-import { CalculationTypeNames } from 'common/performance_measures/lib/constants';
+import { CalculationTypes } from 'common/performance_measures/lib/constants';
 
 import ColumnDropdown from '../ColumnDropdown';
 
@@ -170,10 +170,10 @@ export class Rate extends Component {
       },
       options: [{
         title: I18n.t('open_performance.calculation_types.count'),
-        value: CalculationTypeNames.COUNT
+        value: CalculationTypes.COUNT
       }, {
         title: I18n.t('open_performance.calculation_types.sum'),
-        value: CalculationTypeNames.SUM
+        value: CalculationTypes.SUM
       }],
       value: aggregationType,
       showOptionsBelowHandle: true,

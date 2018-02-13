@@ -1,18 +1,16 @@
 import _ from 'lodash';
+import $ from 'jquery';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { bindActionCreators, compose } from 'redux';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components';
 import I18n from 'common/i18n';
 
-// TODO: EditTabs should *probably* not have been moved to common. Only imports are in opMeasure
-import { EditTabs } from 'common/performance_measures/lib/constants';
-import withComputedMeasure from 'common/performance_measures/components/withComputedMeasure';
-import computedMeasurePropType from 'common/performance_measures/propTypes/computedMeasurePropType';
-
+import { EditTabs } from '../../lib/constants';
+import validateConfiguration from '../../lib/validateConfiguration';
 import { cancelEditModal, acceptEditModalChanges, setActivePanel } from '../../actions/editor';
 import EditModalTab from './EditModalTab';
 import EditModalPanel from './EditModalPanel';
@@ -21,6 +19,9 @@ import DataPanel from './DataPanel';
 import MethodsPanel from './MethodsPanel';
 import CalculationPanel from './CalculationPanel';
 import ReportingPeriodPanel from './ReportingPeriodPanel';
+import ConfigurationNotice from './ConfigurationNotice';
+
+const scope = 'open_performance.measure.edit_modal';
 
 // Modal for editing several aspects of the measure, grouped into tabs/panels.
 export class EditModal extends Component {
@@ -35,25 +36,36 @@ export class EditModal extends Component {
     ]);
   }
 
-  onCancel() {
+  onCancel = () => {
     // TODO: Add confirm dialog on unsaved changes
+
+    // Don't close the whole edit modal when using Escape key to exit
+    // ConfigurationNotice flannel. I wasn't able to use ReactDOM.findDOMNode in
+    // a way that didn't break tests, but maybe someone can replace this jQuery
+    // usage at some point.
+    if ($('#configuration-notice-flannel').is(':visible')) {
+      // TODO: This actually needs to check the event, but the Modal's onDismiss
+      // doesn't actually pass the event through, so this needs some follow-up.
+      // (If we don't check the event, then the user can't click Cancel if the
+      // ConfigurationNotice is open.)
+      return;
+    }
+
     this.props.onCancel();
   }
 
   onComplete() {
-    // TODO: What else needs to happen here?
     this.props.onComplete(this.props.measure);
   }
 
   renderTabList() {
-    const { tabs, computedMeasure } = this.props;
-    const errors = _.get(computedMeasure, 'errors', {});
+    const { tabs, validation } = this.props;
 
     const renderTab = (tab) => {
       const tabAttributes = _.extend(tab, {
         key: tab.id,
         isSelected: tab.id === this.props.activePanel,
-        needsAttention: tab.needsAttentionFor && errors[tab.needsAttentionFor],
+        needsAttention: _.some(validation[_.camelCase(tab.id)]),
         onTabNavigation: () => this.props.onTabClick(tab.id)
       });
 
@@ -90,11 +102,11 @@ export class EditModal extends Component {
 
   render() {
     const {
+      coreView,
       isEditing,
       measure,
-      pristineMeasure,
-      coreView,
-      pristineCoreView
+      pristineCoreView,
+      pristineMeasure
     } = this.props;
 
     if (!isEditing) {
@@ -112,22 +124,23 @@ export class EditModal extends Component {
 
     return (
       <Modal className="measure-edit-modal" fullScreen onDismiss={this.onCancel}>
-        <ModalHeader title={I18n.t('open_performance.measure.edit_modal.title')} onDismiss={this.onCancel} />
+        <ModalHeader title={I18n.t('title', { scope })} onDismiss={this.onCancel} />
         <ModalContent className="measure-edit-modal-content">
           {this.renderTabList()}
           {this.renderPanels()}
         </ModalContent>
         <ModalFooter className="measure-edit-modal-footer">
+          <ConfigurationNotice />
           <div className="btn-group">
             <button type="button" className="btn btn-sm btn-default cancel" onClick={this.onCancel}>
-              {I18n.t('open_performance.measure.edit_modal.cancel')}
+              {I18n.t('cancel', { scope })}
             </button>
             <button
               type="button"
               className={saveBtnClasses}
               disabled={isUnmodified}
               onClick={this.onComplete}>
-              {I18n.t('open_performance.measure.edit_modal.accept')}
+              {I18n.t('accept', { scope })}
             </button>
           </div>
         </ModalFooter>
@@ -138,13 +151,17 @@ export class EditModal extends Component {
 
 EditModal.propTypes = {
   activePanel: PropTypes.string,
-  computedMeasure: computedMeasurePropType,
+  coreView: PropTypes.object,
   isEditing: PropTypes.bool,
   measure: PropTypes.object,
-  coreView: PropTypes.object,
   pristineCoreView: PropTypes.object,
   pristineMeasure: PropTypes.object,
   tabs: PropTypes.array,
+  validation: PropTypes.shape({
+    calculation: PropTypes.object.isRequired,
+    dataSource: PropTypes.object.isRequired,
+    reportingPeriod: PropTypes.object.isRequired
+  }).isRequired,
   onCancel: PropTypes.func,
   onComplete: PropTypes.func,
   onTabClick: PropTypes.func
@@ -153,43 +170,41 @@ EditModal.propTypes = {
 EditModal.defaultProps = {
   isEditing: false,
   tabs: [{
-    id: EditTabs.GENERAL_INFO,
-    title: I18n.t('open_performance.measure.edit_modal.general_info.tab_title'),
     icon: 'info-inverse',
-    panelComponent: GeneralPanel
+    id: EditTabs.GENERAL_INFO,
+    panelComponent: GeneralPanel,
+    title: I18n.t('general_info.tab_title', { scope })
   }, {
-    id: EditTabs.METHODS_AND_ANALYSIS,
-    title: I18n.t('open_performance.measure.edit_modal.methods_and_analysis.tab_title'),
     icon: 'story',
-    panelComponent: MethodsPanel
+    id: EditTabs.METHODS_AND_ANALYSIS,
+    panelComponent: MethodsPanel,
+    title: I18n.t('methods_and_analysis.tab_title', { scope })
   }, {
-    id: EditTabs.DATA_SOURCE,
-    title: I18n.t('open_performance.measure.edit_modal.data_source.tab_title'),
     icon: 'data',
-    // TODO: Not a fan of using a string here. How else can we achieve this?
-    //       Should we be defining all the error keys in the lib/constants module?
-    needsAttentionFor: 'dataSourceNotConfigured',
-    panelComponent: DataPanel
+    id: EditTabs.DATA_SOURCE,
+    panelComponent: DataPanel,
+    title: I18n.t('data_source.tab_title', { scope })
   }, {
-    id: EditTabs.REPORTING_PERIOD,
-    title: I18n.t('open_performance.measure.edit_modal.reporting_period.tab_title'),
     icon: 'date',
-    // TODO: Not a fan of using a string here. How else can we achieve this?
-    needsAttentionFor: 'noReportingPeriodConfigured',
-    panelComponent: ReportingPeriodPanel
+    id: EditTabs.REPORTING_PERIOD,
+    panelComponent: ReportingPeriodPanel,
+    title: I18n.t('reporting_period.tab_title', { scope })
   }, {
-    id: EditTabs.CALCULATION,
-    title: I18n.t('open_performance.measure.edit_modal.calculation.tab_title'),
     icon: 'puzzle',
-    needsAttentionFor: 'calculationNotConfigured',
-    panelComponent: CalculationPanel
+    id: EditTabs.CALCULATION,
+    panelComponent: CalculationPanel,
+    title: I18n.t('calculation.tab_title', { scope })
   }],
   onCancel: _.noop,
   onComplete: _.noop
 };
 
 function mapStateToProps(state) {
-  return state.editor;
+  const { dataSourceView, measure } = state.editor;
+
+  const validation = validateConfiguration(_.get(measure, 'metricConfig'), dataSourceView);
+
+  return _.merge({ validation }, state.editor);
 }
 
 function mapDispatchToProps(dispatch) {
@@ -200,7 +215,4 @@ function mapDispatchToProps(dispatch) {
   }, dispatch);
 }
 
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  withComputedMeasure()
-)(EditModal);
+export default connect(mapStateToProps, mapDispatchToProps)(EditModal);

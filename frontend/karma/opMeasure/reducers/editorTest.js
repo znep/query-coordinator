@@ -2,11 +2,17 @@ import { assert } from 'chai';
 import _ from 'lodash';
 import moment from 'moment';
 
-import { EditTabs, PeriodTypes, PeriodSizes, CalculationTypeNames } from 'common/performance_measures/lib/constants';
+import {
+  PeriodTypes,
+  PeriodSizes,
+  CalculationTypes
+} from 'common/performance_measures/lib/constants';
+
+import { EditTabs } from 'opMeasure/lib/constants';
 import reducer from 'opMeasure/reducers/editor';
 import actions from 'opMeasure/actions';
 
-const { COUNT, RATE, RECENT, SUM } = CalculationTypeNames;
+const { COUNT, RATE, RECENT, SUM } = CalculationTypes;
 
 const { INITIAL_STATE } = reducer;
 

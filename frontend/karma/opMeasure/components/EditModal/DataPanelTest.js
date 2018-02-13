@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { assert } from 'chai';
 import sinon from 'sinon';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 
 import AssetSelector from 'common/components/AssetSelector';
 import { DataPanel, mapStateToProps } from 'opMeasure/components/EditModal/DataPanel';

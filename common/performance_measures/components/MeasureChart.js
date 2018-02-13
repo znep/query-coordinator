@@ -8,8 +8,8 @@ import I18n from 'common/i18n';
 import { components } from 'common/visualizations';
 import SocrataIcon from 'common/components/SocrataIcon';
 
+import { CalculationTypes, PeriodTypes } from '../lib/constants';
 import { MeasureTitle } from './MeasureTitle';
-import { CalculationTypeNames, PeriodTypes } from '../lib/constants';
 import withComputedMeasure from './withComputedMeasure';
 import computedMeasurePropType from '../propTypes/computedMeasurePropType';
 
@@ -43,7 +43,7 @@ export class MeasureChart extends Component {
     const today = moment().format(timestampWithoutZone);
     const startDate = moment(reportingPeriodStartDate).format(timestampWithoutZone);
     const pointStyle = reportingPeriodType === PeriodTypes.OPEN ? 'last-open' : 'closed';
-    const useCountAggregation = calculationType === CalculationTypeNames.COUNT;
+    const useCountAggregation = calculationType === CalculationTypes.COUNT;
 
     return {
       configuration: {
@@ -69,7 +69,9 @@ export class MeasureChart extends Component {
             measure: {
               // KPIs should set each measure columnName to something unique.
               columnName: `${calculationType}_for_${dataSourceLensUid}`,
-              aggregationFunction: useCountAggregation ? CalculationTypeNames.COUNT : CalculationTypeNames.SUM
+              aggregationFunction: useCountAggregation ?
+                CalculationTypes.COUNT :
+                CalculationTypes.SUM
             },
             type: 'socrata.inline',
             rows: series

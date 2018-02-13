@@ -3247,6 +3247,30 @@ en:
               help_title: Help with Sum
               title: Sum Options
           value_column: Value Column
+        configuration_notice:
+          calculation_notice: Calculation is not completely configured.
+          data_source_notice: Data Source is not completely configured.
+          flannel:
+            calculation:
+              no_count_column: Select a column to count for your calculation.
+              no_denominator_column: Select a denominator column for your rate calculation.
+              no_numerator_column: Select a numerator column for your rate calculation.
+              no_numeric_column: Your selected data source doesn't have numeric columns, so it can't be used for the selected calculation type. Please change your data source or calculation type.
+              no_rate_aggregation: Select an aggregation type for your calculation.
+              no_recent_value_column: Select a numeric value column for your calculation.
+              no_reference_date_column: Select a date reference column for your calculation.
+              no_sum_column: Select a numeric column to sum for your calculation.
+            data_source:
+              no_data_source: Connect your data to configure your reporting period and calculation.
+            reporting_period:
+              no_period_size: Select a reporting period size.
+              no_period_type: Select a reporting period type and size.
+              no_start_date: Select a start date for the reporting period.
+            take_me_there: Take me there
+            title: Complete Your Measure
+          reporting_period_notice: Reporting Period is not completely configured.
+          reporting_period_and_calculation_notice: Reporting Period and Calculation are not completely configured.
+          see_tasks: See tasks
         data_source:
           message_default: Select the dataset that contains the data pertaining to this measure.
           message_empty: The selected dataset doesn't have any data yet, so you won't be able to compute a metric.

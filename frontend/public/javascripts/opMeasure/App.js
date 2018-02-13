@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import classnames from 'classnames';
 
 import { FeedbackPanel } from 'common/components';
-import { ModeStates } from 'common/performance_measures/lib/constants';
+
+import { ModeStates } from './lib/constants';
 import PreviewBar from './components/PreviewBar';
 import EditBar from './components/EditBar';
 import EditModal from './components/EditModal/EditModal';

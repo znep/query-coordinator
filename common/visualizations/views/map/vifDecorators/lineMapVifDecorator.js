@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { VIF_CONSTANTS } from 'common/visualizations/views/mapConstants';
+
 // Utility functions for fetching configuration related to rendering of lines.
 // These functions gets added to the vif object (see vifDecorator|views/UnifiedMap).
 // So that multiple files(overlays/lines-partials/legends/mapFactory) can
@@ -36,12 +38,12 @@ export function getLineColor(colorByColumnAlias, colorByCategories) {
 
 export function getLineWidth(aggregateAndResizeBy, resizeByRange) {
   if (!_.isString(this.getLineWeighByColumn())) {
-    return _.get(this, 'series[0].mapOptions.lineWeight', 2);
+    return _.get(this, 'series[0].mapOptions.lineWeight', VIF_CONSTANTS.LINE_WEIGHT.DEFAULT);
   }
 
-  const minWidth = _.get(this, 'series[0].mapOptions.minimumLineWeight', 3);
-  const maxWidth = _.get(this, 'series[0].mapOptions.maximumLineWeight', 7);
-  const dataClasses = _.get(this, 'series[0].mapOptions.numberOfDataClasses', 5);
+  const minWidth = _.get(this, 'series[0].mapOptions.minimumLineWeight', VIF_CONSTANTS.LINE_MAP_MIN_LINE_WEIGHT.DEFAULT);
+  const maxWidth = _.get(this, 'series[0].mapOptions.maximumLineWeight', VIF_CONSTANTS.LINE_MAP_MAX_LINE_WEIGHT.DEFAULT);
+  const dataClasses = _.get(this, 'series[0].mapOptions.numberOfDataClasses', VIF_CONSTANTS.NUMBER_OF_DATA_CLASSES.DEFAULT);
 
   return this.getResizeByRangeBuckets(aggregateAndResizeBy, resizeByRange,
     minWidth, maxWidth, dataClasses, 'interval');

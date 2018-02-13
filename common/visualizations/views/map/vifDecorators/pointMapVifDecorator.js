@@ -1,24 +1,24 @@
 import _ from 'lodash';
-import { CLUSTER_BUCKETS } from 'common/visualizations/views/mapConstants';
+import { CLUSTER_BUCKETS, VIF_CONSTANTS } from 'common/visualizations/views/mapConstants';
 
 export function getPointColorByColumn() {
   return _.get(this, 'series[0].mapOptions.colorPointsBy');
 }
 
 export function getNumberOfDataClasses() {
-  return _.get(this, 'series[0].mapOptions.numberOfDataClasses', 5);
+  return _.get(this, 'series[0].mapOptions.numberOfDataClasses', VIF_CONSTANTS.NUMBER_OF_DATA_CLASSES);
 }
 
 export function getMaxClusteringZoomLevel() {
-  return _.get(this, 'series[0].mapOptions.maxClusteringZoomLevel', 9);
+  return _.get(this, 'series[0].mapOptions.maxClusteringZoomLevel', VIF_CONSTANTS.CLUSTERING_ZOOM.DEFAULT);
 }
 
 export function getClusterRadius() {
-  return _.get(this, 'series[0].mapOptions.clusterRadius', 80);
+  return _.get(this, 'series[0].mapOptions.clusterRadius', VIF_CONSTANTS.CLUSTER_RADIUS.DEFAULT);
 }
 
 export function getStackRadius() {
-  return _.get(this, 'series[0].mapOptions.stackRadius', 1);
+  return _.get(this, 'series[0].mapOptions.stackRadius', VIF_CONSTANTS.STACK_RADIUS.DEFAULT);
 }
 
 export function getPointResizeByColumn() {
@@ -33,7 +33,7 @@ export function getPointOpacity() {
 
 export function getClusterCircleRadius(resizeByRange, aggregateAndResizeBy) {
   const minRadius = 12;
-  const maxRadius = _.get(this, 'series[0].mapOptions.maxClusterSize', 40) / 2;
+  const maxRadius = _.get(this, 'series[0].mapOptions.maxClusterSize', VIF_CONSTANTS.CLUSTER_SIZE.DEFAULT) / 2;
   return {
     type: 'interval',
     property: aggregateAndResizeBy,
@@ -48,12 +48,12 @@ export function getClusterCircleRadius(resizeByRange, aggregateAndResizeBy) {
 
 export function getPointCircleRadius(resizeByRange, aggregateAndResizeBy) {
   if (!_.isString(this.getPointResizeByColumn())) {
-    return _.get(this, 'series[0].mapOptions.pointMapPointSize', 10) / 2;
+    return _.get(this, 'series[0].mapOptions.pointMapPointSize', VIF_CONSTANTS.POINT_MAP_POINT_SIZE.DEFAULT) / 2;
   }
 
-  const minRadius = _.get(this, 'series[0].mapOptions.minimumPointSize', 10) / 2;
-  const maxRadius = _.get(this, 'series[0].mapOptions.maximumPointSize', 18) / 2;
-  const dataClasses = _.get(this, 'series[0].mapOptions.numberOfDataClasses', 5);
+  const minRadius = _.get(this, 'series[0].mapOptions.minimumPointSize', VIF_CONSTANTS.POINT_MAP_MIN_POINT_SIZE.DEFAULT) / 2;
+  const maxRadius = _.get(this, 'series[0].mapOptions.maximumPointSize', VIF_CONSTANTS.POINT_MAP_MAX_POINT_SIZE.DEFAULT) / 2;
+  const dataClasses = _.get(this, 'series[0].mapOptions.numberOfDataClasses', VIF_CONSTANTS.NUMBER_OF_DATA_CLASSES.DEFAULT);
 
   return this.getResizeByRangeBuckets(aggregateAndResizeBy, resizeByRange,
     minRadius, maxRadius, dataClasses, 'exponential');

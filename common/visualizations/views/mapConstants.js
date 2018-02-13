@@ -94,3 +94,20 @@ export const TILE_URL_OPTIONS = Object.freeze({
   })
 });
 
+export const VIF_CONSTANTS = Object.freeze({
+  // Line Map Constants
+  LINE_WEIGHT: Object.freeze({ MIN: 1, MAX: 10, DEFAULT: 2 }),
+  LINE_MAP_MIN_LINE_WEIGHT: Object.freeze({ MIN: 1, MAX: 10, DEFAULT: 2 }),
+  LINE_MAP_MAX_LINE_WEIGHT: Object.freeze({ MIN: 1, MAX: 10, DEFAULT: 2 }),
+  // Point Map Constants
+  CLUSTER_RADIUS: Object.freeze({ MIN: 20, MAX: 120, DEFAULT: 80 }),
+  CLUSTER_SIZE: Object.freeze({ MIN: 24, MAX: 50, DEFAULT: 40 }),
+  CLUSTERING_ZOOM: Object.freeze({ MIN: 1, MAX: 22, DEFAULT: 9 }),
+  NUMBER_OF_DATA_CLASSES: Object.freeze({ MIN: 2, MAX: 7, DEFAULT: 5 }),
+  POINT_MAP_POINT_SIZE: Object.freeze({ MIN: 4, MAX: 40, DEFAULT: 10 }),
+  POINT_MAP_MIN_POINT_SIZE: Object.freeze({ MIN: 4, MAX: 40, DEFAULT: 10 }),
+  POINT_MAP_MAX_POINT_SIZE: Object.freeze({ MIN: 4, MAX: 40, DEFAULT: 18 }),
+  POINT_OPACITY: Object.freeze({ MIN: 0, MAX: 1, DEFAULT: 1 }),
+  POINT_THRESHOLD: Object.freeze({ MIN: 100, MAX: 10000, DEFAULT: 4500 }),
+  STACK_RADIUS: Object.freeze({ MIN: 1, MAX: 80, DEFAULT: 1 })
+});

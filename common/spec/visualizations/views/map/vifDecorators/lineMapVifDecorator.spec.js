@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { mapMockVif } from 'common/spec/visualizations/mapMockVif';
 import * as lineMapVifDecorator from 'common/visualizations/views/map/vifDecorators/lineMapVifDecorator';
+import { VIF_CONSTANTS } from 'common/visualizations/views/mapConstants';
 
 describe('lineMapVifDecorator', () => {
   describe('LineWidth', () => {
@@ -11,11 +12,10 @@ describe('lineMapVifDecorator', () => {
 
     describe('lineWeight is not configured in map options', () => {
       it('should return default LineWidth', () => {
-        let defaultLineWidth = 2;
-        let decoratedVif = _.merge({}, lineMapVifDecorator, vif);
+        const decoratedVif = _.merge({}, lineMapVifDecorator, vif);
 
-        let lineWidth = decoratedVif.getLineWidth();
-        assert.equal(lineWidth, defaultLineWidth);
+        const lineWidth = decoratedVif.getLineWidth();
+        assert.equal(lineWidth, VIF_CONSTANTS.LINE_WEIGHT.DEFAULT);
       });
     });
 

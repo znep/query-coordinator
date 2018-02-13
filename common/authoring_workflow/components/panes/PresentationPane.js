@@ -10,6 +10,7 @@ import {
   Dropdown
 } from 'common/components';
 import I18n from 'common/i18n';
+import { VIF_CONSTANTS } from 'common/visualizations/views/mapConstants';
 
 import * as actions from '../../actions';
 import BlockLabel from '../shared/BlockLabel';
@@ -639,8 +640,8 @@ export class PresentationPane extends Component {
       const maximumLineWeight = selectors.getMaximumLineWeight(vifAuthoring);
       const minimumLineWeightAttributes = {
         id: 'minimum-line-weight',
-        rangeMin: 1,
-        rangeMax: 10,
+        rangeMin: VIF_CONSTANTS.LINE_WEIGHT.MIN,
+        rangeMax: VIF_CONSTANTS.LINE_WEIGHT.MAX,
         step: 1,
         value: minimumLineWeight,
         onChange: onMinimumLineWeightChange,
@@ -648,8 +649,8 @@ export class PresentationPane extends Component {
       };
       const maximumLineWeightAttributes = {
         id: 'maximum-line-weight',
-        rangeMin: 1,
-        rangeMax: 10,
+        rangeMin: VIF_CONSTANTS.LINE_WEIGHT.MIN,
+        rangeMax: VIF_CONSTANTS.LINE_WEIGHT.MAX,
         step: 1,
         value: maximumLineWeight,
         onChange: onMaximumLineWeightChange,
@@ -690,8 +691,8 @@ export class PresentationPane extends Component {
       const lineWeight = selectors.getLineWeight(vifAuthoring);
       const lineWeightAttributes = {
         id: 'line-weight',
-        rangeMin: 1,
-        rangeMax: 10,
+        rangeMin: VIF_CONSTANTS.LINE_WEIGHT.MIN,
+        rangeMax: VIF_CONSTANTS.LINE_WEIGHT.MAX,
         step: 1,
         value: lineWeight,
         onChange: onChangeLineWeight,
@@ -728,8 +729,8 @@ export class PresentationPane extends Component {
       const maximumPointSize = selectors.getMaximumPointSize(vifAuthoring);
       const minimumPointSizeAttributes = {
         id: 'minimum-point-size',
-        rangeMin: 4,
-        rangeMax: 40,
+        rangeMin: VIF_CONSTANTS.POINT_MAP_MIN_POINT_SIZE.MIN,
+        rangeMax: VIF_CONSTANTS.POINT_MAP_MIN_POINT_SIZE.MAX,
         step: 1,
         value: minimumPointSize,
         onChange: onMinimumPointSizeChange,
@@ -737,8 +738,8 @@ export class PresentationPane extends Component {
       };
       const maximumPointSizeAttributes = {
         id: 'maximum-point-size',
-        rangeMin: 4,
-        rangeMax: 40,
+        rangeMin: VIF_CONSTANTS.POINT_MAP_MAX_POINT_SIZE.MIN,
+        rangeMax: VIF_CONSTANTS.POINT_MAP_MAX_POINT_SIZE.MAX,
         step: 1,
         value: maximumPointSize,
         onChange: onMaximumPointSizeChange,
@@ -779,8 +780,8 @@ export class PresentationPane extends Component {
       const pointMapPointSize = selectors.getPointMapPointSize(vifAuthoring);
       const pointSizeAttributes = {
         id: 'point-size',
-        rangeMin: 4,
-        rangeMax: 40,
+        rangeMin: VIF_CONSTANTS.POINT_MAP_POINT_SIZE.MIN,
+        rangeMax: VIF_CONSTANTS.POINT_MAP_POINT_SIZE.MAX,
         step: 1,
         value: pointMapPointSize,
         onChange: onChangePointMapPointSize,
@@ -848,8 +849,8 @@ export class PresentationPane extends Component {
     const maxClusteringZoomLevelSlider = this.renderSliderControl(
       {
         name: 'max_clustering_zoom_level',
-        minValue: 1,
-        maxValue: 22,
+        minValue: VIF_CONSTANTS.CLUSTERING_ZOOM.MIN,
+        maxValue: VIF_CONSTANTS.CLUSTERING_ZOOM.MAX,
         step: 1,
         value: selectors.getMaxClusteringZoomLevel(vifAuthoring),
         onChange: onMaxClusteringZoomLevelChange,
@@ -859,8 +860,8 @@ export class PresentationPane extends Component {
     const pointThresholdSlider = this.renderSliderControl(
       {
         name: 'point_threshold',
-        minValue: 100,
-        maxValue: 10000,
+        minValue: VIF_CONSTANTS.POINT_THRESHOLD.MIN,
+        maxValue: VIF_CONSTANTS.POINT_THRESHOLD.MAX,
         step: 100,
         value: selectors.getPointThreshold(vifAuthoring),
         onChange: onPointThresholdChange,
@@ -870,8 +871,8 @@ export class PresentationPane extends Component {
     const clusterRadiusSlider = this.renderSliderControl(
       {
         name: 'cluster_radius',
-        minValue: 20,
-        maxValue: 120,
+        minValue: VIF_CONSTANTS.CLUSTER_RADIUS.MIN,
+        maxValue: VIF_CONSTANTS.CLUSTER_RADIUS.MAX,
         step: 1,
         value: selectors.getClusterRadius(vifAuthoring),
         onChange: onClusterRadiusChange,
@@ -881,8 +882,8 @@ export class PresentationPane extends Component {
     const maxClusterSizeSlider = this.renderSliderControl(
       {
         name: 'max_cluster_size',
-        minValue: 24,
-        maxValue: 50,
+        minValue: VIF_CONSTANTS.CLUSTER_SIZE.MIN,
+        maxValue: VIF_CONSTANTS.CLUSTER_SIZE.MAX,
         step: 1,
         value: selectors.getMaxClusterSize(vifAuthoring),
         onChange: onMaxClusterSizeChange,
@@ -892,8 +893,8 @@ export class PresentationPane extends Component {
     const stackRadiusSlider = this.renderSliderControl(
       {
         name: 'stack_radius',
-        minValue: 1,
-        maxValue: 80,
+        minValue: VIF_CONSTANTS.STACK_RADIUS.MIN,
+        maxValue: VIF_CONSTANTS.STACK_RADIUS.MAX,
         step: 1,
         value: selectors.getStackRadius(vifAuthoring),
         onChange: onStackRadiusChange,
@@ -1079,8 +1080,8 @@ export class PresentationPane extends Component {
 
     var pointOpacityAttributes = {
       id: 'point-opacity',
-      rangeMin: 0,
-      rangeMax: 1,
+      rangeMin: VIF_CONSTANTS.POINT_OPACITY.MIN,
+      rangeMax: VIF_CONSTANTS.POINT_OPACITY.MAX,
       step: 0.1,
       value: pointOpacity / 100,
       onChange: onChangePointOpacity,

@@ -1,10 +1,11 @@
+import Immutable from 'immutable';
 import cond from 'lodash/fp/cond';
 import constant from 'lodash/fp/constant';
 import curry from 'lodash/fp/curry';
 import negate from 'lodash/fp/negate';
 import stubFalse from 'lodash/fp/stubFalse';
 import stubTrue from 'lodash/fp/stubTrue';
-import Immutable from 'immutable';
+
 import * as appStates from './appStates';
 import { invert } from './lib/utils';
 
@@ -45,13 +46,19 @@ export const addRightToRole = curry((role, right) =>
 
 export const addAllRightsInCategoryToRole = curry((role, category) =>
   role.update('rights', Immutable.List(), rights =>
-    rights.toSet().union(getRightNamesFromRightCategory(category)).toList()
+    rights
+      .toSet()
+      .union(getRightNamesFromRightCategory(category))
+      .toList()
   )
 );
 
 export const removeAllRightsInCategoryFromRole = curry((role, category) =>
   role.update('rights', Immutable.List(), rights =>
-    rights.toSet().subtract(getRightNamesFromRightCategory(category)).toList()
+    rights
+      .toSet()
+      .subtract(getRightNamesFromRightCategory(category))
+      .toList()
   )
 );
 
@@ -65,6 +72,7 @@ export const getRoleNameTranslationKeyPathFromRole = role =>
 export const getIdFromRole = role => role.get('id');
 export const getRightsFromRole = role => role.get('rights', Immutable.List());
 export const getNumberOfUsersFromRole = role => role.get('numberOfUsers', 0);
+export const getNumberOfInvitedUsersFromRole = role => role.get('numberOfFutureAccounts', 0);
 
 const sortRights = (r1, r2) => {
   return getSortOrderFromRight(r1) - getSortOrderFromRight(r2);
@@ -105,7 +113,10 @@ export const rightCategoryStateForRole = curry((role, category) =>
 export const getPreviousState = state => state.get('previousState', Immutable.Map());
 
 export const getDirtyRolesFromState = state =>
-  getRolesFromState(state).toSet().subtract(getRolesFromState(getPreviousState(state)).toSet()).toList();
+  getRolesFromState(state)
+    .toSet()
+    .subtract(getRolesFromState(getPreviousState(state)).toSet())
+    .toList();
 
 export const getEditingRoleFromState = state => state.get('editingRole', Immutable.Map());
 export const getEditingRoleTemplateIdFromState = state =>

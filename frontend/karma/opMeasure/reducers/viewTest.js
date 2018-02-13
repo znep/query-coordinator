@@ -1,6 +1,6 @@
 import { assert } from 'chai';
 
-import { ModeStates } from 'common/performance_measures/lib/constants';
+import { ModeStates } from 'opMeasure/lib/constants';
 import reducer from 'opMeasure/reducers/view';
 import actions from 'opMeasure/actions';
 

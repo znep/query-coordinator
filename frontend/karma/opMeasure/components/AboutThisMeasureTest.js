@@ -4,7 +4,7 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 
 import { AboutThisMeasure } from 'opMeasure/components/AboutThisMeasure';
-import { PeriodSizes, PeriodTypes, CalculationTypeNames } from 'common/performance_measures/lib/constants';
+import { PeriodSizes, PeriodTypes, CalculationTypes } from 'common/performance_measures/lib/constants';
 
 describe('AboutThisMeasure', () => {
   beforeEach(() => {
@@ -25,7 +25,7 @@ describe('AboutThisMeasure', () => {
   const createMeasure = () => {
     return {
       metricConfig: {
-        type: CalculationTypeNames.SUM,
+        type: CalculationTypes.SUM,
         reportingPeriod: {
           size: PeriodSizes[0],
           type: PeriodTypes.OPEN

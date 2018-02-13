@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
 
-import { assert, assertHasProperties, assertHasProperty } from 'common/js_utils';
+import { assert, assertHasProperties, assertHasProperty, parseJsonOrEmpty } from 'common/js_utils';
 import { VisualizationRenderer } from 'common/visualizations';
 import { MetadataProvider } from 'common/visualizations/dataProviders';
 
@@ -9,7 +9,7 @@ import '../componentBase';
 import Constants from '../Constants';
 import I18n from '../I18n';
 import StorytellerUtils from '../../StorytellerUtils';
-import { vifsAreEquivalent } from 'VifUtils';
+import { updateVifWithDefaults, vifsAreEquivalent } from 'VifUtils';
 
 $.fn.componentSocrataVisualizationVizCanvas = componentSocrataVisualizationVizCanvas;
 
@@ -60,38 +60,6 @@ function _getVif(visualizationConfig, useMetadataCache) {
     });
 }
 
-function _updateVifWithDefaults(vif) {
-  const newVif = _.cloneDeep(vif);
-
-  _.defaults(newVif, {
-    unit: {
-      one: I18n.t('editor.visualizations.default_unit.one'),
-      other: I18n.t('editor.visualizations.default_unit.other')
-    }
-  });
-
-  // Core strips null values from our vif when we retrieve it with the ViewsService.
-  // See Block class (rails) for another spot where we fill in the stripped fields.
-  // Important fields that will break viz if they don't exist:
-  //
-  //    series[...].dataSource.filters (default this to empty array)
-  //    series[...].dataSource.filters[...].argument (default this to null)
-  //
-  _.forEach(newVif.series, (series) => {
-    if (_.isUndefined(series.dataSource.filters)) {
-      series.dataSource.filters = [];
-    } else {
-      _.forEach(series.dataSource.filters, (filter) => {
-        if (_.isUndefined(filter.arguments)) {
-          filter.arguments = null;
-        }
-      });
-    }
-  });
-
-  return newVif;
-}
-
 function _renderTemplate($element, props) {
   const { componentData } = props;
 
@@ -122,25 +90,20 @@ function _updateVisualization($element, props) {
     'value.dataset.vifId'
   );
 
-  function _getRenderedVif() {
-    let renderedVif;
-    try {
-      renderedVif = JSON.parse($element.attr('data-rendered-vif'));
-    } catch (error) {
-      renderedVif = {};
-    }
-    return renderedVif;
-  }
-
   function _renderVisualization(newVif) {
-    const vifsAreNotEquivalent = !vifsAreEquivalent(_getRenderedVif(), newVif);
+    const vifsAreNotEquivalent = !vifsAreEquivalent(
+      parseJsonOrEmpty($element.attr('data-rendered-vif')),
+      newVif
+    );
 
     if (vifsAreNotEquivalent) {
       $element.attr('data-rendered-vif', JSON.stringify(newVif));
       $componentContent.triggerHandler('SOCRATA_VISUALIZATION_DESTROY');
 
+      // Note, we're not updating with `federatedFromDomain` like other viz because the
+      // viz-canvas vif already has origin.url set to the correct location.
       new VisualizationRenderer(
-        _updateVifWithDefaults(newVif),
+        updateVifWithDefaults(newVif),
         $componentContent,
         { displayFilterBar: true }
       );
@@ -168,13 +131,7 @@ function _updateVisualization($element, props) {
     $componentContent.append($errorMessageElement);
   }
 
-  let renderedVisualizationConfig;
-  try {
-    renderedVisualizationConfig = JSON.parse($element.attr('data-rendered-visualization'));
-  } catch (error) {
-    renderedVisualizationConfig = {};
-  }
-
+  const renderedVisualizationConfig = parseJsonOrEmpty($element.attr('data-rendered-visualization'));
   const $componentContent = $element.find('.component-content');
   const visualizationConfig = componentData.value.dataset;
   const configsAreEquivalent = _.isEqual(renderedVisualizationConfig, visualizationConfig);

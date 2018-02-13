@@ -1,4 +1,8 @@
 import _ from 'lodash';
+import sinon from 'sinon';
+import { assert } from 'chai';
+
+import { expectConsoleErrorCallCount } from './consoleStub';
 
 import CollaboratorsDataProvider, { __RewireAPI__ as CollaboratorsDataProviderApi } from 'editor/CollaboratorsDataProvider';
 
@@ -36,15 +40,18 @@ describe('CollaboratorsDataProvider', () => {
       );
     });
 
-    it('returns null if request fails', (done) => {
-      mockHttpRequest.returns(Promise.reject());
-      subject.doesUserWithEmailHaveStoriesRights('foo').then(
-        (resolution) => {
-          assert.isNull(resolution);
-          done();
-        },
-        done
-      );
+    describe('if request fails', () => {
+      expectConsoleErrorCallCount(1);
+      it('returns null if request fails', (done) => {
+        mockHttpRequest.returns(Promise.reject());
+        subject.doesUserWithEmailHaveStoriesRights('foo').then(
+          (resolution) => {
+            assert.isNull(resolution);
+            done();
+          },
+          done
+        );
+      });
     });
   });
 });

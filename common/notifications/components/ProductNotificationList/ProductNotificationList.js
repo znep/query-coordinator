@@ -1,42 +1,38 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import cssModules from 'react-css-modules';
-import classNames from 'classnames';
 import _ from 'lodash';
+import classNames from 'classnames';
+import cssModules from 'react-css-modules';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 import connectLocalization from 'common/i18n/components/connectLocalization';
-
-import ProductNotification from './ProductNotification';
 import { SocrataIcon } from 'common/components/SocrataIcon';
 import Spinner from 'common/notifications/components/Spinner';
+
 import ErrorMessage from 'common/notifications/components/ErrorMessage';
+import ProductNotification from './ProductNotification';
 import styles from './product-notification-list.module.scss';
 
+const scope = 'shared_site_chrome_notifications';
+
 class ProductNotificationList extends Component {
-  renderUnreadNewCountLabel() {
-    const {
-      unreadProductNotificationCount,
-      I18n
-    } = this.props;
+  renderUnreadNewCountLabel = () => {
+    const { I18n, unreadProductNotificationCount } = this.props;
 
     if (unreadProductNotificationCount > 0) {
       return (
         <em styleName="unread-count-label">
           <span>{unreadProductNotificationCount}</span>
-          <span>{I18n.t('shared_site_chrome_notifications.new_label')}</span>
+          <span>{I18n.t('new_label', { scope })}</span>
         </em>
       );
     }
   }
 
-  renderAccordionIcon() {
+  renderAccordionIcon = () => {
     const { isSecondaryPanelOpen } = this.props;
+    const iconName = isSecondaryPanelOpen ? 'close-2' : 'chevron-up';
 
-    if (isSecondaryPanelOpen) {
-      return <SocrataIcon name="close-2" />;
-    }
-
-    return <SocrataIcon name="chevron-up" />;
+    return <SocrataIcon name={iconName} />;
   }
 
   renderSecondaryPanelHeader() {
@@ -44,9 +40,9 @@ class ProductNotificationList extends Component {
 
     if (showProductNotificationsAsSecondaryPanel) {
       const {
-        unreadProductNotificationCount,
+        I18n,
         toggleProductNotificationsSecondaryPanel,
-        I18n
+        unreadProductNotificationCount
       } = this.props;
 
       return (
@@ -54,7 +50,7 @@ class ProductNotificationList extends Component {
           <h3
             styleName={classNames('panel-header-text', { unread: unreadProductNotificationCount > 0 })}
             onClick={toggleProductNotificationsSecondaryPanel}>
-            {I18n.t('shared_site_chrome_notifications.product_updates')}
+            {I18n.t('product_updates', { scope })}
             {this.renderUnreadNewCountLabel()}
             {this.renderAccordionIcon()}
           </h3>
@@ -65,19 +61,21 @@ class ProductNotificationList extends Component {
 
   renderNotifications() {
     const {
-      areNotificationsLoading,
+      areProductNotificationsLoading,
       hasError,
+      I18n,
       isSecondaryPanelOpen,
       notifications,
-      showProductNotificationsAsSecondaryPanel,
-      I18n
+      showProductNotificationsAsSecondaryPanel
     } = this.props;
-    const errorText = I18n.t('shared_site_chrome_notifications.error_text_html');
+    const errorText = I18n.t('error_text_html', { scope });
 
     if (!showProductNotificationsAsSecondaryPanel || isSecondaryPanelOpen) {
-      if (areNotificationsLoading) {
+      if (areProductNotificationsLoading) {
         return <Spinner />;
-      } else if (hasError) {
+      }
+
+      if (hasError) {
         return (
           <div
             styleName="notifications-message"
@@ -85,32 +83,28 @@ class ProductNotificationList extends Component {
             <ErrorMessage text={errorText} />
           </div>
         );
-      } else {
-        if (_.size(notifications) > 0) {
-          return notifications.map(notification =>
-            <ProductNotification key={notification.id} {...notification} />
-          );
-        } else {
-          return (
-            <div
-              styleName="notifications-message"
-              className="no-notifications-message-wrapper">
-              <h3>{I18n.t('shared_site_chrome_notifications.no_unread_notifications')}</h3>
-            </div>
-          );
-        }
       }
+
+      if (_.size(notifications) > 0) {
+        return notifications.map(notification =>
+          <ProductNotification key={notification.id} {...notification} />
+        );
+      }
+
+      return (
+        <div
+          styleName="notifications-message"
+          className="no-notifications-message-wrapper">
+          <h3>{I18n.t('no_unread_notifications', { scope })}</h3>
+        </div>
+      );
     }
   }
 
-  renderViewOlderLink() {
-    const {
-      areNotificationsLoading,
-      viewOlderLink,
-      I18n
-    } = this.props;
+  renderViewOlderLink = () => {
+    const { areProductNotificationsLoading, I18n, viewOlderLink } = this.props;
 
-    if (!_.isNull(viewOlderLink) && !areNotificationsLoading) {
+    if (!_.isNull(viewOlderLink) && !areProductNotificationsLoading) {
       return (
         <div
           className="view-older"
@@ -119,7 +113,7 @@ class ProductNotificationList extends Component {
             href={viewOlderLink}
             styleName="view-older-link"
             target="_blank">
-            {I18n.t('shared_site_chrome_notifications.view_older')}
+            {I18n.t('view_older', { scope })}
           </a>
         </div>
       );
@@ -130,22 +124,21 @@ class ProductNotificationList extends Component {
     const {
       isSecondaryPanelOpen,
       notifications,
-      viewOlderLink,
-      showProductNotificationsAsSecondaryPanel
+      showProductNotificationsAsSecondaryPanel,
+      viewOlderLink
     } = this.props;
     const notificationStyleNames = classNames('list-wrapper', {
-      'secondary-panel': showProductNotificationsAsSecondaryPanel,
-      'open': isSecondaryPanelOpen
+      'open': isSecondaryPanelOpen,
+      'secondary-panel': showProductNotificationsAsSecondaryPanel
+    });
+    const notificationListStyleNames = classNames('list', {
+      'has-no-view-older-link': _.isNull(viewOlderLink)
     });
 
     return (
       <div styleName={notificationStyleNames}>
         {this.renderSecondaryPanelHeader()}
-
-        <ul styleName={classNames('list', { 'has-no-view-older-link': _.isNull(viewOlderLink) })}>
-          {this.renderNotifications()}
-        </ul>
-
+        <ul styleName={notificationListStyleNames}>{this.renderNotifications()}</ul>
         {this.renderViewOlderLink()}
       </div>
     );
@@ -153,7 +146,7 @@ class ProductNotificationList extends Component {
 }
 
 ProductNotificationList.propTypes = {
-  areNotificationsLoading: PropTypes.bool.isRequired,
+  areProductNotificationsLoading: PropTypes.bool.isRequired,
   hasError: PropTypes.bool.isRequired,
   isSecondaryPanelOpen: PropTypes.bool,
   notifications: PropTypes.array.isRequired,

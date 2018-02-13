@@ -1,8 +1,11 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import { $transient } from '../TransientElement';
 import 'editor/block-component-renderers/componentSocrataVisualizationMap';
+import { updateVifWithFederatedFromDomain } from 'VifUtils';
 
 describe('componentSocrataVisualizationMap jQuery plugin', () => {
 
@@ -27,7 +30,7 @@ describe('componentSocrataVisualizationMap jQuery plugin', () => {
   let getProps = (props) => {
     return _.extend({
       blockId: null,
-      componentData: validComponentData,
+      componentData: _.cloneDeep(validComponentData),
       componentIndex: null,
       theme: null
     }, props);
@@ -56,6 +59,36 @@ describe('componentSocrataVisualizationMap jQuery plugin', () => {
           componentData: badData
         }));
       });
+    });
+  });
+
+  describe('when component data contains `federatedFromDomain`', function() {
+    var socrataUnifiedMapStub;
+
+    beforeEach(function() {
+      socrataUnifiedMapStub = sinon.stub($.fn, 'socrataUnifiedMap');
+
+      const componentData = _.merge(_.cloneDeep(validComponentData), {
+        value: {
+          dataset: {
+            federatedFromDomain: 'example.com'
+          }
+        }
+      });
+      $component = $component.componentSocrataVisualizationMap(getProps({ componentData }));
+    });
+
+    afterEach(function() {
+      socrataUnifiedMapStub.restore();
+    });
+
+    it('should call into socrataUnifiedMap with the correct arguments', function() {
+      const expectedVif = updateVifWithFederatedFromDomain(_.cloneDeep(validComponentData).value.vif, 'example.com');
+      sinon.assert.calledWithExactly(
+        socrataUnifiedMapStub,
+        expectedVif,
+        sinon.match.any
+      );
     });
   });
 

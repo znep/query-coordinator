@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
 
 import I18nMocker from '../I18nMocker';
 import Store from 'editor/stores/Store';

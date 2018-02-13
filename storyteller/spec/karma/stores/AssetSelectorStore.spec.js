@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import StandardMocks from '../StandardMocks';
 import Constants from 'editor/Constants';
@@ -250,6 +252,31 @@ describe('AssetSelectorStore', function() {
       });
     });
 
+    describe('after an `ASSET_SELECTOR_UPDATE_COMPONENT_TYPE` action', function() {
+      describe('.getComponentType()', function() {
+        beforeEach(function() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
+            blockId: '',
+            componentIndex: '',
+            initialComponentProperties: {}
+          });
+
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_UPDATE_COMPONENT_TYPE,
+            type: 'new.type'
+          });
+        });
+
+        it('returns new type', function() {
+          assert.equal(
+            assetSelectorStore.getComponentType(),
+            'new.type'
+          );
+        });
+      });
+    });
+
     describe('after an `ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT` action with `initialComponentProperties` set', function() {
 
       var testBlockId = 'testBlock1';
@@ -320,7 +347,7 @@ describe('AssetSelectorStore', function() {
             provider: 'IMAGE'
           });
 
-          isUploadingFileStub = sinon.stub(assetSelectorStore, 'isUploadingFile', _.constant(true));
+          isUploadingFileStub = sinon.stub(assetSelectorStore, 'isUploadingFile').callsFake(_.constant(true));
           fileUploaderStoreMock._emitChange();
 
           dispatcher.dispatch({
@@ -522,6 +549,22 @@ describe('AssetSelectorStore', function() {
         });
       });
 
+      it('should add federatedFromDomain to _currentComponentProperities', (done) => {
+        assetSelectorStore.addChangeListener(() => {
+          assert.equal(
+            assetSelectorStore.getComponentValue().dataset.federatedFromDomain,
+            'federated.example.com'
+          );
+          done();
+        });
+
+        dispatcher.dispatch({
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+          viewData: nbeView,
+          federatedFromDomain: 'federated.example.com'
+        });
+      });
+
       describe('when in the Authoring Workflow', function() {
         beforeEach(function() {
           bootstrap();
@@ -546,6 +589,72 @@ describe('AssetSelectorStore', function() {
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
             viewData: nbeView
           });
+        });
+      });
+    });
+
+    describe('after an `ASSET_SELECTOR_CHOOSE_MEASURE` action', () => {
+      it('validates payload has domain', () => {
+        assert.throws(() => {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_MEASURE,
+            // domain: 'example.com',
+            uid: 'test-test'
+          });
+        });
+      });
+
+      it('validates payload has mapOrChartUid', () => {
+        assert.throws(() => {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_MEASURE,
+            domain: 'example.com'
+            // uid: 'test-test'
+          });
+        });
+      });
+
+      describe('when selected asset is valid', () => {
+        function dispatchAction() {
+          dispatcher.dispatch({
+            action: Actions.ASSET_SELECTOR_CHOOSE_MEASURE,
+            domain: 'example.com',
+            uid: 'test-test'
+          });
+        }
+
+        it('sets the wizard step', (done) => {
+          assetSelectorStore.addChangeListener(() => {
+            assert.equal(
+              assetSelectorStore.getStep(),
+              WIZARD_STEP.CONFIGURE_MEASURE
+            );
+            done();
+          });
+
+          dispatchAction();
+        });
+
+        it('sets dataset component properties and initial type', (done) => {
+          assetSelectorStore.addChangeListener(() => {
+            assert.equal(
+              assetSelectorStore.getComponentType(),
+              'measure.card'
+            );
+
+            assert.deepEqual(
+              assetSelectorStore.getComponentValue(),
+              {
+                measure: {
+                  domain: 'example.com',
+                  uid: 'test-test'
+                }
+              }
+            );
+            done();
+          });
+
+          dispatchAction();
         });
       });
     });
@@ -600,7 +709,8 @@ describe('AssetSelectorStore', function() {
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
             domain: 'example.com',
             mapOrChartUid: StandardMocks.classicChartId,
-            viewData: classicChartView
+            viewData: classicChartView,
+            federatedFromDomain: 'federated.example.com'
           });
         }
 
@@ -623,7 +733,8 @@ describe('AssetSelectorStore', function() {
               {
                 dataset: {
                   domain: 'example.com',
-                  datasetUid: StandardMocks.classicChartId
+                  datasetUid: StandardMocks.classicChartId,
+                  federatedFromDomain: 'federated.example.com'
                 }
               }
             );
@@ -671,7 +782,8 @@ describe('AssetSelectorStore', function() {
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
             domain: vizCanvasView.domain,
             mapOrChartUid: vizCanvasView.id,
-            viewData: vizCanvasView
+            viewData: vizCanvasView,
+            federatedFromDomain: 'federation.example.com'
           });
         }
 
@@ -695,7 +807,8 @@ describe('AssetSelectorStore', function() {
                 dataset: {
                   domain: vizCanvasView.domain,
                   datasetUid: StandardMocks.vizCanvasId,
-                  vifId: StandardMocks.vizCanvasChartId
+                  vifId: StandardMocks.vizCanvasChartId,
+                  federatedFromDomain: 'federation.example.com'
                 }
               }
             );
@@ -1219,15 +1332,19 @@ describe('AssetSelectorStore', function() {
           dispatch(phrase, continuous);
 
           assert.lengthOf(server.requests, 1);
-          server.respondWith('GET', server.requests[0].url, [200, {'Content-Type': 'application/json'}, '{}']);
+          server.respondWith([200, {'Content-Type': 'application/json'}, '{}']);
           server.respond();
 
           _.delay(function() {
-            sinon.assert.calledTwice(emitChangeSpy);
-            assert.isFalse(assetSelectorStore.isImageSearching());
-            assert.isFalse(assetSelectorStore.hasImageSearchError());
-            assert.isTrue(assetSelectorStore.hasImageSearchResults());
-            assert.lengthOf(assetSelectorStore.getImageSearchResults(), 1);
+            try {
+              sinon.assert.calledTwice(emitChangeSpy);
+              assert.isFalse(assetSelectorStore.isImageSearching());
+              assert.isFalse(assetSelectorStore.hasImageSearchError());
+              assert.isTrue(assetSelectorStore.hasImageSearchResults());
+              assert.lengthOf(assetSelectorStore.getImageSearchResults(), 1);
+            } catch (e) {
+              done(e);
+            }
             done();
           }, 20);
         });
@@ -1276,7 +1393,7 @@ describe('AssetSelectorStore', function() {
       var setComponentTypeAndSetImage = function(componentType) {
         beforeEach(function() {
           _.attempt(_.get(assetSelectorStore.getComponentType, 'restore'));
-          sinon.stub(assetSelectorStore, 'getComponentType', _.constant(componentType));
+          sinon.stub(assetSelectorStore, 'getComponentType').callsFake(_.constant(componentType));
 
           dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
@@ -1336,8 +1453,8 @@ describe('AssetSelectorStore', function() {
       var getImageSearchPhraseStub;
 
       beforeEach(function() {
-        canPageImageSearchNextStub = sinon.stub(assetSelectorStore, 'canPageImageSearchNext', _.constant(true));
-        getImageSearchPhraseStub = sinon.stub(assetSelectorStore, 'getImageSearchPhrase', _.constant('ine'));
+        canPageImageSearchNextStub = sinon.stub(assetSelectorStore, 'canPageImageSearchNext').callsFake(_.constant(true));
+        getImageSearchPhraseStub = sinon.stub(assetSelectorStore, 'getImageSearchPhrase').callsFake(_.constant('ine'));
       });
 
       afterEach(function() {
@@ -1425,7 +1542,7 @@ describe('AssetSelectorStore', function() {
       var crop = {crop: {x: 30, y: 40, width: 50, height: 50}};
 
       beforeEach(function() {
-        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue', _.constant(crop));
+        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(crop));
       });
 
       afterEach(function() {
@@ -1475,7 +1592,7 @@ describe('AssetSelectorStore', function() {
       var getComponentValueStub;
 
       beforeEach(function() {
-        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue', _.constant({}));
+        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant({}));
       });
 
       afterEach(function() {
@@ -1518,7 +1635,7 @@ describe('AssetSelectorStore', function() {
 
       beforeEach(function() {
         value = {test: 'testing'};
-        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue', _.constant(value));
+        getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(value));
       });
 
       afterEach(function() {
@@ -1548,11 +1665,7 @@ describe('AssetSelectorStore', function() {
 
     beforeEach(function() {
       value = {};
-      getComponentValueStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentValue',
-        _.constant(value)
-      );
+      getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(value));
 
       dispatcher.dispatch({ action: Actions.ASSET_SELECTOR_IMAGE_CROP_START });
     });
@@ -1577,11 +1690,7 @@ describe('AssetSelectorStore', function() {
     beforeEach(function() {
       value = {crop: {}};
 
-      getComponentValueStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentValue',
-        _.constant(value)
-      );
+      getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(value));
 
       dispatcher.dispatch({ action: Actions.ASSET_SELECTOR_IMAGE_CROP_RESET });
     });
@@ -1695,11 +1804,7 @@ describe('AssetSelectorStore', function() {
     beforeEach(function() {
       value = {crop: {}};
 
-      getComponentValueStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentValue',
-        _.constant(value)
-      );
+      getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(value));
 
       dispatch();
     });
@@ -1746,11 +1851,7 @@ describe('AssetSelectorStore', function() {
 
     beforeEach(function() {
       value = {};
-      getComponentValueStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentValue',
-        _.constant(value)
-      );
+      getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(value));
     });
 
     afterEach(function() {
@@ -1779,17 +1880,9 @@ describe('AssetSelectorStore', function() {
       value = { openInNewWindow: false };
       compType = 'image';
 
-      getComponentValueStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentValue',
-        _.constant(value)
-      );
+      getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(value));
 
-      getComponentTypeStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentType',
-        _.constant(compType)
-      );
+      getComponentTypeStub = sinon.stub(assetSelectorStore, 'getComponentType').callsFake(_.constant(compType));
     });
 
     afterEach(function() {
@@ -1807,11 +1900,7 @@ describe('AssetSelectorStore', function() {
     it('throws an error if the component is not an image', function() {
       getComponentTypeStub.restore();
 
-      getComponentTypeStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentType',
-        _.constant('not-an-image')
-      );
+      getComponentTypeStub = sinon.stub(assetSelectorStore, 'getComponentType').callsFake(_.constant('not-an-image'));
 
       assert.throws(() => dispatch());
     });
@@ -1833,17 +1922,9 @@ describe('AssetSelectorStore', function() {
       value = { openInNewWindow: false };
       compType = 'goal.tile';
 
-      getComponentValueStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentValue',
-        _.constant(value)
-      );
+      getComponentValueStub = sinon.stub(assetSelectorStore, 'getComponentValue').callsFake(_.constant(value));
 
-      getComponentTypeStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentType',
-        _.constant(compType)
-      );
+      getComponentTypeStub = sinon.stub(assetSelectorStore, 'getComponentType').callsFake(_.constant(compType));
     });
 
     afterEach(function() {
@@ -1861,11 +1942,7 @@ describe('AssetSelectorStore', function() {
     it('throws an error if the component is not a goal', function() {
       getComponentTypeStub.restore();
 
-      getComponentTypeStub = sinon.stub(
-        assetSelectorStore,
-        'getComponentType',
-        _.constant('not-a-goal')
-      );
+      getComponentTypeStub = sinon.stub(assetSelectorStore, 'getComponentType').callsFake(_.constant('not-a-goal'));
 
       assert.throws(() => dispatch());
     });

@@ -50,7 +50,7 @@ describe 'FeatureFlags' do
       end
 
       describe 'and the domain flags are missing' do
-        let(:domain_flags) { {} }
+        let(:domain_flags) { Hashie::Mash.new }
 
         it 'should return the config default' do
           expect(FeatureFlags.derive.flag_name).to eq(default_value)

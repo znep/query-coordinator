@@ -1324,4 +1324,18 @@ describe('utils.js', function() {
       });
     });
   });
+
+  describe('parseJsonOrEmpty', () => {
+    it('returns parsed object', () => {
+      assert.deepEqual(utils.parseJsonOrEmpty('[{"a":1}]'), [{ a: 1 }]);
+    });
+
+    it('returns empty object when json is invalid', () => {
+      assert.deepEqual(utils.parseJsonOrEmpty('{'), {});
+    });
+
+    it('returns an empty object when json is valid but empty', () => {
+      assert.deepEqual(utils.parseJsonOrEmpty(''), {});
+    });
+  });
 });

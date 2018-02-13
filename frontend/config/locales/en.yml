@@ -440,27 +440,14 @@ en:
       user_management: Go to User Management
       official_assets:
         title: Official assets
-        subtitle: When data assets are published to the public by roled users on your site, these assets should...
+        subtitle: When data assets are published to the public by members of your organization, these assets should...
         manual_approval:
           required:
             title: Require manual approval
-            subtitle: These assets will appear in the Approval Queue and will require action from an Approver before becoming available to the public. After review, these assets will appear in the Previously Reviewed tab and sitewide Activity Log for auditing purposes.
+            subtitle: These assets will appear in the Approval Queue and will require action from an Approver before becoming publicly-available. After review, these assets will appear in the Previously Reviewed tab and Activity Log for auditing purposes.
           not_required:
-            title: NOT require manual approval
-            subtitle: These assets will become available to the public immediately upon publishing (i.e. they will be automatically approved by the system) and will never appear in the Approval Queue. They will still appear in the Previously Reviewed tab and sitewide Activity Log for auditing purposes.
-      community_assets:
-        title: Community assets
-        subtitle: When data assets (charts, maps, filtered views) using public data are created and saved by members of the community on your site, these assets should...
-        manual_approval:
-          required:
-            title: Require manual approval before appearing in your data catalog
-            subtitle: These assets will appear in the Approval Queue and will require action from an Approver before appearing in your data catalog. After review, these assets will appear in the Previously Reviewed tab for auditing purposes.
-          not_required:
-            title: Appear in the data catalog by default
-            subtitle: These assets will never appear in the Approval Queue and will appear in your data catalog by default. They will also appear in the Previously Reviewed tab for auditing purposes.
-          auto_rejected:
-            title: Never appear in the data catalog by default
-            subtitle: These assets will never appear in the Approval Queue and will not appear in your data catalog by default. They will still appear in the Previously Reviewed tab for auditing purposes.
+            title: Be automatically approved
+            subtitle: These assets will become publicly-available immediately upon publishing and will not appear in the Approval Queue. They will be listed in the Previously Reviewed tab and Activity Log for auditing purposes.
       approval_process:
         roled_users: Assets published by roled users (publishers, designers, etc.)...
         automatic: Is automatically approved and appears in the data catalog
@@ -482,7 +469,20 @@ en:
       notifications:
         save_success: Changes saved successfully.
         save_error: Something went wrong. Please contact support@socrata.com if the issue persists.
-    title: Routing and Approval
+  catalog_configuration:
+    breadcrumbs:
+      title: Catalog Management
+    community_assets:
+      title: Community assets
+      subtitle: When data assets (charts, maps, filtered views) using public data are created and saved by members of the community on your site, these assets should...
+      appear:
+        title: Appear in the data catalog
+        subtitle: These assets will be discoverable in your data catalog and will receive a "Community" badge to visually indicate their ownership.
+      not_appear:
+        title: Never appear in the data catalog
+        subtitle: These assets will not be discoverable in your data catalog. However, they will still be visible to Administrators under the "All Assets" tab of the Asset List.
+    update_notice: The Data Catalog configuration has been updated to %{state} community assets in the catalog.
+    update_error: An error occurred when saving the Data Catalog configuration. Please contact <a href="mailto:support@socrata.com" title="support@socrata.com">support@socrata.com</a> for assistance.
   catalog_landing_page:
     activation:
       action: Feature Content
@@ -3247,6 +3247,30 @@ en:
               help_title: Help with Sum
               title: Sum Options
           value_column: Value Column
+        configuration_notice:
+          calculation_notice: Calculation is not completely configured.
+          data_source_notice: Data Source is not completely configured.
+          flannel:
+            calculation:
+              no_count_column: Select a column to count for your calculation.
+              no_denominator_column: Select a denominator column for your rate calculation.
+              no_numerator_column: Select a numerator column for your rate calculation.
+              no_numeric_column: Your selected data source doesn't have numeric columns, so it can't be used for the selected calculation type. Please change your data source or calculation type.
+              no_rate_aggregation: Select an aggregation type for your calculation.
+              no_recent_value_column: Select a numeric value column for your calculation.
+              no_reference_date_column: Select a date reference column for your calculation.
+              no_sum_column: Select a numeric column to sum for your calculation.
+            data_source:
+              no_data_source: Connect your data to configure your reporting period and calculation.
+            reporting_period:
+              no_period_size: Select a reporting period size.
+              no_period_type: Select a reporting period type and size.
+              no_start_date: Select a start date for the reporting period.
+            take_me_there: Take me there
+            title: Complete Your Measure
+          reporting_period_notice: Reporting Period is not completely configured.
+          reporting_period_and_calculation_notice: Reporting Period and Calculation are not completely configured.
+          see_tasks: See tasks
         data_source:
           message_default: Select the dataset that contains the data pertaining to this measure.
           message_empty: The selected dataset doesn't have any data yet, so you won't be able to compute a metric.
@@ -3289,6 +3313,8 @@ en:
             week_to_date: Week-to-date
             year: Year
             year_to_date: Year-to-date
+          sample_open: Sample metric card and visualization for open reporting period
+          sample_closed: Sample metric card and visualization for closed reporting period
           start_date_label: Period start date
           tab_title: Reporting Period
           title: Configure Reporting Period
@@ -3829,6 +3855,7 @@ en:
             options:
               all: All
               approval_changed: Approval Changed
+              approval_process_completed: Approval Process Completed
               asset_created: Asset Created
               asset_deleted: Asset Deleted
               asset_restored: Asset Restored
@@ -4196,6 +4223,8 @@ en:
           super_admin: Super Admin
           site_settings: Site Settings
         page_title: Administration
+        catalog_configuration: Catalog Management
+        catalog_configuration_description: Configure the presence and discovery of assets in your data catalog
         comment_moderation: Comment Moderation
         comment_moderation_description: Review and approve comments submitted on your assets by users
         connectors: Connectors
@@ -4600,6 +4629,8 @@ en:
           edit_custom_roles: Edit Custom Roles
           new_custom_role: New Custom Role
           save: Save
+        confirmation:
+          delete_role: "Are you sure want to delete the role '%{name}'?"
         errors:
           role_name_empty: Role Name cannot be empty
           role_name_length: "Role Name cannot exceed %{maxCharacterCount} characters"
@@ -4607,6 +4638,7 @@ en:
           title: "Roles & Permissions"
           page_title: "Roles & Permissions"
           custom_role_modal:
+            rename_title: Rename Custom Role
             title: New Custom Role
             form:
               role_name:
@@ -4625,11 +4657,9 @@ en:
             edit_role: Edit Role
             delete_role: Delete Role
           grid:
-            currently: "Currently"
+            currently: "Number of users"
+            invited: "Invited"
             role: Role
-            user_count:
-              one: "%{count} User"
-              other: "%{count} Users"
           faq_modal:
             title: Frequently Asked Questions
             content_html: '<h4>What are the different roles?</h4> <p>There are 5 default roles on the Socrata platform:</p> <ul> <li> Organization Member - Can sign into the site and view all internally published assets. </li> <li> Contributor - Can create new data assets privatly, but not publish assets without review. </li> <li> Data Publisher - Can create and publish data assets to the entire organization, as well as approve any internal publishing requests. </li> <li> Open Data Gatekeeper - Can publish and approve data assets for the Open Data Catalog. </li> <li>Site Administrator - Can manage users and sitewide settings.</li> </ul> <p> In addition to these default roles, you have the ability to create your own custom roles if you have the “Configurable Roles” package. </p> <h4>Can I change the roles?</h4> <p> No, you cannot change the default roles, however you can create your own custom roles, in addition to the default ones. </p> <h4>How do roles interact with datasets, visualizations, and stories?</h4> <p>Some awesome answer.</p> <a href="https://socrata.com" target="_blank"> Read More about Roles and Permissions </a>'
@@ -6669,6 +6699,8 @@ en:
           description: Description
           description_prompt: Enter a description for your application
           new_app_button: Create New Application
+          oauth_error_invalid_app_token: That is not a valid app token (client_id)!
+          oauth_error_invalid_authentication_request: An OAuth authentication request must include client_id and response_type!
           organization: Organization
           organization_prompt: Enter the organization responsible for this application
           public: Public?

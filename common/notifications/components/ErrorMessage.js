@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import cssModules from 'react-css-modules';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 
 import styles from './error-message.module.scss';
 

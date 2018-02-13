@@ -10,7 +10,7 @@
     "check-dependencies": "check-dependencies",
     "lint": "NODE_PATH=`pwd`/node_modules eslint ../",
     "test": "karma start karma.conf.js --singleRun true",
-    "watch": "karma start karma.conf.js -v --singleRun false",
+    "watch": "node --max_old_space_size=5120 ./node_modules/.bin/karma start karma.conf.js -v --singleRun false",
     "watch-browser": "karma start karma.conf.js -v --singleRun false --browsers Chrome"
   },
   "dependencies": {

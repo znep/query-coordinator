@@ -1,45 +1,53 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
 import cx from 'classnames';
-import cssModules from 'react-css-modules';
-import styles from './custom-role-form.module.scss';
-import bindAll from 'lodash/fp/bindAll';
 import getOr from 'lodash/fp/getOr';
 import omit from 'lodash/fp/omit';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import cssModules from 'react-css-modules';
 import { connect } from 'react-redux';
-import { changeNewRoleName, changeNewRoleTemplate } from '../../actions';
-import { NEW_CUSTOM_ROLE } from '../../appStates';
-import BoundedTextInput from '../util/BoundedTextInput';
-import { getAppState, getEditingRoleFromState, getMaxCharacterCountFromState } from '../../adminRolesSelectors';
-import TemplateDropdown from './TemplateDropdown';
+
 import { connectLocalization } from 'common/components/Localization';
 
-const mapStateToProps = state => {
-  const appState = getAppState(state);
+import * as Actions from '../../actions';
+import * as Selectors from '../../adminRolesSelectors';
+import { NEW_CUSTOM_ROLE } from '../../appStates';
+import BoundedTextInput from '../util/BoundedTextInput';
+import TemplateDropdown from './TemplateDropdown';
+import styles from './custom-role-form.module.scss';
 
-  const roleToEdit = getEditingRoleFromState(state);
+const mapStateToProps = state => {
+  const appState = Selectors.getAppState(state);
+
+  const roleToEdit = Selectors.getEditingRoleFromState(state);
 
   return {
     ...roleToEdit.toJS(),
     editingNewRole: appState === NEW_CUSTOM_ROLE,
-    maxCharacterCount: getMaxCharacterCountFromState(state)
+    maxCharacterCount: Selectors.getMaxCharacterCountFromState(state)
   };
 };
 
 const mapDispatchToProps = {
-  onNameChange: name => changeNewRoleName({ name }),
-  onTemplateChange: value => changeNewRoleTemplate({ value })
+  onNameChange: Actions.changeNewRoleName,
+  onTemplateChange: Actions.changeNewRoleTemplate
 };
 
 class CustomRoleForm extends Component {
-  constructor(props) {
-    super(props);
-    bindAll(['focusInput']);
-  }
+  static propTypes = {
+    editingNewRole: PropTypes.bool.isRequired,
+    error: PropTypes.object,
+    hasError: PropTypes.bool,
+    maxCharacterCount: PropTypes.number.isRequired,
+    name: PropTypes.string,
+    onNameChange: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    onTemplateChange: PropTypes.func.isRequired,
+    template: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  };
 
-  focusInput() {
+  focusInput = () => {
     this.nameInput.focus();
-  }
+  };
 
   componentDidMount() {
     this.focusInput();
@@ -97,31 +105,21 @@ class CustomRoleForm extends Component {
           onChange={event => onNameChange(event.target.value)}
           value={name}
         />
-        {hasError &&
+        {hasError && (
           <div className="alert error">
             {translate(getOr('', 'message', error), omit(['message'], error))}
-          </div>}
-        {editingNewRole &&
+          </div>
+        )}
+        {editingNewRole && (
           <label className="block-label" htmlFor="template-name">
             {translate('screens.admin.roles.index_page.custom_role_modal.form.template.label')}
-          </label>}
+          </label>
+        )}
         {editingNewRole && <TemplateDropdown onChange={value => onTemplateChange(value)} value={template} />}
       </form>
     );
   }
 }
-
-CustomRoleForm.propTypes = {
-  editingNewRole: PropTypes.bool.isRequired,
-  error: PropTypes.object,
-  hasError: PropTypes.bool,
-  maxCharacterCount: PropTypes.number.isRequired,
-  name: PropTypes.string,
-  onNameChange: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  onTemplateChange: PropTypes.func.isRequired,
-  template: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-};
 
 export default connectLocalization(
   connect(mapStateToProps, mapDispatchToProps)(cssModules(CustomRoleForm, styles))

@@ -1,0 +1,24 @@
+$title-height: 40px;
+
+@mixin measure-placeholder {
+  color: $light-grey-3;
+  background-color: $light-grey-6;
+  font-style: italic;
+  position: relative;
+
+  .socrata-icon {
+    width: 150px;
+    height: 150px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .measure-result-placeholder-text {
+    width: 100%;
+    position: absolute;
+    bottom: 18px;
+    text-align: center;
+  }
+}

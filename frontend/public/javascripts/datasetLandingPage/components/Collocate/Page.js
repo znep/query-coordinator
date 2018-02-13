@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import JoinEditPage from './JoinEditPage';
-import { MetadataProvider } from 'common/visualizations/dataProviders';
+import MetadataProvider, { getDisplayableColumns }
+  from 'common/visualizations/dataProviders/MetadataProvider';
 
 import { getIconForDataType } from 'common/icons';
-import { SocrataIcon } from 'common/components';
+import { SocrataIcon, Modal } from 'common/components';
 import AssetSelector from 'common/components/AssetSelector';
 
 import CollocateContainer from './CollocateContainer';
@@ -15,6 +16,7 @@ export default class Page extends Component {
 
     // TODO: Probably move this into Redux if it grows much more
     this.state = {
+      showNbeOnlyError: false,
       showPicker: true,
       showCollocate: false,
       showJoinEdit: false,
@@ -37,8 +39,9 @@ export default class Page extends Component {
   componentDidMount() {
     // Load the primary dataset immediately as there is no way the user can change it
     getPickColumns(window.sessionData.viewId).then(
-      ({ title, columns }) => {
+      ({ title, columns, isNbe }) => {
         this.setState((prevState) => ({
+          showNbeOnlyError: !isNbe,
           sourceDataset: {
             ...prevState.sourceDataset,
             title,
@@ -52,8 +55,6 @@ export default class Page extends Component {
   render() {
     var state = this.state;
 
-    const showSpinner = state.sourceDataset.title == null || state.targetDataset.title == null;
-
     const assetSelectorProps = {
       onAssetSelected: (assetData) => {
         this.setState((prevState) => ({
@@ -62,8 +63,9 @@ export default class Page extends Component {
           showCollocate: true
         }));
         getPickColumns(assetData.id).then(
-          ({ title, columns }) => {
+          ({ title, columns, isNbe }) => {
             this.setState((prevState) => ({
+              showNbeOnlyError: !isNbe, // TODO: It would be better to prevent the user from even selecting an OBE dataset
               targetDataset: {
                 ...prevState.targetDataset,
                 id: assetData.id,
@@ -74,14 +76,16 @@ export default class Page extends Component {
           });
       },
       resultsPerPage: 6,
-      title: 'Select dataset to collocate with'
+      title: 'Select dataset to collocate with',
+      baseFilters: {
+        assetTypes: 'datasets'
+      }
     };
 
     const collocateContainerProps = {
       onJoinFired: ({ sourceColumn, targetColumn }) => {
         validateCollocate(state.sourceDataset.id, state.targetDataset.id).then(
           (valid) => {
-            // NOTE: Is there a nicer pattern for this in JS?
             if (valid) {
               this.setState((prevState) => ({
                 showCollocate: false,
@@ -115,17 +119,35 @@ export default class Page extends Component {
 
     const columnMapping = getMapping(state.sourceDataset).concat(getMapping(state.targetDataset));
 
-    return (
-      <div className="collocate">
-        {header}
-        {showSpinner && <div className="spinner-default" />}
-        {state.showPicker && <AssetSelector {...assetSelectorProps} />}
-        {(state.showCollocate && !showSpinner) && <CollocateContainer {...collocateContainerProps} />}
-        {(state.showJoinEdit && !showSpinner) && <JoinEditPage
+    const showSpinner = !state.sourceDataset.title || !state.targetDataset.title;
+
+    const currentPane = (function() {
+      if (state.showNbeOnlyError) {
+        return (
+          <Modal onDismiss={_.noop}>
+            <div>ERROR: Can not collocate datasets on OBE</div>
+          </Modal>);
+      } else if (state.showPicker) {
+        return <AssetSelector {...assetSelectorProps} />;
+      } else if (showSpinner) {
+        return <div className="spinner-default" />;
+      } else if (state.showCollocate) {
+        return <CollocateContainer {...collocateContainerProps} />;
+      } else if (state.showJoinEdit) {
+        return (<JoinEditPage
           columnMapping={columnMapping}
           onComplete={(newColumnMap) => {
             executeCollocate(state.sourceDataset, state.targetDataset, newColumnMap);
-          }} />}
+          }} />);
+      } else {
+        return null;
+      }
+    }());
+
+    return (
+      <div className="collocate">
+        {header}
+        {currentPane}
       </div>
     );
   }
@@ -138,13 +160,13 @@ async function getPickColumns(uid) {
     datasetUid: uid
   });
 
-  const metadataPromise = metadataProvider.getDatasetMetadata();
-  const columns = await metadataProvider.getDisplayableFilterableColumns(await metadataPromise);
-
-  const title = (await metadataPromise).name;
+  const metadata = (await metadataProvider.getDatasetMetadata());
+  const columns = getDisplayableColumns(metadata);
+  const title = metadata.name;
 
   return {
     title: title,
+    isNbe: metadata.newBackend,
     columns: columns.map((c) => ({
       title: c.name,
       value: c.name,

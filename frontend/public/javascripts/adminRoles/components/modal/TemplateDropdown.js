@@ -1,35 +1,36 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import {
-  getIdFromRole,
-  getRoleNameFromRole,
-  getRoleNameTranslationKeyPathFromRole,
-  getRolesFromState,
-  roleIsCustom
-} from '../../adminRolesSelectors';
 import cssModules from 'react-css-modules';
-import styles from './template-dropdown.module.scss';
+import { connect } from 'react-redux';
+
 import Dropdown from 'common/components/Dropdown';
 import { connectLocalization } from 'common/components/Localization';
 
+import * as Selectors from '../../adminRolesSelectors';
+import styles from './template-dropdown.module.scss';
+
+const roleTypeAsTranslationString = role => (Selectors.roleIsCustom(role) ? 'custom' : 'default');
+
 const mapStateToProps = (state, { localization: { translate } }) => ({
-  templates: getRolesFromState(state)
+  templates: Selectors.getRolesFromState(state)
     .map(role => ({
-      title: roleIsCustom(role)
-        ? getRoleNameFromRole(role)
-        : translate(getRoleNameTranslationKeyPathFromRole(role)),
-      value: getIdFromRole(role),
+      title: Selectors.roleIsCustom(role)
+        ? Selectors.getRoleNameFromRole(role)
+        : translate(Selectors.getRoleNameTranslationKeyPathFromRole(role)),
+      value: Selectors.getIdFromRole(role),
       group: translate(
-        `screens.admin.roles.index_page.custom_role_modal.form.template.${roleIsCustom(role)
-          ? 'custom'
-          : 'default'}`
+        `screens.admin.roles.index_page.custom_role_modal.form.template.${roleTypeAsTranslationString(role)}`
       )
     }))
     .toJS()
 });
 
 class TemplateDropdown extends Component {
+  static propTypes = {
+    onChange: PropTypes.func.isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  };
+
   render() {
     const { onChange, templates, value, localization: { translate } } = this.props;
     const dropdownProps = {
@@ -51,10 +52,5 @@ class TemplateDropdown extends Component {
     );
   }
 }
-
-TemplateDropdown.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-};
 
 export default connectLocalization(connect(mapStateToProps)(cssModules(TemplateDropdown, styles)));

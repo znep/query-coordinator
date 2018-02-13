@@ -1,4 +1,6 @@
 import $ from 'jquery';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import httpRequest, {
   coreHeaders,

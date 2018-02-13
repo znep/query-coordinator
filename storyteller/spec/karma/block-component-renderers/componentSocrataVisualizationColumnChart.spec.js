@@ -1,10 +1,13 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import { $transient } from '../TransientElement';
 /* eslint-disable no-unused-vars */
 import componentSocrataVisualizationColumnChart from 'editor/block-component-renderers/componentSocrataVisualizationColumnChart';
 /* eslint-enable no-unused-vars */
+import { updateVifWithDefaults, updateVifWithFederatedFromDomain } from 'VifUtils';
 
 describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
   var $component;
@@ -28,7 +31,7 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
   var getProps = (props) => {
     return _.extend({
       blockId: null,
-      componentData: validComponentData,
+      componentData: _.cloneDeep(validComponentData),
       componentIndex: null,
       theme: null
     }, props);
@@ -60,6 +63,36 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
     });
   });
 
+  describe('when component data contains `federatedFromDomain`', function() {
+    var socrataColumnChartStub;
+
+    beforeEach(function() {
+      socrataColumnChartStub = sinon.stub($.fn, 'socrataSvgColumnChart');
+
+      const componentData = _.merge(_.cloneDeep(validComponentData), {
+        value: {
+          dataset: {
+            federatedFromDomain: 'example.com'
+          }
+        }
+      });
+      $component = $component.componentSocrataVisualizationColumnChart(getProps({ componentData }));
+    });
+
+    afterEach(function() {
+      socrataColumnChartStub.restore();
+    });
+
+    it('should call into socrataSvgColumnChart with the correct arguments', function() {
+      const expectedVif = updateVifWithDefaults(updateVifWithFederatedFromDomain(validComponentData.value.vif, 'example.com'));
+      sinon.assert.calledWithExactly(
+        socrataColumnChartStub,
+        expectedVif,
+        sinon.match.any
+      );
+    });
+  });
+
   describe('given a valid component type and value', function() {
     var socrataColumnChartStub;
 
@@ -79,7 +112,7 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
     it('should call into socrataSvgColumnChart with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataColumnChartStub,
-        validComponentData.value.vif,
+        updateVifWithDefaults(validComponentData.value.vif),
         sinon.match.any
       );
     });
@@ -90,11 +123,11 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
 
         var changedData = _.cloneDeep(validComponentData);
         _.set(changedData, 'value.vif.columnName', 'test2');
-        $component.componentSocrataVisualizationColumnChart(getProps({ componentData: changedData }));
+        $component.componentSocrataVisualizationColumnChart(getProps({ componentData: _.cloneDeep(changedData) }));
 
         sinon.assert.calledWithExactly(
           socrataColumnChartStub,
-          changedData.value.vif,
+          updateVifWithDefaults(changedData.value.vif),
           sinon.match.any
         );
       });

@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import Actions from 'editor/Actions';
 import I18nMocker from '../I18nMocker';

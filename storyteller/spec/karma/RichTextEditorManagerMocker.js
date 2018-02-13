@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+
 (function(root) {
 
   var socrata = root.socrata;

@@ -13,21 +13,21 @@
 }
 
 .notification-filters {
+  align-items: center;
+  display: flex;
   height: 32px;
+  justify-content: center;
   list-style: none;
   margin: 0 0 2px;
-  padding: 0;
   overflow: hidden;
+  padding: 0;
 
   .tab {
-    float: left;
     height: 30px;
+    margin-left: 2px;
+    overflow: hidden;
     text-align: center;
-    width: calc((100% - 2px) / 3);
-
-    &:not(:last-child) {
-      margin-right: 1px;
-    }
+    width: 50%;
 
     button {
       background-color: #424a52;
@@ -38,8 +38,10 @@
       display: block;
       font-size: 11px;
       height: 30px;
+      overflow: hidden;
       text-decoration: none;
-      text-transform: capitalize;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       width: 100%;
 
       .type-indicator {
@@ -52,7 +54,7 @@
         vertical-align: top;
         width: 10px;
 
-        &.status-dot {
+        &.activity-dot {
           background-color: #2d74fa;
           background-image: linear-gradient(
             to right,

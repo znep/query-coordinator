@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import I18n from 'common/i18n';
 import { Checkbox } from 'common/components';
 import MeasureResultCard from 'common/performance_measures/components/MeasureResultCard';
-import { CalculationTypeNames } from 'common/performance_measures/lib/constants';
+import { CalculationTypes } from 'common/performance_measures/lib/constants';
 
 import { setUnitLabel, setDecimalPlaces, toggleDisplayAsPercent } from '../../actions/editor';
 
@@ -20,7 +20,7 @@ export class CalculationPreview extends Component {
       onToggleDisplayAsPercent
     } = this.props;
 
-    if (calculationType !== CalculationTypeNames.RATE) {
+    if (calculationType !== CalculationTypes.RATE) {
       return null;
     }
 

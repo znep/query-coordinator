@@ -7,10 +7,11 @@ en:
       no_reporting_period: Reporting period has not been configured
       no_visualization: Metric calculation not available
       not_enough_data: Not enough data for current reporting period
+      calculating: Calculating...
       measure:
         as_of_last: as of last closed reporting period
         as_of_today: as of today
-        dividing_by_zero: PLACEHOLDER - Division by zero
+        dividing_by_zero: Denominator of the rate's fraction is zero
     asset_browser:
       alert_messages:
         resource_approved:
@@ -30,6 +31,7 @@ en:
       all_assets_button: View All Assets
       view_and_manage_assets: View and Manage Assets
       view_all: View All
+      view_user_assets: View %{userName}'s Assets
       asset_inventory_dataset_link:
         asset_inventory_dataset: Asset Inventory Dataset
         disabled_tooltip: This option is not available due to a processing delay. If the problem persists after 24 hours, please contact Socrata Support.
@@ -433,7 +435,7 @@ en:
         advanced_search:
           alert_title: Create your own alert
           description: Please enter your SoQL statement. An alert will be sent when the dataset is updated and the SoQL statement returns one or more rows.
-          text_box_description: Enter your SoQL statement      
+          text_box_description: Enter your SoQL statement
         alert_name_label: Name
         alert_name_placeholder: Name this Alert
         edit_mode_title: Manage Alerts
@@ -626,6 +628,7 @@ en:
         user_notifications: Notifications
         view_older: View Older News
         load_more_items: Load more items...
+        loading: loading...
         see_new_notifications: See New Notifications
         mark_as_read: Mark as read
         mark_as_unread: Mark as unread
@@ -640,9 +643,8 @@ en:
         setting: Settings
         no_unread_notifications: You have no unread notifications
         has_unread_notifications: You have unread notifications
-        filter_all_notifications_tab_text: all
-        filter_status_notifications_tab_text: status
-        filter_alert_notifications_tab_text: alert
+        filter_activity_notifications_tab_text: Updates
+        filter_alert_notifications_tab_text: Alerts
         working_copy_initial_view_published_default_key: Working Copy Initial View Published
         draft_working_copy_initial_view_published: Draft Published
         data_lens_working_copy_initial_view_published: Data Lens Published

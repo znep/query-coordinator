@@ -4,8 +4,8 @@ import _ from 'lodash';
 import '../componentBase';
 import Constants from '../Constants';
 import StorytellerUtils from 'StorytellerUtils';
-import { vifsAreEquivalent } from 'VifUtils';
-import { assert, assertHasProperty } from 'common/js_utils';
+import { updateVifWithDefaults, updateVifWithFederatedFromDomain, vifsAreEquivalent } from 'VifUtils';
+import { assert, assertHasProperty, parseJsonOrEmpty } from 'common/js_utils';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
 $.fn.componentSocrataVisualizationColumnChart = componentSocrataVisualizationColumnChart;
@@ -65,17 +65,17 @@ function _updateVisualization($element, props) {
 
   const { componentData } = props;
   const $componentContent = $element.find('.component-content');
-  const renderedVif = $element.attr('data-rendered-vif') || '{}';
-  const vif = componentData.value.vif;
-  const areNotEquivalent = !vifsAreEquivalent(JSON.parse(renderedVif), vif);
+  const renderedVif = $element.attr('data-rendered-vif');
+  const federatedFromDomain = _.get(componentData, 'value.dataset.federatedFromDomain');
 
+  let vif = componentData.value.vif;
+  vif = updateVifWithFederatedFromDomain(vif, federatedFromDomain);
+
+  const areNotEquivalent = !vifsAreEquivalent(parseJsonOrEmpty(renderedVif), vif);
   if (areNotEquivalent) {
     $element.attr('data-rendered-vif', JSON.stringify(vif));
 
-    vif.unit = {
-      one: 'record',
-      other: 'records'
-    };
+    vif = updateVifWithDefaults(vif);
 
     // EN-7517 - Title and description of VisualizationAddController V1 vifs are not useful.
     //

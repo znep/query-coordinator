@@ -1,32 +1,44 @@
-import 'whatwg-fetch';
-import { Socket } from 'phoenix';
 import _ from 'lodash';
 import $ from 'jquery';
+import { Socket } from 'phoenix';
+import utils from 'common/js_utils';
+import 'whatwg-fetch';
+
+import { NOTIFICATIONS_PER_PAGE, VIEW_METADATA_CHANGED } from 'common/notifications/constants';
 import { checkStatus } from 'common/notifications/api/helper';
 
-import { STATUS_ACTIVITY_TYPES, NOTIFICATIONS_PER_PAGE } from 'common/notifications/constants';
-
+/**
+ * NotificationAPI is event mediator that opens socket connection and
+ * listens to all asynchronous notification channel live events and
+ * updates the data to keep it in sync with all the active sessions
+ *
+ * It connect notification actions with notifications_and_alerts api services,
+ * to handles delete, clear all, mark as read, mark as unread actions on notifications, and
+ * to fetch new notifications
+ */
 class NotificationAPI {
   constructor(userId, callback, options = {}) {
-    // TODO: This should probably default to false. Question is out to team.
-    const useLogger = _.get(options, 'debugLog', true);
+    _.defaults(options, {
+      debugLog: true,
+      loadAlerts: false
+    });
 
     if (!userId) {
       console.error('NotificationAPI called without user id');
+
       return;
     }
 
     let channelId = `user: ${userId}`;
 
-    this._getSocketToken().then((response) => {
+    this.getSocketToken().then((response) => {
+      this.useLogger = options.debugLog;
       const socketOptions = { params: { user_id: userId, token: response.token } };
-      if (useLogger) {
-        socketOptions.logger = (kind, msg, data) => {
-          console.info(kind, msg, data);
-        };
-      }
+
+      socketOptions.logger = this.logDebugInfo;
 
       let socket = new Socket(`wss://${window.location.host}/api/notifications_and_alerts/socket`, socketOptions);
+
       if (_.get(options, 'developmentMode') && !this._hasEverJoined) {
         socket.onError(() => {
           console.warn('User Notifications: Error connecting, disabling connection in development mode.');
@@ -36,41 +48,41 @@ class NotificationAPI {
 
       socket.connect();
 
-      this._channel = socket.channel(channelId, {});
+      this.channel = socket.channel(channelId, {});
+      this.enqueuedNotifications = [];
+      this.userNotifications = { activity: this.setNotificationObject() };
 
-      let self = this;
-      self._offset = 0;
-      self._totalNotificationsCount = 0;
-      self._enqueuedNotifications = [];
-      this._loadNotifications(self._offset).then(function(response) {
-        self._notifications = self._transformNotifications(_.get(response, 'data', []));
-        self._totalNotificationsCount = _.get(response, 'count.total', 0);
-        self._unreadNotificationsCount = _.get(response, 'count.unread', 0);
-        self._offset += _.size(self._notifications);
-        self.update();
-        self._channel.join().receive('ok', (resp) => {
-          self._hasEverJoined = true;
-          if (useLogger) {
-            console.info('Joined user channel');
-          }
-        }).receive('error', (resp) => {
-          if (useLogger) {
-            console.info('Unable to join', resp);
-          }
-        });
-      }, function() {
+      if (options.loadAlerts) {
+        this.userNotifications.alert = this.setNotificationObject();
+      }
+
+      _.each(this.userNotifications, (userNotificationObject, type) => {
+        this.loadNotifications(type, userNotificationObject.offset);
       });
 
-      this._channel.on('new_notification', (msg) => this._onNewNotification(msg.notification));
-      this._channel.on('delete_notification', (msg) => this._onNotificationDelete(msg.notification_id));
-      this._channel.on('delete_all_notifications', (msg) => this._onDeleteAllNotifications(msg.notification_id));
-      this._channel.on('mark_notification_as_read', (msg) => this._onNotificationMarkedAsRead(msg.notification_id));
-      this._channel.on('mark_notification_as_unread', (msg) => this._onNotificationMarkedAsUnRead(msg.notification_id));
-      this._callback = callback;
+      this.channel.join().receive('ok', (resp) => {
+        this._hasEverJoined = true;
+        this.logDebugInfo('Joined user channel');
+      }).receive('error', (resp) => {
+        this.logDebugInfo('Unable to join', resp);
+      });
+
+      this.channel.on('new_notification', this.onNewNotification);
+      this.channel.on('delete_notification', this.onNotificationDelete);
+      this.channel.on('delete_all_notifications', this.onDeleteAllNotifications);
+      this.channel.on('mark_notification_as_read', this.onNotificationMarkedAsRead);
+      this.channel.on('mark_notification_as_unread', this.onNotificationMarkedAsUnRead);
+      this.callback = callback;
     });
   }
 
-  _getSocketToken() {
+  logDebugInfo = (...options) => {
+    if (this.useLogger) {
+      console.info(...options);
+    }
+  }
+
+  getSocketToken = () => {
     return fetch('/api/notifications_and_alerts/socket_token', {
       method: 'POST',
       credentials: 'same-origin'
@@ -79,127 +91,202 @@ class NotificationAPI {
     then((response) => response.json());
   }
 
-  _loadNotifications(offset) {
-    const params = { limit: NOTIFICATIONS_PER_PAGE, offset };
-    const queryString = $.param(params);
+  setNotificationObject = (options) => {
+    return _.defaults(options, {
+      hasMoreNotifications: false,
+      loading: false,
+      notifications: [],
+      total: 0,
+      offset: 0,
+      unread: 0
+    });
+  }
 
-    return fetch(`/api/notifications_and_alerts/notifications?${queryString}`, {
+  loadNotifications = (type, offset) => {
+    this.userNotifications[type].loading = true;
+    this.update();
+
+    const params = { limit: NOTIFICATIONS_PER_PAGE, offset, type };
+    const loadNotificationsUrl = `/api/notifications_and_alerts/notifications?${$.param(params)}`;
+
+    return fetch(loadNotificationsUrl, {
       credentials: 'same-origin'
-    })
-    .then((response) => response.json());
+    }).
+    then((response) => {
+      return response.json();
+    }).then(response => {
+      offset += NOTIFICATIONS_PER_PAGE;
+      const { total, unread } = response.count;
+      const notifications = _.union(
+        this.userNotifications[type].notifications,
+        this.transformNotifications(_.get(response, 'data', []))
+      );
+      const hasMoreNotifications = offset < total;
+
+      this.userNotifications[type] = this.setNotificationObject({
+        hasMoreNotifications,
+        notifications,
+        total,
+        offset,
+        unread
+      });
+
+      this.update();
+    });
   }
 
-  _onNewNotification(notification) {
-    this._enqueuedNotifications.unshift(this._transformNotification(notification));
-    this._totalNotificationsCount++;
-    this._unreadNotificationsCount++;
-    this._offset++;
+  onNewNotification = (response) => {
+    if (_.isUndefined(response.notification) || !_.isObject(response.notification)) {
+      this.logDebugInfo('invalid response', response);
+      return;
+    }
+
+    const { notification } = response;
+    const { type } = notification;
+
+    this.enqueuedNotifications.unshift(this.transformNotification(notification));
+    this.userNotifications[type].total++;
+    this.userNotifications[type].unread++;
+    this.userNotifications[type].offset++;
     this.update();
   }
 
-  _onNotificationDelete(notificationId) {
-    const notificationIndex = this._notifications.findIndex((n) => n.id === notificationId);
+  onNotificationDelete = (response) => {
+    if (!_.isNumber(response.notification_id) || !_.isString(response.type)) {
+      this.logDebugInfo('invalid response', response);
+      return;
+    }
+
+    const { notification_id: notificationId, type } = response;
+    const notificationIndex = this.getNotificationIndex(
+      this.userNotifications[type].notifications,
+      notificationId
+    );
 
     if (notificationIndex !== -1) {
-      if (this._notifications[notificationIndex].read === false) {
-        this._unreadNotificationsCount--;
+      if (this.userNotifications[type].notifications[notificationIndex].read === false) {
+        this.userNotifications[type].unread--;
       }
 
-      this._notifications.splice(notificationIndex, 1);
+      this.userNotifications[type].notifications.splice(notificationIndex, 1);
     } else {
-      const enqueuedNotificationIndex = this._enqueuedNotifications.findIndex((n) => n.id === notificationId);
+      const enqueuedNotificationIndex = this.getNotificationIndex(
+        this.enqueuedNotifications,
+        notificationId
+      );
 
-      if (this._enqueuedNotifications[enqueuedNotificationIndex].read === false) {
-        this._unreadNotificationsCount--;
+      if (this.enqueuedNotifications[enqueuedNotificationIndex].read === false) {
+        this.userNotifications[type].unread--;
       }
 
-      this._enqueuedNotifications.splice(enqueuedNotificationIndex, 1);
+      this.enqueuedNotifications.splice(enqueuedNotificationIndex, 1);
     }
 
-    this._totalNotificationsCount--;
-    this._offset--;
+    this.userNotifications[type].total--;
+    this.userNotifications[type].offset--;
     this.update();
   }
 
-  _onDeleteAllNotifications() {
-    this._notifications = [];
-    this._enqueuedNotifications = [];
-    this._totalNotificationsCount = 0;
-    this._unreadNotificationsCount = 0;
-    this._offset = 0;
+  onDeleteAllNotifications = () => {
+    this.enqueuedNotifications = [];
+    this.userNotifications.activity = this.setNotificationObject();
+
+    if (this.userNotifications.alert) {
+      this.userNotifications.alert = this.setNotificationObject();
+    }
+
     this.update();
   }
 
-  _onNotificationMarkedAsRead(notificationId) {
-    const notificationIndex = this._notifications.findIndex((n) => n.id === notificationId);
+  onNotificationMarkedAsRead = (response) => {
+    if (!_.isNumber(response.notification_id) || !_.isString(response.type)) {
+      this.logDebugInfo('invalid response', response);
+      return;
+    }
+
+    const { notification_id: notificationId, type } = response;
+
+    this.updateNotificationReadState(notificationId, type, true);
+  }
+
+  onNotificationMarkedAsUnRead = (response) => {
+    if (!_.isNumber(response.notification_id) || !_.isString(response.type)) {
+      this.logDebugInfo('invalid response', response);
+      return;
+    }
+
+    const { notification_id: notificationId, type } = response;
+
+    this.updateNotificationReadState(notificationId, type, false);
+  }
+
+  updateNotificationReadState = (notificationId, type, toggle) => {
+    const notificationIndex = this.getNotificationIndex(
+      this.userNotifications[type].notifications,
+      notificationId
+    );
 
     if (notificationIndex !== -1) {
-      this._notifications[notificationIndex].read = true;
+      this.userNotifications[type].notifications[notificationIndex].read = toggle;
     } else {
-      const enqueuedNotificationIndex = this._enqueuedNotifications.findIndex((n) => n.id === notificationId);
-      this._enqueuedNotifications[enqueuedNotificationIndex].read = true;
+      const enqueuedNotificationIndex = this.getNotificationIndex(
+        this.enqueuedNotifications,
+        notificationId
+      );
+
+      this.enqueuedNotifications[enqueuedNotificationIndex].read = toggle;
     }
 
-    this._unreadNotificationsCount--;
+    if (toggle) {
+      this.userNotifications[type].unread--;
+    } else {
+      this.userNotifications[type].unread++;
+    }
+
     this.update();
   }
 
-  _onNotificationMarkedAsUnRead(notificationId) {
-    const notificationIndex = this._notifications.findIndex((n) => n.id === notificationId);
-
-    if (notificationIndex !== -1) {
-      this._notifications[notificationIndex].read = false;
-    } else {
-      const enqueuedNotificationIndex = this._enqueuedNotifications.findIndex((n) => n.id === notificationId);
-      this._enqueuedNotifications[enqueuedNotificationIndex].read = false;
-    }
-
-    this._unreadNotificationsCount++;
-    this.update();
+  getNotificationIndex = (notifications, notificationId) => {
+    return _.findIndex(notifications, { id: notificationId });
   }
 
-  deleteNotification(notificationId) {
+  deleteNotification = (notificationId) => {
     fetch(`/api/notifications_and_alerts/notifications/${notificationId}`, {
       method: 'DELETE',
       credentials: 'same-origin'
     });
   }
 
-  deleteAllNotifications() {
+  deleteAllNotifications = () => {
     fetch('/api/notifications_and_alerts/notifications', {
       method: 'DELETE',
       credentials: 'same-origin'
     });
   }
 
-  loadMoreNotifications() {
-    let self = this;
-    this._loadNotifications(self._offset).then(function(response) {
-      const newNotifications = self._transformNotifications(_.get(response, 'data', []));
-      self._offset += _.size(newNotifications);
-      self._totalNotificationsCount = _.get(response, 'count.total', 0);
-      self._unreadNotificationsCount = _.get(response, 'count.unread', 0);
-      self._notifications = _.union(self._notifications, newNotifications);
-
-      self.update();
-    }, function() {});
+  loadMoreNotifications = (type) => {
+    this.loadNotifications(type, this.userNotifications[type].offset);
   }
 
-  seeNewNotifications() {
-    this._notifications = this._enqueuedNotifications.concat(this._notifications);
-    this._enqueuedNotifications = [];
+  seeNewNotifications = (type) => {
+    this.userNotifications[type].notifications = _.filter(this.enqueuedNotifications, (notification) => {
+      return type === notification.type;
+    }).concat(this.userNotifications[type].notifications);
+    this.enqueuedNotifications = _.reject(this.enqueuedNotifications, (notification) => {
+      return type === notification.type;
+    });
     this.update();
   }
 
-  markNotificationAsRead(notificationId) {
+  markNotificationAsRead = (notificationId) => {
     this.toggleNotificationReadState(notificationId, true);
   }
 
-  markNotificationAsUnRead(notificationId) {
+  markNotificationAsUnRead = (notificationId) => {
     this.toggleNotificationReadState(notificationId, false);
   }
 
-  toggleNotificationReadState(notificationId, toggle) {
+  toggleNotificationReadState = (notificationId, toggle) => {
     fetch(`/api/notifications_and_alerts/notifications/${notificationId}`, {
       method: 'PUT',
       headers: {
@@ -215,89 +302,91 @@ class NotificationAPI {
     });
   }
 
-  _convertToUrlComponent(text) {
-    let output = text.
-      replace(/\s+/g, '-').
-      replace(/[^a-zA-Z0-9_\-]/g, '-').
-      replace(/\-+/g, '-');
-
-    if (output.length < 1) {
-      output = '-';
-    }
-
-    return output.slice(0, 50);
-  }
-
-  _getUserProfileLink(domainCname, userName, userId) {
+  getUserProfileLink = (domainCname, userName, userId) => {
     if (_.isEmpty(domainCname) || _.isEmpty(userName) || _.isEmpty(userId)) {
       return null;
     }
 
-    return `//${domainCname}/profile/${this._convertToUrlComponent(userName)}/${userId}`;
+    return `//${domainCname}/profile/${utils.convertToUrlComponent(userName)}/${userId}`;
   }
 
-  _getDatasetLink(domainCname, name, uId) {
+  getDatasetLink = (domainCname, name, uId) => {
     if (_.isEmpty(domainCname) || _.isEmpty(name) || _.isEmpty(uId)) {
       return null;
     }
 
-    return `//${domainCname}/dataset/${this._convertToUrlComponent(name)}/${uId}`;
+    return `//${domainCname}/dataset/${utils.convertToUrlComponent(name)}/${uId}`;
   }
 
-  _transformNotification(notification) {
-    const transformedNotification = {};
+  //
+  transformNotification = (notification) => {
     const userActivityTypes = ['UserAdded', 'UserRemoved', 'UserRoleChanged'];
     const activityType = _.get(notification, 'activity.activity_type', '');
     const domainCname = _.get(notification, 'activity.domain_cname', '');
     const userName = _.get(notification, 'activity.acting_user_name', '');
     const userId = _.get(notification, 'activity.acting_user_id', '');
-    const notificationType = _.includes(STATUS_ACTIVITY_TYPES, activityType) ? 'status' : 'alert';
+    const type = _.get(notification, 'type', '');
 
-    transformedNotification.id = _.get(notification, 'id', '');
-    transformedNotification.read = _.get(notification, 'read', false);
-    transformedNotification.activityType = activityType;
-    transformedNotification.createdAt = _.get(notification, 'activity.created_at', '');
-    transformedNotification.type = notificationType;
-    transformedNotification.activityUniqueKey = _.get(notification, 'activity_unique_key', '');
-    transformedNotification.userName = userName;
-    transformedNotification.userProfileLink = this._getUserProfileLink(domainCname, userName, userId);
+    const transformedNotification = {
+      id: _.get(notification, 'id', ''),
+      read: _.get(notification, 'read', false),
+      activityType: activityType,
+      createdAt: _.get(notification, 'activity.created_at', ''),
+      type: type,
+      activityUniqueKey: _.get(notification, 'activity_unique_key', ''),
+      userName: userName,
+      userProfileLink: this.getUserProfileLink(domainCname, userName, userId)
+    };
 
-    if (notificationType === 'alert') {
+    if (type === 'alert') {
       const domainName = _.get(notification, 'alert.domain', '');
       const datasetId = _.get(notification, 'alert.dataset_uid', '');
       const datasetName = _.get(notification, 'alert.dataset_name', '');
-      transformedNotification.alertName = _.get(notification, 'alert.name', '');
 
-      transformedNotification.messageBody = datasetName;
-      transformedNotification.link = this._getDatasetLink(domainName, datasetName, datasetId);
-      transformedNotification.createdAt = _.get(notification, 'alert_triggered_at', '');
+      _.assignIn(transformedNotification, {
+        alertName: _.get(notification, 'alert.name', ''),
+        messageBody: datasetName,
+        link: this.getDatasetLink(domainName, datasetName, datasetId),
+        createdAt: _.get(notification, 'alert_triggered_at', '')
+      });
+
     } else {
-      if (activityType === 'ViewMetadataChanged') {
+      if (activityType === VIEW_METADATA_CHANGED) {
         const viewId = _.get(notification, 'activity.view_uid', '');
         const viewName = _.get(notification, 'activity.view_name', '');
 
-        transformedNotification.link = this._getDatasetLink(domainCname, viewName, viewId);
-        transformedNotification.messageBody = viewName;
+        _.assignIn(transformedNotification, {
+          link: this.getDatasetLink(domainCname, viewName, viewId),
+          messageBody: viewName
+        });
       } else if (_.includes(userActivityTypes, activityType)) {
-        transformedNotification.link = null;
-        transformedNotification.messageBody = _.get(
-          JSON.parse(_.get(notification, 'activity.details', '')),
-          'summary',
-          ''
-        );
+        let activityDetails = {};
+
+        try {
+          activityDetails = JSON.parse(_.get(notification, 'activity.details', {}));
+        } catch (err) {
+          this.logDebugInfo('malformed data', _.get(notification, 'activity.details', {}));
+        }
+
+        _.assignIn(transformedNotification, {
+          link: null,
+          messageBody: _.get(activityDetails, 'summary', '')
+        });
       } else {
         const datasetId = _.get(notification, 'activity.dataset_uid', '');
         const datasetName = _.get(notification, 'activity.dataset_name', '');
 
-        transformedNotification.link = this._getDatasetLink(domainCname, datasetName, datasetId);
-        transformedNotification.messageBody = datasetName;
+        _.assignIn(transformedNotification, {
+          link: this.getDatasetLink(domainCname, datasetName, datasetId),
+          messageBody: datasetName
+        });
       }
     }
 
     return transformedNotification;
   }
 
-  _transformNotifications(notifications) {
+  transformNotifications = (notifications) => {
     if (_.isEmpty(notifications)) {
       return notifications;
     }
@@ -305,16 +394,15 @@ class NotificationAPI {
     const transformedNotifications = [];
 
     _.each(notifications, (notification) => {
-      transformedNotifications.push(this._transformNotification(notification));
+      transformedNotifications.push(this.transformNotification(notification));
     });
 
     return transformedNotifications;
   }
 
-  update() {
-    if (this._callback) {
-      const hasMoreNotifications = this._offset < this._totalNotificationsCount;
-      this._callback(this._notifications, this._enqueuedNotifications, hasMoreNotifications, this._unreadNotificationsCount);
+  update = () => {
+    if (_.isFunction(this.callback)) {
+      this.callback(this.userNotifications, this.enqueuedNotifications);
     }
   }
 }

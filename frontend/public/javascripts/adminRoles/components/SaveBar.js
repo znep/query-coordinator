@@ -1,44 +1,47 @@
+import includes from 'lodash/fp/includes';
 import PropTypes from 'prop-types';
 import React from 'react';
 import cssModules from 'react-css-modules';
-import { connect } from 'react-redux';
 import { spring } from 'react-motion';
-import includes from 'lodash/fp/includes';
-import bindAll from 'lodash/fp/bindAll';
+import { connect } from 'react-redux';
 
-import { connectLocalization } from 'common/components/Localization';
+import Button from 'common/components/Button';
 import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
-import { editCustomRoles, saveRoles } from '../actions';
-import { getAppState, getDirtyRolesFromState, stateHasCustomRoles } from '../adminRolesSelectors';
-import { EDIT_CUSTOM_ROLES, SAVING, EDIT_INDIVIDUAL_CUSTOM_ROLE } from '../appStates';
-import { Button } from 'common/components';
+import { connectLocalization } from 'common/components/Localization';
+
+import * as Actions from '../actions';
+import * as Selectors from '../adminRolesSelectors';
+import { EDIT_CUSTOM_ROLES, EDIT_INDIVIDUAL_CUSTOM_ROLE, SAVING } from '../appStates';
 import styles from './save-bar.module.scss';
 
 const mapStateToProps = state => {
-  const appState = getAppState(state);
-  const dirtyRoles = getDirtyRolesFromState(state);
+  const appState = Selectors.getAppState(state);
+  const dirtyRoles = Selectors.getDirtyRolesFromState(state);
   return {
     isEditMode: includes(appState, [EDIT_CUSTOM_ROLES, SAVING, EDIT_INDIVIDUAL_CUSTOM_ROLE]),
     isSaving: appState === SAVING,
-    hasCustomRoles: stateHasCustomRoles(state),
+    hasCustomRoles: Selectors.stateHasCustomRoles(state),
     dirtyRoles,
     hasDirtyRoles: dirtyRoles.size
   };
 };
 
 const mapDispatchToProps = {
-  cancelEditCustomRoles: () => editCustomRoles.cancel(),
-  saveRoles: (roles) => saveRoles({ roles })
+  editCustomRolesCancel: Actions.editCustomRolesCancel,
+  saveRoles: Actions.saveRoles
 };
 
 class SaveBar extends React.Component {
-  constructor() {
-    super();
-    bindAll(['renderCancelButton', 'renderSaveButton'], this);
-  }
+  static propTypes = {
+    editCustomRolesCancel: PropTypes.func.isRequired,
+    dirtyRoles: PropTypes.object.isRequired,
+    isSaving: PropTypes.bool.isRequired,
+    saveRoles: PropTypes.func.isRequired,
+    style: PropTypes.object.isRequired
+  };
 
-  renderCancelButton() {
-    const { cancelEditCustomRoles, isSaving, localization: { translate } } = this.props;
+  renderCancelButton = () => {
+    const { editCustomRolesCancel, isSaving, localization: { translate } } = this.props;
 
     return (
       <Button
@@ -46,14 +49,14 @@ class SaveBar extends React.Component {
         inverse={!isSaving}
         buttonDisabledStyle={'light'}
         disabled={isSaving}
-        onClick={cancelEditCustomRoles}
+        onClick={editCustomRolesCancel}
       >
         {translate('screens.admin.roles.buttons.cancel')}
       </Button>
     );
-  }
+  };
 
-  renderSaveButton() {
+  renderSaveButton = () => {
     const { dirtyRoles, isSaving, saveRoles, localization: { translate } } = this.props;
 
     return (
@@ -67,13 +70,14 @@ class SaveBar extends React.Component {
         <div style={{ visibility: isSaving ? 'hidden' : 'inline' }}>
           {translate('screens.admin.roles.buttons.save')}
         </div>
-        {isSaving &&
+        {isSaving && (
           <div styleName="spinner-container">
             <span className="spinner-default spinner-btn-primary" />
-          </div>}
+          </div>
+        )}
       </Button>
     );
-  }
+  };
 
   render() {
     const { style } = this.props;
@@ -86,14 +90,6 @@ class SaveBar extends React.Component {
     );
   }
 }
-
-SaveBar.propTypes = {
-  cancelEditCustomRoles: PropTypes.func.isRequired,
-  dirtyRoles: PropTypes.object.isRequired,
-  isSaving: PropTypes.bool.isRequired,
-  saveRoles: PropTypes.func.isRequired,
-  style: PropTypes.object.isRequired
-};
 
 const StyledActionBar = cssModules(SaveBar, styles);
 

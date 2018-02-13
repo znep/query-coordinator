@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import { $transient } from '../TransientElement';
 import socrataVisualizationClassicComponentData from '../fixtures/socrataVisualizationClassicComponentData';
@@ -13,7 +15,7 @@ describe('componentSocrataVisualizationClassic jQuery plugin', function() {
   var getProps = (props) => {
     return _.extend({
       blockId: null,
-      componentData: validComponentData,
+      componentData: _.cloneDeep(validComponentData),
       componentIndex: null,
       theme: null
     }, props);
@@ -46,6 +48,32 @@ describe('componentSocrataVisualizationClassic jQuery plugin', function() {
     });
   });
 
+  describe('when component data contains `federatedFromDomain`', () => {
+    beforeEach(() => {
+      const componentData = _.merge(_.cloneDeep(validComponentData), {
+        value: {
+          dataset: {
+            federatedFromDomain: 'example.com'
+          }
+        }
+      });
+      $component = $component.componentSocrataVisualizationClassic(getProps({ componentData }));
+    });
+
+    it('renders source data link with federatedFromDomain', () => {
+      const $sourceDataLink = $component.find('.socrata-visualization-view-source-data a');
+      assert.match(
+        $sourceDataLink.find('span:nth-child(1)').text(),
+        /View Source Data/
+      );
+      assert.equal(
+        $sourceDataLink.attr('href'),
+        `https://example.com/d/${validComponentData.value.visualization.id}`
+      );
+    });
+
+  });
+
   describe('given a valid component type and value', function() {
 
     beforeEach(function() {
@@ -72,6 +100,18 @@ describe('componentSocrataVisualizationClassic jQuery plugin', function() {
         assert.deepEqual(viewObject, validComponentData.value.visualization);
         done();
       };
+    });
+
+    it('renders source data link', () => {
+      const $sourceDataLink = $component.find('.socrata-visualization-view-source-data a');
+      assert.match(
+        $sourceDataLink.find('span:nth-child(1)').text(),
+        /View Source Data/
+      );
+      assert.equal(
+        $sourceDataLink.attr('href'),
+        `https://${window.location.hostname}/d/${validComponentData.value.visualization.id}`
+      );
     });
 
     it('should render a classic visualization once if the visualization doesn\'t change', function() {

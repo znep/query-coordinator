@@ -1,4 +1,7 @@
 import _ from 'lodash';
+import sinon from 'sinon';
+import { assert } from 'chai';
+
 import I18nMocker from '../I18nMocker';
 
 import StorytellerUtils from 'StorytellerUtils';
@@ -175,9 +178,9 @@ describe('CoreSavingStore', function() {
         var body = JSON.parse(request.requestBody);
         assert.propertyVal(body, 'name', storyTitle);
         assert.propertyVal(body, 'description', storyDescription);
-        assert.deepPropertyVal(body, 'metadata.tileConfig.title', storyTileTitle);
-        assert.deepPropertyVal(body, 'metadata.tileConfig.description', storyTileDescription);
-        assert.deepPropertyVal(body, 'metadata.foo', 'bar'); // doesn't obliterate other metadata
+        assert.nestedPropertyVal(body, 'metadata.tileConfig.title', storyTileTitle);
+        assert.nestedPropertyVal(body, 'metadata.tileConfig.description', storyTileDescription);
+        assert.nestedPropertyVal(body, 'metadata.foo', 'bar'); // doesn't obliterate other metadata
       });
 
       describe('and the PUT succeeds', function() {

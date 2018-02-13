@@ -37,6 +37,10 @@ default: &default
   feature_flag_monitor_uri: {{ FEATURE_FLAG_MONITOR_URI }}
   {%- endif %}
 
+  {% if FEATURE_FLAG_SERVICE is defined -%}
+  feature_flag_service: {{ FEATURE_FLAG_SERVICE }}
+  {%- endif %}
+
   {% if CURATED_REGION_JOB_QUEUE_HOSTNAME is defined and CURATED_REGION_JOB_QUEUE_PORT is defined -%}
   curated_region_job_queue_hostname: {{ CURATED_REGION_JOB_QUEUE_HOSTNAME }}
   curated_region_job_queue_port: {{ CURATED_REGION_JOB_QUEUE_PORT }}

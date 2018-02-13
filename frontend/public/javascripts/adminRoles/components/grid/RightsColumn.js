@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import { connect } from 'react-redux';
 
+import { connectLocalization } from 'common/components/Localization';
+
+import * as selectors from '../../adminRolesSelectors';
 import Grid from '../util/Grid';
 import RightCategory from './RightCategory';
-import { connectLocalization } from 'common/components/Localization';
-import * as selectors from '../../adminRolesSelectors';
-
 import styles from './roles-grid.module.scss';
 
 const mapStateToProps = state => ({
@@ -15,22 +15,24 @@ const mapStateToProps = state => ({
 });
 
 class RightsColumn extends Component {
+  static propTypes = {
+    rightCategories: PropTypes.object.isRequired
+  };
+
   render() {
     const { rightCategories, localization: { translate } } = this.props;
 
     return (
       <Grid.Column styleName="rights-column">
         <Grid.Header styleName="rights-header-cell">
-          <h4>
-            {translate('screens.admin.roles.index_page.grid.role')}
-          </h4>
+          <h4>{translate('screens.admin.roles.index_page.grid.role')}</h4>
         </Grid.Header>
-        {rightCategories.map(rightCategory =>
+        {rightCategories.map(rightCategory => (
           <RightCategory
             key={selectors.getTranslationKeyFromRightCategory(rightCategory)}
             rightCategory={rightCategory}
           />
-        )}
+        ))}
         <Grid.Cell styleName="right-footer-cell">
           {translate('screens.admin.roles.index_page.grid.currently')}:
         </Grid.Cell>
@@ -38,9 +40,5 @@ class RightsColumn extends Component {
     );
   }
 }
-
-RightsColumn.propTypes = {
-  rightCategories: PropTypes.object.isRequired
-};
 
 export default connectLocalization(connect(mapStateToProps)(cssModules(RightsColumn, styles)));

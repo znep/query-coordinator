@@ -45,7 +45,9 @@ export class ResultCard extends Component {
   }
 
   viewCardProps() {
-    const { description, id, isPublic, link, name, previewImageUrl, type, updatedAt, viewCount } = this.props;
+    const { description, domain, id, isPublic, link, name, previewImageUrl, type, updatedAt, viewCount } = this.props;
+    const currentDomain = _.get(window, 'serverConfig.domain', window.location.hostname);
+    const isFederated = domain !== currentDomain;
 
     // EN-19924: USAID sadtimes
     const displayType = (FeatureFlags.value('usaid_features_enabled') && type === 'href') ?
@@ -60,6 +62,7 @@ export class ResultCard extends Component {
       metadataLeft: getDateLabel(updatedAt),
       metadataRight: getViewCountLabel(viewCount),
       imageUrl: previewImageUrl,
+      isFederated,
       isPrivate: !isPublic,
       linkProps: {
         target: '_blank',

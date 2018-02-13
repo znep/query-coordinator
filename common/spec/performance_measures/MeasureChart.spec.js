@@ -6,6 +6,7 @@ import { assert } from 'chai';
 
 import I18n from 'common/i18n';
 
+import { MeasureTitle } from 'common/performance_measures/components/MeasureTitle';
 import { MeasureChart } from 'common/performance_measures/components/MeasureChart';
 
 describe('MeasureChart', () => {
@@ -15,6 +16,39 @@ describe('MeasureChart', () => {
       ...props
     };
   };
+
+  describe('showMetadata', () => {
+    const props = getProps({
+      computedMeasure: {
+        series: [],
+        errors: {}
+      },
+      lens: { name: 'foo' },
+      measure: { metadata: { shortName: 'bar' } }
+    });
+
+    it('set to true should render a title', () => {
+      const element = shallow(<MeasureChart showMetadata {...props} />);
+      const title = element.find(MeasureTitle);
+
+      assert.lengthOf(title, 1);
+      assert.equal(
+        props.lens,
+        title.prop('lens')
+      );
+      assert.equal(
+        props.measure,
+        title.prop('measure')
+      );
+    });
+
+    it('not set should render no title', () => {
+      const element = shallow(<MeasureChart {...props} />);
+      const title = element.find(MeasureTitle);
+
+      assert.lengthOf(title, 0);
+    });
+  });
 
   describe('when computedMeasure has series', () => {
     it('renders a placeholder when series is empty', () => {
@@ -73,16 +107,22 @@ describe('MeasureChart', () => {
     });
   });
 
+  it('renders a spinner if measure is not set', () => {
+    const element = shallow(<MeasureChart />);
+
+    assert.lengthOf(element.find('.measure-result-spinner-container'), 1);
+  });
+
   it('renders a spinner if dataRequestInFlight is set', () => {
     const element = shallow(<MeasureChart dataRequestInFlight {...getProps()} />);
 
-    assert.lengthOf(element.find('.spinner-default'), 1);
+    assert.lengthOf(element.find('.measure-result-spinner-container'), 1);
   });
 
   it('renders no spinner if dataRequestInFlight is not set', () => {
     const element = shallow(<MeasureChart {...getProps()} />);
 
-    assert.lengthOf(element.find('.spinner-default'), 0);
+    assert.lengthOf(element.find('.measure-result-spinner-container'), 0);
   });
 
   describe('generateVifFromMeasure', () => {

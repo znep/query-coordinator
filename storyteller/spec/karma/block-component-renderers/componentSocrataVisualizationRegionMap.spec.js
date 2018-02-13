@@ -1,8 +1,11 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import { $transient } from '../TransientElement';
 import 'editor/block-component-renderers/componentSocrataVisualizationRegionMap';
+import { updateVifWithDefaults, updateVifWithFederatedFromDomain } from 'VifUtils';
 
 describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
 
@@ -20,7 +23,7 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
   var getProps = (props) => {
     return _.extend({
       blockId: null,
-      componentData: validComponentData,
+      componentData: _.cloneDeep(validComponentData),
       componentIndex: null,
       theme: null
     }, props);
@@ -53,11 +56,41 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
     });
   });
 
+  describe('when component data contains `federatedFromDomain`', function() {
+    var socrataSvgRegionMapStub;
+
+    beforeEach(function() {
+      socrataSvgRegionMapStub = sinon.stub($.fn, 'socrataSvgRegionMap');
+
+      const componentData = _.merge(_.cloneDeep(validComponentData), {
+        value: {
+          dataset: {
+            federatedFromDomain: 'example.com'
+          }
+        }
+      });
+      $component = $component.componentSocrataVisualizationRegionMap(getProps({ componentData }));
+    });
+
+    afterEach(function() {
+      socrataSvgRegionMapStub.restore();
+    });
+
+    it('should call into socrataSvgRegionMap with the correct arguments', function() {
+      const expectedVif = updateVifWithDefaults(updateVifWithFederatedFromDomain(_.cloneDeep(validComponentData).value.vif, 'example.com'));
+      sinon.assert.calledWithExactly(
+        socrataSvgRegionMapStub,
+        expectedVif,
+        sinon.match.any
+      );
+    });
+  });
+
   describe('given a valid component type and value', function() {
     var socrataSvgRegionMapStub;
 
     beforeEach(function() {
-      socrataSvgRegionMapStub = sinon.stub($.fn, 'socrataSvgRegionMap', function() { return this; });
+      socrataSvgRegionMapStub = sinon.stub($.fn, 'socrataSvgRegionMap').callsFake(function() { return this; });
       $component = $component.componentSocrataVisualizationRegionMap(getProps());
     });
 
@@ -117,7 +150,7 @@ describe('componentSocrataVisualizationRegionMap jQuery plugin', function() {
       var socrataSvgRegionMapStub;
 
       beforeEach(function() {
-        socrataSvgRegionMapStub = sinon.stub($.fn, 'socrataSvgRegionMap', function() { return this; });
+        socrataSvgRegionMapStub = sinon.stub($.fn, 'socrataSvgRegionMap').callsFake(function() { return this; });
         $component = $component.componentSocrataVisualizationRegionMap(getProps());
       });
 

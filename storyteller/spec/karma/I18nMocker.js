@@ -1,3 +1,5 @@
+import sinon from 'sinon';
+
 import StorytellerUtils from '../../app/assets/javascripts/StorytellerUtils';
 
 export default {

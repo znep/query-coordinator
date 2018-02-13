@@ -1,6 +1,6 @@
 <span class="currentStatus"><%= status if local_assigns[:status] %></span>
 
-<%- if current_user && current_user.has_right?(UserRights::MODERATE_COMMENTS) -%>
+<%- if current_user && current_user.has_right?(UserRights::EDIT_NOMINATIONS) -%>
   <a href="#Moderate"
     title="<%= t('controls.nominate.moderate_tip') %>"
     data-status="pending"

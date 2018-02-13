@@ -1,11 +1,14 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import { $transient } from '../TransientElement';
 /* eslint-disable no-unused-vars */
 import componentSocrataVisualizationHistogram
   from 'editor/block-component-renderers/componentSocrataVisualizationHistogram';
 /* eslint-enable no-unused-vars */
+import { updateVifWithDefaults, updateVifWithFederatedFromDomain } from 'VifUtils';
 
 describe('componentSocrataVisualizationHistogram jQuery plugin', function() {
   var $component;
@@ -29,7 +32,7 @@ describe('componentSocrataVisualizationHistogram jQuery plugin', function() {
   var getProps = (props) => {
     return _.extend({
       blockId: null,
-      componentData: validComponentData,
+      componentData: _.cloneDeep(validComponentData),
       componentIndex: null,
       theme: null
     }, props);
@@ -61,6 +64,36 @@ describe('componentSocrataVisualizationHistogram jQuery plugin', function() {
     });
   });
 
+  describe('when component data contains `federatedFromDomain`', function() {
+    var socrataHistogramStub;
+
+    beforeEach(function() {
+      socrataHistogramStub = sinon.stub($.fn, 'socrataSvgHistogram');
+
+      const componentData = _.merge(_.cloneDeep(validComponentData), {
+        value: {
+          dataset: {
+            federatedFromDomain: 'example.com'
+          }
+        }
+      });
+      $component = $component.componentSocrataVisualizationHistogram(getProps({ componentData }));
+    });
+
+    afterEach(function() {
+      socrataHistogramStub.restore();
+    });
+
+    it('should call into socrataSvgHistogram with the correct arguments', function() {
+      const expectedVif = updateVifWithDefaults(updateVifWithFederatedFromDomain(_.cloneDeep(validComponentData).value.vif, 'example.com'));
+      sinon.assert.calledWithExactly(
+        socrataHistogramStub,
+        expectedVif,
+        sinon.match.any
+      );
+    });
+  });
+
   describe('given a valid component type and value', function() {
     var socrataHistogramStub;
 
@@ -80,7 +113,7 @@ describe('componentSocrataVisualizationHistogram jQuery plugin', function() {
     it('should call into socrataSvgHistogram with the correct arguments', function() {
       sinon.assert.calledWithExactly(
         socrataHistogramStub,
-        validComponentData.value.vif,
+        updateVifWithDefaults(validComponentData.value.vif),
         sinon.match.any
       );
     });
@@ -91,11 +124,11 @@ describe('componentSocrataVisualizationHistogram jQuery plugin', function() {
 
         var changedData = _.cloneDeep(validComponentData);
         _.set(changedData, 'value.vif.columnName', 'test2');
-        $component.componentSocrataVisualizationHistogram(getProps({ componentData: changedData }));
+        $component.componentSocrataVisualizationHistogram(getProps({ componentData: _.cloneDeep(changedData) }));
 
         sinon.assert.calledWithExactly(
           socrataHistogramStub,
-          changedData.value.vif,
+          updateVifWithDefaults(changedData.value.vif),
           sinon.match.any
         );
       });

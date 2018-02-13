@@ -1,3 +1,6 @@
+import sinon from 'sinon';
+import { assert } from 'chai';
+
 import DataGenerators from '../DataGenerators';
 import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
 import Actions from 'editor/Actions';
@@ -1981,6 +1984,10 @@ describe('HistoryStore', function() {
 
     historyStore = new StoryStore(validStoryUid);
     dispatch({ action: Actions.STORY_CREATE, data: storyState1 });
+  });
+
+  afterEach(() => {
+    StoreAPI.__ResetDependency__('dispatcher');
   });
 
   function dispatch(action) {

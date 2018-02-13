@@ -1,4 +1,6 @@
 import { Simulate } from 'react-dom/test-utils';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import renderComponent from './renderComponent';
 
@@ -47,15 +49,15 @@ describe('ComponentEditMenu', () => {
   });
 
   it('renders', () => {
-    expect(element).to.exist;
+    assert.ok(element);
   });
 
   it('renders an edit button', () => {
-    expect(getEditButton()).to.exist;
+    assert.ok(getEditButton());
   });
 
   it('does not render a kebab button', () => {
-    expect(getKebabButton()).to.not.exist;
+    assert.notOk(getKebabButton());
   });
 
   describe('when clicking the edit button', () => {
@@ -83,7 +85,7 @@ describe('ComponentEditMenu', () => {
     });
 
     it('renders a kebab button', () => {
-      expect(getKebabButton()).to.exist;
+      assert.ok(getKebabButton());
     });
 
     describe('when clicking the kebab button', () => {
@@ -92,7 +94,7 @@ describe('ComponentEditMenu', () => {
       });
 
       it('renders a picklist', () => {
-        expect(getPicklist()).to.exist;
+        assert.ok(getPicklist());
       });
 
       describe('when clicking the picklist option to move a component', () => {

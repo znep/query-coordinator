@@ -21,6 +21,8 @@ import { WIZARD_STEP, assetSelectorStore } from '../stores/AssetSelectorStore';
 import { STATUS, fileUploaderStore } from '../stores/FileUploaderStore';
 import { flyoutRenderer } from '../FlyoutRenderer';
 
+import ConfigureMeasure from './asset_selector_steps/measures/ConfigureMeasure';
+
 export default function AssetSelectorRenderer(options) {
   const ENABLE_GETTY_IMAGES_GALLERY = FeatureFlags.value('enable_getty_images_gallery');
 
@@ -54,6 +56,7 @@ export default function AssetSelectorRenderer(options) {
       }
 
       if (confirmed) {
+        _removeReactContent();
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_CLOSE
         });
@@ -370,6 +373,30 @@ export default function AssetSelectorRenderer(options) {
     });
   }
 
+  function _renderReact(jsx) {
+    let reactContent = _container.find('.react-content');
+    if (!reactContent.length) {
+      reactContent = $('<div>', { 'class': 'react-content' });
+      _container.
+        trigger('modal-destroy').
+        removeClass('hidden').
+        append(
+          // Today, assume all React content sizes itself.
+          // In future, we may want to use the classic fixed sizes.
+          $('<div>', { 'class': 'modal-dialog modal-dialog-auto-width' }).append(reactContent)
+        );
+    }
+    ReactDOM.render(jsx, reactContent[0]);
+  }
+
+  function _removeReactContent() {
+    const reactContent = _container.find('.react-content');
+    if (reactContent.length) {
+      ReactDOM.unmountComponentAtNode(reactContent[0]);
+      reactContent.remove();
+    }
+  }
+
   function _renderSelector() {
     const step = assetSelectorStore.getStep();
     const componentType = assetSelectorStore.getComponentType();
@@ -377,6 +404,18 @@ export default function AssetSelectorRenderer(options) {
     let selectorTitle;
     let selectorContent;
     let selectorWideDisplay = false;
+
+    // Most of this renderer is written in plain jQuery for historical reasons. However,
+    // we want to move towards React. If a step opts-in to use React, short-circuit rendering
+    // here.
+    switch (step) {
+      /* React-enabled steps */
+      case WIZARD_STEP.CONFIGURE_MEASURE:
+        _lastRenderedStep = step;
+        return _renderReact(<ConfigureMeasure />);
+    }
+
+    _removeReactContent(); // From here on, using the old jquery-based renderer.
 
     // See if we need to render a new template, then render a media selector step if
     // necessary.
@@ -414,6 +453,11 @@ export default function AssetSelectorRenderer(options) {
           selectorTitle = I18n.t('editor.asset_selector.visualization.choose_dataset_heading');
           selectorContent = _renderChooseDatasetForVisualizationTemplate();
           selectorWideDisplay = true;
+          break;
+
+        case WIZARD_STEP.SELECT_MEASURE_FROM_CATALOG:
+          selectorTitle = I18n.t('editor.asset_selector.visualization.choose_measure_heading');
+          selectorContent = _renderChooseMeasureTemplate();
           break;
 
         case WIZARD_STEP.SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG:
@@ -599,28 +643,37 @@ export default function AssetSelectorRenderer(options) {
     const insertTableDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.choose_insert_table_description'));
 
+    const insertMeasureHeader = $('<h3>').
+      text(I18n.t('editor.asset_selector.visualization.choose_insert_measure_heading'));
+    const insertMeasureDescription = $('<p>').
+      text(I18n.t('editor.asset_selector.visualization.choose_insert_measure_description'));
+
     const authorVisualizationHeader = $('<h3>').
       text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_heading'));
     const authorVisualizationDescription = $('<p>').
       text(I18n.t('editor.asset_selector.visualization.choose_create_visualization_description'));
 
+    const optionsList = [
+      $('<li>', { 'data-visualization-option': 'INSERT_VISUALIZATION' }).
+        append(insertVisualizationHeader, insertVisualizationDescription),
+      $('<li>', { 'data-visualization-option': 'INSERT_TABLE' }).
+        append(insertTableHeader, insertTableDescription)
+    ];
+
+    if (FeatureFlags.value('open_performance_standalone_measures')) {
+      optionsList.push(
+        $(
+          '<li>',
+          {'data-visualization-option': 'INSERT_MEASURE'}
+        ).append(insertMeasureHeader, insertMeasureDescription)
+      );
+    }
+
     const visualizationOptions =
       $(
         '<ul>',
         {'class': 'asset-selector-button-list visualization-options'}
-      ).
-        append([
-          $(
-            '<li>',
-            {'data-visualization-option': 'INSERT_VISUALIZATION'}
-          ).
-            append(insertVisualizationHeader, insertVisualizationDescription),
-          $(
-            '<li>',
-            {'data-visualization-option': 'INSERT_TABLE'}
-          ).
-            append(insertTableHeader, insertTableDescription)
-        ]);
+      ).append(optionsList);
 
     visualizationOptions.append(
       $(
@@ -2228,6 +2281,7 @@ export default function AssetSelectorRenderer(options) {
 
     const defaultAssetSelectorProps = {
       closeOnSelect: false,
+      includeFederatedAssets: true,
       modalFooterChildren,
       onClose: handleClose,
       resultsPerPage: 6,
@@ -2238,13 +2292,24 @@ export default function AssetSelectorRenderer(options) {
     return ReactDOM.render(<AssetSelector {...assetSelectorProps} />, element);
   }
 
+  function _handleMeasureSelected(measureData) {
+    _closeAssetSelectorModal();
+    dispatcher.dispatch({
+      action: Actions.ASSET_SELECTOR_CHOOSE_MEASURE,
+      domain: measureData.domain,
+      uid: measureData.id
+    });
+  }
+
   function _handleDatasetAssetSelected(assetData) {
     // We don't want to get the initial view with the `read_from_nbe` flags. We get the migration and nbe view later.
     const datasetConfig = {
-      domain: assetData.domain,
+      domain: window.location.hostname, // We want to support viz on federated datasets, so we're reading from current domain with federation headers
       datasetUid: assetData.id,
       readFromNbe: false
     };
+
+    const isFederated = assetData.domain !== window.location.hostname;
 
     // Check for the NBE version of the dataset we're choosing
     const metadataProvider = new MetadataProvider(datasetConfig);
@@ -2299,11 +2364,17 @@ export default function AssetSelectorRenderer(options) {
           // We'd have to pass it around like 5 methods otherwise. (still true?)
           nbeViewData.domain = datasetConfig.domain;
 
-          // This dataset view is fit for visualization!
-          dispatcher.dispatch({
+          const payload = {
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
             viewData: nbeViewData
-          });
+          };
+
+          if (isFederated) {
+            payload.federatedFromDomain = assetData.domain;
+          }
+
+          // This dataset view is fit for visualization!
+          dispatcher.dispatch(payload);
 
           _closeAssetSelectorModal();
         } else {
@@ -2348,6 +2419,19 @@ export default function AssetSelectorRenderer(options) {
     return _renderAssetSelectorTemplate(assetSelectorProps);
   }
 
+  function _renderChooseMeasureTemplate() {
+    const assetSelectorProps = {
+      baseFilters: {
+        assetTypes: 'measures',
+        published: true
+      },
+      onAssetSelected: _handleMeasureSelected,
+      title: I18n.t('editor.asset_selector.visualization.choose_measure_heading')
+    };
+
+    return _renderAssetSelectorTemplate(assetSelectorProps);
+  }
+
   function _renderChooseTableTemplate() {
     const assetTypes =  ['datasets'];
     if (FeatureFlags.value('enable_filtered_tables_in_ax')) {
@@ -2370,24 +2454,33 @@ export default function AssetSelectorRenderer(options) {
     // We don't want to get the initial view with the `read_from_nbe` flags. That will cause
     // problems when we try to generate a preview of a classic visualization.
     const visualizationConfig = {
-      domain: assetData.domain,
+      domain: window.location.hostname, // We want to support federated visualizations, so we're reading from current domain with federation headers
       datasetUid: assetData.id,
       readFromNbe: false
     };
 
+    const isFederated = assetData.domain !== window.location.hostname;
+
     const metadataProvider = new MetadataProvider(visualizationConfig);
     metadataProvider.getDatasetMetadata().
       then((viewData) => {
+
+        const payload = {
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
+          domain: visualizationConfig.domain,
+          mapOrChartUid: visualizationConfig.datasetUid,
+          viewData
+        };
+
         // Retcon the domain into the view data.
         // We'd have to pass it around like 5 methods otherwise. (still true?)
-        viewData.domain = assetData.domain;
+        viewData.domain = visualizationConfig.domain;
 
-        dispatcher.dispatch({
-          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART,
-          domain: assetData.domain,
-          mapOrChartUid: assetData.id,
-          viewData
-        });
+        if (isFederated) {
+          payload.federatedFromDomain = assetData.domain;
+        }
+
+        dispatcher.dispatch(payload);
 
         _closeAssetSelectorModal();
       }).

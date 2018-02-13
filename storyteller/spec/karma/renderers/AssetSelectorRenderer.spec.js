@@ -1,6 +1,8 @@
 import $ from 'jquery';
 import _ from 'lodash';
 import React, { Component } from 'react';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import { FeatureFlags } from 'common/feature_flags';
 
@@ -57,7 +59,8 @@ describe('AssetSelectorRenderer', function() {
     FeatureFlags.useTestFixture({
       enable_getty_images_gallery: true,
       enable_filtered_tables_in_ax: false,
-      enable_new_maps: false
+      enable_new_maps: false,
+      open_performance_standalone_measures: true
     });
 
     server = sinon.fakeServer.create();
@@ -262,13 +265,12 @@ describe('AssetSelectorRenderer', function() {
 
       beforeEach(function() {
         // lotsa stubs!
-        isUploadingFileStub = sinon.stub(assetSelectorStoreMock, 'isUploadingFile', _.constant(true));
-        isHTMLFragmentStub = sinon.stub(assetSelectorStoreMock, 'isHTMLFragment', _.constant(true));
-        fileByIdStub = sinon.stub(
-          fileUploaderStoreMock,
-          'fileById',
-          _.constant({raw: true, status: STATUS.COMPLETED, resource: {}})
-        );
+        isUploadingFileStub = sinon.stub(assetSelectorStoreMock, 'isUploadingFile').
+          callsFake(_.constant(true));
+        isHTMLFragmentStub = sinon.stub(assetSelectorStoreMock, 'isHTMLFragment').
+          callsFake(_.constant(true));
+        fileByIdStub = sinon.stub(fileUploaderStoreMock, 'fileById').
+          callsFake(_.constant({raw: true, status: STATUS.COMPLETED, resource: {}}));
 
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
@@ -302,7 +304,7 @@ describe('AssetSelectorRenderer', function() {
       var getComponentValueStub;
 
       beforeEach(function() {
-        getComponentValueStub = sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+        getComponentValueStub = sinon.stub(assetSelectorStoreMock, 'getComponentValue').callsFake(_.constant({}));
 
         dispatcher.dispatch({
           action: Actions.ASSET_SELECTOR_PROVIDER_CHOSEN,
@@ -339,27 +341,9 @@ describe('AssetSelectorRenderer', function() {
       });
     });
 
-    // TODO add tests for handling the dataset/chart/map chosen...
-
-    // it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART` on a mapOrChartSelected event', function(done) {
-    //   dispatcher.register(function(payload) {
-    //     var action = payload.action;
-    //     assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART);
-    //     // the values will be empty, but assert that the event adds the keys
-    //     assert.propertyVal(payload, 'mapOrChartUid', 'mapc-hart');
-    //     assert.propertyVal(payload, 'domain', window.location.hostname);
-    //     done();
-    //   });
-    //
-    //   container.find('.modal-dialog').trigger('mapOrChartSelected', {
-    //     id: 'mapc-hart',
-    //     domainCName: undefined
-    //   });
-    // });
-
     it('dispatches `ASSET_SELECTOR_TOGGLE_IMAGE_WINDOW_TARGET` when new window checkbox is clicked', function(done) {
-      sinon.stub(assetSelectorStoreMock, 'getComponentType', _.constant('image'));
-      sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+      sinon.stub(assetSelectorStoreMock, 'getComponentType').callsFake(_.constant('image'));
+      sinon.stub(assetSelectorStoreMock, 'getComponentValue').callsFake(_.constant({}));
 
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
@@ -376,8 +360,8 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('dispatches `ASSET_SELECTOR_TOGGLE_STORY_WINDOW_TARGET` when new window checkbox is clicked', function(done) {
-      sinon.stub(assetSelectorStoreMock, 'getComponentType', _.constant('story.tile'));
-      sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+      sinon.stub(assetSelectorStoreMock, 'getComponentType').callsFake(_.constant('story.tile'));
+      sinon.stub(assetSelectorStoreMock, 'getComponentValue').callsFake(_.constant({}));
 
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
@@ -394,8 +378,8 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('dispatches `ASSET_SELECTOR_TOGGLE_GOAL_WINDOW_TARGET` when new window checkbox is clicked', function(done) {
-      sinon.stub(assetSelectorStoreMock, 'getComponentType', _.constant('goal.tile'));
-      sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+      sinon.stub(assetSelectorStoreMock, 'getComponentType').callsFake(_.constant('goal.tile'));
+      sinon.stub(assetSelectorStoreMock, 'getComponentValue').callsFake(_.constant({}));
 
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_JUMP_TO_STEP,
@@ -474,8 +458,8 @@ describe('AssetSelectorRenderer', function() {
     });
 
     it('renders an image preview with a description (alt attribute) container', function() {
-      var getComponentTypeStub = sinon.stub(assetSelectorStoreMock, 'getComponentType', _.constant('image'));
-      var getComponentValueStub = sinon.stub(assetSelectorStoreMock, 'getComponentValue', _.constant({}));
+      var getComponentTypeStub = sinon.stub(assetSelectorStoreMock, 'getComponentType').callsFake(_.constant('image'));
+      var getComponentValueStub = sinon.stub(assetSelectorStoreMock, 'getComponentValue').callsFake(_.constant({}));
 
       dispatcher.dispatch({
         action: Actions.ASSET_SELECTOR_SELECT_ASSET_FOR_COMPONENT,
@@ -698,7 +682,7 @@ describe('AssetSelectorRenderer', function() {
           server.respondImmediately = true;
           server.respondWith(
             'GET',
-            `https://${assetData.domain}/api/views/${assetData.id}.json`,
+            `https://${window.location.hostname}/api/views/${assetData.id}.json`,
             [
               200,
               {'Content-Type': 'application/json'},
@@ -711,17 +695,23 @@ describe('AssetSelectorRenderer', function() {
 
         it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART`', (done) => {
           dispatcher.register((payload) => {
-            const { action, domain, mapOrChartUid, viewData } = payload;
-            assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART);
-            assert.equal(domain, assetData.domain, 'domain is set from assetData');
-            assert.equal(mapOrChartUid, assetData.id, 'mapOrChartUid is set from assetData');
-            assert.deepEqual(
-              viewData,
-              _.extend({}, visualizationView, { domain: assetData.domain }),
-              'viewData is saved from response with `domain` added'
-            );
-            done();
+            try {
+              const { action, domain, federatedFromDomain, mapOrChartUid, viewData } = payload;
+              assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_MAP_OR_CHART);
+              assert.equal(domain, window.location.hostname, 'domain is set from window.location');
+              assert.equal(mapOrChartUid, assetData.id, 'mapOrChartUid is set from assetData');
+              assert.equal(federatedFromDomain, assetData.domain, 'federatedFromDomain is set from assetData');
+              assert.deepEqual(
+                viewData,
+                _.extend({}, visualizationView, { domain: window.location.hostname }),
+                'viewData is saved from response with `domain` added'
+              );
+              done();
+            } catch (error) {
+              done(error);
+            }
           });
+
           triggerAssetSelected();
         });
       });
@@ -776,7 +766,7 @@ describe('AssetSelectorRenderer', function() {
             server.respondImmediately = true;
             server.respondWith(
               'GET',
-              `https://${assetData.domain}/api/views/${assetData.id}.json`,
+              `https://${window.location.hostname}/api/views/${nbeView.id}.json`,
               [
                 statusCode,
                 {'Content-Type': 'application/json'},
@@ -784,27 +774,65 @@ describe('AssetSelectorRenderer', function() {
               ]
             );
           });
+
+          afterEach(() => {
+            server.restore();
+          });
         }
 
         describe('when selected asset is an nbe dataset', () => {
-          assetData = {
-            displayType: 'dataset',
-            domain: nbeView.domainCName,
-            id: nbeView.id
-          };
-
-          describe('and successfully gets view', () => {
+          describe('and successfully gets view from federated domain', () => {
             stubGetDatasetMetadata(200, nbeView);
 
-            it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` with viewData', (done) => {
+            it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET`', (done) => {
+              assetData = {
+                displayType: 'dataset',
+                domain: nbeView.domainCName,
+                id: nbeView.id
+              };
+
               dispatcher.register((payload) => {
-                const { action, viewData } = payload;
-                assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
-                assert.deepEqual(
-                  viewData,
-                  _.extend({}, nbeView, { domain: assetData.domain })
-                );
-                done();
+                try {
+                  const { action, federatedFromDomain, viewData } = payload;
+                  assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
+                  assert.equal(federatedFromDomain, assetData.domain, 'federatedFromDomain is set from assetData');
+                  assert.deepEqual(
+                    viewData,
+                    _.extend({}, nbeView, { domain: window.location.hostname })
+                  );
+                  done();
+                } catch (error) {
+                  done(error);
+                }
+              });
+
+              triggerAssetSelected();
+            });
+          });
+
+          describe('and successfully gets view from same domain', () => {
+            stubGetDatasetMetadata(200, nbeView);
+
+            it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET`', (done) => {
+              assetData = {
+                displayType: 'dataset',
+                domain: window.location.hostname,
+                id: nbeView.id
+              };
+
+              dispatcher.register((payload) => {
+                try {
+                  const { action, federatedFromDomain, viewData } = payload;
+                  assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
+                  assert.isUndefined(federatedFromDomain, 'federatedFromDomain is not set');
+                  assert.deepEqual(
+                    viewData,
+                    _.extend({}, nbeView, { domain: window.location.hostname })
+                  );
+                  done();
+                } catch (error) {
+                  done(error);
+                }
               });
 
               triggerAssetSelected();
@@ -923,7 +951,10 @@ describe('AssetSelectorRenderer', function() {
         });
 
         it('sets modalFooterChildren', function() {
-          assert.equal(CommonAssetSelectorMock.lastProps.modalFooterChildren.props.className, 'common-asset-selector-modal-footer-button-group');
+          assert.equal(
+            CommonAssetSelectorMock.lastProps.modalFooterChildren.props.className,
+            'common-asset-selector-modal-footer-button-group'
+          );
         });
 
         it('sets showBackButton', function() {
@@ -937,7 +968,7 @@ describe('AssetSelectorRenderer', function() {
       describe('an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
         var tableStub;
         beforeEach(function() {
-          tableStub = sinon.stub($.fn, 'componentSocrataVisualizationTable', _.noop);
+          tableStub = sinon.stub($.fn, 'componentSocrataVisualizationTable');
 
           dispatcher.dispatch({
             action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
@@ -1108,17 +1139,17 @@ describe('AssetSelectorRenderer', function() {
 
             if (provider === 'IMAGE') {
               blockId = StandardMocks.imageBlockId;
-              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex', function() {
+              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex').callsFake(function() {
                 return {type: 'image', value: {url: imageUrl}};
               });
             } else if (provider === 'HERO') {
               blockId = StandardMocks.heroBlockId;
-              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex', function() {
+              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex').callsFake(function() {
                 return {type: 'hero', value: {url: imageUrl}};
               });
             } else if (provider === 'AUTHOR') {
               blockId = StandardMocks.authorBlockId;
-              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex', function() {
+              sinon.stub(storyStoreMock, 'getBlockComponentAtIndex').callsFake(function() {
                 return {type: 'author', value: {image: {url: imageUrl}}};
               });
             }

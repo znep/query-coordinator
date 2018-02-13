@@ -2,7 +2,7 @@
 module UserRights
 
   # NOTE: This should reflect the Rights enum from Core at
-  # unobtainium/src/main/java/com/blist/models/account/User.java
+  # unobtainium/src/main/java/com/blist/models/account/roles/DomainRights.java
   # and the js export list at
   # frontend/public/javascript/common/rights.js
   # and the contents of the rights table in metadb

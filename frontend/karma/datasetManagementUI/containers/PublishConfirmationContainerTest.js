@@ -19,31 +19,13 @@ describe('containers/PublishConfirmationContainer', () => {
     window.serverConfig.featureFlags.usaid_features_enabled = false;
   });
 
-  it('disables the publish button if any revision updates are in progress', () => {
+  it('correctly gets the current permission from store', () => {
     const props = mapStateToProps(state, ownProps);
-    assert.isFalse(props.btnDisabled);
-
-    const newState = dotProp.set(state, 'ui.apiCalls', {
-      '9c7d4786-b80c-4f28-986a-6ceb70fe3027': {
-        id: '9c7d4786-b80c-4f28-986a-6ceb70fe3027',
-        status: 'STATUS_CALL_IN_PROGRESS',
-        operation: 'UPDATE_REVISION',
-        params: {
-          action: {
-            permission: 'private'
-          }
-        },
-        startedAt: new Date(1497910449811),
-        succeededAt: new Date(1497910450135)
-      }
-    });
-
-    const newProps = mapStateToProps(newState, ownProps);
-    assert.isTrue(newProps.btnDisabled);
+    assert.equal(props.permission, state.entities.revisions['187'].action.permission);
   });
 
-  it('correctly figures out which selector is seleced from store', () => {
-    const props = mapStateToProps(state, ownProps);
-    assert.isTrue(props.publicSelected);
+  it('defaults to public if it cannot access the revision', () => {
+    const props = mapStateToProps({entities: {}}, ownProps)
+    assert.equal(props.permission, 'public');
   });
 });

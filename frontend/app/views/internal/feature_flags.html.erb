@@ -24,7 +24,7 @@
       <div class="clearfix" style="clear: both">
         <div class="flagBox">
           <div class="title"><%= flag %></div>
-          <p class="description"><%= flag_config.description %></p>
+          <p class="description"><%= auto_link(flag_config.description, html: { target: '_blank' }) %></p>
         </div>
         <div class="valueBox">
           <p>Default Value: <%= flag_config.defaultValue %></p>

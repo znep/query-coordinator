@@ -2,11 +2,12 @@ import _ from 'lodash';
 import moment from 'moment';
 
 import { assert, assertIsNumber, assertIsString, assertIsOneOfTypes } from 'common/js_utils';
-import { CalculationTypeNames, EditTabs } from 'common/performance_measures/lib/constants';
+import { CalculationTypes } from 'common/performance_measures/lib/constants';
 import { isColumnUsableWithMeasureArgument } from 'common/performance_measures/measureCalculator';
 
 import validate from './validate';
 import actions from '../actions';
+import { EditTabs } from '../lib/constants';
 
 const validateActionRegex = /^VALIDATE_/;
 
@@ -22,7 +23,7 @@ const setCalculationType = (state, type) => {
   // Changing type clears almost everything under 'metricConfig'.
   // This is by design.
   assert(
-    _.includes(_.values(CalculationTypeNames), type),
+    _.includes(_.values(CalculationTypes), type),
     `Unknown calculation type given: ${type}`
   );
 
@@ -50,10 +51,10 @@ const setCalculationType = (state, type) => {
 
   // Set some defaults for calculation types.
   switch (type) {
-    case CalculationTypeNames.COUNT:
+    case CalculationTypes.COUNT:
       _.set(newState, 'measure.metricConfig.arguments.includeNullValues', true);
       break;
-    case CalculationTypeNames.RATE:
+    case CalculationTypes.RATE:
       // TODO Reconcile the fact that it doesn't always make sense to include null
       // values in the denominator (i.e., sums).
       _.set(newState, 'measure.metricConfig.arguments.denominatorIncludeNullValues', true);
@@ -66,7 +67,7 @@ const setCalculationType = (state, type) => {
 
 const resetDataSource = (state) => {
   const { measure, errors } = state;
-  const defaultCalculationType = CalculationTypeNames.COUNT;
+  const defaultCalculationType = CalculationTypes.COUNT;
   const reportingPeriod = _.get(measure, 'metricConfig.reportingPeriod', {});
 
   return {
@@ -203,7 +204,7 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
     case actions.editor.SET_AGGREGATION_TYPE: {
       assertIsOneOfTypes(action.aggregationType, 'string');
       assert(
-        _.get(state, 'measure.metricConfig.type') === CalculationTypeNames.RATE,
+        _.get(state, 'measure.metricConfig.type') === CalculationTypes.RATE,
         'This action only makes sense for rate measures today.'
       );
 
@@ -214,7 +215,7 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       );
 
       // For SUM aggregation types, we need to reset the includeNullValues argument.
-      if (action.aggregationType === CalculationTypeNames.SUM) {
+      if (action.aggregationType === CalculationTypes.SUM) {
         _.set(newState, 'measure.metricConfig.arguments.denominatorIncludeNullValues', true);
       }
 
@@ -348,7 +349,7 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       // If no calculation type is set, defaults to 'count'
       const currentType = _.get(nextState, 'measure.metricConfig.type');
       if (_.isEmpty(currentType)) {
-        nextState = setCalculationType(nextState, CalculationTypeNames.COUNT);
+        nextState = setCalculationType(nextState, CalculationTypes.COUNT);
       }
 
       const currentStartDate = _.get(nextState, 'measure.metricConfig.reportingPeriod.startDate');

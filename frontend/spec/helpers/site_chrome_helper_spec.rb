@@ -174,7 +174,7 @@ describe SiteChromeHelper do
     before do
       allow(subject).to receive(:module_enabled?).with(:govStat).and_return(govstat_enabled)
       allow(subject).to receive(:suppress_govstat?).and_return(govstat_suppressed)
-      allow(FeatureFlags).to receive(:using_signaller?).and_return(false)
+      allow(FeatureFlags).to receive(:service_healthy?).and_return(false)
       allow(FeatureFlags).to receive(:derive).and_return(:show_govstat_header => false)
     end
 

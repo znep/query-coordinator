@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import Actions from 'editor/Actions';
 import Dispatcher from 'editor/Dispatcher';
@@ -56,6 +58,12 @@ describe('DropHintStore', function() {
     DropHintStoreAPI.__Rewire__('storyStore', new StoryStoreMock());
 
     dropHintStore = new DropHintStore();
+  });
+
+  afterEach(() => {
+    StoreAPI.__ResetDependency__('dispatcher');
+    DropHintStoreAPI.__ResetDependency__('dispatcher');
+    DropHintStoreAPI.__ResetDependency__('storyStore');
   });
 
   describe('given STORY_DRAG_OVER action', function() {

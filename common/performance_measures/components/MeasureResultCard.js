@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import I18n from 'common/i18n';
 import { formatNumber } from 'common/js_utils';
 import SocrataIcon from 'common/components/SocrataIcon';
 
+import { MeasureTitle } from './MeasureTitle';
 import withComputedMeasure from './withComputedMeasure';
 import { PeriodTypes } from '../lib/constants';
 import computedMeasurePropType from '../propTypes/computedMeasurePropType';
@@ -27,8 +28,10 @@ export class MeasureResultCard extends Component {
       notEnoughData
     } = computedMeasure.errors;
 
+    const dataSourceLensUid = _.get(measure, 'dataSourceLensUid');
+
     // NOTE: The order of these error states is important
-    if (dataSourceNotConfigured || !measure.dataSourceLensUid) {
+    if (dataSourceNotConfigured || !dataSourceLensUid) {
       return I18n.t('shared.performance_measures.no_dataset');
     } else if (noReportingPeriodConfigured) {
       return I18n.t('shared.performance_measures.no_reporting_period');
@@ -45,6 +48,16 @@ export class MeasureResultCard extends Component {
     }
   }
 
+  renderTitle() {
+    const { showMetadata, lens, measure } = this.props;
+
+    if (!showMetadata) {
+      return null;
+    }
+
+    return <MeasureTitle lens={lens} measure={measure} />;
+  }
+
   renderResult(result) {
     if (!isFinite(result)) {
       // TODO: Decide if we want to use 'warning' for the icon, instead of the default 'number'
@@ -56,7 +69,7 @@ export class MeasureResultCard extends Component {
     // Default value of -1 for decimalPlaces indicates that no precision was set.
     const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces', -1);
 
-    const resultClassNames = classnames(
+    const resultClassNames = classNames(
       'measure-result-big-number',
       { percent: asPercent }
     );
@@ -108,7 +121,7 @@ export class MeasureResultCard extends Component {
 
   renderPlaceholder(icon = 'number') {
     return (
-      <div className="measure-result-placeholder">
+      <div className="measure-result-value placeholder">
         <SocrataIcon name={icon} />
         <div className="measure-result-placeholder-text measure-result-subtitle">
           {this.getSubtitle()}
@@ -134,22 +147,41 @@ export class MeasureResultCard extends Component {
   }
 
   render() {
-    const { computedMeasure, dataRequestInFlight } = this.props;
+    const { measure, computedMeasure, dataRequestInFlight, showMetadata } = this.props;
     const { result } = computedMeasure;
 
     const spinner = (
       <div className="measure-result-spinner-container">
-        <div className="spinner-default spinner-large"></div>
+        {/*
+            This used to be a real spinner, but we ran into baffling IE behavior at the last minute
+            (EN-22336). Due to time pressure, we replaced the spinner with static text. EN-22374 tracks
+            the real fix.
+         */}
+        <div>{I18n.t('shared.performance_measures.calculating')}</div>
       </div>
     );
 
-    const content = result && result.value ?
+    const busy = dataRequestInFlight || !measure;
+
+    const rootClasses = classNames(
+      'measure-result-card',
+      {
+        'with-metadata': showMetadata
+      }
+    );
+
+    const title = busy ? null : this.renderTitle();
+
+    let content = result && result.value ?
       this.renderResult(result.value) :
       this.renderError();
+    content = busy ? spinner : content;
+
 
     return (
-      <div className="measure-result-card">
-        {dataRequestInFlight ? spinner : content}
+      <div className={rootClasses}>
+        {title}
+        {content}
       </div>
     );
   }
@@ -162,7 +194,8 @@ MeasureResultCard.defaultProps = {
   },
   // maxLength was chosen based on looking at roughly how many digits fit into the div.
   // This is an approximate value that could be refined later.
-  maxLength: 6
+  maxLength: 6,
+  showMetadata: false
 };
 
 MeasureResultCard.propTypes = {
@@ -175,10 +208,20 @@ MeasureResultCard.propTypes = {
         asPercent: PropTypes.bool
       })
     })
-  }).isRequired,
+  }),
   computedMeasure: computedMeasurePropType,
   dataRequestInFlight: PropTypes.bool,
-  maxLength: PropTypes.number // Can override the measure decimalPlaces.
+
+  // NOTE! Ideally we'd refactor withComputedMeasure to optionally
+  // take a measure UID which it would use to automatically fetch
+  // both the lens and the computedMeasure props.
+  // For now, all usages of MeasureResultCard either don't need
+  // lens info, or already have the lens data anyway.
+  lens: PropTypes.shape({
+    name: PropTypes.string
+  }),
+  maxLength: PropTypes.number, // Can override the measure decimalPlaces.
+  showMetadata: PropTypes.bool // Metadata included: Title.
 };
 
 export default withComputedMeasure()(MeasureResultCard);

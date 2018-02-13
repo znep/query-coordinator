@@ -91,6 +91,10 @@ function withExtraBabelPlugins(extraPlugins) {
         {
           test: /node_modules\/@socrata\/mapbox-gl/,
           loader: require.resolve('imports-loader')
+        },
+        {
+          test: /\.yml$|\.yaml$/,
+          loaders: ['json', 'yaml']
         }
       ],
       noParse: /node_modules\/@socrata\/mapbox-gl/

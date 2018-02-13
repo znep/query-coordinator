@@ -493,15 +493,17 @@ function SvgVisualization($element, vif, options) {
 
       const domain = _.get(self.getVif(), 'series[0].dataSource.domain');
       const datasetUid = _.get(self.getVif(), 'series[0].dataSource.datasetUid');
+      const federatedFromDomain = _.get(self.getVif(), 'origin.federatedFromDomain');
       const metadataProvider = new MetadataProvider({ domain, datasetUid }, true);
+      const linkDomain = federatedFromDomain || domain;
 
       metadataProvider.getDatasetMigrationMetadata().
         then(function(migrationMetadata) {
           const nbeUid = _.get(migrationMetadata, 'nbe_id', datasetUid);
-          renderLink(`https://${domain}/d/${nbeUid}`);
+          renderLink(`https://${linkDomain}/d/${nbeUid}`);
         }).
         catch(function() {
-          renderLink(`https://${domain}/d/${datasetUid}`);
+          renderLink(`https://${linkDomain}/d/${datasetUid}`);
         });
     }
   };

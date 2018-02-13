@@ -1,5 +1,5 @@
-import React, { PureComponent } from 'react';
 import cssModules from 'react-css-modules';
+import React, { PureComponent } from 'react';
 
 import styles from './spinner.module.scss';
 

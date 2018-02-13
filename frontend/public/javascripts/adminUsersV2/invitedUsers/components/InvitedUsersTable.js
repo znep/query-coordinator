@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { connect as fullConnect, I18nPropType, getCustomRoleName } from '../../utils';
 import toString from 'lodash/toString';
 import ResultsTable from '../../components/ResultsTable';
 import DateFromNow from '../../components/DateFromNow';
@@ -69,7 +69,7 @@ const mapStateToProps = (state, { I18n }) => {
       const role = roles.find(r => toString(r.id) === toString(invitedUser.pendingRoleId));
       return {
         ...invitedUser,
-        role: role.isDefault ? I18n.t(`roles.default_roles.${role.name}.name`) : role.name
+        role: role.isDefault ? I18n.t(`roles.default_roles.${role.name}.name`) : getCustomRoleName(role, roles, I18n)
       };
     });
   return {

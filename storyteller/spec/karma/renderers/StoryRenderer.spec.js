@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import { $transient } from '../TransientElement';
 import DataGenerators from '../DataGenerators';
@@ -412,7 +414,7 @@ describe('StoryRenderer', function() {
         it('completes the current render before starting a new render', function() {
           var rendering = false;
 
-          var imageRenderStub = sinon.stub($.fn, 'componentImage', function() {
+          var imageRenderStub = sinon.stub($.fn, 'componentImage').callsFake(function() {
             assert.isFalse(rendering, 'reentrant call to renderer'); // Shouldn't re-enter.
             rendering = true;
 

@@ -175,6 +175,11 @@ Rails.application.routes.draw do
         :constraints => FeatureFlags::RoutingConstraint.new(:use_fontana_approvals)
     end
 
+    scope :controller => 'administration/catalog_configurations' do
+      get '/admin/catalog_configuration', :action => 'edit'
+      put '/admin/catalog_configuration', :action => 'update'
+    end
+
     scope :path => '/admin', :controller => 'administration' do
       get '/', :action => :index
       get :analytics

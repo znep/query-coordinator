@@ -50,8 +50,7 @@ function _renderVisualization($element, componentData) {
   assertHasProperty(componentData, 'type');
   assertHasProperty(componentData, 'value');
 
-  const { type, value: { visualization } } = componentData;
-
+  const { type, value: { dataset, visualization } } = componentData;
   const className = StorytellerUtils.typeToClassNameForComponentType(type);
   const $iframeElement = $(
     '<iframe>',
@@ -73,10 +72,11 @@ function _renderVisualization($element, componentData) {
     );
   });
 
+  const linkDomain = _.get(dataset, 'federatedFromDomain', window.location.hostname);
   const iconClass = 'socrata-visualization-view-source-data-icon';
   const $sourceLinkElement = $(`
     <div class="socrata-visualization-view-source-data">
-      <a href="/d/${visualization.id}" target="_blank">
+      <a href="https://${linkDomain}/d/${visualization.id}" target="_blank">
         <span>${I18n.t('common.view_source_data')}</span><span class="${iconClass}"></span>
       </a>
     </div>

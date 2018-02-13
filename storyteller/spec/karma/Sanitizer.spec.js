@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import Sanitizer from '../../app/assets/javascripts/editor/Sanitizer';
 

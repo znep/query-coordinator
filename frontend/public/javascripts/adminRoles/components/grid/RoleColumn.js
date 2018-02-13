@@ -1,17 +1,17 @@
+import cond from 'lodash/fp/cond';
+import constant from 'lodash/fp/constant';
+import stubTrue from 'lodash/fp/stubTrue';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import { connect } from 'react-redux';
-import cond from 'lodash/fp/cond';
-import constant from 'lodash/fp/constant';
-import stubTrue from 'lodash/fp/stubTrue';
 
-import Grid from '../util/Grid';
-import RoleRightCategory from './RoleRightCategory';
-import RoleEditControl from './RoleEditControl';
 import { connectLocalization } from 'common/components/Localization';
-import * as selectors from '../../adminRolesSelectors';
 
+import * as selectors from '../../adminRolesSelectors';
+import Grid from '../util/Grid';
+import RoleEditControl from './RoleEditControl';
+import RoleRightCategory from './RoleRightCategory';
 import styles from './roles-grid.module.scss';
 
 const mapStateToProps = state => ({
@@ -22,6 +22,14 @@ const mapStateToProps = state => ({
 });
 
 class RoleColumn extends Component {
+  static propTypes = {
+    editingRole: PropTypes.object.isRequired,
+    isEditCustomRolesAppState: PropTypes.bool.isRequired,
+    isEditIndividualRoleAppState: PropTypes.bool.isRequired,
+    rightCategories: PropTypes.object.isRequired,
+    role: PropTypes.object.isRequired
+  };
+
   render() {
     const {
       editingRole,
@@ -50,14 +58,12 @@ class RoleColumn extends Component {
     return (
       <Grid.Column styleName={styleName}>
         <Grid.Header styleName="role-header-cell">
-          <h6>
-            {roleDisplayName}
-          </h6>
-          {isDefault || isEditCustomRolesAppState || isEditIndividualRoleAppState
-            ? null
-            : <RoleEditControl role={role} />}
+          <h6>{roleDisplayName}</h6>
+          {isDefault || isEditCustomRolesAppState || isEditIndividualRoleAppState ? null : (
+            <RoleEditControl role={role} />
+          )}
         </Grid.Header>
-        {rightCategories.map(rightCategory =>
+        {rightCategories.map(rightCategory => (
           <RoleRightCategory
             key={`${roleName}_${selectors.getTranslationKeyFromRightCategory(rightCategory)}`}
             rightCategory={rightCategory}
@@ -66,25 +72,19 @@ class RoleColumn extends Component {
             editingColumn={editingColumn}
             isDefault={isDefault}
           />
-        )}
+        ))}
         <Grid.Cell styleName="role-footer-cell">
           <a href={`/admin/users?roleId=${selectors.getIdFromRole(role)}`}>
-            {translate('screens.admin.roles.index_page.grid.user_count', {
-              count: selectors.getNumberOfUsersFromRole(role)
-            })}
+            {selectors.getNumberOfUsersFromRole(role)}
+          </a>
+          {' / '}
+          <a href={`/admin/users/invited?roleId=${selectors.getIdFromRole(role)}`}>
+            {`${selectors.getNumberOfInvitedUsersFromRole(role)} ${translate('screens.admin.roles.index_page.grid.invited')}`}
           </a>
         </Grid.Cell>
       </Grid.Column>
     );
   }
 }
-
-RoleColumn.propTypes = {
-  editingRole: PropTypes.object.isRequired,
-  isEditCustomRolesAppState: PropTypes.bool.isRequired,
-  isEditIndividualRoleAppState: PropTypes.bool.isRequired,
-  rightCategories: PropTypes.object.isRequired,
-  role: PropTypes.object.isRequired
-};
 
 export default connectLocalization(connect(mapStateToProps)(cssModules(RoleColumn, styles)));

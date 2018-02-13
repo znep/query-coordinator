@@ -11,11 +11,11 @@ theme_configs = {}
 ).each do |env|
 
   stories_domains = HTTParty.get(
-    "http://feature-flag-signaller.app.marathon.aws-#{env}.socrata.net/flag_report/stories_enabled.json",
+    "http://feature-flag-monitor.app.marathon.aws-#{env}.socrata.net/report/stories_enabled.json",
     format: :json
   )
 
-  stories_domains['stories_enabled']['domains'].each do |(domain, enabled)|
+  stories_domains['domains'].each do |(domain, enabled)|
     next unless enabled
 
     puts "Getting story theme config from #{domain}"

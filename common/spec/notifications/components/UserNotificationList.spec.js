@@ -3,9 +3,8 @@ import UserNotificationList from 'common/notifications/components/UserNotificati
 
 describe('UserNotificationList', () => {
   const defaultProps = {
-    filterNotificationsBy: 'all',
-    hasMoreNotifications: false,
-    hasEnqueuedUserNotifications: false,
+    filterNotificationsBy: 'activity',
+    hasEnqueuedUserNotifications: () => {},
     onClearUserNotification: () => {},
     onLoadMoreUserNotifications: () => {},
     onSeeNewUserNotifications: () => {},

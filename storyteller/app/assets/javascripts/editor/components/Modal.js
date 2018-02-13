@@ -61,6 +61,9 @@ export default function Modal(options) {
     this.
       data('modal-rendered', true).
       addClass('storyteller-modal').
+      on('modal-destroy', () => {
+        this.data('modal-rendered', null).data('modal-rendered-content', null).empty();
+      }).
       on('modal-open', function() {
         self.removeClass('hidden');
         $('html').addClass('modal-open');

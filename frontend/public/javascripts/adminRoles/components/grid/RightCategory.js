@@ -1,30 +1,35 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import Grid from '../util/Grid';
-import Expandable from '../util/Expandable';
-import Hoverable from '../util/Hoverable';
-import { toggleExpanded } from '../../actions';
 import { connectLocalization } from 'common/components/Localization';
-import * as selectors from '../../adminRolesSelectors';
 
-import styles from './roles-grid.module.scss';
+import * as Actions from '../../actions';
+import * as selectors from '../../adminRolesSelectors';
+import Expandable from '../util/Expandable';
+import Grid from '../util/Grid';
+import Hoverable from '../util/Hoverable';
 import cssVariables from '../variables.scss';
+import styles from './roles-grid.module.scss';
 
 const cellHeight = parseInt(cssVariables.cellHeight, 10);
 
 const mapDispatchToProps = (dispatch, { rightCategory }) =>
   bindActionCreators(
     {
-      toggleExpanded: () => toggleExpanded({ rightCategory })
+      toggleExpanded: () => Actions.toggleExpanded(rightCategory)
     },
     dispatch
   );
 
 class RightCategory extends Component {
+  static propTypes = {
+    rightCategory: PropTypes.object.isRequired,
+    toggleExpanded: PropTypes.func.isRequired
+  };
+
   render() {
     const { rightCategory, toggleExpanded, localization: { translate } } = this.props;
     return (
@@ -35,28 +40,19 @@ class RightCategory extends Component {
       >
         <Hoverable name={rightCategory.get('translationKey')}>
           <Expandable.Trigger styleName="right-cell-trigger" onClick={toggleExpanded}>
-            <h6>
-              {translate(selectors.getTranslationKeyPathFromRightCategory(rightCategory))}
-            </h6>
+            <h6>{translate(selectors.getTranslationKeyPathFromRightCategory(rightCategory))}</h6>
           </Expandable.Trigger>
         </Hoverable>
-        {selectors.getRightsFromRightCategory(rightCategory).map(right =>
+        {selectors.getRightsFromRightCategory(rightCategory).map(right => (
           <Hoverable name={right.get('name')} key={selectors.getNameFromRight(right)}>
             <Grid.Cell styleName="right-cell-item">
               {translate(selectors.getNameTranslationKeyPathFromRight(right))}
             </Grid.Cell>
           </Hoverable>
-        )}
+        ))}
       </Expandable>
     );
   }
 }
 
-RightCategory.propTypes = {
-  rightCategory: PropTypes.object.isRequired,
-  toggleExpanded: PropTypes.func.isRequired
-};
-
-export default connectLocalization(
-  connect(null, mapDispatchToProps)(cssModules(RightCategory, styles))
-);
+export default connectLocalization(connect(null, mapDispatchToProps)(cssModules(RightCategory, styles)));

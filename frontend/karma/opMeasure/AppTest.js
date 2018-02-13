@@ -5,7 +5,7 @@ import { App } from 'opMeasure/App';
 import EditBar from 'opMeasure/components/EditBar';
 import PreviewBar from 'opMeasure/components/PreviewBar';
 import InfoPane from 'opMeasure/components/InfoPane';
-import { ModeStates } from 'common/performance_measures/lib/constants';
+import { ModeStates } from 'opMeasure/lib/constants';
 
 describe('App', () => {
   describe('edit mode', () => {

@@ -707,6 +707,18 @@ var utils = {
     return _.reduce(pathsToSearch,
       (memo, path) => _.isUndefined(memo) ? _.get(object, path) : memo,
       undefined);
+  },
+
+  /**
+   * This function attempts to parse a JSON string. If it fails, it will return
+   * an empty object. Note, this function doesn't do any parameter checking.
+   */
+  parseJsonOrEmpty: function(json) {
+    try {
+      return JSON.parse(json);
+    } catch (error) {
+      return {};
+    }
   }
 };
 

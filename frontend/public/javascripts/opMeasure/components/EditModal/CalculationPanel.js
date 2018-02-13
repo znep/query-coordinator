@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import I18n from 'common/i18n';
-import { CalculationTypeNames, EditTabs } from 'common/performance_measures/lib/constants';
+import { CalculationTypes } from 'common/performance_measures/lib/constants';
 import withComputedMeasure from 'common/performance_measures/components/withComputedMeasure';
 import computedMeasurePropType from 'common/performance_measures/propTypes/computedMeasurePropType';
 
@@ -17,7 +17,7 @@ import {
   setUnitLabel,
   setDecimalPlaces
 } from '../../actions/editor';
-
+import { EditTabs } from '../../lib/constants';
 import calculationTypes from './calculationTypes';
 import ColumnDropdown from './ColumnDropdown';
 import CalculationPreview from './CalculationPreview';
@@ -37,8 +37,8 @@ export class CalculationPanel extends Component {
       noReportingPeriodConfigured
     } = _.get(computedMeasure, 'errors', {});
 
-    return Object.keys(CalculationTypeNames).
-      map(key => CalculationTypeNames[key]).
+    return Object.keys(CalculationTypes).
+      map(key => CalculationTypes[key]).
       map((type, index) => {
         const isCurrentType = calculationType === type;
         const className = classNames({
@@ -133,13 +133,13 @@ export class CalculationPanel extends Component {
     const { calculationType } = this.props;
 
     switch (calculationType) {
-      case CalculationTypeNames.COUNT:
+      case CalculationTypes.COUNT:
         return (<calculationTypes.Count />);
-      case CalculationTypeNames.SUM:
+      case CalculationTypes.SUM:
         return (<calculationTypes.Sum />);
-      case CalculationTypeNames.RATE:
+      case CalculationTypes.RATE:
         return (<calculationTypes.Rate />);
-      case CalculationTypeNames.RECENT:
+      case CalculationTypes.RECENT:
         return (<calculationTypes.RecentValue />);
       default:
         throw new Error(`Unknown calculation type: ${calculationType}`);

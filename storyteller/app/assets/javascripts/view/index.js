@@ -12,8 +12,9 @@ import '../editor/block-component-renderers/componentEmbeddedHtml';
 import '../editor/block-component-renderers/componentGoalEmbed';
 import '../editor/block-component-renderers/componentGoalTile';
 import '../editor/block-component-renderers/componentHero';
-import '../editor/block-component-renderers/componentSocrataVisualizationClassic';
+import '../editor/block-component-renderers/componentMeasure';
 import '../editor/block-component-renderers/componentSocrataVisualizationBarChart';
+import '../editor/block-component-renderers/componentSocrataVisualizationClassic';
 import '../editor/block-component-renderers/componentSocrataVisualizationColumnChart';
 import '../editor/block-component-renderers/componentSocrataVisualizationComboChart';
 import '../editor/block-component-renderers/componentSocrataVisualizationFeatureMap';
@@ -108,6 +109,11 @@ $(document).on('ready', function() {
 
         case 'goal.tile':
           $element.componentGoalTile(props);
+          break;
+
+        case 'measure.card':
+        case 'measure.chart':
+          $element.componentMeasure(props);
           break;
 
         case 'socrata.visualization.classic':

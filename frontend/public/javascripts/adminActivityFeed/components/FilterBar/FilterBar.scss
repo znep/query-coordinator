@@ -6,6 +6,10 @@
   color: $dark-grey-2;
   margin-top: 13px;
 
+  .filter-control-label {
+    display: none;
+  }
+
   .quick-filters {
     font-size: 15px;
 

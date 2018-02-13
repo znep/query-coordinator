@@ -14,6 +14,7 @@ gem 'cetera-ruby', '0.5.2', :require => 'cetera'
 gem 'dalli', '~> 2.7', '>= 2.7.6' # Doesn't work with nutcracker / twemproxy
 gem 'dalli-elasticache', '~> 0.2.0'
 gem 'diplomat' # Used by downtime / mainenance window notices
+gem 'feature-flag-monitor', '>= 0', :require => 'feature_flag_monitor'
 gem 'hashie', '2.1.2'
 gem 'httparty'
 gem 'i18n-tasks', '~> 0.9.5'

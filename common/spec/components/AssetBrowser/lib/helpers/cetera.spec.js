@@ -5,12 +5,14 @@ import mixpanel from 'common/mixpanel';
 
 import catalogState from 'common/components/AssetBrowser/reducers/catalog';
 import ceteraUtils from 'common/cetera/utils';
-import * as ceteraHelpers from 'common/components/AssetBrowser/lib/helpers/cetera.js';
+import cetera, * as ceteraHelpers from 'common/components/AssetBrowser/lib/helpers/cetera.js';
 import * as constants from 'common/components/AssetBrowser/lib/constants';
 import * as filterActions from 'common/components/AssetBrowser/actions/filters';
 
 import mockCeteraFacetCountsResponse from '../../data/mock_cetera_facet_counts_response';
 import mockCeteraFetchResponse from '../../data/mock_cetera_fetch_response';
+import mockCeteraQueryResponse from '../../data/mock_cetera_query_response';
+import mockFederationsResponse from '../../data/mock_federations_response';
 import initialState from '../../../../data/mock_initial_state';
 
 describe('helpers/cetera', () => {
@@ -19,9 +21,8 @@ describe('helpers/cetera', () => {
 
   beforeEach(() => {
     window.socrata = { assetBrowser: { staticData: initialState } };
-    ceteraStub = sinon.stub(window, 'fetch').callsFake(_.constant(Promise.resolve(mockCeteraFetchResponse)));
-    ceteraAssetCountsStub = sinon.stub(ceteraUtils, 'facetCountsQuery').
-      callsFake(_.constant(Promise.resolve(mockCeteraFacetCountsResponse)));
+    ceteraStub = sinon.stub(window, 'fetch').resolves(mockCeteraFetchResponse);
+    ceteraAssetCountsStub = sinon.stub(ceteraUtils, 'facetCountsQuery').resolves(mockCeteraFacetCountsResponse);
   });
 
   afterEach(() => {
@@ -62,8 +63,8 @@ describe('helpers/cetera', () => {
         assert.equal(result.q, 'foo');
       });
 
-      it('handles an array of approvalStatus values', () => {
-
+      xit('handles an array of approvalStatus values', () => {
+        // TODO why is this empty?
       });
     });
 
@@ -135,7 +136,7 @@ describe('helpers/cetera', () => {
           }
         });
 
-        ceteraHelpers.fetchResults(dispatch, state).then((response) => {
+        return ceteraHelpers.fetchResults(dispatch, state).then((response) => {
           sinon.assert.calledOnce(ceteraAssetCountsStub);
         });
       });
@@ -148,8 +149,67 @@ describe('helpers/cetera', () => {
           }
         });
 
-        ceteraHelpers.fetchResults(dispatch, state).then((response) => {
+        return ceteraHelpers.fetchResults(dispatch, state).then((response) => {
           sinon.assert.notCalled(ceteraAssetCountsStub);
+        });
+      });
+    });
+
+    describe('with includeFederatedAssets parameter', () => {
+      let ceteraQueryStub;
+
+      beforeEach(() => {
+        ceteraQueryStub = sinon.stub(ceteraUtils, 'query').resolves(mockCeteraQueryResponse);
+      });
+
+      afterEach(() => {
+        cetera.__ResetDependency__('fetchJsonWithDefaultHeaders');
+        ceteraQueryStub.restore();
+      });
+
+      describe('when federations api request is successful', () => {
+        beforeEach(() => {
+          cetera.__Rewire__('fetchJsonWithDefaultHeaders', () => {
+            return Promise.resolve(mockFederationsResponse);
+          });
+        });
+
+        it('builds domain list from response', () => {
+          const dispatch = () => {};
+          const state = () => ({
+            assetBrowserProps: {
+              includeFederatedAssets: true
+            }
+          });
+
+          return ceteraHelpers.fetchResults(dispatch, state).
+            then((result) => {
+              const spyCall = ceteraQueryStub.getCall(0);
+              assert.equal(spyCall.args[0].domains, 'localhost,federated-1.example.com,federated-2.example.com');
+            });
+        });
+      });
+
+      describe('when federations api request fails', () => {
+        beforeEach(() => {
+          cetera.__Rewire__('fetchJsonWithDefaultHeaders', () => {
+            return Promise.reject(null);
+          });
+        });
+
+        it('defaults to current domain', () => {
+          const dispatch = () => {};
+          const state = () => ({
+            assetBrowserProps: {
+              includeFederatedAssets: true
+            }
+          });
+
+          return ceteraHelpers.fetchResults(dispatch, state).
+            then((result) => {
+              const spyCall = ceteraQueryStub.getCall(0);
+              assert.equal(spyCall.args[0].domains, 'localhost');
+            });
         });
       });
     });

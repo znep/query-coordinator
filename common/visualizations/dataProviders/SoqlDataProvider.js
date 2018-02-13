@@ -291,18 +291,11 @@ function SoqlDataProvider(config, useCache = false) {
   const makeSoqlGetRequest = (path) => {
     const domain = this.getConfigurationProperty('domain');
     const url = `https://${domain}/${path}`;
-    const isSameDomain = domain === window.location.hostname;
 
     const headers = {
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'X-Socrata-Federation': 'Honey Badger'
     };
-
-    // TODO EN-15459 EN-15483: Once Core correctly responds to OPTIONS,
-    // remove the domain check and always set the federation header.
-    if (isSameDomain) {
-      // Suppress cross-domain redirects if possible.
-      headers['X-Socrata-Federation'] = 'Honey Badger';
-    }
 
     const cacheKey = `${domain}-${url}-${JSON.stringify(headers)}`;
 

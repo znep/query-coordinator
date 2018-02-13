@@ -1,0 +1,19 @@
+@import 'lib/variables';
+@import 'filter-bar-corrections';
+@import 'measure-common';
+
+.component-measure-chart {
+  @include measure-common;
+
+  border: 1px solid $light-grey-3;
+
+  .component-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    .socrata-visualization {
+      border: none; // We add our own.
+    }
+  }
+}

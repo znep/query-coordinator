@@ -90,6 +90,7 @@ gem 'rspec-rails', '~> 3.4'
 
 # Feature flag operations.
 gem 'signaller-ruby', '~> 0.0', :require => 'signaller'
+gem 'feature-flag-monitor', '>= 0', :require => 'feature_flag_monitor'
 
 # ElastiCache auto-discovery for memcached nodes
 gem 'dalli-elasticache', '~> 0.2.0'

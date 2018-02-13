@@ -58,30 +58,32 @@ module StoriesHelper
   def component_partial_name(component_type)
     component_type_mapping = {
       'assetSelector' => 'component_asset_selector',
-      'embeddedHtml' => 'component_embedded_html',
-      'hero' => 'component_hero',
       'author' => 'component_author',
-      'html' => 'component_html',
+      'embeddedHtml' => 'component_embedded_html',
+      'goal.embed' => 'component_goal_embed',
+      'goal.tile' => 'component_goal_tile',
+      'hero' => 'component_hero',
       'horizontalRule' => 'component_horizontal_rule',
+      'html' => 'component_html',
       'image' => 'component_image',
-      'socrata.visualization.classic' => 'component_socrata_visualization_classic',
-      'socrata.visualization.choroplethMap' => 'component_socrata_visualization_region_map', # legacy
-      'socrata.visualization.regionMap' => 'component_socrata_visualization_region_map',
+      'measure.card' => 'component_measure_card',
+      'measure.chart' => 'component_measure_chart',
       'socrata.visualization.barChart' => 'component_socrata_visualization_bar_chart',
+      'socrata.visualization.choroplethMap' => 'component_socrata_visualization_region_map', # legacy
+      'socrata.visualization.classic' => 'component_socrata_visualization_classic',
       'socrata.visualization.columnChart' => 'component_socrata_visualization_column_chart',
       'socrata.visualization.comboChart' => 'component_socrata_visualization_combo_chart',
+      'socrata.visualization.featureMap' => 'component_socrata_visualization_feature_map',
       'socrata.visualization.histogram' => 'component_socrata_visualization_histogram',
       'socrata.visualization.map' => 'component_socrata_visualization_map',
       'socrata.visualization.pieChart' => 'component_socrata_visualization_pie_chart',
+      'socrata.visualization.regionMap' => 'component_socrata_visualization_region_map',
       'socrata.visualization.table' => 'component_socrata_visualization_table',
       'socrata.visualization.timelineChart' => 'component_socrata_visualization_timeline_chart',
-      'socrata.visualization.featureMap' => 'component_socrata_visualization_feature_map',
       'socrata.visualization.vizCanvas' => 'component_socrata_visualization_viz_canvas',
       'spacer' => 'component_spacer',
       'story.tile' => 'component_story_tile',
       'story.widget' => 'component_story_tile',
-      'goal.embed' => 'component_goal_embed',
-      'goal.tile' => 'component_goal_tile',
       'youtube.video' => 'component_youtube_video'
     }
 

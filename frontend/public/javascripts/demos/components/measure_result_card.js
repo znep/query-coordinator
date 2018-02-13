@@ -1,15 +1,14 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
-import { Button } from 'common/components';
+import { Button, Checkbox } from 'common/components';
 import MeasureResultCard from 'common/performance_measures/components/MeasureResultCard';
 
 const sum = {
   dataSourceLensUid: 'mks7-68x2',
   domain: 'dataspace.demo.socrata.com',
-  metadata: {
-    shortName: 'Sum'
-  },
+  metadata: {},
   metricConfig: {
     reportingPeriod: {
       size: 'year',
@@ -130,11 +129,14 @@ const noDataSource = {
   }
 };
 
+const spinner = null;
+
 class MeasureResultCardDemo extends Component {
   constructor() {
     super();
     this.state = {
-      measure: sum
+      measure: sum,
+      showMetadata: true
     };
   }
 
@@ -149,17 +151,32 @@ class MeasureResultCardDemo extends Component {
       this.setState({ measure });
     };
 
-    return <Button onClick={onClick}>{measure.metadata.shortName}</Button>;
+    const name = measure ?
+       // The sum measure doesn't set a short name to test the lens name title fallback.
+      _.get(measure, 'metadata.shortName', 'Sum') :
+      'Spinner';
+    return <Button onClick={onClick}>{name}</Button>;
   }
 
   render() {
     const props = {
-      measure: this.state.measure
+      measure: this.state.measure,
+      lens: {
+        name: 'Air travel incidents involving tiresome in-vehicle snake infestations'
+      },
+      showMetadata: this.state.showMetadata
     };
 
     return (
-      <div>
+      <form>
+        <Checkbox
+          id="showMetadata"
+          checked={this.state.showMetadata}
+          onChange={() => this.setState({ showMetadata: !this.state.showMetadata })} >
+          Show Metadata
+        </Checkbox>
         <Button variant='primary' onClick={this.pasteMeasure}>Paste measure JSON</Button>
+        {this.buttonFor(spinner)}
         {this.buttonFor(count)}
         {this.buttonFor(sum)}
         {this.buttonFor(noReportingPeriodAvailable)}
@@ -179,7 +196,7 @@ return (<MeasureResultCard {...props} />);
 }
           </pre>
         </div>
-      </div>
+      </form>
     );
   }
 }

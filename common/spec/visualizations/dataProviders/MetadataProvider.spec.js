@@ -239,18 +239,19 @@ describe('MetadataProvider', () => {
     });
 
     describe('cross-domain request', () => {
-      it('should not provide the X-Socrata-Federation header', () => {
+      it('provides the X-Socrata-Federation header', () => {
         metadataProvider.getDatasetMetadata(); // Discard the response, we don't care.
         assert.lengthOf(server.requests, 1);
-        assert.notProperty(
+        assert.propertyVal(
           server.requests[0].requestHeaders,
-          'X-Socrata-Federation'
+          'X-Socrata-Federation',
+          'Honey Badger'
         );
       });
     });
 
     describe('same-domain request', () => {
-      it('should provide the X-Socrata-Federation header', () => {
+      it('provides the X-Socrata-Federation header', () => {
         const metadataProviderOptions = {
           domain: window.location.hostname,
           datasetUid: VALID_DATASET_UID

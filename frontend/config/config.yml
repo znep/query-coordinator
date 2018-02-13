@@ -48,7 +48,9 @@ default: &default
   # service hosts/ports/names et simil
   catalog_federator_url: http://localhost:5710
   cetera_internal_uri: http://localhost:5704
+  consul_host: http://localhost:8500
   coreservice_uri: http://localhost:8080
+  feature_flag_monitor_uri: http://localhost:1255
   feature_flag_signaller_uri: http://localhost:14567
   polaroid_hostname: polaroid.app.marathon.aws-us-west-2-prod.socrata.net
   polaroid_port: 13379

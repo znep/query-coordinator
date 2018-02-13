@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import sinon from 'sinon';
+import { assert } from 'chai';
 
 import Actions from 'editor/Actions';
 import Dispatcher from 'editor/Dispatcher';
@@ -31,7 +33,7 @@ describe('CollaboratorsRenderer', () => {
   }
 
   beforeEach(() => {
-    debounceStub = sinon.stub(window._, 'debounce', (fn) => fn);
+    debounceStub = sinon.stub(window._, 'debounce').callsFake(_.identity);
 
     server = sinon.fakeServer.create();
     server.respondImmediately = true;

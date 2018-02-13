@@ -1,10 +1,11 @@
-import * as actions from '../actions';
+import Immutable from 'immutable';
 import find from 'lodash/fp/find';
 import get from 'lodash/fp/get';
 import isEmpty from 'lodash/fp/isEmpty';
-import * as appStates from '../appStates';
-import Immutable from 'immutable';
+
+import * as actions from '../actions';
 import * as selectors from '../adminRolesSelectors';
+import * as appStates from '../appStates';
 
 export default () => {
   function toggleExpanded(state, { payload: { rightCategory } }) {
@@ -69,7 +70,10 @@ export default () => {
   }
 
   function editCustomRolesEnd(state) {
-    return state.set('appState', appStates.DEFAULT).delete('previousState').delete('editingRole');
+    return state
+      .set('appState', appStates.DEFAULT)
+      .delete('previousState')
+      .delete('editingRole');
   }
 
   function changeNewRoleName(state, { payload: { name } }) {
@@ -145,7 +149,7 @@ export default () => {
       .set('appState', appStates.EDIT_INDIVIDUAL_CUSTOM_ROLE);
   }
 
-  function startRenameRole(state, { payload: { role } }) {
+  function handleRenameRole(state, { payload: { role } }) {
     return state
       .set('previousState', state.delete('previousState').set('appState', appStates.DEFAULT))
       .set('editingRole', role)
@@ -164,7 +168,7 @@ export default () => {
     return state.set('appState', appStates.LOAD_DATA_FAILURE);
   }
 
-  function showNotificationStart(state, { payload }) {
+  function showNotification(state, { payload }) {
     return state.mergeIn(['notification'], {
       showNotification: true,
       ...payload
@@ -185,68 +189,68 @@ export default () => {
 
   return (state, action) => {
     switch (action.type) {
-      case actions.editCustomRoles.CANCEL:
+      case actions.EDIT_CUSTOM_ROLES_CANCEL:
         return editCustomRolesCancel(state, action);
-      case actions.editCustomRoles.START:
+      case actions.EDIT_CUSTOM_ROLES_START:
         return editCustomRolesStart(state, action);
-      case actions.editCustomRoles.END:
+      case actions.EDIT_CUSTOM_ROLES_END:
         return editCustomRolesEnd(state, action);
 
-      case actions.toggleExpanded.type:
+      case actions.TOGGLE_EXPANDED:
         return toggleExpanded(state, action);
-      case actions.newCustomRole.type:
+      case actions.NEW_CUSTOM_ROLE:
         return newCustomRole(state, action);
 
-      case actions.createNewRole.CANCEL:
+      case actions.CREATE_NEW_ROLE_CANCEL:
         return createNewRoleCancel(state, action);
-      case actions.createNewRole.type:
+      case actions.CREATE_NEW_ROLE_START:
         return createNewRole(state, action);
-      case actions.changeNewRoleName.type:
+      case actions.CHANGE_NEW_ROLE_NAME:
         return changeNewRoleName(state, action);
-      case actions.changeNewRoleTemplate.type:
+      case actions.CHANGE_NEW_ROLE_TEMPLATE:
         return changeNewRoleTemplate(state, action);
 
-      case actions.toggleRoleRightValue.type:
+      case actions.TOGGLE_ROLE_RIGHT_VALUE:
         return toggleRoleRight(state, action);
-      case actions.toggleRoleRightCategoryValue.type:
+      case actions.TOGGLE_ROLE_RIGHT_CATEGORY_VALUE:
         return toggleRoleRightCategoryValue(state, action);
 
-      case actions.saveRoles.START:
+      case actions.SAVE_ROLES_START:
         return saveRolesStart(state, action);
-      case actions.saveRoles.SUCCESS:
+      case actions.SAVE_ROLES_SUCCESS:
         return saveRolesSuccess(state, action);
-      case actions.saveRoles.FAILURE:
+      case actions.SAVE_ROLES_FAILURE:
         return saveRolesFailure(state, action);
 
-      case actions.deleteRole.START:
+      case actions.DELETE_ROLE_START:
         return deleteRoleStart(state, action);
-      case actions.deleteRole.END:
+      case actions.DELETE_ROLE_END:
         return deleteRoleEnd(state, action);
-      case actions.deleteRole.CANCEL:
+      case actions.DELETE_ROLE_CANCEL:
         return deleteRoleCancel(state, action);
 
-      case actions.startEditRole.type:
+      case actions.EDIT_ROLE_START:
         return startEditRole(state, action);
 
-      case actions.startRenameRole.type:
-        return startRenameRole(state, action);
+      case actions.RENAME_ROLE:
+        return handleRenameRole(state, action);
 
-      case actions.loadData.START:
+      case actions.LOAD_DATA_START:
         return startLoadData(state, action);
-      case actions.loadData.SUCCESS:
+      case actions.LOAD_DATA_SUCCESS:
         return endLoadData(state, action);
-      case actions.loadData.FAILURE:
+      case actions.LOAD_DATA_FAILURE:
         return loadDataFailure(state, action);
 
-      case actions.showNotification.START:
-        return showNotificationStart(state, action);
-      case actions.showNotification.END:
+      case actions.SHOW_NOTIFICATION:
+        return showNotification(state, action);
+      case actions.SHOW_NOTIFICATION_END:
         return showNotificationEnd(state, action);
 
-      case actions.hoverRow.type:
+      case actions.HOVER_ROW:
         return hoverRight(state, action.payload.name);
 
-      case actions.unhoverRow.type:
+      case actions.UNHOVER_ROW:
         return unhoverRight(state);
 
       default:

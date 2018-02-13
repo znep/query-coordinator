@@ -233,6 +233,12 @@ module AdministrationHelper
     using_approvals?(:new) && current_user.has_right?(UserRights::REVIEW_APPROVALS)
   end
 
+  def user_can_see_catalog_configuration?
+    return false unless current_user
+
+    current_user.has_right?(UserRights::CHANGE_CONFIGURATIONS)
+  end
+
   def a11y_metadata_category_summary(categories, columns)
     AdministrationHelper.a11y_summary(
       :columns => columns,

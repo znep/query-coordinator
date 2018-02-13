@@ -1,3 +1,5 @@
+import { assert } from 'chai';
+
 import PermissionStore, {__RewireAPI__ as PermissionStoreAPI} from 'editor/stores/PermissionStore';
 
 describe('PermissionStore', () => {

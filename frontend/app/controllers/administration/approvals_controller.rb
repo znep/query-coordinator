@@ -27,11 +27,6 @@ class Administration::ApprovalsController < AdministrationController
     if request.post?
       @approval_workflow.steps.first.official_task.approved! if params[:official_approval_strategy] == 'automatic'
       @approval_workflow.steps.first.official_task.manual! if params[:official_approval_strategy] == 'manual'
-
-      @approval_workflow.steps.first.community_task.approved! if params[:community_approval_strategy] == 'automatic'
-      @approval_workflow.steps.first.community_task.manual! if params[:community_approval_strategy] == 'manual'
-      @approval_workflow.steps.first.community_task.rejected! if params[:community_approval_strategy] == 'reject'
-
       begin
         @approval_workflow.update
         flash[:notice] = t('approvals.settings.notifications.save_success')

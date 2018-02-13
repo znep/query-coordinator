@@ -1,48 +1,52 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import styles from './edit-custom-role-modal.module.scss';
 import includes from 'lodash/fp/includes';
 import noop from 'lodash/fp/noop';
-import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
-import { connect } from 'react-redux';
-import { createNewRole, endRenameRole } from '../../actions';
-import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { spring } from 'react-motion';
-import { RENAME_INDIVIDUAL_CUSTOM_ROLE, NEW_CUSTOM_ROLE } from '../../appStates';
-import { Button } from 'common/components';
-import CustomRoleForm from './CustomRoleForm';
-import { getAppState, getEditingRoleFromState, getMaxCharacterCountFromState } from '../../adminRolesSelectors';
+import { connect } from 'react-redux';
+
+import Button from 'common/components/Button';
+import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
 import { connectLocalization } from 'common/components/Localization';
+import { Modal, ModalContent, ModalFooter, ModalHeader } from 'common/components/Modal';
+
+import * as Actions from '../../actions';
+import * as Selectors from '../../adminRolesSelectors';
+import { NEW_CUSTOM_ROLE, RENAME_INDIVIDUAL_CUSTOM_ROLE } from '../../appStates';
+import CustomRoleForm from './CustomRoleForm';
+import styles from './edit-custom-role-modal.module.scss';
 
 const mapStateToProps = state => {
-  const appState = getAppState(state);
+  const appState = Selectors.getAppState(state);
   const showModal = includes(appState, [NEW_CUSTOM_ROLE, RENAME_INDIVIDUAL_CUSTOM_ROLE]);
-  const roleToEdit = getEditingRoleFromState(state);
-  const maxCharacterCount = getMaxCharacterCountFromState(state);
 
   return {
-    maxCharacterCount,
     showModal,
-    roleToEdit,
     editingNewRole: appState === NEW_CUSTOM_ROLE
   };
 };
 
 const mapDispatchToProps = {
-  cancelCreateNewRole: createNewRole.cancel,
-  saveRole: (maxCharacterCount, role) => endRenameRole({ maxCharacterCount, role }),
-  createRole: createNewRole
+  cancelCreateNewRole: Actions.createNewRoleCancel,
+  saveRole: Actions.renameRoleEnd,
+  createRole: Actions.createNewRoleStart
 };
 
 class EditCustomRoleModal extends Component {
+  static propTypes = {
+    cancelCreateNewRole: PropTypes.func.isRequired,
+    saveRole: PropTypes.func.isRequired,
+    createRole: PropTypes.func.isRequired,
+    editingNewRole: PropTypes.bool.isRequired,
+    showModal: PropTypes.bool.isRequired
+  };
+
   render() {
     const {
       cancelCreateNewRole,
       saveRole,
       createRole,
       editingNewRole,
-      maxCharacterCount,
-      roleToEdit,
       showModal,
       localization: { translate }
     } = this.props;
@@ -52,12 +56,14 @@ class EditCustomRoleModal extends Component {
     };
     const headerProps = {
       showCloseButton: false,
-      title: translate('screens.admin.roles.index_page.custom_role_modal.title'),
-      onDismiss: () => {
-        this.cancelModal();
-      }
+      title: translate(
+        editingNewRole
+          ? 'screens.admin.roles.index_page.custom_role_modal.title'
+          : 'screens.admin.roles.index_page.custom_role_modal.rename_title'
+      ),
+      onDismiss: noop
     };
-    const onSubmit = () => (editingNewRole ? createRole() : saveRole(maxCharacterCount, roleToEdit));
+    const onSubmit = () => (editingNewRole ? createRole() : saveRole()); // TODO: EN-22314 - Move this logic to sagas
 
     return (
       <ConditionTransitionMotion
@@ -66,7 +72,7 @@ class EditCustomRoleModal extends Component {
         willLeave={() => ({ y: spring(-100), opacity: spring(0) })}
         style={{ y: spring(0), opacity: spring(1) }}
       >
-        {({ y, opacity }) =>
+        {({ y, opacity }) => (
           <Modal
             {...modalProps}
             overlayStyle={{ opacity: opacity }}
@@ -80,11 +86,7 @@ class EditCustomRoleModal extends Component {
 
             <ModalFooter>
               <div>
-                <Button
-                  variant="primary"
-                  inverse
-                  onClick={() => cancelCreateNewRole()}
-                >
+                <Button variant="primary" inverse onClick={cancelCreateNewRole}>
                   {translate('screens.admin.roles.buttons.cancel')}
                 </Button>
                 <Button variant="primary" className={styles['save-button']} onClick={onSubmit}>
@@ -92,20 +94,11 @@ class EditCustomRoleModal extends Component {
                 </Button>
               </div>
             </ModalFooter>
-          </Modal>}
+          </Modal>
+        )}
       </ConditionTransitionMotion>
     );
   }
 }
-
-EditCustomRoleModal.propTypes = {
-  cancelCreateNewRole: PropTypes.func.isRequired,
-  maxCharacterCount: PropTypes.number.isRequired,
-  saveRole: PropTypes.func.isRequired,
-  createRole: PropTypes.func.isRequired,
-  editingNewRole: PropTypes.bool.isRequired,
-  roleToEdit: PropTypes.object.isRequired,
-  showModal: PropTypes.bool.isRequired
-};
 
 export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(EditCustomRoleModal));

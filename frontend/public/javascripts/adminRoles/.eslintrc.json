@@ -4,13 +4,16 @@
   },
   "extends": "../../../node_modules/eslint-base/.eslintrc.json",
   "rules": {
+    "padded-blocks": 0,
     "dot-location": [ 2, "property" ],
-    "dot-notation": ["error", {"allowKeywords": true, "allowPattern": "^[a-z]+(_[a-z]+)+$"}],
     "import/default": "off",
     "new-cap": "off",
+    "no-constant-condition": "off",
     "no-shadow": "off",
-    "react/jsx-uses-react": "error",
-    "react/jsx-uses-vars": "error"
+    "dot-notation": ["error", {
+      "allowKeywords": true,
+      "allowPattern": "^[a-z]+(_[a-z]+)+$"
+    }]
   },
   "settings": {
     "import/ignore": [
@@ -18,4 +21,3 @@
     ]
   }
 }
-

@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
 
 import { $transient } from '../TransientElement';
 import 'editor/block-component-renderers/componentImage';
@@ -11,7 +12,7 @@ describe('componentImage jQuery plugin', function() {
     type: 'image',
     value: {
       documentId: '1234',
-      url: 'https://imageuploads.com/valid-upload-image.png',
+      url: 'https://example.com/valid-upload-image.png',
       alt: 'Much alt'
     }
   };
@@ -108,7 +109,7 @@ describe('componentImage jQuery plugin', function() {
 
       it('should update', function() {
         var updatedData = _.cloneDeep(validComponentData);
-        updatedData.value.url = 'https://imageuploads.com/new-valid-upload-image.png';
+        updatedData.value.url = 'https://example.com/new-valid-upload-image.png';
 
         $component.componentImage(getProps({
           componentData: updatedData

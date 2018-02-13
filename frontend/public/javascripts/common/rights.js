@@ -5,7 +5,7 @@
 // This is a list of DOMAIN rights granted to users
 // This needs to reflect:
 //  - ALL_RIGHTS in frontend/lib/user_rights.rb
-//  - Right enum in core at unobtainium/src/main/java/com/blist/models/account/User.java
+//  - Right enum in core at unobtainium/src/main/java/com/blist/models/account/roles/DomainRights.java
 
 export const approve_nominations = 'approve_nominations';
 export const change_configurations = 'change_configurations';

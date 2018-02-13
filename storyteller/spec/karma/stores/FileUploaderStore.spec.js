@@ -1,3 +1,6 @@
+import sinon from 'sinon';
+import { assert } from 'chai';
+
 import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
 import I18n from 'editor/I18n';
 import Actions from 'editor/Actions';
@@ -33,6 +36,7 @@ describe('FileUploaderStore', function() {
   });
 
   afterEach(function() {
+    StoreAPI.__ResetDependency__('dispatcher');
     exceptionNotifierMock.notify.reset();
   });
 
@@ -197,10 +201,14 @@ describe('FileUploaderStore', function() {
 
       function behavesLikeAnExceptionHandler() {
         it('changes file status', function(done) {
-          _.defer(function() {
-            assert.propertyVal(fileUploaderStore.fileById(1), 'status', STATUS.ERRORED);
+          _.delay(function() {
+            try {
+              assert.propertyVal(fileUploaderStore.fileById(1), 'status', STATUS.ERRORED);
+            } catch (e) {
+              done(e);
+            }
             done();
-          });
+          }, 100);
         });
       }
 

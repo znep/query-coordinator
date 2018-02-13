@@ -58,6 +58,7 @@
               <%= admin_nav_link('feature_flags', :controller => 'internal', :action => 'feature_flags', :domain_id => CurrentDomain.cname) %>
             </li>
             <%= admin_section_link('stories', user_can_see_stories?, '/stories/admin/themes') %>
+            <%= admin_section_link('catalog_configuration', true, '/admin/catalog_configuration') %>
           </ul>
         </div>
       <% end %>

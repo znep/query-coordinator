@@ -27,6 +27,7 @@ import * as pageSizeActions from '../actions/page_size';
 import ClearFilters from './filters/clear_filters';
 
 const DEFAULT_RESULTS_PER_PAGE = 10;
+const scope = 'shared.asset_browser';
 
 export class CatalogResults extends Component {
   constructor(props) {
@@ -61,7 +62,7 @@ export class CatalogResults extends Component {
 
       return (
         <div className="alert error">
-          {I18n.t('shared.asset_browser.errors.fetching_results')}
+          {I18n.t('errors.fetching_results', { scope })}
         </div>
       );
     }
@@ -103,7 +104,8 @@ export class CatalogResults extends Component {
       showManageAssets,
       showSearchField,
       tabs,
-      toggleFilters
+      toggleFilters,
+      viewingOwnProfile
     } = this.props;
 
     const autocompleteOptions = {
@@ -125,11 +127,20 @@ export class CatalogResults extends Component {
       showTitle: false
     };
 
+    const { targetUserId, targetUserDisplayName } = _.get(window.socrata.assetBrowser, 'staticData', {});
+
+    const allAssetsButtonTitle = viewingOwnProfile ?
+      I18n.t('view_all', { scope }) :
+      I18n.t('view_user_assets', { scope, userName: targetUserDisplayName });
+
+    const extraParams = viewingOwnProfile ? '' : `&ownerId=${targetUserId}&ownerName=${escape(targetUserDisplayName)}`;
+    const assetUrl = `/admin/assets?tab=${constants.MY_ASSETS_TAB}${extraParams}`;
+
     const allAssetsButton = showManageAssets ? (
       <div className="manage-assets-link">
-        <a href={`/admin/assets?tab=${constants.MY_ASSETS_TAB}`}>
+        <a href={assetUrl}>
           <button className="btn btn-primary all-assets-button">
-            {I18n.t('shared.asset_browser.view_all')}
+            {allAssetsButtonTitle}
             <SocrataIcon name="arrow-right" />
           </button>
         </a>
@@ -138,7 +149,7 @@ export class CatalogResults extends Component {
 
     const mobileFilterToggle = isMobile && showFilters ? (
       <a href="#" className="mobile-filter-toggle" onClick={toggleFilters}>
-        {I18n.t('shared.asset_browser.mobile.filters')}
+        {I18n.t('mobile.filters', { scope })}
         <ActiveFilterCount />
         <SocrataIcon name="arrow-right" />
       </a>
@@ -146,10 +157,13 @@ export class CatalogResults extends Component {
 
     const clearFiltersButton = (isMobile || !showFilters) ? null : <ClearFilters {...clearFiltersProps} />;
 
-    const topbarClassnames = classNames('topbar clearfix', {
-      'cards-container-topbar': renderStyle === 'card',
-      'mobile': isMobile
-    });
+    const topbarClassnames = classNames(
+      'topbar clearfix',
+      {
+        'cards-container-topbar': renderStyle === 'card',
+        mobile: isMobile
+      }
+    );
 
     const sortDropdown = (renderStyle === 'card') ? <SortDropdown /> : null;
 
@@ -312,7 +326,8 @@ CatalogResults.propTypes = {
   showBackButton: PropTypes.bool,
   tabs: PropTypes.object.isRequired,
   toggleFilters: PropTypes.func.isRequired,
-  updatePageSize: PropTypes.func.isRequired
+  updatePageSize: PropTypes.func.isRequired,
+  viewingOwnProfile: PropTypes.bool
 };
 
 CatalogResults.defaultProps = {
@@ -326,7 +341,8 @@ CatalogResults.defaultProps = {
   onClose: _.noop,
   pageNumber: 1,
   pageSize: DEFAULT_RESULTS_PER_PAGE,
-  showBackButton: true
+  showBackButton: true,
+  viewingOwnProfile: true
 };
 
 const mapStateToProps = (state) => ({

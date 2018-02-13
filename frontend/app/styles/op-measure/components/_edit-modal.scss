@@ -1,3 +1,5 @@
+@import 'common/styleguide/variables/_colors.scss';
+
 $column-width: 750px;
 $large: 769px;
 
@@ -20,6 +22,39 @@ $large: 769px;
 
     .btn {
       margin-left: 5px;
+    }
+
+    .modal-footer-actions {
+      // override default alignment, since ModalFooter doesn't typically expect
+      // content on the left side (only right-aligned action buttons)
+      text-align: left;
+      display: flex;
+      justify-content: flex-end;
+
+      .configuration-notice {
+        display: inline-block;
+        margin-left: 0.5em;
+
+        flex: 1;
+        align-self: center;
+      }
+
+      .configuration-notice-support-link {
+        margin-left: 0.5em;
+        color: $dark-grey-1;
+      }
+
+      .configuration-notice-flannel-details {
+        a {
+          margin-left: 1em;
+          font-size: 80%;
+          font-weight: normal;
+        }
+
+        p {
+          margin: 0.5em 0;
+        }
+      }
     }
   }
 
@@ -442,6 +477,26 @@ $large: 769px;
 
      .reporting-period-size {
        padding: 10px 0 10px 20px;
+
+       .dropdown-container {
+         float: left;
+         min-width: 175px;
+         margin-right: 20px;
+         margin-bottom: 20px;
+       }
+
+       .choose-size-body {
+         margin-bottom: 10px;
+       }
+
+       .grayed-out {
+         filter: opacity(50%) grayscale(100%);
+       }
+
+       .sample-viz {
+         width: 515px;
+         height: 200px;
+       }
      }
   }
 

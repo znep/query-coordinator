@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { assert } from 'chai';
 
 import Actions from 'editor/Actions';
 import Dispatcher from 'editor/Dispatcher';
@@ -122,6 +123,10 @@ describe('CollaboratorsStore', function() {
     collaboratorsStore = new CollaboratorsStore();
   });
 
+  afterEach(() => {
+    StoreAPI.__ResetDependency__('dispatcher');
+  });
+
   describe('COLLABORATORS_LOAD', function() {
 
     describeMalformedCollaborators('COLLABORATORS_LOAD');
@@ -160,21 +165,21 @@ describe('CollaboratorsStore', function() {
 
         assert.lengthOf(collaboratorsWithoutState, 2);
 
-        assert.include(
-          collaboratorsWithoutState,
+        assert.deepEqual(
+          collaboratorsWithoutState[0],
           collaboratorOne
         );
 
-        assert.include(
-          collaboratorsWithoutState,
+        assert.deepEqual(
+          collaboratorsWithoutState[1],
           collaboratorTwo
         );
       });
 
       it('should mark all collaborators "loaded"', function() {
         assert.lengthOf(collaborators, 2);
-        assert.deepPropertyVal(collaborators[0], 'state.current', 'loaded');
-        assert.deepPropertyVal(collaborators[1], 'state.current', 'loaded');
+        assert.nestedPropertyVal(collaborators[0], 'state.current', 'loaded');
+        assert.nestedPropertyVal(collaborators[1], 'state.current', 'loaded');
       });
     });
   });
@@ -234,7 +239,7 @@ describe('CollaboratorsStore', function() {
         collaborators = collaboratorsStore.getCollaborators();
 
         assert.lengthOf(collaborators, 1);
-        assert.deepPropertyVal(
+        assert.nestedPropertyVal(
           collaborators[0],
           'state.current',
           'removed'
@@ -279,7 +284,7 @@ describe('CollaboratorsStore', function() {
         var collaboratorTwo = {
           email: 'helloTwo@socrata.com',
           accessLevel: 'accessLevel',
-          uid: 'four-four',
+          uid: 'some-othr',
           displayName: 'Hello Two',
           roleName: 'administrator'
         };
@@ -304,7 +309,8 @@ describe('CollaboratorsStore', function() {
         });
 
         assert.lengthOf(collaborators, 2);
-        assert.include(collaborators, updatedCollaboratorOne);
+        assert.deepEqual(collaborators[0], updatedCollaboratorOne);
+        assert.deepEqual(collaborators[1], collaboratorTwo);
       });
     });
   });
@@ -327,7 +333,7 @@ describe('CollaboratorsStore', function() {
           collaborator: collaboratorOne
         });
 
-        assert.deepPropertyVal(
+        assert.nestedPropertyVal(
           collaboratorsStore.getCollaborators()[0],
           'state.current',
           'marked'
@@ -362,13 +368,13 @@ describe('CollaboratorsStore', function() {
 
         collaborator = collaboratorsStore.getCollaborators()[0];
 
-        assert.deepPropertyVal(
+        assert.nestedPropertyVal(
           collaborator,
           'state.current',
           'loaded'
         );
 
-        assert.deepPropertyVal(
+        assert.nestedPropertyVal(
          collaborator,
          'state.previous',
          'marked'

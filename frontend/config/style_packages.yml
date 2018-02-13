@@ -116,6 +116,8 @@ administration-browse-widget:
 - screen-admin-browse-widget
 administration-canvas-pages:
 - screen-admin-canvas-pages
+administration-catalog-configuration:
+- screen-admin-catalog-configuration
 administration-connectors:
 - screen-administration-connectors
 - styleguide-no-tag-level-import-shim

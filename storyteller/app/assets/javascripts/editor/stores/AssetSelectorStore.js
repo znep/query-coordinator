@@ -37,6 +37,10 @@ export const WIZARD_STEP = {
   SELECT_TABLE_FROM_CATALOG: 'SELECT_TABLE_FROM_CATALOG',
   // You choose a map or chart visualization.
   SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG: 'SELECT_MAP_OR_CHART_VISUALIZATION_FROM_CATALOG',
+  // You choose to embed a measure.
+  SELECT_MEASURE_FROM_CATALOG: 'SELECT_MEASURE_FROM_CATALOG',
+  // Do you want a card or chart?
+  CONFIGURE_MEASURE: 'CONFIGURE_MEASURE',
   // You walk through the new authorship workflow.
   AUTHOR_VISUALIZATION: 'AUTHOR_VISUALIZATION',
   // You chose a map or chart. Please edit it to your liking.
@@ -93,6 +97,11 @@ export default function AssetSelectorStore() {
         _editExisting(payload);
         break;
 
+      case Actions.ASSET_SELECTOR_UPDATE_COMPONENT_TYPE:
+        _setComponentType(payload.type);
+        self._emitChange();
+        break;
+
       case Actions.ASSET_SELECTOR_UPDATE_IMAGE_ALT_ATTRIBUTE:
         _updateImageAltAttribute(payload);
         break;
@@ -135,6 +144,9 @@ export default function AssetSelectorStore() {
           case 'INSERT_VISUALIZATION':
             _chooseInsertVisualization();
             break;
+          case 'INSERT_MEASURE':
+            _chooseInsertMeasure();
+            break;
           case 'INSERT_TABLE':
             _visualizeAsTable();
             break;
@@ -142,6 +154,10 @@ export default function AssetSelectorStore() {
             _chooseCreateVisualization();
             break;
         }
+        break;
+
+      case Actions.ASSET_SELECTOR_CHOOSE_MEASURE:
+        _measureChosen(payload);
         break;
 
       case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
@@ -694,6 +710,8 @@ export default function AssetSelectorStore() {
       case 'socrata.visualization.table': return WIZARD_STEP.TABLE_PREVIEW;
       case 'socrata.visualization.classic': return WIZARD_STEP.CONFIGURE_MAP_OR_CHART;
       case 'socrata.visualization.vizCanvas': return WIZARD_STEP.CONFIGURE_MAP_OR_CHART;
+      case 'measure.card': return WIZARD_STEP.CONFIGURE_MEASURE;
+      case 'measure.chart': return WIZARD_STEP.CONFIGURE_MEASURE;
     }
 
     if (type.indexOf('socrata.visualization.') === 0) {
@@ -796,6 +814,11 @@ export default function AssetSelectorStore() {
     self._emitChange();
   }
 
+  function _chooseInsertMeasure() {
+    _state.step = WIZARD_STEP.SELECT_MEASURE_FROM_CATALOG;
+    self._emitChange();
+  }
+
   function _visualizeAsTable() {
     _state.step = WIZARD_STEP.SELECT_TABLE_FROM_CATALOG;
     _state.componentType = 'socrata.visualization.table';
@@ -833,6 +856,7 @@ export default function AssetSelectorStore() {
     const isCreatingTable = _state.componentType === 'socrata.visualization.table';
 
     _setComponentPropertiesFromViewData(payload.viewData);
+    _setComponentPropertiesForFederatedAssets(payload.federatedFromDomain);
 
     if (isCreatingTable) {
       _setUpTableFromSelectedDataset();
@@ -849,12 +873,29 @@ export default function AssetSelectorStore() {
     self._emitChange();
   }
 
+  function _measureChosen(payload) {
+    assert(_.isString(payload.domain), 'Payload must include "domain"');
+    assert(_.isString(payload.uid), 'Payload must include "uid"');
+
+    _state.componentType = 'measure.card';
+    _state.componentProperties = _state.componentProperties || {};
+    _.extend(_state.componentProperties, {
+      measure: {
+        domain: payload.domain,
+        uid: payload.uid
+      }
+    });
+
+    _state.step = WIZARD_STEP.CONFIGURE_MEASURE;
+    self._emitChange();
+  }
+
   function _chooseVisualizationMapOrChart(payload) {
     _state.step = WIZARD_STEP.CONFIGURE_MAP_OR_CHART;
 
-    assertIsOneOfTypes(payload.domain, 'string', 'Payload must include "domain"');
-    assertIsOneOfTypes(payload.mapOrChartUid, 'string', 'Payload must include "mapOrChartUid"');
-    assertIsOneOfTypes(payload.viewData, 'object', 'Payload must include "viewData"');
+    assert(_.isString(payload.domain), 'Payload must include "domain"');
+    assert(_.isString(payload.mapOrChartUid), 'Payload must include "mapOrChartUid"');
+    assert(_.isObject(payload.viewData), 'Payload must include "viewData"');
 
     const mapChartError = () => {
       alert(t('visualization.choose_map_or_chart_error')); // eslint-disable-line no-alert
@@ -881,6 +922,7 @@ export default function AssetSelectorStore() {
 
     if (isChartOrMapView) {
       _setComponentPropertiesFromViewData(viewData);
+      _setComponentPropertiesForFederatedAssets(payload.federatedFromDomain);
       if (viewData.displayType === 'visualization' && vifId) {
         const vizProps = {
           vifId
@@ -922,10 +964,6 @@ export default function AssetSelectorStore() {
       format: {
         type: 'visualization_interchange_format',
         version: 1
-      },
-      origin: {
-        url: window.location.toString().replace(/\/edit$/, ''),
-        type: 'storyteller_asset_selector'
       },
       filters: [],
       createdAt: (new Date()).toISOString(),
@@ -969,6 +1007,18 @@ export default function AssetSelectorStore() {
     // Not going into _state.componentProperties, as we don't want this blob
     // to end up stored in the story component data.
     _state.dataset = _.cloneDeep(viewData);
+  }
+
+  // Given a federatedFromDomain, sets:
+  // * _state.componentProperties.dataset.federatedFromDomain
+  function _setComponentPropertiesForFederatedAssets(federatedFromDomain) {
+    if (federatedFromDomain) {
+      _state.componentProperties = _state.componentProperties || {};
+      const dataset = _state.componentProperties.dataset;
+      if (dataset) {
+        dataset.federatedFromDomain = federatedFromDomain;
+      }
+    }
   }
 
   // Sets componentProperties.visualization for viz-canvas visualizations

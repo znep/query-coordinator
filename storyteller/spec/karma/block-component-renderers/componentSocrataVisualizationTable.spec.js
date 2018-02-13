@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 import { $transient } from '../TransientElement';
 import StandardMocks from '../StandardMocks';
@@ -7,6 +9,7 @@ import Actions from 'editor/Actions';
 import Dispatcher from 'editor/Dispatcher';
 import StorytellerUtils from 'StorytellerUtils';
 import {__RewireAPI__ as componentSocrataVisualizationTableAPI} from 'editor/block-component-renderers/componentSocrataVisualizationTable';
+import { updateVifWithFederatedFromDomain } from 'VifUtils';
 
 describe('componentSocrataVisualizationTable jQuery plugin', function() {
 
@@ -46,7 +49,7 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
   var getProps = (props) => {
     return _.extend({
       blockId: null,
-      componentData: validComponentData,
+      componentData: _.cloneDeep(validComponentData),
       componentIndex: null,
       editMode: true,
       theme: null
@@ -81,6 +84,34 @@ describe('componentSocrataVisualizationTable jQuery plugin', function() {
           componentData: badData
         }));
       });
+    });
+  });
+
+  describe('when component data contains `federatedFromDomain`', function() {
+    var socrataTableStub;
+
+    beforeEach(function() {
+      socrataTableStub = sinon.stub($.fn, 'socrataTable');
+
+      const componentData = _.merge(_.cloneDeep(validComponentData), {
+        value: {
+          dataset: {
+            federatedFromDomain: 'example.com'
+          }
+        }
+      });
+      $component = $component.componentSocrataVisualizationTable(getProps({ componentData }));
+    });
+
+    afterEach(function() {
+      socrataTableStub.restore();
+    });
+
+    it('should call into socrataTable with the correct arguments', function() {
+      sinon.assert.calledWithExactly(
+        socrataTableStub,
+        updateVifWithFederatedFromDomain(validComponentData.value.vif, 'example.com')
+      );
     });
   });
 

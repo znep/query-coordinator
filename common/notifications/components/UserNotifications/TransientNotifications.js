@@ -1,35 +1,33 @@
+import _ from 'lodash';
+import cssModules from 'react-css-modules';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import cssModules from 'react-css-modules';
-import _ from 'lodash';
 
 import connectLocalization from 'common/i18n/components/connectLocalization';
 
-import UserNotification from './UserNotification';
 import styles from './transient-notifications.module.scss';
+import UserNotification from './UserNotification';
 
 class TransientNotifications extends Component {
   render() {
     const {
-      transientNotifications,
       onClearUserNotification,
       onToggleReadUserNotification,
-      moveTransientNotificationIntoPanel
+      moveTransientNotificationIntoPanel,
+      transientNotifications
     } = this.props;
 
     return (
       <div>
-        <ul
-          styleName="transient-notifications-list"
-          className="transient-notifications-list">
+        <ul className="transient-notifications-list" styleName="transient-notifications-list">
           {transientNotifications.map((notification) =>
             <UserNotification
-              key={notification.id}
-              notification={notification}
               isTransientNotification
+              key={notification.id}
+              moveTransientNotificationIntoPanel={moveTransientNotificationIntoPanel}
+              notification={notification}
               onClearUserNotification={onClearUserNotification}
-              onToggleReadUserNotification={onToggleReadUserNotification}
-              moveTransientNotificationIntoPanel={moveTransientNotificationIntoPanel} />
+              onToggleReadUserNotification={onToggleReadUserNotification} />
           )}
         </ul>
       </div>

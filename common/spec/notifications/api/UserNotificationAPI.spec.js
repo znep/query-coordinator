@@ -34,13 +34,13 @@ describe('User Notification API', () => {
 
   it('should hit get notifications api after getting user socket token', async () => {
     userNotificationAPI = new UserNotificationAPI(userId, null, { debugLog: false });
-    let socketTokenStub = sinon.stub(userNotificationAPI, '_getSocketToken');
+    let socketTokenStub = sinon.stub(userNotificationAPI, 'getSocketToken');
 
     socketTokenStub.callsFake(async() => {
       return { token: 'NzU4OTdhMmUtNDNlZS00ODE5LWJkZTgtNTg0YWM3NDI5ODQ3' };
     });
 
-    userNotificationAPI._getSocketToken().then(() => {
+    userNotificationAPI.getSocketToken().then(() => {
       userNotificationAPI._loadNotifications();
       sinon.assert.calledTwice(notificationStub);
 

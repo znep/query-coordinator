@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { assert } from 'chai';
 
 import Actions from 'editor/Actions';
 import {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
@@ -19,6 +20,10 @@ describe('LinkModalStore', function() {
     dispatcher = new Dispatcher();
     StoreAPI.__Rewire__('dispatcher', dispatcher);
     linkModalStore = new LinkModalStore();
+  });
+
+  afterEach(() => {
+    StoreAPI.__ResetDependency__('dispatcher');
   });
 
   describe('Actions.LINK_MODAL_OPEN', function() {

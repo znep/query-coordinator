@@ -87,7 +87,7 @@ describe('DataPanel', () => {
 
         it('displays the correct messages', () => {
           assert.equal(getDatasetName(element).text(), 'Valid Dataset');
-          assert.include(getText(element).last().text(), 'The dataset you\'ve selected is valid');
+          assert.include(getText(element).last().text(), 'You may now configure your measure');
         });
 
         it('renders a reset link', () => {
@@ -103,7 +103,7 @@ describe('DataPanel', () => {
 
         it('displays the correct messages', () => {
           assert.equal(getDatasetName(element).text(), 'Empty Dataset');
-          assert.include(getText(element).last().text(), 'The selected dataset doesn\'t have any data yet');
+          assert.include(getText(element).last().text(), 'contains no rows of data');
         });
 
         it('renders a reset link', () => {
@@ -118,14 +118,15 @@ describe('DataPanel', () => {
               dataSourceLensUid: 'test-test'
             },
             errors: {
-              setDataSourceMetadataError: true
+              noDateColumn: true
             }
           });
           element = shallow(<DataPanel {...props} />);
         });
 
         it('displays the correct messages', () => {
-          assert.include(getText(element).last().text(), 'The selected dataset does not contain a date column');
+          // .html() instead of .text() due to dangerouslySetInnerHTML
+          assert.include(getText(element).last().html(), 'This dataset has no date column');
         });
       });
 
@@ -136,14 +137,15 @@ describe('DataPanel', () => {
               dataSourceLensUid: 'test-test'
             },
             errors: {
-              fetchDataSourceViewError: true
+              badDataSource: true
             }
           });
           element = shallow(<DataPanel {...props} />);
         });
 
         it('displays the correct messages', () => {
-          assert.include(getText(element).last().text(), 'The selected dataset is not suitable');
+          // .html() instead of .text() due to dangerouslySetInnerHTML
+          assert.include(getText(element).last().html(), 'There is a delay');
         });
       });
     });

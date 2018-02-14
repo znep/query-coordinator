@@ -87,7 +87,7 @@ export default class VifRegionOverlay extends VifOverlay {
   }
 
   destroy() {
-    super.destroy();
+    this._regions.destroy();
     this._legend.destroy();
   }
 

@@ -6,6 +6,7 @@ describe('Clusters', () => {
   let clusters;
   let mockMap;
   let renderOptions;
+  let vif;
 
   beforeEach(() => {
     mockMap = {
@@ -28,6 +29,7 @@ describe('Clusters', () => {
         CLUSTER_TEXT_COLOR: '#ffffff'
       }
     };
+    vif = mapMockVif();
 
     clusters = new Clusters(mockMap);
   });
@@ -64,8 +66,6 @@ describe('Clusters', () => {
 
   describe('update', () => {
     it('should update the map for the given renderOptions/vif', () => {
-      const vif = mapMockVif({});
-
       clusters.setup(vif, renderOptions);
       clusters.update(vif, renderOptions);
 
@@ -80,16 +80,28 @@ describe('Clusters', () => {
     });
 
     it('should destroy and setup if existing and new source options are different', () => {
-      let newRenderOptions = _.cloneDeep(renderOptions);
-      const vif = mapMockVif({});
+      const newRenderOptions = _.cloneDeep(renderOptions);
       const newVif = mapMockVif({
         series: [{
           color: { primary: 'green' }
         }]
       });
       newRenderOptions.aggregateAndResizeBy = '__count_by__';
+
       clusters.setup(vif, renderOptions);
       clusters.update(newVif, newRenderOptions);
+
+      sinon.assert.calledWith(mockMap.removeLayer, 'cluster-circle');
+      sinon.assert.calledWith(mockMap.removeLayer, 'cluster-count-label');
+      sinon.assert.calledWith(mockMap.removeSource, 'clustersVectorDataSource');
+    });
+  });
+
+  describe('destroy', () => {
+    it('should destroy the sources and layers', () => {
+      clusters.setup(vif, renderOptions);
+
+      clusters.destroy();
 
       sinon.assert.calledWith(mockMap.removeLayer, 'cluster-circle');
       sinon.assert.calledWith(mockMap.removeLayer, 'cluster-count-label');

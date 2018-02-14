@@ -106,7 +106,8 @@ export default class VifPointOverlay extends VifOverlay {
   }
 
   destroy() {
-    super.destroy();
+    this._pointsAndStacks.destroy();
+    this._clusters.destroy();
     this._legend.destroy();
   }
 

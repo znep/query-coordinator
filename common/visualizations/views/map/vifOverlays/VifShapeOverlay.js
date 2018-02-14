@@ -93,7 +93,7 @@ export default class VifShapeOverlay extends VifOverlay {
   }
 
   destroy() {
-    super.destroy();
+    this._shapes.destroy();
     this._legend.destroy();
   }
 

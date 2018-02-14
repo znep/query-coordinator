@@ -6,6 +6,7 @@ describe('Regions', () => {
   let regions;
   let mockMap;
   let renderOptions;
+  let vif;
 
   beforeEach(() => {
     mockMap = {
@@ -21,12 +22,12 @@ describe('Regions', () => {
       shapeColorConfigs: [{ shapeId: 1, color: 'red' }],
       shapePrimaryKey: '_feature_id'
     };
+    vif = mapMockVif();
     regions = new Regions(mockMap);
   });
 
   describe('setup', () => {
     it('should addsource and add Layers to the map', () => {
-      const vif = mapMockVif();
       regions.setup(vif, renderOptions);
 
       sinon.assert.calledWith(
@@ -61,8 +62,6 @@ describe('Regions', () => {
 
   describe('update', () => {
     it('should update the map with given renderOptions', () => {
-      const vif = mapMockVif({});
-
       regions.setup(vif, renderOptions);
       regions.update(vif, renderOptions);
 
@@ -91,4 +90,14 @@ describe('Regions', () => {
     });
   });
 
+  describe('destroy', () => {
+    it('should destroy sources and layers', () => {
+      regions.setup(vif, renderOptions);
+
+      regions.destroy();
+
+      sinon.assert.calledWith(mockMap.removeLayer, 'shape-line');
+      sinon.assert.calledWith(mockMap.removeSource, 'polygonVectorDataSource');
+    });
+  });
 });

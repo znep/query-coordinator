@@ -31,14 +31,13 @@ describe('VifRegionOverlay', () => {
   beforeEach(() => {
     mockMap = {
       getSource: sinon.stub().returns({}),
-      removeSource: sinon.spy(),
-      removeLayer: sinon.spy(),
       style: {}
     };
     vifRegionOverlay = new VifRegionOverlay(mockMap, element);
     vifRegionOverlay._regions = {
       setup: sinon.spy(),
-      update: sinon.spy()
+      update: sinon.spy(),
+      destroy: sinon.spy()
     };
     vifRegionOverlay._legend = {
       show: sinon.spy(),
@@ -226,8 +225,7 @@ describe('VifRegionOverlay', () => {
     it('should remove the map layer, source and legend', () => {
       vifRegionOverlay.destroy();
 
-      sinon.assert.calledWith(mockMap.removeLayer, 'shape-line');
-      sinon.assert.calledWith(mockMap.removeSource, 'polygonVectorDataSource');
+      sinon.assert.called(vifRegionOverlay._regions.destroy);
       sinon.assert.called(vifRegionOverlay._legend.destroy);
     });
   });

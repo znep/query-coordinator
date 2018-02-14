@@ -6,6 +6,7 @@ describe('Clusters', () => {
   let shapes;
   let mockMap;
   let renderOptions;
+  let vif;
 
   beforeEach(() => {
     mockMap = {
@@ -23,13 +24,12 @@ describe('Clusters', () => {
         INSERT_FILL_LAYERS_BEFORE: 'waterway-label'
       }
     };
-
+    vif = mapMockVif({});
     shapes = new Shapes(mockMap);
   });
 
   describe('setup', () => {
     it('should add the source and layers', () => {
-      const vif = mapMockVif();
       shapes.setup(vif, renderOptions);
 
       sinon.assert.calledWith(mockMap.addSource, 'polygonVectorDataSource', sinon.match({
@@ -63,7 +63,6 @@ describe('Clusters', () => {
 
   describe('update', () => {
     it('should update the map with vif/renderOptions', () => {
-      const vif = mapMockVif({});
       shapes.setup(vif, renderOptions);
       shapes.update(vif, renderOptions);
 
@@ -73,8 +72,7 @@ describe('Clusters', () => {
     });
 
     it('should destroy and setup if existing and new source options are different', () => {
-      let newRenderOptions = _.cloneDeep(renderOptions);
-      const vif = mapMockVif({});
+      const newRenderOptions = _.cloneDeep(renderOptions);
       const newVif = mapMockVif({
         series: [{
           color: { primary: 'green' }
@@ -85,6 +83,18 @@ describe('Clusters', () => {
       shapes.update(newVif, newRenderOptions);
 
       sinon.assert.calledWith(mockMap.removeLayer, 'shape-line');
+      sinon.assert.calledWith(mockMap.removeSource, 'polygonVectorDataSource');
+    });
+  });
+
+  describe('destroy', () => {
+    it('should destroy sources and layers', () => {
+      shapes.setup(vif, renderOptions);
+
+      shapes.destroy();
+
+      sinon.assert.calledWith(mockMap.removeLayer, 'shape-line');
+      sinon.assert.calledWith(mockMap.removeLayer, 'shape-fill');
       sinon.assert.calledWith(mockMap.removeSource, 'polygonVectorDataSource');
     });
   });

@@ -14,15 +14,14 @@ describe('VifLineOverlay', () => {
       addSource: sinon.spy(),
       addLayer: sinon.spy(),
       getSource: sinon.stub().returns({}),
-      removeSource: sinon.spy(),
-      removeLayer: sinon.spy(),
       setPaintProperty: sinon.spy(),
       style: {}
     };
     vifLineOverlay = new VifLineOverlay(mockMap);
     vifLineOverlay._lines = {
       setup: sinon.spy(),
-      update: sinon.spy()
+      update: sinon.spy(),
+      destroy: sinon.spy()
     };
     vifLineOverlay._legend = {
       show: sinon.spy(),
@@ -244,8 +243,7 @@ describe('VifLineOverlay', () => {
     it('should remove the map layer, source and legend', () => {
       vifLineOverlay.destroy();
 
-      sinon.assert.calledWith(mockMap.removeLayer, 'lineLayer');
-      sinon.assert.calledWith(mockMap.removeSource, 'lineVectorDataSource');
+      sinon.assert.called(vifLineOverlay._lines.destroy);
       sinon.assert.called(vifLineOverlay._legend.destroy);
     });
   });

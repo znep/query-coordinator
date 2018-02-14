@@ -3,6 +3,7 @@ import Lines from 'common/visualizations/views/map/vifOverlays/partials/Lines';
 import { mapMockVif } from 'common/spec/visualizations/mapMockVif';
 
 describe('Lines', () => {
+  let vif;
   let lines;
   let mockMap;
   let renderOptions;
@@ -24,11 +25,11 @@ describe('Lines', () => {
     };
 
     lines = new Lines(mockMap);
+    vif = mapMockVif();
   });
 
   describe('setup', () => {
     it('should add source and Layers to the map', () => {
-      const vif = mapMockVif();
       lines.setup(vif, renderOptions);
 
       sinon.assert.calledWith(mockMap.addSource, 'lineVectorDataSource', sinon.match({
@@ -54,8 +55,6 @@ describe('Lines', () => {
 
   describe('update', () => {
     it('should update the map with renderOptions/vif', () => {
-      const vif = mapMockVif({});
-
       lines.setup(vif, renderOptions);
       lines.update(vif, renderOptions);
 
@@ -63,8 +62,7 @@ describe('Lines', () => {
     });
 
     it('should destroy and setup if existing and new source options are different', () => {
-      let newRenderOptions = _.cloneDeep(renderOptions);
-      const vif = mapMockVif({});
+      const newRenderOptions = _.cloneDeep(renderOptions);
       const newVif = mapMockVif({
         series: [{
           color: { primary: 'green' }
@@ -73,6 +71,17 @@ describe('Lines', () => {
       newRenderOptions.aggregateAndResizeBy = '__count_by__';
       lines.setup(vif, renderOptions);
       lines.update(newVif, newRenderOptions);
+
+      sinon.assert.calledWith(mockMap.removeLayer, 'lineLayer');
+      sinon.assert.calledWith(mockMap.removeSource, 'lineVectorDataSource');
+    });
+  });
+
+  describe('destroy', () => {
+    it('should destroy the sources and layers', () => {
+      lines.setup(vif, renderOptions);
+
+      lines.destroy();
 
       sinon.assert.calledWith(mockMap.removeLayer, 'lineLayer');
       sinon.assert.calledWith(mockMap.removeSource, 'lineVectorDataSource');

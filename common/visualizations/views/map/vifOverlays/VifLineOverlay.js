@@ -100,7 +100,7 @@ export default class VifLineOverlay extends VifOverlay {
   }
 
   destroy() {
-    super.destroy();
+    this._lines.destroy();
     this._legend.destroy();
   }
 

@@ -13,15 +13,14 @@ describe('VifShapeOverlay', () => {
       addSource: sinon.spy(),
       addLayer: sinon.spy(),
       getSource: sinon.stub().returns({}),
-      removeSource: sinon.spy(),
-      removeLayer: sinon.spy(),
       setPaintProperty: sinon.spy(),
       style: {}
     };
     vifShapeOverlay = new VifShapeOverlay(mockMap);
     vifShapeOverlay._shapes = {
       setup: sinon.spy(),
-      update: sinon.spy()
+      update: sinon.spy(),
+      destroy: sinon.spy()
     };
     vifShapeOverlay._legend = {
       show: sinon.spy(),
@@ -166,9 +165,7 @@ describe('VifShapeOverlay', () => {
     it('should remove the map layer, source and legend', () => {
       vifShapeOverlay.destroy();
 
-      sinon.assert.calledWith(mockMap.removeLayer, 'shape-line');
-      sinon.assert.calledWith(mockMap.removeLayer, 'shape-fill');
-      sinon.assert.calledWith(mockMap.removeSource, 'polygonVectorDataSource');
+      sinon.assert.called(vifShapeOverlay._shapes.destroy);
       sinon.assert.called(vifShapeOverlay._legend.destroy);
     });
   });

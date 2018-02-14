@@ -49,7 +49,7 @@ export default class Regions {
 
   update(vif, renderOptions) {
     if (this._shouldChangeSourceOptions(vif, renderOptions)) {
-      this._destroy();
+      this.destroy();
       this.setup(vif, renderOptions);
       return;
     }
@@ -88,7 +88,7 @@ export default class Regions {
     });
   }
 
-  _destroy() {
+  destroy() {
     _.each(LAYERS, (layerId) => {
       this._map.removeLayer(layerId);
     });

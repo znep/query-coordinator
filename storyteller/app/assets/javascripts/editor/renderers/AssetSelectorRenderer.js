@@ -786,7 +786,7 @@ export default function AssetSelectorRenderer(options) {
     });
 
     const showMoreButton = $('<button>', {
-      class: 'btn btn-default gallery-show-more'
+      class: 'btn btn-default btn-legacy gallery-show-more'
     }).append(
       $('<span>').text(I18n.t('editor.asset_selector.image_upload.show_more'))
     );

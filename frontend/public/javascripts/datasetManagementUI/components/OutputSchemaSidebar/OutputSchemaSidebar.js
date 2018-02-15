@@ -17,7 +17,7 @@ class OutputSchemaSidebar extends Component {
   }
 
   render() {
-    const { params, isPublished } = this.props;
+    const { params, editMode } = this.props;
     // TODO: switch the geo modal thing into a page
     return (
       <div className={[sidebarStyles.sidebar, styles.outputSchemaSidebar].join(' ')}>
@@ -28,7 +28,7 @@ class OutputSchemaSidebar extends Component {
           <SocrataIcon name="table" />
           {SubI18n.preview_table}
         </IndexLink>
-        {isPublished ? (
+        {editMode ? (
           <span className={sidebarStyles.disabled}>{SubI18n.specify_headers}</span>
         ) : (
           <Link
@@ -39,7 +39,7 @@ class OutputSchemaSidebar extends Component {
             {SubI18n.specify_headers}
           </Link>
         )}
-        {isPublished ? (
+        {editMode ? (
           <span className={sidebarStyles.disabled}>{SubI18n.geocode}</span>
         ) : (
           <Link
@@ -65,7 +65,7 @@ class OutputSchemaSidebar extends Component {
 
 OutputSchemaSidebar.propTypes = {
   params: PropTypes.object.isRequired,
-  isPublished: PropTypes.bool.isRequired
+  editMode: PropTypes.bool.isRequired
 };
 
 export default OutputSchemaSidebar;

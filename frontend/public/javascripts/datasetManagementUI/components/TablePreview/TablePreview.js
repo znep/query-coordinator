@@ -39,10 +39,10 @@ const TablePreview = ({ entities, params, view }) => {
   const outputSchema = Selectors.currentOutputSchema(entities, revisionSeq);
   const blob = Selectors.currentBlobSource(entities, revisionSeq);
   const hrefExists = !!Selectors.currentRevision(entities, revisionSeq).href.length;
-  const isPublished = entities.views[params.fourfour].displayType !== 'draft';
+  const editMode = entities.views[params.fourfour].displayType !== 'draft';
 
   const TableView = generateTableView({ tasksExist, allTasksSucceeded, outputSchema, blob, hrefExists });
-  const childProps = { view, outputSchema, entities, blob, isPublished, params };
+  const childProps = { view, outputSchema, entities, blob, editMode, params };
   return (
     <section className="table-preview-container">
       <TableView {...childProps} />

@@ -64,7 +64,7 @@ class Table extends Component {
     const numRowErrors = inputSchema.num_row_errors;
     const canTransform =
       entities.sources[inputSchema.source_id] && !entities.sources[inputSchema.source_id].failed_at;
-    const isPublishedDataset = entities.views[params.fourfour].displayType !== 'draft';
+    const editMode = entities.views[params.fourfour].displayType !== 'draft';
     const source = entities.sources[params.sourceId];
     const unloadedViewSource = source.source_type.type === 'view' && !source.finished_at;
 
@@ -91,7 +91,7 @@ class Table extends Component {
                 key={column.id}
                 params={params}
                 unloadedViewSource={unloadedViewSource}
-                isPublishedDataset={isPublishedDataset}
+                editMode={editMode}
                 transform={column.transform}
                 displayState={displayState}
                 columnId={column.id}
@@ -110,7 +110,7 @@ class Table extends Component {
               inRowErrorMode={inRowErrorMode} />
           )}
         </thead>
-        {unloadedViewSource && isPublishedDataset
+        {unloadedViewSource && editMode
           ? <TableBodyPlaceholder />
           : <TableBody
             entities={entities}

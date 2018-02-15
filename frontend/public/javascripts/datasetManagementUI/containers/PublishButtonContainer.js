@@ -9,12 +9,12 @@ import { withRouter } from 'react-router';
 
 function isDataSatisfied({ entities, ui }, params) {
   const isUSAID = window.serverConfig.featureFlags.usaid_features_enabled;
-  const isPublishedDataset = entities.views[params.fourfour].displayType !== 'draft';
+  const editMode = entities.views[params.fourfour].displayType !== 'draft';
   const rev = Selectors.currentRevision(entities, _.toNumber(params.revisionSeq));
   const isValidHrefDataset =
     rev.output_schema_id == null && !!rev.href.length && !ui.forms.hrefForm.errors.length;
 
-  if (isUSAID || isPublishedDataset || isValidHrefDataset) {
+  if (isUSAID || editMode || isValidHrefDataset) {
     return true;
   }
 

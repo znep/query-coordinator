@@ -40,9 +40,9 @@ const checkSchemaStatus = store => (nextState, replace, cb) => {
 const checkIfPublished = store => (nextState, replace, cb) => {
   const { fourfour } = nextState.params;
   const view = store.getState().entities.views[fourfour] || {};
-  const isPublishedDataset = view.displayType !== 'draft';
+  const editMode = view.displayType !== 'draft';
 
-  if (isPublishedDataset) {
+  if (editMode) {
     replace(Links.home(nextState.params));
     cb();
   } else {

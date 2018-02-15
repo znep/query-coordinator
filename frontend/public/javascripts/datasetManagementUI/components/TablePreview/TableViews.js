@@ -72,7 +72,7 @@ function generatePreviewDataPath({ entities, outputSchema, blob, params }) {
   }
 }
 
-export const PreviewDataView = ({ entities, outputSchema, blob, isPublished, params }) => {
+export const PreviewDataView = ({ entities, outputSchema, blob, editMode, params }) => {
   const previewDataPath = generatePreviewDataPath({ entities, outputSchema, blob, params });
 
   if (previewDataPath) {
@@ -81,7 +81,7 @@ export const PreviewDataView = ({ entities, outputSchema, blob, isPublished, par
         <div className="header-wrapper">
           <h2>{I18n.home_pane.table_preview}</h2>
           <div className="button-group">
-            {isPublished || (
+            {editMode || (
               <Link to={Links.sources(params)} className="btn btn-sm btn-default btn-alternate-2">
                 <SocrataIcon name="plus2" isBtnIcon />
                 <span>{I18n.home_pane.add_data}</span>
@@ -107,7 +107,7 @@ PreviewDataView.propTypes = {
   entities: PropTypes.object.isRequired,
   outputSchema: PropTypes.object,
   blob: PropTypes.object,
-  isPublished: PropTypes.bool.isRequired,
+  editMode: PropTypes.bool.isRequired,
   params: PropTypes.object.isRequired
 };
 

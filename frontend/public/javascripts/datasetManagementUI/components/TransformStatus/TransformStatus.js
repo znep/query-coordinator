@@ -125,13 +125,13 @@ export class TransformStatus extends Component {
   }
 
   determineColStatus() {
-    const { transform, unloadedViewSource, isPublishedDataset } = this.props;
+    const { transform, unloadedViewSource, editMode } = this.props;
 
     if (transform.failed_at) {
       return COL_STATUS.ERROR;
     } else if (transform.finished_at || transform.completed_at) {
       return COL_STATUS.DONE;
-    } else if (isPublishedDataset && unloadedViewSource) {
+    } else if (editMode && unloadedViewSource) {
       return COL_STATUS.UNLOADED;
     } else {
       return COL_STATUS.IN_PROGRESS;
@@ -273,7 +273,7 @@ TransformStatus.propTypes = {
   flyouts: PropTypes.bool.isRequired,
   onClickError: PropTypes.func.isRequired,
   unloadedViewSource: PropTypes.bool.isRequired,
-  isPublishedDataset: PropTypes.bool.isRequired
+  editMode: PropTypes.bool.isRequired
 };
 
 export default TransformStatus;

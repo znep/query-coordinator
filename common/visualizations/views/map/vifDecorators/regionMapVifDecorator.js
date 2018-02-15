@@ -9,13 +9,13 @@ export function isRegionMap() {
     !_.isUndefined(this.getShapeDatasetUid());
 }
 
-export function getRegionMapBucketsCount() {
+export function getNumberOfDataClasses() {
   return _.get(this, 'series[0].mapOptions.numberOfDataClasses', 5);
 }
 
 export function getRegionMapBuckets(measures) {
   let bucketMethod;
-  if (measures <= this.getRegionMapBucketsCount()) {
+  if (measures <= this.getNumberOfDataClasses()) {
     bucketMethod = 'equalInterval';
   } else {
     bucketMethod = 'jenks';
@@ -24,7 +24,7 @@ export function getRegionMapBuckets(measures) {
   const rawBuckets = new ChoroplethMapUtils({}).createClassBreaks({
     data: _.map(measures, 'value'),
     method: bucketMethod,
-    numberOfClasses: this.getRegionMapBucketsCount()
+    numberOfClasses: this.getNumberOfDataClasses()
   });
 
   const colors = this.getColorPalette(rawBuckets.length - 1);

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const NO_COLOR = 'rgba(0, 0, 0, 0)';
+import { NO_COLOR } from 'common/visualizations/views/mapConstants';
 
 // Utility functions for fetching configuration related to rendering of shapes.
 // These functions gets added to the vif object (see vifDecorator|views/UnifiedMap).
@@ -23,21 +23,7 @@ export function getShapeFillColor(colorByColumnAlias, colorByCategories) {
     return NO_COLOR;
   }
 
-  // +1 for 'other' category
-  const colorPalette = this.getColorPalette(colorByCategories.length + 1);
-
-  if (_.isEmpty(colorByCategories)) {
-    return colorPalette[0];
-  }
-
-  const stops = _.map(colorByCategories, (colorByCategory, index) => [colorByCategory, colorPalette[index]]);
-
-  return {
-    property: colorByColumnAlias,
-    type: 'categorical',
-    stops,
-    default: colorPalette[stops.length]
-  };
+  return this.getColorByPaints(colorByColumnAlias, colorByCategories);
 }
 
 export function getShapeFillOutlineColor(colorByCategories) {

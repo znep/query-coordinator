@@ -28,6 +28,8 @@ export const MAP_TYPES = Object.freeze({
   BOUNDARY_MAP: 'boundaryMap'
 });
 
+export const NO_COLOR = 'rgba(0, 0, 0, 0)';
+
 export const POINT_AGGREGATIONS = Object.freeze({
   NONE: 'none',
   HEAT_MAP: 'heat_map',

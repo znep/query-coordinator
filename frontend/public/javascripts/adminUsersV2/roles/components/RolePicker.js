@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect, I18nPropType, getCustomRoleName } from '../../utils';
+import { connect as fullConnect, I18nPropType, getRoleDisplayName } from '../../utils';
 import { Dropdown } from 'common/components';
 import * as Selectors from '../../selectors';
 
@@ -37,7 +37,7 @@ const mapStateToProps = (state, { I18n }) => {
   const customRolesExist = roles.some(role => !role.isDefault);
 
   const availableRoles = roles.map(role => {
-    const title = role.isDefault ? I18n.t(`roles.default_roles.${role.name}.name`) : getCustomRoleName(role, roles, I18n);
+    const title = getRoleDisplayName(role, roles, I18n);
     if (customRolesExist) {
       const group = role.isDefault ? I18n.t('users.roles.default') : I18n.t('users.roles.custom');
 

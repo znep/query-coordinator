@@ -7,14 +7,10 @@
     border: solid 1px $light-grey-0;
     cursor: pointer;
     color: $grey;
-    font-size: 12px;
-    line-height: 10px;
-    max-height: 42px;
     overflow: hidden;
     padding: 12px;
     text-overflow: ellipsis;
     white-space: nowrap;
-
     &.small {
       max-width: 160px;
     }
@@ -60,3 +56,4 @@
     }
   }
 }
+

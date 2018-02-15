@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 import RenderByHelper from 'common/visualizations/helpers/RenderByHelper';
-import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
 import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
 import { COLOR_BY_BUCKETS_COUNT } from 'common/visualizations/views/mapConstants';
 
@@ -67,8 +66,8 @@ export default class VifPointOverlay extends VifOverlay {
 
     try {
       const [colorByCategories, resizeByRange, datasetMetadata] = await Promise.all([
-        RenderByHelper.getColorByCategories(vif, this._pointDataset(vif), colorByColumn),
-        RenderByHelper.getResizeByRange(vif, this._pointDataset(vif), resizeByColumn),
+        RenderByHelper.getColorByCategories(vif, colorByColumn),
+        RenderByHelper.getResizeByRange(vif, resizeByColumn),
         vif.getDatasetMetadata()
       ]);
 
@@ -89,20 +88,6 @@ export default class VifPointOverlay extends VifOverlay {
     } catch (error) {
       throw ('Error preparing point map.', error);
     }
-  }
-
-  _pointDataset(vif) {
-    const datasetConfig = {
-      domain: vif.getDomain(),
-      datasetUid: vif.getDatasetUid()
-    };
-
-    if (_.isUndefined(this._dataset) || !_.isEqual(this._existingPointDatasetConfig, datasetConfig)) {
-      this.__pointDatasetInstance = new SoqlDataProvider(datasetConfig, true);
-      this._existingPointDatasetConfig = datasetConfig;
-    }
-
-    return this.__pointDatasetInstance;
   }
 
   destroy() {

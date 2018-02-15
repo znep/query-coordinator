@@ -10,7 +10,7 @@ export function getLineColorByColumn() {
   return _.get(this, 'series[0].mapOptions.colorLinesBy');
 }
 
-export function getLineWeighByColumn() {
+export function getLineWeightByColumn() {
   return _.get(this, 'series[0].mapOptions.weighLinesBy');
 }
 
@@ -37,7 +37,7 @@ export function getLineColor(colorByColumnAlias, colorByCategories) {
 }
 
 export function getLineWidth(aggregateAndResizeBy, resizeByRange) {
-  if (!_.isString(this.getLineWeighByColumn())) {
+  if (!_.isString(this.getLineWeightByColumn())) {
     return _.get(this, 'series[0].mapOptions.lineWeight', VIF_CONSTANTS.LINE_WEIGHT.DEFAULT);
   }
 

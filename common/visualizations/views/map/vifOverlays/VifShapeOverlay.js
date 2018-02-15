@@ -6,7 +6,6 @@ import VifOverlay from './VifOverlay';
 import { getBaseMapLayerStyles } from '../baseMapStyle';
 
 import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
-import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
 import RenderByHelper from 'common/visualizations/helpers/RenderByHelper';
 
 const OTHER_COLOR_BY_CATEGORY = '__$$other$$__';
@@ -59,7 +58,6 @@ export default class VifShapeOverlay extends VifOverlay {
     try {
       const colorByCategories = await RenderByHelper.getColorByCategories(
         vif,
-        this._shapeDataset(vif),
         colorByColumn
         );
 
@@ -76,20 +74,6 @@ export default class VifShapeOverlay extends VifOverlay {
     } catch (error) {
       throw ('Error preparing point map.', error);
     }
-  }
-
-  _shapeDataset(vif) {
-    const datasetConfig = {
-      domain: vif.getDomain(),
-      datasetUid: vif.getDatasetUid()
-    };
-
-    if (_.isUndefined(this._dataset) || !_.isEqual(this._existingShapeDatasetConfig, datasetConfig)) {
-      this.__shapeDatasetInstance = new SoqlDataProvider(datasetConfig, true);
-      this._existingShapeDatasetConfig = datasetConfig;
-    }
-
-    return this.__shapeDatasetInstance;
   }
 
   destroy() {

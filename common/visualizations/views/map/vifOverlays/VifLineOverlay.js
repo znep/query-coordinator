@@ -6,12 +6,11 @@ import Legend from './partials/Legend';
 import { getBaseMapLayerStyles } from '../baseMapStyle';
 
 import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
-import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
 import RenderByHelper from 'common/visualizations/helpers/RenderByHelper';
 
 const OTHER_COLOR_BY_CATEGORY = '__$$other$$__';
 const COLOR_BY_CATEGORY_ALIAS = '__color_by_category__';
-const WEIGH_BY_ALIAS = '__weigh_by__';
+const WEIGHT_BY_ALIAS = '__weigh_by__';
 const COUNT_ALIAS = '__count__';
 
 // Prepares renderByOptions for rendering lines,
@@ -59,12 +58,12 @@ export default class VifLineOverlay extends VifOverlay {
   async _prepare(vif) {
     this._preparingForVif = vif;
     const colorByColumn = vif.getLineColorByColumn();
-    const weighByColumn = vif.getLineWeighByColumn();
+    const weightByColumn = vif.getLineWeightByColumn();
 
     try {
       const [colorByCategories, resizeByRange] = await Promise.all([
-        RenderByHelper.getColorByCategories(vif, this._lineDataset(vif), colorByColumn),
-        RenderByHelper.getResizeByRange(vif, this._lineDataset(vif), weighByColumn)
+        RenderByHelper.getColorByCategories(vif, colorByColumn),
+        RenderByHelper.getResizeByRange(vif, weightByColumn)
       ]);
 
       if (this._preparingForVif !== vif) {
@@ -76,27 +75,13 @@ export default class VifLineOverlay extends VifOverlay {
         resizeByRange,
         countBy: COUNT_ALIAS,
         colorBy: COLOR_BY_CATEGORY_ALIAS,
-        aggregateAndResizeBy: weighBy(vif),
+        aggregateAndResizeBy: weightBy(vif),
         layerStyles: getBaseMapLayerStyles(vif),
         dataUrl: this.getDataUrl(vif, colorByCategories)
       };
     } catch (error) {
       throw ('Error preparing line map.', error);
     }
-  }
-
-  _lineDataset(vif) {
-    const datasetConfig = {
-      domain: vif.getDomain(),
-      datasetUid: vif.getDatasetUid()
-    };
-
-    if (_.isUndefined(this.__lineDatasetInstance) || !_.isEqual(this._existingLineDatasetConfig, datasetConfig)) {
-      this.__lineDatasetInstance = new SoqlDataProvider(datasetConfig, true);
-      this._existingLineDatasetConfig = datasetConfig;
-    }
-
-    return this.__lineDatasetInstance;
   }
 
   destroy() {
@@ -107,7 +92,7 @@ export default class VifLineOverlay extends VifOverlay {
   getDataUrl(vif, colorByCategories) {
     const columnName = vif.getColumnName();
     const colorByColumn = vif.getLineColorByColumn();
-    const weighByColumn = vif.getLineWeighByColumn();
+    const weightByColumn = vif.getLineWeightByColumn();
 
     let conditions = [`{{'${columnName}' column condition}}`];
     const filters = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
@@ -143,9 +128,9 @@ export default class VifLineOverlay extends VifOverlay {
       groups.push(COLOR_BY_CATEGORY_ALIAS);
     }
 
-    if (_.isString(weighByColumn)) {
-      selects.push(`sum(${weighByColumn}) as ${WEIGH_BY_ALIAS}`);
-      conditions.push(`${weighByColumn} is NOT NULL`);
+    if (_.isString(weightByColumn)) {
+      selects.push(`sum(${weightByColumn}) as ${WEIGHT_BY_ALIAS}`);
+      conditions.push(`${weightByColumn} is NOT NULL`);
     }
     selects.push(`count(*) as ${COUNT_ALIAS}`);
 
@@ -158,10 +143,10 @@ export default class VifLineOverlay extends VifOverlay {
   }
 }
 
-function weighBy(vif) {
-  const weighByColumn = vif.getLineWeighByColumn();
-  if (_.isString(weighByColumn)) {
-    return WEIGH_BY_ALIAS;
+function weightBy(vif) {
+  const weightByColumn = vif.getLineWeightByColumn();
+  if (_.isString(weightByColumn)) {
+    return WEIGHT_BY_ALIAS;
   }
   return COUNT_ALIAS;
 }

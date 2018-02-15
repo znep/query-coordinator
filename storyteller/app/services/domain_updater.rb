@@ -8,7 +8,6 @@ class DomainUpdater
 
     # Various components are aware of domains, but some of them store the domain
     # at a different path in the blob than others.
-    # NOTE vizCanvas components don't include federatedFromDomain
     DOMAIN_AWARE_COMPONENT_TYPES = {
       'value.link' => %w(
         image
@@ -46,6 +45,7 @@ class DomainUpdater
       socrata.visualization.regionMap
       socrata.visualization.table
       socrata.visualization.timelineChart
+      socrata.visualization.vizCanvas
     )
 
     # Convert usages of the old domain to the new domain.
@@ -115,12 +115,15 @@ class DomainUpdater
         # domain A and another pointing to domain B, and the latter should not
         # update when A changes to X!
         is_affected_component = has_domain_reference(component, source_domains)
-        is_affected_federated_component = has_federated_domain_reference(component, source_domains)
+
+        if has_federated_domain_reference(component, source_domains)
+          component = migrate_dataset_federated_domain(component, destination_domain)
+        end
 
         # In plain English:
         # * If the component isn't affected, return it.
         # * If the component is affected, perform the appropriate migration.
-        if is_affected_component || is_affected_federated_component
+        if is_affected_component
           case component['type']
 
           when 'story.tile'
@@ -130,25 +133,20 @@ class DomainUpdater
             migrate_goal_tile(component, destination_domain)
 
           when 'socrata.visualization.classic'
-            # There are a multiple possible migrations here
-            component = migrate_classic_visualization(component, destination_domain) if is_affected_component
-            component = migrate_classic_visualization_federated_domain(component, destination_domain) if is_affected_federated_component
-            component
+            migrate_classic_visualization(component, destination_domain)
 
           when 'socrata.visualization.vizCanvas'
             migrate_viz_canvas_visualization(component, destination_domain)
 
           when /^socrata.visualization/
-            component = migrate_vif_federated_domain(component, destination_domain) if is_affected_federated_component
-
             vif_version = component.dig('value', 'vif', 'format', 'version').to_i
             case vif_version
 
             when 1
-              migrate_v1_vif(component, destination_domain) if is_affected_component
+              migrate_v1_vif(component, destination_domain)
 
             when 2
-              migrate_v2_vif(component, destination_domain) if is_affected_component
+              migrate_v2_vif(component, destination_domain)
 
             else
               error_message = 'Failed to find valid VIF version during component migration!'
@@ -214,16 +212,6 @@ class DomainUpdater
       )
     end
 
-    def migrate_classic_visualization_federated_domain(component, destination_domain)
-      component.deep_merge(
-        'value' => {
-          'dataset' => {
-            'federatedFromDomain' => destination_domain
-          }
-        }
-      )
-    end
-
     def migrate_viz_canvas_visualization(component, destination_domain)
       component.deep_merge(
         'value' => {
@@ -273,7 +261,7 @@ class DomainUpdater
       )
     end
 
-    def migrate_vif_federated_domain(component, destination_domain)
+    def migrate_dataset_federated_domain(component, destination_domain)
       component.deep_merge(
         'value' => {
           'dataset' => {

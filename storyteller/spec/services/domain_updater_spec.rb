@@ -116,16 +116,6 @@ RSpec.describe DomainUpdater do
 
     end
 
-    describe '#migrate_classic_visualization_federated_domain' do
-      it 'only updates federatedFromDomain' do
-        old_component = classic_visualization_component('another.example.com', federated_domain)
-        new_component = classic_visualization_component('another.example.com', destination_domain)
-
-        migrated_component = DomainUpdater.send(:migrate_classic_visualization_federated_domain, old_component, destination_domain)
-        expect(migrated_component).to eq(new_component)
-      end
-    end
-
     describe '#migrate_v1_vif' do
       it 'returns a migrated component' do
         old_component = v1_vif_component(component_domain)
@@ -154,12 +144,12 @@ RSpec.describe DomainUpdater do
       end
     end
 
-    describe '#migrate_vif_federated_domain' do
+    describe '#migrate_dataset_federated_domain' do
       it 'only updates federatedFromDomain' do
         old_component = v2_vif_component('another.example.com', federated_domain)
         new_component = v2_vif_component('another.example.com', destination_domain)
 
-        migrated_component = DomainUpdater.send(:migrate_vif_federated_domain, old_component, destination_domain)
+        migrated_component = DomainUpdater.send(:migrate_dataset_federated_domain, old_component, destination_domain)
         expect(migrated_component).to eq(new_component)
       end
     end
@@ -228,7 +218,6 @@ RSpec.describe DomainUpdater do
         goal_tile_component
         image_component
         story_tile_component
-        viz_canvas_component
       ).each do |component_type|
         context "for #{component_type}" do
           let(:component) { send(component_type, source_domains.first) }
@@ -242,9 +231,10 @@ RSpec.describe DomainUpdater do
 
     context 'for components that can include federated domain references' do
       %i(
+        classic_visualization_component
         v1_vif_component
         v2_vif_component
-        classic_visualization_component
+        viz_canvas_component
       ).each do |component_type|
         context "for #{component_type}" do
           context 'when component does not reference source domain' do
@@ -397,8 +387,8 @@ RSpec.describe DomainUpdater do
     }
   end
 
-  def viz_canvas_component(cname)
-    {
+  def viz_canvas_component(cname, federated_cname = nil)
+    component = {
       'type' => 'socrata.visualization.vizCanvas',
       'value' => {
         'dataset' => {
@@ -409,5 +399,7 @@ RSpec.describe DomainUpdater do
       }
     }
 
+    component['value']['dataset']['federatedFromDomain'] = federated_cname unless federated_cname.blank?
+    component
   end
 end

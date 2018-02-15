@@ -4662,6 +4662,9 @@ en:
             currently: "Number of users"
             invited: "Invited"
             role: Role
+            user_count:
+              one: "%{count} User"
+              other: "%{count} Users"
           faq_modal:
             title: Frequently Asked Questions
             content_html: '<h4>What are the different roles?</h4> <p>There are 5 default roles on the Socrata platform:</p> <ul> <li> Organization Member - Can sign into the site and view all internally published assets. </li> <li> Contributor - Can create new data assets privatly, but not publish assets without review. </li> <li> Data Publisher - Can create and publish data assets to the entire organization, as well as approve any internal publishing requests. </li> <li> Open Data Gatekeeper - Can publish and approve data assets for the Open Data Catalog. </li> <li>Site Administrator - Can manage users and sitewide settings.</li> </ul> <p> In addition to these default roles, you have the ability to create your own custom roles if you have the “Configurable Roles” package. </p> <h4>Can I change the roles?</h4> <p> No, you cannot change the default roles, however you can create your own custom roles, in addition to the default ones. </p> <h4>How do roles interact with datasets, visualizations, and stories?</h4> <p>Some awesome answer.</p> <a href="https://socrata.com" target="_blank"> Read More about Roles and Permissions </a>'

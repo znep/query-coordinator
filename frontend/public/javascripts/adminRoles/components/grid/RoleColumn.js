@@ -1,6 +1,7 @@
 import cond from 'lodash/fp/cond';
 import constant from 'lodash/fp/constant';
 import stubTrue from 'lodash/fp/stubTrue';
+import isNil from 'lodash/isNil';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
@@ -51,10 +52,16 @@ class RoleColumn extends Component {
       [stubTrue, constant('custom-role-column')]
     ])();
 
+    const roleId = selectors.getIdFromRole(role);
     const roleName = selectors.getRoleNameFromRole(role);
     const roleDisplayName = isDefault
       ? translate(selectors.getRoleNameTranslationKeyPathFromRole(role))
       : roleName;
+
+    const numberOfUsers = selectors.getNumberOfUsersFromRole(role);
+    const numberOfInvitedUsers = selectors.getNumberOfInvitedUsersFromRole(role);
+    const showNUmberOfInvitedUsers = !isNil(numberOfInvitedUsers) && numberOfInvitedUsers > 0;
+
     return (
       <Grid.Column styleName={styleName}>
         <Grid.Header styleName="role-header-cell">
@@ -74,13 +81,19 @@ class RoleColumn extends Component {
           />
         ))}
         <Grid.Cell styleName="role-footer-cell">
-          <a href={`/admin/users?roleId=${selectors.getIdFromRole(role)}`}>
-            {selectors.getNumberOfUsersFromRole(role)}
+          <a href={`/admin/users?roleId=${roleId}`}>
+            {translate('screens.admin.roles.index_page.grid.user_count', {
+              count: numberOfUsers
+            })}
           </a>
-          {' / '}
-          <a href={`/admin/users/invited?roleId=${selectors.getIdFromRole(role)}`}>
-            {`${selectors.getNumberOfInvitedUsersFromRole(role)} ${translate('screens.admin.roles.index_page.grid.invited')}`}
-          </a>
+          {showNUmberOfInvitedUsers &&
+            <span>
+              {' / '}
+              <a href={`/admin/users/invited?roleId=${roleId}`}>
+                {`${selectors.getNumberOfInvitedUsersFromRole(role)} ${translate('screens.admin.roles.index_page.grid.invited')}`}
+              </a>
+            </span>
+          }
         </Grid.Cell>
       </Grid.Column>
     );

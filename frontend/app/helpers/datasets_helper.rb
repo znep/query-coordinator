@@ -462,7 +462,7 @@ module DatasetsHelper
 
   def hide_redirect?
     return false if force_editable?
-    return true if FeatureFlags.derive(view, request).enable_new_dataset_sharing_ux
+    return true if render_asset_action_bar?
 
     [
       !view.is_published?,

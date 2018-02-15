@@ -40,9 +40,9 @@ const checkSchemaStatus = store => (nextState, replace, cb) => {
 const checkIfPublished = store => (nextState, replace, cb) => {
   const { fourfour } = nextState.params;
   const view = store.getState().entities.views[fourfour] || {};
-  const isPublishedDataset = view.displayType !== 'draft';
+  const editMode = view.displayType !== 'draft';
 
-  if (isPublishedDataset) {
+  if (editMode) {
     replace(Links.home(nextState.params));
     cb();
   } else {
@@ -69,8 +69,7 @@ export default function rootRoute(store) {
       </Route>
       <Route
         path="sources/:sourceId/schemas/:inputSchemaId/output/:outputSchemaId"
-        component={ShowOutputSchema}
-        onEnter={checkIfPublished(store)}>
+        component={ShowOutputSchema}>
         <IndexRoute component={TablePane} />
         <Route path="page/:pageNo" component={TablePane} />
         <Route path="parse_options" component={ParseOptionsPane} />

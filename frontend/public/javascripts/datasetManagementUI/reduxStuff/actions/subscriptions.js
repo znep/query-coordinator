@@ -192,7 +192,17 @@ export function subscribeToSource(sourceId, params) {
     const channel = socket.channel(`source:${sourceId}`);
 
     channel.on('insert_input_schema', is => {
-      const [os] = is.output_schemas;
+      let os;
+
+      // A source can have more than one output schema even at this point
+      // (e.g. changing the schema on a view source) so don't just take the first
+      // one and redirect to it. Take the latest one. Otherwise changing a type
+      // e.g. will redirect you to the wrong ouput schema preview page.
+      if (is.output_schemas.length === 1) {
+        os = is.output_schemas[0];
+      } else {
+        os = _.maxBy(is.output_schemas, 'id');
+      }
 
       const payload = normalizeInsertInputSchemaEvent(is, sourceId);
 

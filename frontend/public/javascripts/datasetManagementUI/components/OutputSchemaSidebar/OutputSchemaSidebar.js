@@ -9,6 +9,7 @@ import { IndexLink, Link } from 'react-router';
 import * as Links from 'datasetManagementUI/links/links';
 
 const SubI18n = I18n.show_output_schema;
+// TODO: unbork geocoding and parse options in edit mode then re-enable this stuff
 
 class OutputSchemaSidebar extends Component {
   shouldComponentUpdate(nextProps) {
@@ -16,7 +17,7 @@ class OutputSchemaSidebar extends Component {
   }
 
   render() {
-    const { params } = this.props;
+    const { params, editMode } = this.props;
     // TODO: switch the geo modal thing into a page
     return (
       <div className={[sidebarStyles.sidebar, styles.outputSchemaSidebar].join(' ')}>
@@ -27,20 +28,28 @@ class OutputSchemaSidebar extends Component {
           <SocrataIcon name="table" />
           {SubI18n.preview_table}
         </IndexLink>
-        <Link
-          to={Links.showParseOptions(params)}
-          className={sidebarStyles.tab}
-          activeClassName={sidebarStyles.selected}>
-          <SocrataIcon name="settings" />
-          {SubI18n.specify_headers}
-        </Link>
-        <Link
-          to={Links.geocodeShortcut(params)}
-          className={sidebarStyles.tab}
-          activeClassName={sidebarStyles.selected}>
-          <SocrataIcon name="geo" />
-          {SubI18n.geocode}
-        </Link>
+        {editMode ? (
+          <span className={sidebarStyles.disabled}>{SubI18n.specify_headers}</span>
+        ) : (
+          <Link
+            to={Links.showParseOptions(params)}
+            className={sidebarStyles.tab}
+            activeClassName={sidebarStyles.selected}>
+            <SocrataIcon name="settings" />
+            {SubI18n.specify_headers}
+          </Link>
+        )}
+        {editMode ? (
+          <span className={sidebarStyles.disabled}>{SubI18n.geocode}</span>
+        ) : (
+          <Link
+            to={Links.geocodeShortcut(params)}
+            className={sidebarStyles.tab}
+            activeClassName={sidebarStyles.selected}>
+            <SocrataIcon name="geo" />
+            {SubI18n.geocode}
+          </Link>
+        )}
         <Link
           to={Links.showAddCol(params)}
           className={sidebarStyles.tab}
@@ -55,7 +64,8 @@ class OutputSchemaSidebar extends Component {
 }
 
 OutputSchemaSidebar.propTypes = {
-  params: PropTypes.object.isRequired
+  params: PropTypes.object.isRequired,
+  editMode: PropTypes.bool.isRequired
 };
 
 export default OutputSchemaSidebar;

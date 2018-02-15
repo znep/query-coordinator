@@ -23,15 +23,7 @@ function extractInputColumns(source) {
 }
 
 function extractOutputSchemas(source) {
-  // TODO: ok to grab created_by from the source? the one on the output schema
-  // seems to be null on view sources
-
-  return _.flatMap(source.schemas, is =>
-    is.output_schemas.map(os => ({
-      ...os,
-      created_by: source.created_by
-    }))
-  );
+  return _.flatMap(source.schemas, is => is.output_schemas);
 }
 
 function extractOutputColumns(resource) {

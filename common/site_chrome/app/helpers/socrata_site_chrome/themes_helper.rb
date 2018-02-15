@@ -10,15 +10,8 @@ module SocrataSiteChrome
         :load_paths => [
           "#{SocrataSiteChrome::Engine.root}/app/assets/stylesheets",
           "#{SocrataSiteChrome::Engine.root}/app/assets/stylesheets/socrata_site_chrome",
-          "#{SocrataSiteChrome::Engine.root}/app/views/config",
-          "#{SocrataSiteChrome::Engine.root}/../../common/styleguide",
-          "#{SocrataSiteChrome::Engine.root}/../../common",
-          "#{SocrataSiteChrome::Engine.root}/../../frontend/node_modules/react-input-range/dist",
-          "#{SocrataSiteChrome::Engine.root}/../../frontend/node_modules/react-datepicker/dist",
-          "#{SocrataSiteChrome::Engine.root}/../../storyteller/node_modules/react-input-range/dist",
-          "#{SocrataSiteChrome::Engine.root}/../../storyteller/node_modules/react-datepicker/dist",
-        ],
-        filesystem_importer: CSSImporter
+          "#{SocrataSiteChrome::Engine.root}/app/views/config"
+        ]
       }
     end
 
@@ -44,15 +37,5 @@ module SocrataSiteChrome
     def domain_config(cname = request.host)
       SocrataSiteChrome::DomainConfig.instance(cname)
     end
-  end
-end
-
-# Custom style importer. Facilitates importing of files with .css extension as well.
-# So that we can '@import foobar;' where foobar is a file in load path with .css extension instead of .scss extension.
-# Reference: https://github.com/sass/sass/issues/193
-class CSSImporter < Sass::Importers::Filesystem
-  def extensions
-    # Allow direct importation of css files.
-    super.merge('css' => :scss)
   end
 end

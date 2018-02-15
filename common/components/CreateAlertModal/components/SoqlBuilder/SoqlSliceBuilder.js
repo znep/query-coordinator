@@ -337,7 +337,7 @@ class SoqlSliceBuilder extends Component {
       return (
         <div styleName="field-selector" className="logical-operator">
           <button
-            styleName="operator-button btn-default"
+            styleName="operator-button"
             onClick={() => this.onSliceParamChange('logical_operator', buttonValue)}
             className="btn btn-default">
             {buttonText}

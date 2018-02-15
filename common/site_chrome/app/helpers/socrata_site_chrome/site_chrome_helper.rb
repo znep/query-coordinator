@@ -370,7 +370,7 @@ module SocrataSiteChrome
       language_switcher_locales.map do |locale_key|
         link_to(
           locale_full_name(locale_key),
-          "/#{locale_key}#{request.path}",
+          "/#{locale_key}#{request.fullpath}",
           :class => 'language-switcher-option'
         )
       end

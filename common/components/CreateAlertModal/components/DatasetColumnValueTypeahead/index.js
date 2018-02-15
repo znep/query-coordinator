@@ -13,7 +13,7 @@ import styles from '../components.module.scss';
   Given a dataset and a column, if the dataset is
     NBE:
     provides a typeahead search of values in the given column. On input change,
-    we fire a soql query and find the mathcing values in the dataset-column using
+    we fire a soql query and find the matching values in the dataset-column using
     like operator
     OBE:
     retrieves the top X occurring values in the dataset-column on load and provides

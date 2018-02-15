@@ -30,12 +30,12 @@ export function getRegionMapBuckets(measures) {
   const colors = this.getColorPalette(rawBuckets.length - 1);
 
   // Converting
-  //  colors => ['#aaa', '#bbb', '#ccc', '#ddd', ......]
+  //  colors => ['#aaaaaa', '#bbbbbb', '#cccccc', '#ddddddd', ......]
   //  rawBuckets => [6, 121, 106290, 167009, 253225]
   // to
   //  [
-  //    {start: 6, end: 121, color: '#aaa'},
-  //    {start: 121, end: 106290, color: '#bbb'},
+  //    {start: 6, end: 121, color: '#aaaaaa'},
+  //    {start: 121, end: 106290, color: '#bbbbbb'},
   //    ...
   //  ]
   // Note: we are not adjusting end by adding 1 to it,

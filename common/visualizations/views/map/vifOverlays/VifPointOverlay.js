@@ -58,7 +58,7 @@ export default class VifPointOverlay extends VifOverlay {
   // Makes required soql calls
   //    * getting top values for coloring by.
   //    * getting range for resizePointsBy buckets.
-  // and returns the renerOptions.
+  // and returns the renderOptions.
   async _prepare(vif) {
     this._preparingForVif = vif;
     const colorByColumn = vif.getPointColorByColumn();

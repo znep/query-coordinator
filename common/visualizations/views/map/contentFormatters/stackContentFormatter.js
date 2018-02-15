@@ -23,7 +23,7 @@ import $ from 'jquery';
 //      },
 //      "layer": { ... }
 //    }
-//  - Single snapppedAndGroupedPoints without cluster
+//  - Single snappedAndGroupedPoints without cluster
 //    {
 //      "type":"Feature",
 //      "geometry": {

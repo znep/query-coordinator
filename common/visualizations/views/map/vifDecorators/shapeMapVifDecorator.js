@@ -31,5 +31,5 @@ export function getShapeFillOutlineColor(colorByCategories) {
     // If no color by category, no fill and outline.
     return NO_COLOR;
   }
-  return '#fff';
+  return '#ffffff';
 }

@@ -68,7 +68,7 @@ describe('Clusters', () => {
 
       sinon.assert.calledWith(mockMap.setPaintProperty, 'shape-line', 'line-color', '#eb6900');
       sinon.assert.calledWith(mockMap.setPaintProperty, 'shape-fill', 'fill-color', 'rgba(0, 0, 0, 0)');
-      sinon.assert.calledWith(mockMap.setPaintProperty, 'shape-fill', 'fill-outline-color', '#fff');
+      sinon.assert.calledWith(mockMap.setPaintProperty, 'shape-fill', 'fill-outline-color', '#ffffff');
     });
 
     it('should destroy and setup if existing and new source options are different', () => {

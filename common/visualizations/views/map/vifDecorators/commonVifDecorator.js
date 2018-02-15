@@ -146,12 +146,12 @@ function niceRoundOff(value) {
 
 export function getColorByBuckets(colorByCategories) {
   // Converting
-  //  colors => ['#aaa', '#bbb', '#ccc', '#ddd', ......]
+  //  colors => ['#aaaaaa', '#bbbbbb', '#cccccc', '#dddddd', ......]
   //  colorByCategories => [2011, 2012, 2013, ......]
   // to
   //  [
-  //    {category: 2011, color: '#aaa'},
-  //    {category: 2012, color: '#bbb'},
+  //    {category: 2011, color: '#aaaaaa'},
+  //    {category: 2012, color: '#bbbbbb'},
   //    ...
   //  ]
   if (_.isNull(colorByCategories)) {

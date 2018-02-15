@@ -12,7 +12,7 @@ const GENERIC_FLYOUT_LAYERS = [POINT_AND_STACK_LAYERS.POINT];
 const FLYOUT_LAYERS = CUSTOM_FLYOUT_LAYERS.concat(GENERIC_FLYOUT_LAYERS);
 
 // Handles mouse events (mousemove, click) for points/stacks/clusters displayed
-// by VifPointOVerlay.
+// by VifPointOverlay.
 // Sample Feature: (Geojson object got from mapbox-gl map)
 //    {
 //      "type": "Feature",

@@ -165,5 +165,9 @@
     }
   }
 
+  // Datalens page is setting an opacity of 0.8 for modal-overlay globally.
+  // Below is to  override the opacity to 1 for CreateAlertModal.
+  & :global(.modal-overlay) {
+    opacity: 1;
+  }
 }
-

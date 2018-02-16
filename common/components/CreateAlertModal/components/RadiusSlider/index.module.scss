@@ -6,29 +6,12 @@
   padding: 7px 0px 5px 5px;
   margin-bottom: 15px;
 
-  //hiding slider labels
-  :global(.InputRange-label) {
-    display: none !important;
-  }
-
-  :global(.input-range-slider) {
-    margin-top: 0px;
-    margin-bottom: 0px;
-  }
-
-  :global(.InputRange-slider) {
-    height: 15px;
-    width: 15px;
-    border-radius: 100%;
-    margin-top: -10px;
+  :global {
+    @import "./slider-overrides.module";
   }
 
   .icon-section {
     cursor: pointer;
-
-    :global(.socrata-icon svg) {
-      vertical-align: bottom;
-    }
   }
 
   .section {

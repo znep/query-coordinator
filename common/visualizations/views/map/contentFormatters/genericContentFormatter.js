@@ -14,6 +14,9 @@ export async function setPopupContent(element, vif, renderOptions, retrieveDataC
     return null;
   }
 
+  // To use :id='....' in the where condition, we need to have the :id in the select clause.
+  // Otherwise soql breaks.
+  selectColumns.push(':id');
   // While data is loading, show loading spinner in the popup.
   $(element).html(getLoadingSpinnerContent());
 

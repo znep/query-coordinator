@@ -17,6 +17,24 @@ export const clusterFeature = {
   }
 };
 
+export const lineFeature = {
+  type: 'Feature',
+  geometry: {
+    type: 'LineString',
+    coordinates: [
+    [-95.66903114318848, 39.074976904879605],
+    [-95.66997528076172, 39.074976904879605]
+    ]
+  },
+  properties: {
+    __count__: '1',
+    __row_id__: 'row-a6uq.cdkg-n9cm'
+  },
+  layer: {
+    id: 'lineLayer'
+  }
+};
+
 export const pointFeature = {
   type: 'Feature',
   geometry: {

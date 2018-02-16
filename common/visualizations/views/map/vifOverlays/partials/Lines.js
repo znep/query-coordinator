@@ -1,10 +1,10 @@
 import _ from 'lodash';
 
-const LAYERS = Object.freeze({
+export const LAYERS = Object.freeze({
   LINE: 'lineLayer'
 });
 
-const SOURCES = Object.freeze({
+export const SOURCES = Object.freeze({
   LINE: 'lineVectorDataSource'
 });
 

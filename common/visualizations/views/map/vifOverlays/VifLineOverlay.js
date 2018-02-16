@@ -12,19 +12,21 @@ const OTHER_COLOR_BY_CATEGORY = '__$$other$$__';
 const COLOR_BY_CATEGORY_ALIAS = '__color_by_category__';
 const WEIGHT_BY_ALIAS = '__weigh_by__';
 const COUNT_ALIAS = '__count__';
+const ROWID_ALIAS = '__row_id__';
 
 // Prepares renderByOptions for rendering lines,
 // tile url for fetching lines as geojson
 // and hands it over to lines partial for rendering
 // using mapbox-gl's sources/layers.
 export default class VifLineOverlay extends VifOverlay {
-  constructor(map, visualizationElement) {
+  constructor(map, visualizationElement, mouseInteractionHandler) {
     const sourceIds = [].concat(Lines.sourceIds());
     const layerIds = [].concat(Lines.layerIds());
     super(map, sourceIds, layerIds);
 
     this._legend = new Legend(visualizationElement);
     this._lines = new Lines(map);
+    this._mouseInteractionHandler = mouseInteractionHandler;
   }
 
   async setup(vif) {
@@ -35,6 +37,7 @@ export default class VifLineOverlay extends VifOverlay {
       'categorical'
     );
     this._lines.setup(vif, renderOptions);
+    this._mouseInteractionHandler.setupOrUpdate(vif, renderOptions);
 
     return renderOptions;
   }
@@ -47,6 +50,7 @@ export default class VifLineOverlay extends VifOverlay {
       'categorical'
     );
     this._lines.update(vif, renderOptions);
+    this._mouseInteractionHandler.setupOrUpdate(vif, renderOptions);
 
     return renderOptions;
   }
@@ -61,9 +65,10 @@ export default class VifLineOverlay extends VifOverlay {
     const weightByColumn = vif.getLineWeightByColumn();
 
     try {
-      const [colorByCategories, resizeByRange] = await Promise.all([
+      const [colorByCategories, resizeByRange, datasetMetadata] = await Promise.all([
         RenderByHelper.getColorByCategories(vif, colorByColumn),
-        RenderByHelper.getResizeByRange(vif, weightByColumn)
+        RenderByHelper.getResizeByRange(vif, weightByColumn),
+        vif.getDatasetMetadata()
       ]);
 
       if (this._preparingForVif !== vif) {
@@ -71,13 +76,15 @@ export default class VifLineOverlay extends VifOverlay {
       }
 
       return {
-        colorByCategories,
-        resizeByRange,
-        countBy: COUNT_ALIAS,
-        colorBy: COLOR_BY_CATEGORY_ALIAS,
         aggregateAndResizeBy: weightBy(vif),
+        colorByCategories,
+        colorBy: COLOR_BY_CATEGORY_ALIAS,
+        countBy: COUNT_ALIAS,
+        datasetMetadata,
+        dataUrl: this.getDataUrl(vif, colorByCategories),
+        idBy: ROWID_ALIAS,
         layerStyles: getBaseMapLayerStyles(vif),
-        dataUrl: this.getDataUrl(vif, colorByCategories)
+        resizeByRange
       };
     } catch (error) {
       throw ('Error preparing line map.', error);
@@ -100,8 +107,10 @@ export default class VifLineOverlay extends VifOverlay {
       conditions.push(filters);
     }
 
-    let selects = [`simplify_preserve_topology(snap_to_grid(${columnName},{snap_precision}),{simplify_precision})`];
-    let groups = [`simplify_preserve_topology(snap_to_grid(${columnName},{snap_precision}),{simplify_precision})`];
+    let selects = [`simplify_preserve_topology(snap_to_grid(${columnName},{snap_precision}),` +
+      `{simplify_precision}), min(:id) as ${ROWID_ALIAS}`];
+    let groups = [`simplify_preserve_topology(snap_to_grid(${columnName},` +
+      '{snap_precision}),{simplify_precision})'];
 
     if (_.isString(colorByColumn) && !_.isEmpty(colorByCategories)) {
       // We are not grouping by colorByColumn. In case that column had 10K unique values,

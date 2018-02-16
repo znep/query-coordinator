@@ -6,9 +6,14 @@ import {
   SOURCES as POINT_AND_STACK_SOURCES
 } from '../vifOverlays/partials/PointsAndStacks';
 
+import {
+  LAYERS as LINE_LAYERS,
+  SOURCES as LINE_SOURCES
+} from '../vifOverlays/partials/Lines';
+
 const MOUSE_CLICKABLE_LAYER_IDS = [CLUSTER_LAYERS.CLUSTER_CIRCLE];
 const CUSTOM_FLYOUT_LAYERS = [POINT_AND_STACK_LAYERS.STACK_CIRCLE];
-const GENERIC_FLYOUT_LAYERS = [POINT_AND_STACK_LAYERS.POINT];
+const GENERIC_FLYOUT_LAYERS = [POINT_AND_STACK_LAYERS.POINT, LINE_LAYERS.LINE];
 const FLYOUT_LAYERS = CUSTOM_FLYOUT_LAYERS.concat(GENERIC_FLYOUT_LAYERS);
 
 // Handles mouse events (mousemove, click) for points/stacks/clusters displayed
@@ -89,6 +94,7 @@ export default class MouseInteractionHandler {
     }
 
     const hoveredOverFeatures = this._getFeaturesAt(event.point, mouseInteractableLayerIds);
+
     if (_.isEmpty(hoveredOverFeatures)) {
       this._map.getCanvas().style.cursor = '';
       this._popupHandler.removePopup();
@@ -102,7 +108,14 @@ export default class MouseInteractionHandler {
     this._map.getCanvas().style.cursor = hoverOnClickableFeature ? 'pointer' : 'auto';
 
     if (_.includes(FLYOUT_LAYERS, hoveredOverFeatureId)) {
-      this._popupHandler.showPopup(hoveredOverFeature, this._vif, this._renderOptions);
+      const options = {
+        event: event,
+        feature: hoveredOverFeature,
+        renderOptions: this._renderOptions,
+        vif: this._vif
+      };
+
+      this._popupHandler.showPopup(options);
     } else {
       this._popupHandler.removePopup();
     }

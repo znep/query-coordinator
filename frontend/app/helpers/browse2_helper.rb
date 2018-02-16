@@ -60,7 +60,20 @@ module Browse2Helper
         param == facet_param
       end
     end
-    "#{opts[:base_url]}?#{current_params.to_param}"
+
+    base_url = opts[:base_url]
+    if @catalog_landing_page&.vanity_url?
+      # We do this because CLPs cannot handle additional URL parameters not
+      # defined in their precise definition. So if we're on a CLP that is
+      # using a vanity URL, we cannot stay on it when doing additional
+      # filtering and must instead move back to the standard /browse.
+      #
+      # Changing that presumption is a fundamental redefinition of what CLPs are.
+      base_url = '/browse'
+      current_params.merge!(@catalog_landing_page.params_for_catalog)
+    end
+
+    "#{base_url}?#{current_params.to_param}"
   end
 
   # Q: Why does this exist when lib/browse_actions.rb already has partitioning logic?

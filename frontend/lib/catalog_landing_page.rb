@@ -63,7 +63,13 @@ class CatalogLandingPage
     return false if blacklisted_param_present?(request)
 
     # EN-15655: Prevent CLP from loading in the select dataset modal (path == '/browse/select_dataset').
-    request.path == '/browse'
+    return true if request.path == '/browse'
+
+    pages = CurrentDomain.configuration(:catalog_landing_page).tap do |config|
+      return false unless config.present?
+    end.properties.keys
+
+    pages.include?(custom_path(request))
   end
 
   # We have to do CGI escaping here because for some reason the FeaturedContent class decided
@@ -91,7 +97,16 @@ class CatalogLandingPage
   def initialize(domain_or_cname, params)
     @cname = domain_or_cname.attempt(:cname)
     @id = catalog_query(@query = params.slice(*valid_params)).presence ||
-      custom_path(params)
+      custom_path(params).tap { |x| @vanity_url = true if x.present? }
+  end
+
+  def vanity_url?
+    @vanity_url
+  end
+
+  def params_for_catalog
+    return {} unless @vanity_url
+    CurrentDomain.configuration(:catalog_landing_page).properties[@id]&.catalog_params || {}
   end
 
   def to_query

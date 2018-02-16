@@ -7,8 +7,9 @@ export class Description extends React.Component {
   render() {
     const { descriptionText } = this.props;
     const markedDescription = { __html: marked(descriptionText || '', { sanitize: true }) };
+    const classNames = ['clp-description', window.location.hostname.replace(/[^\w]+/g, '_')];
 
-    return <div className="clp-description" dangerouslySetInnerHTML={markedDescription} />;
+    return <div className={classNames.join(' ')} dangerouslySetInnerHTML={markedDescription} />;
   }
 }
 

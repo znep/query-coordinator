@@ -5,10 +5,14 @@ import MapHelper from 'common/visualizations/helpers/MapHelper';
 import { VIF_CONSTANTS } from 'common/visualizations/views/mapConstants';
 
 import {
-  VECTOR_BASE_MAP_STYLES,
   COLOR_PALETTES,
+  DEFAULT_SHAPE_FILL_COLOR,
+  DEFAULT_SHAPE_FILL_OPACITY,
+  DEFAULT_SHAPE_OUTLINE_COLOR,
+  DEFAULT_SHAPE_OUTLINE_WIDTH,
   ERROR_BARS_DEFAULT_BAR_COLOR,
-  SERIES_TYPE_FLYOUT
+  SERIES_TYPE_FLYOUT,
+  VECTOR_BASE_MAP_STYLES
 } from '../constants';
 
 export const getVifs = state => _.get(state, 'vifs', {});
@@ -210,6 +214,26 @@ export const getLineColorByColumn = createSelector(
 export const getBoundaryColorByColumn = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'series[0].mapOptions.colorBoundariesBy', null)
+);
+
+export const getShapeFillColor = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.shapeFillColor', DEFAULT_SHAPE_FILL_COLOR)
+);
+
+export const getShapeFillOpacity = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.shapeFillOpacity', DEFAULT_SHAPE_FILL_OPACITY) * 100
+);
+
+export const getShapeOutlineColor = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.shapeOutlineColor', DEFAULT_SHAPE_OUTLINE_COLOR)
+);
+
+export const getShapeOutlineWidth = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.shapeOutlineWidth', DEFAULT_SHAPE_OUTLINE_WIDTH)
 );
 
 export const getQuantificationMethod = createSelector(

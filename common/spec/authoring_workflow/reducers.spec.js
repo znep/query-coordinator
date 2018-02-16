@@ -188,7 +188,10 @@ describe('AuthoringWorkflow reducer', () => {
       shouldSetVif('setSearchBoundaryLowerRightLatitude', 53.81794822741499, 'series[0].mapOptions.searchBoundaryLowerRightLatitude', ['map']);
       shouldSetVif('setSearchBoundaryLowerRightLongitude', -128.93642272949219, 'series[0].mapOptions.searchBoundaryLowerRightLongitude', ['map']);
       shouldSetVif('setPitchAndBearing', { pitch: 60, bearing: -60 }, 'configuration.mapPitchAndBearing', ['map']);
-
+      shouldSetVif('setShapeFillColor', '#969696', 'series[0].mapOptions.shapeFillColor', ['map']);
+      shouldSetVif('setShapeFillOpacity', 0.79, 'series[0].mapOptions.shapeFillOpacity', ['map']);
+      shouldSetVif('setShapeOutlineColor', '#f7f7f7', 'series[0].mapOptions.shapeOutlineColor', ['map']);
+      shouldSetVif('setShapeOutlineWidth', 1.5, 'series[0].mapOptions.shapeOutlineWidth', ['map']);
 
       describe('when settings the x-axis scaling mode', () => {
 

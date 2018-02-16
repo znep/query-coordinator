@@ -1277,6 +1277,14 @@ en:
               categorical: Categorical
             right_axis_title:
               title: Right Axis Title
+            shape_fill_color:
+              title: Shape Fill Color
+            shape_fill_opacity:
+              title: Shape Fill Opacity
+            shape_outline_color:
+              title: Shape Outline Color
+            shape_outline_width:
+              title: Shape Outline Width
             show_dimension_labels:
               title: Show Dimension Labels
             show_source_data_link:
@@ -1307,6 +1315,7 @@ en:
             points: Points
             point_size: Point Size
             quantification_method: Quantification Method
+            shape_outline: Shape Outline
           title: Presentation
       preview:
         center_and_zoom: Current zoom level and positioning will be preserved on insertion.

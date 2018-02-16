@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import { DEFAULT_SHAPE_FILL_OPACITY, DEFAULT_SHAPE_OUTLINE_WIDTH } from '../../constants';
 import vifs from '../../vifs';
 import baseVifReducer from './base';
 import * as actions from '../../actions';
@@ -281,6 +282,24 @@ export default function map(state, action) {
 
     case actions.SET_PITCH_AND_BEARING:
       _.set(state, 'configuration.mapPitchAndBearing', action.pitchAndBearing);
+      break;
+
+    case actions.SET_SHAPE_FILL_COLOR:
+      _.set(state, 'series[0].mapOptions.shapeFillColor', action.shapeFillColor);
+      break;
+
+    case actions.SET_SHAPE_FILL_OPACITY:
+      const shapeFillOpacity = parseFloat(action.shapeFillOpacity);
+      _.set(state, 'series[0].mapOptions.shapeFillOpacity', _.isNaN(shapeFillOpacity) ? DEFAULT_SHAPE_FILL_OPACITY : _.clamp(shapeFillOpacity, 0, 1));
+      break;
+
+    case actions.SET_SHAPE_OUTLINE_COLOR:
+      _.set(state, 'series[0].mapOptions.shapeOutlineColor', action.shapeOutlineColor);
+      break;
+
+    case actions.SET_SHAPE_OUTLINE_WIDTH:
+      const shapeOutlineWidth = parseFloat(action.shapeOutlineWidth);
+      _.set(state, 'series[0].mapOptions.shapeOutlineWidth', _.isFinite(shapeOutlineWidth) ? _.clamp(shapeOutlineWidth, 0.5, 8) : DEFAULT_SHAPE_OUTLINE_WIDTH);
       break;
 
     case actions.RECEIVE_METADATA:

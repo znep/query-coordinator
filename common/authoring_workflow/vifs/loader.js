@@ -80,6 +80,10 @@ const paths = {
   shapefileGeometryLabel: 'configuration.shapefile.geometryLabel',
   shapefilePrimaryKey: 'configuration.shapefile.primaryKey',
   shapefileUid: 'configuration.shapefile.uid',
+  shapeFillColor: 'series[0].mapOptions.shapeFillColor',
+  shapeFillOpacity: 'series[0].mapOptions.shapeFillOpacity',
+  shapeOutlineColor: 'series[0].mapOptions.shapeOutlineColor',
+  shapeOutlineWidth: 'series[0].mapOptions.shapeOutlineWidth',
   showDimensionLabels: 'configuration.showDimensionLabels',
   showOtherCategory: 'configuration.showOtherCategory',
   showValueLabels: 'configuration.showValueLabels',
@@ -364,6 +368,22 @@ export const load = (dispatch, vif) => {
 
   if (has(paths.shapefileUid)) {
     dispatch(actions.setShapefileUid(get(paths.shapefileUid)));
+  }
+
+  if (has(paths.shapeFillColor)) {
+    dispatch(actions.setShapeFillColor(get(paths.shapeFillColor)));
+  }
+
+  if (has(paths.shapeFillOpacity)) {
+    dispatch(actions.setShapeFillOpacity(get(paths.shapeFillOpacity)));
+  }
+
+  if (has(paths.shapeOutlineColor)) {
+    dispatch(actions.setShapeOutlineColor(get(paths.shapeOutlineColor)));
+  }
+
+  if (has(paths.shapeOutlineWidth)) {
+    dispatch(actions.setShapeOutlineWidth(get(paths.shapeOutlineWidth)));
   }
 
   if (has(paths.showDimensionLabels)) {

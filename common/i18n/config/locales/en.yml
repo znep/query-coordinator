@@ -350,6 +350,8 @@ en:
         row:
           one: row
           other: rows
+      dropdown:
+        select: Select...
       filter_bar:
         add_filter: Add Filter
         apply: Apply
@@ -386,6 +388,7 @@ en:
         remove: Remove
         reset: Reset
         search: Search options
+        select: Select...
         text_filter:
           exact_search_prompt_main: 'Don''t see your value below? Try an exact match search, including case.'
           is: is

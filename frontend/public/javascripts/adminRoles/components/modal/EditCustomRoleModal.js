@@ -27,25 +27,22 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  cancelCreateNewRole: Actions.createNewRoleCancel,
-  saveRole: Actions.renameRoleEnd,
-  createRole: Actions.createNewRoleStart
+  onCancel: Actions.editCustomRoleModalCancel,
+  onSubmit: Actions.editCustomRoleModalSubmit
 };
 
 class EditCustomRoleModal extends Component {
   static propTypes = {
-    cancelCreateNewRole: PropTypes.func.isRequired,
-    saveRole: PropTypes.func.isRequired,
-    createRole: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
     editingNewRole: PropTypes.bool.isRequired,
     showModal: PropTypes.bool.isRequired
   };
 
   render() {
     const {
-      cancelCreateNewRole,
-      saveRole,
-      createRole,
+      onCancel,
+      onSubmit,
       editingNewRole,
       showModal,
       localization: { translate }
@@ -63,7 +60,6 @@ class EditCustomRoleModal extends Component {
       ),
       onDismiss: noop
     };
-    const onSubmit = () => (editingNewRole ? createRole() : saveRole()); // TODO: EN-22314 - Move this logic to sagas
 
     return (
       <ConditionTransitionMotion
@@ -86,7 +82,7 @@ class EditCustomRoleModal extends Component {
 
             <ModalFooter>
               <div>
-                <Button variant="primary" inverse onClick={cancelCreateNewRole}>
+                <Button variant="primary" inverse onClick={onCancel}>
                   {translate('screens.admin.roles.buttons.cancel')}
                 </Button>
                 <Button variant="primary" className={styles['save-button']} onClick={onSubmit}>

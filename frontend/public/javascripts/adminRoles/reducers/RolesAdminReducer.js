@@ -19,7 +19,7 @@ export default () => {
       .set('appState', appStates.NEW_CUSTOM_ROLE);
   }
 
-  function createNewRoleCancel(state) {
+  function editCustomRoleModalCancel(state) {
     return state.get('previousState').delete('previousState');
   }
 
@@ -27,13 +27,7 @@ export default () => {
     const appState = selectors.getAppState(state);
     const editingRole = selectors.getEditingRoleFromState(state);
     const templateRole = selectors.findRoleById(state, selectors.getEditingRoleTemplateIdFromState(state));
-    const maxCharacterCount = selectors.getMaxCharacterCountFromState(state);
-    const validatedRole = selectors.validateRole(maxCharacterCount, editingRole);
     const name = selectors.getRoleNameFromRole(editingRole).trim();
-
-    if (selectors.roleHasError(validatedRole)) {
-      return state.set('editingRole', validatedRole);
-    }
 
     if (appState === appStates.NEW_CUSTOM_ROLE) {
       const newRole = Immutable.fromJS({
@@ -201,8 +195,9 @@ export default () => {
       case actions.NEW_CUSTOM_ROLE:
         return newCustomRole(state, action);
 
-      case actions.CREATE_NEW_ROLE_CANCEL:
-        return createNewRoleCancel(state, action);
+      case actions.EDIT_CUSTOM_ROLE_MODAL_CANCEL:
+        return editCustomRoleModalCancel(state);
+
       case actions.CREATE_NEW_ROLE_START:
         return createNewRole(state, action);
       case actions.CHANGE_NEW_ROLE_NAME:

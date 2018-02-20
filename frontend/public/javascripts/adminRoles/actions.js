@@ -23,9 +23,13 @@ export const SAVE_ROLES_FAILURE = 'SAVE_ROLES_FAILURE';
 export const saveRolesFailure = () => ({ type: SAVE_ROLES_FAILURE, error: true });
 
 export const CREATE_NEW_ROLE_START = 'CREATE_NEW_ROLE_START';
-export const CREATE_NEW_ROLE_CANCEL = 'CREATE_NEW_ROLE_CANCEL';
 export const createNewRoleStart = () => ({ type: CREATE_NEW_ROLE_START });
-export const createNewRoleCancel = () => ({ type: CREATE_NEW_ROLE_CANCEL });
+
+export const EDIT_CUSTOM_ROLE_MODAL_SUBMIT = 'EDIT_CUSTOM_ROLE_MODAL_SUBMIT';
+export const editCustomRoleModalSubmit = () => ({ type: EDIT_CUSTOM_ROLE_MODAL_SUBMIT });
+
+export const EDIT_CUSTOM_ROLE_MODAL_CANCEL = 'EDIT_CUSTOM_ROLE_MODAL_CANCEL';
+export const editCustomRoleModalCancel = () => ({ type: EDIT_CUSTOM_ROLE_MODAL_CANCEL });
 
 export const CHANGE_NEW_ROLE_NAME = 'CHANGE_NEW_ROLE_NAME';
 export const changeNewRoleName = name => ({ type: CHANGE_NEW_ROLE_NAME, payload: { name } });

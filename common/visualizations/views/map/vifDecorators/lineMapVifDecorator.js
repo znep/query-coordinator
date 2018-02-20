@@ -6,24 +6,25 @@ import { VIF_CONSTANTS } from 'common/visualizations/views/mapConstants';
 // These functions gets added to the vif object (see vifDecorator|views/UnifiedMap).
 // So that multiple files(overlays/lines-partials/legends/mapFactory) can
 // reuse them directly.
-export function getLineColorByColumn() {
-  return _.get(this, 'series[0].mapOptions.colorLinesBy');
-}
-
-export function getLineWeightByColumn() {
-  return _.get(this, 'series[0].mapOptions.weighLinesBy');
-}
 
 export function getLineColor(colorByColumnAlias, colorByCategories) {
   if (_.isNull(colorByCategories)) {
     return _.get(this, 'series[0].color.primary', '#ff00ff');
   }
 
-  return this.getColorByPaints(colorByColumnAlias, colorByCategories);
+  return this.getPaintPropertyForColorByCategories(colorByColumnAlias, colorByCategories);
+}
+
+export function getColorLinesByColumn() {
+  return _.get(this, 'series[0].mapOptions.colorLinesBy');
+}
+
+export function getWeighLinesByColumn() {
+  return _.get(this, 'series[0].mapOptions.weighLinesBy');
 }
 
 export function getLineWidth(aggregateAndResizeBy, resizeByRange) {
-  if (!_.isString(this.getLineWeightByColumn())) {
+  if (!_.isString(this.getWeighLinesByColumn())) {
     return _.get(this, 'series[0].mapOptions.lineWeight', VIF_CONSTANTS.LINE_WEIGHT.DEFAULT);
   }
 

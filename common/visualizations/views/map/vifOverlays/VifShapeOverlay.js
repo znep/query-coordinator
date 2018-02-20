@@ -28,7 +28,7 @@ export default class VifShapeOverlay extends VifOverlay {
     const renderOptions = await this._prepare(vif);
 
     this._legend.show(
-      vif.getColorByBuckets(renderOptions.colorByCategories),
+      vif.getColorsForCategories(renderOptions.colorByCategories),
       'categorical'
     );
     this._shapes.setup(vif, renderOptions);
@@ -40,7 +40,7 @@ export default class VifShapeOverlay extends VifOverlay {
     const renderOptions = await this._prepare(vif);
 
     this._legend.show(
-      vif.getColorByBuckets(renderOptions.colorByCategories),
+      vif.getColorsForCategories(renderOptions.colorByCategories),
       'categorical'
     );
     this._shapes.update(vif, renderOptions);

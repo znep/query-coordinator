@@ -33,7 +33,7 @@ export default class VifLineOverlay extends VifOverlay {
     const renderOptions = await this._prepare(vif);
 
     this._legend.show(
-      vif.getColorByBuckets(renderOptions.colorByCategories),
+      vif.getColorsForCategories(renderOptions.colorByCategories),
       'categorical'
     );
     this._lines.setup(vif, renderOptions);
@@ -46,7 +46,7 @@ export default class VifLineOverlay extends VifOverlay {
     const renderOptions = await this._prepare(vif);
 
     this._legend.show(
-      vif.getColorByBuckets(renderOptions.colorByCategories),
+      vif.getColorsForCategories(renderOptions.colorByCategories),
       'categorical'
     );
     this._lines.update(vif, renderOptions);
@@ -61,8 +61,8 @@ export default class VifLineOverlay extends VifOverlay {
   // and returns the renderOptions.
   async _prepare(vif) {
     this._preparingForVif = vif;
-    const colorByColumn = vif.getLineColorByColumn();
-    const weightByColumn = vif.getLineWeightByColumn();
+    const colorByColumn = vif.getColorLinesByColumn();
+    const weightByColumn = vif.getWeighLinesByColumn();
 
     try {
       const [colorByCategories, resizeByRange, datasetMetadata] = await Promise.all([
@@ -98,8 +98,8 @@ export default class VifLineOverlay extends VifOverlay {
 
   getDataUrl(vif, colorByCategories) {
     const columnName = vif.getColumnName();
-    const colorByColumn = vif.getLineColorByColumn();
-    const weightByColumn = vif.getLineWeightByColumn();
+    const colorByColumn = vif.getColorLinesByColumn();
+    const weightByColumn = vif.getWeighLinesByColumn();
 
     let conditions = [`{{'${columnName}' column condition}}`];
     const filters = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
@@ -153,7 +153,7 @@ export default class VifLineOverlay extends VifOverlay {
 }
 
 function weightBy(vif) {
-  const weightByColumn = vif.getLineWeightByColumn();
+  const weightByColumn = vif.getWeighLinesByColumn();
   if (_.isString(weightByColumn)) {
     return WEIGHT_BY_ALIAS;
   }

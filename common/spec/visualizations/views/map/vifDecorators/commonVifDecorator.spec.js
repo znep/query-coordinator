@@ -74,7 +74,7 @@ describe('commonVifDecorator', () => {
         const colorPallete = vif.series[0].color.palette;
 
         assert.equal(
-          decoratedVif.getColorByPaints('__color_by__', []),
+          decoratedVif.getPaintPropertyForColorByCategories('__color_by__', []),
           COLOR_PALETTE_VALUES[colorPallete][0]
         );
       });
@@ -93,7 +93,7 @@ describe('commonVifDecorator', () => {
           default: colorPalleteColors[4]
         };
 
-        const colorBuckets = decoratedVif.getColorByPaints('__color_by__', ['police', 'county', 'city', 'bus']);
+        const colorBuckets = decoratedVif.getPaintPropertyForColorByCategories('__color_by__', ['police', 'county', 'city', 'bus']);
 
         assert.deepEqual(colorBuckets, expectedResult);
       });

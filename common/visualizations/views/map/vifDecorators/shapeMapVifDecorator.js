@@ -11,25 +11,17 @@ export function getShapeColorByColumn() {
   return _.get(this, 'series[0].mapOptions.colorBoundariesBy');
 }
 
-export function getShapeLineColor(colorByCategories) {
-  if (_.isEmpty(colorByCategories)) {
-    return _.get(this, 'series[0].color.primary');
-  }
-  return NO_COLOR;
-}
-
 export function getShapeFillColor(colorByColumnAlias, colorByCategories) {
   if (_.isNull(colorByCategories)) {
     return NO_COLOR;
   }
 
-  return this.getColorByPaints(colorByColumnAlias, colorByCategories);
+  return this.getPaintPropertyForColorByCategories(colorByColumnAlias, colorByCategories);
 }
 
-export function getShapeFillOutlineColor(colorByCategories) {
+export function getShapeOutlineColor(colorByCategories) {
   if (_.isEmpty(colorByCategories)) {
-    // If no color by category, no fill and outline.
-    return NO_COLOR;
+    return _.get(this, 'series[0].color.primary');
   }
   return '#ffffff';
 }

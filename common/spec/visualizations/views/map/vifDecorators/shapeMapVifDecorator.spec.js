@@ -14,7 +14,7 @@ describe('shapeMapVifDecorator', () => {
       const decoratedVif = _.merge({}, shapeMapVifDecorator, vif);
 
       assert.equal(
-        decoratedVif.getShapeLineColor(),
+        decoratedVif.getShapeOutlineColor(),
         '#eb6900'
       );
     });
@@ -45,9 +45,9 @@ describe('shapeMapVifDecorator', () => {
       vif.series[0].color.palette = 'categorical';
       const decoratedVif = _.merge({}, shapeMapVifDecorator, vif);
 
-      const shapeLineColor = decoratedVif.getShapeLineColor(['department', 'place', 'city', 'school']);
+      const shapeLineColor = decoratedVif.getShapeOutlineColor(['department', 'place', 'city', 'school']);
 
-      assert.deepEqual(shapeLineColor, 'rgba(0, 0, 0, 0)');
+      assert.deepEqual(shapeLineColor, '#ffffff');
     });
 
     it('should return shape fillColor Buckets', () => {

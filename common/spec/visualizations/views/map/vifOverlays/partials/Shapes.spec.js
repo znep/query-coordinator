@@ -52,7 +52,7 @@ describe('Clusters', () => {
       sinon.assert.calledWith(mockMap.addLayer,
         sinon.match({
           id: 'shape-fill',
-          paint: { 'fill-color': 'rgba(0, 0, 0, 0)', 'fill-outline-color': 'rgba(0, 0, 0, 0)' },
+          paint: { 'fill-color': 'rgba(0, 0, 0, 0)', 'fill-outline-color': '#eb6900' },
           source: 'polygonVectorDataSource',
           'source-layer': '_geojsonTileLayer',
           type: 'fill'

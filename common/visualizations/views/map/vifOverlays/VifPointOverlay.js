@@ -31,7 +31,7 @@ export default class VifPointOverlay extends VifOverlay {
     const renderOptions = await this._prepare(vif);
 
     this._legend.show(
-      vif.getColorByBuckets(renderOptions.colorByCategories),
+      vif.getColorsForCategories(renderOptions.colorByCategories),
       'categorical'
     );
     this._pointsAndStacks.setup(vif, renderOptions);
@@ -45,7 +45,7 @@ export default class VifPointOverlay extends VifOverlay {
     const renderOptions = await this._prepare(vif);
 
     this._legend.show(
-      vif.getColorByBuckets(renderOptions.colorByCategories),
+      vif.getColorsForCategories(renderOptions.colorByCategories),
       'categorical'
     );
     this._pointsAndStacks.update(vif, renderOptions);
@@ -61,8 +61,8 @@ export default class VifPointOverlay extends VifOverlay {
   // and returns the renderOptions.
   async _prepare(vif) {
     this._preparingForVif = vif;
-    const colorByColumn = vif.getPointColorByColumn();
-    const resizeByColumn = vif.getPointResizeByColumn();
+    const colorByColumn = vif.getColorPointsByColumn();
+    const resizeByColumn = vif.getResizePointsByColumn();
 
     try {
       const [colorByCategories, resizeByRange, datasetMetadata] = await Promise.all([
@@ -98,8 +98,8 @@ export default class VifPointOverlay extends VifOverlay {
 
   getDataUrl(vif, colorByCategories) {
     const columnName = vif.getColumnName();
-    const colorByColumn = vif.getPointColorByColumn();
-    const resizeByColumn = vif.getPointResizeByColumn();
+    const colorByColumn = vif.getColorPointsByColumn();
+    const resizeByColumn = vif.getResizePointsByColumn();
 
     let conditions = [`{{'${columnName}' column condition}}`];
     const filters = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
@@ -150,7 +150,7 @@ export default class VifPointOverlay extends VifOverlay {
 }
 
 function resizeBy(vif) {
-  const resizeByColumn = vif.getPointResizeByColumn();
+  const resizeByColumn = vif.getResizePointsByColumn();
   if (_.isString(resizeByColumn)) {
     return RESIZE_BY_ALIAS;
   }

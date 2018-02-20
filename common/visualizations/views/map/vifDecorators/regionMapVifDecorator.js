@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
-import { MAP_TYPES, POINT_AGGREGATIONS } from 'common/visualizations/views/mapConstants';
 import ChoroplethMapUtils from 'common/visualizations/views/ChoroplethMapUtils';
+import { MAP_TYPES, POINT_AGGREGATIONS } from 'common/visualizations/views/mapConstants';
 
 export function isRegionMap() {
   return this.getMapType() === MAP_TYPES.POINT_MAP &&
@@ -51,4 +51,3 @@ export function getRegionMapBuckets(measures) {
     }).
     value();
 }
-

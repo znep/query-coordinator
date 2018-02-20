@@ -64,34 +64,34 @@ export function setPopupContentForStack(
 
 // Builds html content for colorBy categories->count breakdown for the given stack.
 function getPointsBreakdownByColor(vif, renderOptions, stackFeature) {
-  const colorByBuckets = vif.getColorByBuckets(renderOptions.colorByCategories);
+  const colorsForCategories = vif.getColorsForCategories(renderOptions.colorByCategories);
   const isCluster = _.get(stackFeature, 'properties.cluster', false);
 
-  if (_.isEmpty(colorByBuckets)) {
+  if (_.isEmpty(colorsForCategories)) {
     return '';
   }
 
   return '<ul class="color-breakdown">' +
     (isCluster ?
-      getClusterOfSnappedPointsColorByBreakdown(vif, colorByBuckets, renderOptions, stackFeature) :
-      getSnappedPointsColorByBreakdown(vif, colorByBuckets, renderOptions, stackFeature)
+      getClusterOfSnappedPointsColorByBreakdown(vif, colorsForCategories, renderOptions, stackFeature) :
+      getSnappedPointsColorByBreakdown(vif, colorsForCategories, renderOptions, stackFeature)
     ) +
     '</ul>';
 }
 
 // Arguments:
-//  colorByBuckets    : [{category: 'Other', id: '__$$other$$__', color: #ffddff}, ...]
+//  colorsForCategories    : [{category: 'Other', id: '__$$other$$__', color: #ffddff}, ...]
 //  countBy           : <string> name of the property that holds the number of points grouped into
 //                      a single feature after snapping on the soql side.
 //  stackFeature      : geosjon object of the hovered over stack.
-function getClusterOfSnappedPointsColorByBreakdown(vif, colorByBuckets, renderOptions, stackFeature) {
+function getClusterOfSnappedPointsColorByBreakdown(vif, colorsForCategories, renderOptions, stackFeature) {
   // categoryToBucketsMap = {
   //    Other: {category: 'Other', id: '__$$other$$__', color: #ffddff},
   //    Category1: {category: 'Category1', id: 'Category1', color: #ffddff},
   //    ...
   // }
-  const categoryToBucketMap = _.chain(colorByBuckets).
-    keyBy((colorByBucket) => _.get(colorByBucket, 'id', colorByBucket.category)).
+  const categoryToBucketMap = _.chain(colorsForCategories).
+    keyBy((colorForCategory) => _.get(colorForCategory, 'id', colorForCategory.category)).
     value();
   const categoryBreakdownStr = _.get(stackFeature, ['properties', `${renderOptions.countBy}_group`], '{}');
   // categoryBreakdown = {Other: 10, Category1: 12, Category2: 12}
@@ -113,18 +113,18 @@ function getClusterOfSnappedPointsColorByBreakdown(vif, colorByBuckets, renderOp
 }
 
 // Arguments:
-//  colorByBuckets          : [{category: 'Other', id: '__$$other$$__', color: #ffddff}, ...]
+//  colorsForCategories          : [{category: 'Other', id: '__$$other$$__', color: #ffddff}, ...]
 //  renderOptions.countBy   : <string> name of the property that holds the number of points grouped into
 //                            a single feature after snapping on the soql side.
 //  renderOptions.colorBy   : <string> name of the property that holds dataset column value based on which
 //                            the points are colored by
 //  stackFeature            : geosjon object of the hovered over stack.
-function getSnappedPointsColorByBreakdown(vif, colorByBuckets, renderOptions, stackFeature) {
+function getSnappedPointsColorByBreakdown(vif, colorsForCategories, renderOptions, stackFeature) {
   const stackCategory = _.get(stackFeature, ['properties', renderOptions.colorBy]);
-  const colorByBucketForStack = _.find(colorByBuckets, { id: stackCategory });
+  const colorForCategoryForStack = _.find(colorsForCategories, { id: stackCategory });
 
-  const category = _.get(colorByBucketForStack, 'category');
-  const color = _.get(colorByBucketForStack, 'color');
+  const category = _.get(colorForCategoryForStack, 'category');
+  const color = _.get(colorForCategoryForStack, 'color');
   const count = _.get(stackFeature, ['properties', renderOptions.countBy]);
 
   return formatColorBreakdownEntry(vif, category, color, count);

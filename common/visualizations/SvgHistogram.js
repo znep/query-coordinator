@@ -92,18 +92,18 @@ function fetchDomain(vif, seriesIndex) {
  * @returns Promise
  */
 function fetchBucketedData(bucketingOptions, vif, seriesIndex) {
+  const soqlDataProvider = dataProvider(vif, seriesIndex);
 
-  var soqlDataProvider = dataProvider(vif, seriesIndex);
-
-  var whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
+  const whereClauseComponents = SoqlHelpers.whereClauseFilteringOwnColumn(
     vif,
     seriesIndex
   );
-  var whereClause = (whereClauseComponents.length > 0) ?
-      'WHERE {0}'.format(whereClauseComponents) :
-      '';
 
-  var queryParameters = {
+  const whereClause = (whereClauseComponents.length > 0) ?
+    `WHERE ${whereClauseComponents}` :
+    '';
+
+  const queryParameters = {
     column: SoqlHelpers.dimension(vif, seriesIndex),
     columnAlias: '__magnitude__',
     value: SoqlHelpers.aggregationClause(vif, seriesIndex, 'measure'),
@@ -117,20 +117,13 @@ function fetchBucketedData(bucketingOptions, vif, seriesIndex) {
     queryParameters.bucketingFunction = `signed_magnitude_10(${queryParameters.column})`;
   }
 
-  var queryTemplate = [
+  const queryTemplate = [
     'select {bucketingFunction} as {columnAlias}, ',
     '{value} as {valueAlias} ',
     '{whereClause} group by {columnAlias} order by {columnAlias} limit 200'
   ].join('');
 
-  var filteredWhereClause = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, seriesIndex);
-  if (filteredWhereClause.length > 0) {
-    filteredWhereClause = 'where ' + filteredWhereClause;
-  }
-
-  var filteredDataQuery = queryTemplate.format(_.assign(queryParameters, {
-    whereClause: filteredWhereClause
-  }));
+  const filteredDataQuery = queryTemplate.format(queryParameters);
 
   return soqlDataProvider.query(
     filteredDataQuery,

@@ -1663,15 +1663,7 @@ function SvgBarChart($element, vif, options) {
 
   function generateYAxis(yScale, allowedLabelWidth) {
     // This sucks, but linear interpolation seems good enough.
-    const allowedLabelCharCount = Math.ceil(allowedLabelWidth / DIMENSION_LABELS_PIXEL_PER_CHARACTER);
-
-    function conditionallyTruncateLabel(label) {
-      label = _.isEmpty(label) ? noValueLabel : label;
-
-      return (label.length >= allowedLabelCharCount) ?
-        `${label.substring(0, allowedLabelCharCount - 1).trim()}…` :
-        label;
-    }
+    const maximumCharacters = Math.ceil(allowedLabelWidth / DIMENSION_LABELS_PIXEL_PER_CHARACTER);
 
     return d3.svg.axis().
       scale(yScale).
@@ -1701,7 +1693,7 @@ function SvgBarChart($element, vif, options) {
           label = ColumnFormattingHelpers.formatValuePlainText(d, column, barDataToRender, true);
         }
 
-        return conditionallyTruncateLabel(label);
+        return self.conditionallyTruncateLabel(label, maximumCharacters);
         // See TODO above.
         // }
       }).

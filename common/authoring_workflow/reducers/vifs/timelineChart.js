@@ -26,6 +26,10 @@ export default function timelineChart(state, action) {
       state = vifs().timelineChart;
       break;
 
+    case actions.SET_DIMENSION_LABEL_AREA_SIZE:
+      _.set(state, 'configuration.dimensionLabelAreaSize', action.width);
+      break;
+
     case actions.SET_DIMENSION_GROUPING_COLUMN_NAME:
       setDimensionGroupingColumnName(state, action.dimensionGroupingColumnName);
       break;

@@ -18,7 +18,6 @@ import {
   AXIS_LABEL_COLOR,
   AXIS_LABEL_FONT_FAMILY,
   AXIS_LABEL_FONT_SIZE,
-  AXIS_LABEL_MARGIN,
   AXIS_LABEL_TEXT_MARGIN,
   DEFAULT_HIGHLIGHT_COLOR,
   SERIES_TYPE_FLYOUT
@@ -240,7 +239,7 @@ function SvgVisualization($element, vif, options) {
       axisLabels.bottom,
       'socrata-visualization-bottom-axis-title',
       (element) => {
-        const top = chartMaxY + AXIS_LABEL_MARGIN - AXIS_LABEL_TEXT_MARGIN;
+        const top = chartMaxY + (2 * AXIS_LABEL_TEXT_MARGIN);
         element.attr('transform', `translate(${chartMidX}, ${top})`);
       }
     );
@@ -448,6 +447,14 @@ function SvgVisualization($element, vif, options) {
     }
 
     return [...referenceLineItems, ...measureItems];
+  };
+
+  this.conditionallyTruncateLabel = function(label, maximumCharacters) {
+    label = _.isEmpty(label) ? noValueLabel : label;
+
+    return (label.length >= maximumCharacters) ?
+      `${label.substring(0, maximumCharacters - 1).trim()}…` :
+      label;
   };
 
   this.clearError = function() {

@@ -17,7 +17,6 @@ import {
   DEFAULT_DESKTOP_COLUMN_WIDTH,
   DEFAULT_LINE_HIGHLIGHT_FILL,
   DEFAULT_MOBILE_COLUMN_WIDTH,
-  DIMENSION_LABELS_FIXED_HEIGHT,
   DIMENSION_LABELS_FONT_COLOR,
   DIMENSION_LABELS_ROTATION_ANGLE,
   DIMENSION_LABELS_FONT_SIZE,
@@ -49,12 +48,14 @@ import { getMeasures } from '../helpers/measure';
 const MARGINS = {
   TOP: 32,
   RIGHT: 50,
-  BOTTOM: 0
+  BOTTOM: 32
 };
 
 /* eslint-disable no-unused-vars */
 const MAX_COLUMN_COUNT_WITHOUT_PAN = 50;
 /* eslint-enable no-unused-vars */
+const DIMENSION_LABELS_DEFAULT_WIDTH = 115;
+const DIMENSION_LABELS_PIXEL_PER_CHARACTER = 115 / 15; // Empirically determined to work well enough.
 
 function SvgColumnChart($element, vif, options) {
   // Embeds needs to wait to define noValueLabel until after hydration.
@@ -74,6 +75,20 @@ function SvgColumnChart($element, vif, options) {
   let measures;
   let referenceLines;
 
+  const labelResizeState = {
+    draggerElement: null,
+
+    // True during interactive resize, false otherwise.
+    dragging: false,
+
+    // Controls how much horizontal space the labels take up.
+    // The override persists until cleared by a VIF update.
+    // The override is active if this value is defined.
+    // Otherwise, the chart falls back to the space
+    // configured in the VIF or the default.
+    overriddenAreaSize: undefined
+  };
+
   _.extend(this, new SvgVisualization($element, vif, options));
 
   renderTemplate();
@@ -87,6 +102,10 @@ function SvgColumnChart($element, vif, options) {
     if (!newData && !dataToRender && !newColumns) {
       return;
     }
+
+    // Forget the label area size the user set - we're
+    // loading a brand new vif.
+    labelResizeState.overriddenAreaSize = undefined;
 
     this.clearError();
 
@@ -113,6 +132,8 @@ function SvgColumnChart($element, vif, options) {
       this.updateColumns(newColumns);
     }
 
+    $(labelResizeState.draggerElement).toggleClass('enabled', self.getShowDimensionLabels());
+
     renderData();
   };
 
@@ -136,6 +157,45 @@ function SvgColumnChart($element, vif, options) {
    * Private methods
    */
 
+  function labelHeightDragger() {
+    const dragger = document.createElement('div');
+    labelResizeState.draggerElement = dragger;
+
+    dragger.setAttribute('class', 'label-width-dragger');
+
+    d3.select(dragger).call(d3.behavior.drag().
+      on('dragstart', () => {
+        $chartElement.addClass('dragging-label-width-dragger');
+        labelResizeState.dragging = true;
+        labelResizeState.overriddenAreaSize = computeLabelHeight();
+      }).
+      on('drag', () => {
+        labelResizeState.overriddenAreaSize -= d3.event.dy;
+        renderData();
+        hideFlyout();
+      }).
+      on('dragend', () => {
+        $chartElement.removeClass('dragging-label-width-dragger');
+        labelResizeState.dragging = false;
+        renderData();
+        self.emitEvent('SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED', labelResizeState.overriddenAreaSize);
+      })
+    );
+
+    return dragger;
+  }
+
+  function updateLabelHeightDragger(leftOffset, topOffset, width) {
+    // Only move if not dragging. Otherwise,
+    // d3's dragger becomes confused.
+    if (!labelResizeState.dragging) {
+      labelResizeState.draggerElement.setAttribute(
+        'style',
+        `left: ${leftOffset}px; top: ${topOffset}px; width: ${width}px`
+      );
+    }
+  }
+
   function renderTemplate() {
 
     $chartElement = $(
@@ -143,10 +203,32 @@ function SvgColumnChart($element, vif, options) {
       {
         'class': 'column-chart'
       }
-    );
+    ).append(labelHeightDragger());
 
     self.$element.find('.socrata-visualization-container').
       append($chartElement);
+  }
+
+  function computeLabelHeight() {
+    let configuredSize = _.get(self.getVif(), 'configuration.dimensionLabelAreaSize');
+
+    if (!_.isFinite(configuredSize)) {
+      configuredSize = DIMENSION_LABELS_DEFAULT_WIDTH;
+    }
+
+    const height = _.isFinite(labelResizeState.overriddenAreaSize) ?
+     labelResizeState.overriddenAreaSize :
+     configuredSize;
+
+    const axisLabels = self.getAxisLabels();
+    const topMargin = MARGINS.TOP;
+    const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0);
+
+    return _.clamp(
+      height,
+      0,
+      $chartElement.height() - (topMargin + bottomMargin)
+    );
   }
 
   function renderData() {
@@ -154,10 +236,14 @@ function SvgColumnChart($element, vif, options) {
       DEFAULT_MOBILE_COLUMN_WIDTH :
       DEFAULT_DESKTOP_COLUMN_WIDTH;
 
+    const dimensionLabelsHeight = self.getShowDimensionLabels() ?
+      computeLabelHeight() :
+      0;
+
     const axisLabels = self.getAxisLabels();
     const rightMargin = MARGINS.RIGHT + (axisLabels.right ? AXIS_LABEL_MARGIN : 0);
     const topMargin = MARGINS.TOP + (axisLabels.top ? AXIS_LABEL_MARGIN : 0);
-    const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0);
+    const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0) + dimensionLabelsHeight;
 
     let viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
     const leftMargin = calculateLeftMargin(viewportHeight) + (axisLabels.left ? AXIS_LABEL_MARGIN : 0);
@@ -717,15 +803,15 @@ function SvgColumnChart($element, vif, options) {
       // re-measure. This estimate will be sufficient to get d3 to render the
       // columns at widths that are in line with our expectations, however.
     width = Math.max(
-        viewportWidth,
-        columnWidth * numberOfGroups * numberOfItemsPerGroup
-      );
+      viewportWidth,
+      columnWidth * numberOfGroups * numberOfItemsPerGroup
+    );
     // See TODO above.
     // }
 
     // Compute height based on the presence or absence of x-axis data labels.
     if (self.getShowDimensionLabels()) {
-      height = Math.max(0, viewportHeight - DIMENSION_LABELS_FIXED_HEIGHT);
+      height = viewportHeight;
     } else {
       // In this case we want to mirror the top margin on the bottom so
       // that the chart is visually centered (column charts have no bottom
@@ -750,7 +836,7 @@ function SvgColumnChart($element, vif, options) {
       _.range(0, columnDataToRender.columns.length - 1),
       d3DimensionXScale);
 
-    d3XAxis = generateXAxis(d3DimensionXScale);
+    d3XAxis = generateXAxis(d3DimensionXScale, dimensionLabelsHeight);
 
     /**
      * 3. Set up the y-scale and -axis.
@@ -1071,7 +1157,7 @@ function SvgColumnChart($element, vif, options) {
           // Note that we need to recompute height here since
           // $chartElement.height() may have changed when we showed the panning
           // notice.
-        height = Math.max(0, viewportHeight - DIMENSION_LABELS_FIXED_HEIGHT);
+        height = viewportHeight;
       } else {
         height = Math.max(0, viewportHeight - MARGINS.TOP);
       }
@@ -1090,6 +1176,8 @@ function SvgColumnChart($element, vif, options) {
     renderYAxis();
     renderReferenceLines();
     renderErrorBars();
+
+    updateLabelHeightDragger(leftMargin, topMargin + height, width);
 
     // See TODO above.
     // }
@@ -1290,18 +1378,8 @@ function SvgColumnChart($element, vif, options) {
       x: leftMargin,
       y: topMargin,
       width: viewportWidth,
-      height: viewportHeight - xAxisAndSeriesSvg.select('.x.axis').node().getBBox().height
+      height: viewportHeight
     });
-  }
-
-  function conditionallyTruncateLabel(label) {
-    label = _.isEmpty(label) ? noValueLabel : label;
-
-    return (label.length >= DIMENSION_LABELS_MAX_CHARACTERS) ?
-      '{0}…'.format(
-        label.substring(0, DIMENSION_LABELS_MAX_CHARACTERS - 1).trim()
-      ) :
-      label;
   }
 
   function generateXScale(domain, width, hasMultipleNonFlyoutSeries) {
@@ -1336,7 +1414,10 @@ function SvgColumnChart($element, vif, options) {
       rangeRoundBands([0, xScale.rangeBand()]);
   }
 
-  function generateXAxis(xScale) {
+  function generateXAxis(xScale, allowedLabelHeight) {
+    // This sucks, but linear interpolation seems good enough.
+    const maximumCharacters = Math.ceil(allowedLabelHeight / DIMENSION_LABELS_PIXEL_PER_CHARACTER);
+
     return d3.svg.axis().
       scale(xScale).
       orient('bottom').
@@ -1364,7 +1445,7 @@ function SvgColumnChart($element, vif, options) {
           label = ColumnFormattingHelpers.formatValuePlainText(d, column, columnDataToRender);
         }
 
-        return conditionallyTruncateLabel(label);
+        return self.conditionallyTruncateLabel(label, maximumCharacters);
         // See TODO above.
         // }
       }).

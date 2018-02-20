@@ -38,6 +38,10 @@ export default function comboChart(state, action) {
       setBooleanValueOrDefaultValue(state, 'configuration.showDimensionLabels', action.showDimensionLabels, true);
       break;
 
+    case actions.SET_DIMENSION_LABEL_AREA_SIZE:
+      _.set(state, 'configuration.dimensionLabelAreaSize', action.width);
+      break;
+
     case actions.SET_CUSTOM_COLOR_PALETTE:
       const customColorPalette = action.customColorPalette;
       const grouping = action.dimensionGroupingColumnName;

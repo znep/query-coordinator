@@ -46,18 +46,19 @@ import { getMeasures } from '../helpers/measure';
 const MARGINS = {
   TOP: 32,
   RIGHT: 50,
-  BOTTOM: 10,
+  BOTTOM: 32,
   LEFT: 50
 };
 const AREA_DOT_RADIUS = 1;
 const AREA_STROKE_WIDTH = 3;
-const DIMENSION_LABELS_CATEGORICAL_FIXED_HEIGHT = 88;
 const DIMENSION_LABELS_TIME_FIXED_HEIGHT = 24;
 const LINE_DOT_RADIUS = 2;
 const LINE_STROKE_WIDTH = 3;
 const MAX_ROW_COUNT_WITHOUT_PAN = 1000;
 const MINIMUM_HIGHLIGHT_WIDTH = 5;
 const RECOMMENDED_TICK_DISTANCE = 150;
+const DIMENSION_LABELS_DEFAULT_WIDTH = 115;
+const DIMENSION_LABELS_PIXEL_PER_CHARACTER = 115 / 15; // Empirically determined to work well enough.
 
 function SvgTimelineChart($element, vif, options) {
   // Embeds needs to wait to define noValueLabel until after hydration.
@@ -92,6 +93,20 @@ function SvgTimelineChart($element, vif, options) {
   let timelineDataToRender;
   let xAxisPanDistanceFromZoom = 0;
 
+  const labelResizeState = {
+    draggerElement: null,
+
+    // True during interactive resize, false otherwise.
+    dragging: false,
+
+    // Controls how much horizontal space the labels take up.
+    // The override persists until cleared by a VIF update.
+    // The override is active if this value is defined.
+    // Otherwise, the chart falls back to the space
+    // configured in the VIF or the default.
+    overriddenAreaSize: undefined
+  };
+
   _.extend(this, new SvgVisualization($element, vif, options));
 
   renderTemplate();
@@ -105,6 +120,10 @@ function SvgTimelineChart($element, vif, options) {
     if (!newData && !dataToRender) {
       return;
     }
+
+    // Forget the label area size the user set - we're
+    // loading a brand new vif.
+    labelResizeState.overriddenAreaSize = undefined;
 
     this.clearError();
 
@@ -137,6 +156,9 @@ function SvgTimelineChart($element, vif, options) {
     }
 
     referenceLines = self.getReferenceLines();
+
+    $(labelResizeState.draggerElement).toggleClass('enabled', self.getShowDimensionLabels());
+
     renderData();
   };
 
@@ -161,6 +183,45 @@ function SvgTimelineChart($element, vif, options) {
    * Private methods
    */
 
+  function labelHeightDragger() {
+    const dragger = document.createElement('div');
+    labelResizeState.draggerElement = dragger;
+
+    dragger.setAttribute('class', 'label-width-dragger');
+
+    d3.select(dragger).call(d3.behavior.drag().
+      on('dragstart', () => {
+        $chartElement.addClass('dragging-label-width-dragger');
+        labelResizeState.dragging = true;
+        labelResizeState.overriddenAreaSize = computeLabelHeight();
+      }).
+      on('drag', () => {
+        labelResizeState.overriddenAreaSize -= d3.event.dy;
+        renderData();
+        hideFlyout();
+      }).
+      on('dragend', () => {
+        $chartElement.removeClass('dragging-label-width-dragger');
+        labelResizeState.dragging = false;
+        renderData();
+        self.emitEvent('SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED', labelResizeState.overriddenAreaSize);
+      })
+    );
+
+    return dragger;
+  }
+
+  function updateLabelHeightDragger(leftOffset, topOffset, width) {
+    // Only move if not dragging. Otherwise,
+    // d3's dragger becomes confused.
+    if (!labelResizeState.dragging) {
+      labelResizeState.draggerElement.setAttribute(
+        'style',
+        `left: ${leftOffset}px; top: ${topOffset}px; width: ${width}px`
+      );
+    }
+  }
+
   function renderTemplate() {
 
     $chartElement = $(
@@ -168,7 +229,7 @@ function SvgTimelineChart($element, vif, options) {
       {
         'class': 'timeline-chart'
       }
-    );
+    ).append(labelHeightDragger());
 
     self.$element.find('.socrata-visualization-container').
       append($chartElement);
@@ -227,16 +288,42 @@ function SvgTimelineChart($element, vif, options) {
    * Visualization renderer and helper functions
    */
 
+  function computeLabelHeight() {
+    let configuredSize = _.get(self.getVif(), 'configuration.dimensionLabelAreaSize');
+
+    if (!_.isFinite(configuredSize)) {
+      configuredSize = DIMENSION_LABELS_DEFAULT_WIDTH;
+    }
+
+    const height = _.isFinite(labelResizeState.overriddenAreaSize) ?
+     labelResizeState.overriddenAreaSize :
+     configuredSize;
+
+    const axisLabels = self.getAxisLabels();
+    const topMargin = MARGINS.TOP;
+    const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0);
+
+    return _.clamp(
+      height,
+      0,
+      $chartElement.height() - (topMargin + bottomMargin)
+    );
+  }
+
   function renderData() {
     const minimumDatumWidth = self.isMobile() ?
       DEFAULT_MOBILE_COLUMN_WIDTH :
       DEFAULT_DESKTOP_COLUMN_WIDTH;
 
+    const dimensionLabelsHeight = self.getShowDimensionLabels() ?
+      computeLabelHeight() :
+      0;
+
     const axisLabels = self.getAxisLabels();
     const leftMargin = MARGINS.LEFT + (axisLabels.left ? AXIS_LABEL_MARGIN : 0);
     const rightMargin = MARGINS.RIGHT + (axisLabels.right ? AXIS_LABEL_MARGIN : 0);
     const topMargin = MARGINS.TOP + (axisLabels.top ? AXIS_LABEL_MARGIN : 0);
-    const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0);
+    const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0) + dimensionLabelsHeight;
 
     const viewportWidth = Math.max(0, $chartElement.width() - leftMargin - rightMargin);
     let viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
@@ -763,7 +850,7 @@ function SvgTimelineChart($element, vif, options) {
     // notice, since its presence or absence affects the total height of the
     // viewport.
     if (!isUsingTimeScale && self.getShowDimensionLabels()) {
-      height = Math.max(0, viewportHeight - DIMENSION_LABELS_CATEGORICAL_FIXED_HEIGHT);
+      height = viewportHeight;
     } else {
       height = Math.max(0, viewportHeight - DIMENSION_LABELS_TIME_FIXED_HEIGHT);
     }
@@ -874,7 +961,7 @@ function SvgTimelineChart($element, vif, options) {
       generateTimeXScale(domainStartDate, domainEndDate, width) :
       generateCategoricalXScale(dimensionValues, width);
 
-    d3XAxis = generateXAxis(d3XScale, width, isUsingTimeScale);
+    d3XAxis = generateXAxis(d3XScale, width, isUsingTimeScale, dimensionLabelsHeight);
 
     d3YScale = generateYScale(minYValue, maxYValue, height);
     d3YAxis = generateYAxis(d3YScale);
@@ -1194,6 +1281,8 @@ function SvgTimelineChart($element, vif, options) {
 
     renderValues();
     renderReferenceLines();
+
+    updateLabelHeightDragger(leftMargin, topMargin + height, width);
 
     if (xAxisPanningEnabled) {
 
@@ -1753,17 +1842,10 @@ function SvgTimelineChart($element, vif, options) {
     return nextDate;
   }
 
-  function conditionallyTruncateLabel(label) {
-    label = _.isEmpty(label) ? noValueLabel : label;
+  function generateXAxis(xScale, width, isUsingTimeScale, allowedLabelHeight) {
+    // This sucks, but linear interpolation seems good enough.
+    const maximumCharacters = Math.ceil(allowedLabelHeight / DIMENSION_LABELS_PIXEL_PER_CHARACTER);
 
-    return (label.length >= DIMENSION_LABELS_MAX_CHARACTERS) ?
-      '{0}…'.format(
-        label.substring(0, DIMENSION_LABELS_MAX_CHARACTERS - 1).trim()
-      ) :
-      label;
-  }
-
-  function generateXAxis(xScale, width, isUsingTimeScale) {
     const xAxis = d3.svg.axis().
       scale(xScale).
       orient('bottom');
@@ -1812,7 +1894,7 @@ function SvgTimelineChart($element, vif, options) {
           label = formatValuePlainText(d, column, timelineDataToRender);
         }
 
-        return conditionallyTruncateLabel(label);
+        return self.conditionallyTruncateLabel(label, maximumCharacters);
       });
     }
 

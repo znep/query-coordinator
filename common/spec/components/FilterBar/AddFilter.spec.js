@@ -157,5 +157,41 @@ describe('AddFilter', () => {
 
       assert.isNull(columnContainer);
     });
+
+    it('resets the search textbox to empty after column click and add filter is clicked again', () => {
+      let input;
+
+      element = renderComponent(AddFilter, getProps({
+        columns: [
+          {
+            name: 'Some Word',
+            fieldName: 'some_word',
+            dataTypeName: 'text'
+          }
+        ]
+      }));
+
+      // Click add filter
+      clickAddFilter(element);
+
+      // Set filter text box to something
+      input = element.querySelector('.add-filter-picklist-input');
+      input.value = 'word';
+      assert.equal(input.value, 'word');
+
+      // Click column dropdown option
+      const option = element.querySelector('.filter-bar-column-option');
+      Simulate.click(option);
+
+      const columnContainer = element.querySelector('.column-container');
+      assert.isNull(columnContainer);
+
+      // Click add filter again
+      clickAddFilter(element);
+
+      // Verify text box is empty
+      input = element.querySelector('.add-filter-picklist-input');
+      assert.equal(input.value, '');
+    });
   });
 });

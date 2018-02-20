@@ -1,10 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import cssModules from 'react-css-modules';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { connectLocalization } from 'common/components/Localization';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 
 import * as Actions from '../../actions';
 import * as selectors from '../../adminRolesSelectors';
@@ -26,12 +24,13 @@ const mapDispatchToProps = (dispatch, { rightCategory }) =>
 
 class RightCategory extends Component {
   static propTypes = {
+    I18n: I18nPropType,
     rightCategory: PropTypes.object.isRequired,
     toggleExpanded: PropTypes.func.isRequired
   };
 
   render() {
-    const { rightCategory, toggleExpanded, localization: { translate } } = this.props;
+    const { I18n, rightCategory, toggleExpanded } = this.props;
     return (
       <Expandable
         styleName="expandable-container"
@@ -40,13 +39,13 @@ class RightCategory extends Component {
       >
         <Hoverable name={rightCategory.get('translationKey')}>
           <Expandable.Trigger styleName="right-cell-trigger" onClick={toggleExpanded}>
-            <h6>{translate(selectors.getTranslationKeyPathFromRightCategory(rightCategory))}</h6>
+            <h6>{I18n.t(selectors.getTranslationKeyPathFromRightCategory(rightCategory))}</h6>
           </Expandable.Trigger>
         </Hoverable>
         {selectors.getRightsFromRightCategory(rightCategory).map(right => (
           <Hoverable name={right.get('name')} key={selectors.getNameFromRight(right)}>
             <Grid.Cell styleName="right-cell-item">
-              {translate(selectors.getNameTranslationKeyPathFromRight(right))}
+              {I18n.t(selectors.getNameTranslationKeyPathFromRight(right))}
             </Grid.Cell>
           </Hoverable>
         ))}
@@ -55,4 +54,4 @@ class RightCategory extends Component {
   }
 }
 
-export default connectLocalization(connect(null, mapDispatchToProps)(cssModules(RightCategory, styles)));
+export default customConnect({ mapDispatchToProps, styles })(RightCategory);

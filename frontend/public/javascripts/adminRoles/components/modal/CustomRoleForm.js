@@ -3,10 +3,8 @@ import getOr from 'lodash/fp/getOr';
 import omit from 'lodash/fp/omit';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import cssModules from 'react-css-modules';
-import { connect } from 'react-redux';
 
-import { connectLocalization } from 'common/components/Localization';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 
 import * as Actions from '../../actions';
 import * as Selectors from '../../adminRolesSelectors';
@@ -34,6 +32,7 @@ const mapDispatchToProps = {
 
 class CustomRoleForm extends Component {
   static propTypes = {
+    I18n: I18nPropType,
     editingNewRole: PropTypes.bool.isRequired,
     error: PropTypes.object,
     hasError: PropTypes.bool,
@@ -61,6 +60,7 @@ class CustomRoleForm extends Component {
 
   render() {
     const {
+      I18n,
       editingNewRole,
       error,
       hasError,
@@ -69,8 +69,7 @@ class CustomRoleForm extends Component {
       onSubmit,
       onNameChange,
       onTemplateChange,
-      template,
-      localization: { translate }
+      template
     } = this.props;
 
     const textInputClasses = cx(
@@ -88,7 +87,7 @@ class CustomRoleForm extends Component {
         }}
       >
         <label className="block-label" htmlFor="role-name">
-          {translate('screens.admin.roles.index_page.custom_role_modal.form.role_name.label')}
+          {I18n.t('screens.admin.roles.index_page.custom_role_modal.form.role_name.label')}
         </label>
         <BoundedTextInput
           maxCharacterCount={maxCharacterCount}
@@ -99,7 +98,7 @@ class CustomRoleForm extends Component {
           className={textInputClasses}
           id="role-name"
           type="text"
-          placeholder={translate(
+          placeholder={I18n.t(
             'screens.admin.roles.index_page.custom_role_modal.form.role_name.placeholder'
           )}
           onChange={event => onNameChange(event.target.value)}
@@ -107,12 +106,12 @@ class CustomRoleForm extends Component {
         />
         {hasError && (
           <div className="alert error">
-            {translate(getOr('', 'message', error), omit(['message'], error))}
+            {I18n.t(getOr('', 'message', error), omit(['message'], error))}
           </div>
         )}
         {editingNewRole && (
           <label className="block-label" htmlFor="template-name">
-            {translate('screens.admin.roles.index_page.custom_role_modal.form.template.label')}
+            {I18n.t('screens.admin.roles.index_page.custom_role_modal.form.template.label')}
           </label>
         )}
         {editingNewRole && <TemplateDropdown onChange={value => onTemplateChange(value)} value={template} />}
@@ -121,6 +120,4 @@ class CustomRoleForm extends Component {
   }
 }
 
-export default connectLocalization(
-  connect(mapStateToProps, mapDispatchToProps)(cssModules(CustomRoleForm, styles))
-);
+export default customConnect({ mapStateToProps, mapDispatchToProps, styles })(CustomRoleForm);

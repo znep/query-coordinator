@@ -1,24 +1,22 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import cssModules from 'react-css-modules';
-import { connect } from 'react-redux';
 
 import Dropdown from 'common/components/Dropdown';
-import { connectLocalization } from 'common/components/Localization';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 
 import * as Selectors from '../../adminRolesSelectors';
 import styles from './template-dropdown.module.scss';
 
 const roleTypeAsTranslationString = role => (Selectors.roleIsCustom(role) ? 'custom' : 'default');
 
-const mapStateToProps = (state, { localization: { translate } }) => ({
+const mapStateToProps = (state, { I18n }) => ({
   templates: Selectors.getRolesFromState(state)
     .map(role => ({
       title: Selectors.roleIsCustom(role)
         ? Selectors.getRoleNameFromRole(role)
-        : translate(Selectors.getRoleNameTranslationKeyPathFromRole(role)),
+        : I18n.t(Selectors.getRoleNameTranslationKeyPathFromRole(role)),
       value: Selectors.getIdFromRole(role),
-      group: translate(
+      group: I18n.t(
         `screens.admin.roles.index_page.custom_role_modal.form.template.${roleTypeAsTranslationString(role)}`
       )
     }))
@@ -27,22 +25,23 @@ const mapStateToProps = (state, { localization: { translate } }) => ({
 
 class TemplateDropdown extends Component {
   static propTypes = {
+    I18n: I18nPropType,
     onChange: PropTypes.func.isRequired,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
   };
 
   render() {
-    const { onChange, templates, value, localization: { translate } } = this.props;
+    const { I18n, onChange, templates, value } = this.props;
     const dropdownProps = {
       value,
       onSelection: option => onChange(option.value),
       options: [
         {
-          title: translate('screens.admin.roles.index_page.custom_role_modal.form.template.none_selected'),
+          title: I18n.t('screens.admin.roles.index_page.custom_role_modal.form.template.none_selected'),
           value: null
         }
       ].concat(templates),
-      placeholder: translate('screens.admin.roles.index_page.custom_role_modal.form.template.none_selected')
+      placeholder: I18n.t('screens.admin.roles.index_page.custom_role_modal.form.template.none_selected')
     };
 
     return (
@@ -53,4 +52,4 @@ class TemplateDropdown extends Component {
   }
 }
 
-export default connectLocalization(connect(mapStateToProps)(cssModules(TemplateDropdown, styles)));
+export default customConnect({ mapStateToProps, styles })(TemplateDropdown);

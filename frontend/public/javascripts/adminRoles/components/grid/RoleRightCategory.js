@@ -1,10 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import cssModules from 'react-css-modules';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { connectLocalization } from 'common/components/Localization';
+import { customConnect } from 'common/connectUtils';
 
 import * as Actions from '../../actions';
 import * as selectors from '../../adminRolesSelectors';
@@ -94,4 +92,4 @@ class RoleRightCategory extends Component {
   }
 }
 
-export default connectLocalization(connect(null, mapDispatchToProps)(cssModules(RoleRightCategory, styles)));
+export default customConnect({ mapDispatchToProps, styles })(RoleRightCategory);

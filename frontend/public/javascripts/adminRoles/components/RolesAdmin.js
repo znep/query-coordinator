@@ -1,13 +1,13 @@
 import noop from 'lodash/fp/noop';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import cssModules from 'react-css-modules';
-import { connect, Provider } from 'react-redux';
+import { Provider } from 'react-redux';
 import { applyMiddleware, compose, createStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 
-import Localization, { connectLocalization } from 'common/components/Localization';
+import Localization, { DEFAULT_LOCALE } from 'common/i18n/components/Localization';
 import ToastNotification from 'common/components/ToastNotification';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 
 import LoadingSpinner from '../../adminActivityFeed/components/LoadingSpinner';
 import * as Actions from '../actions';
@@ -24,24 +24,11 @@ import AppError from './util/AppError';
 
 const sagaMiddleware = createSagaMiddleware();
 
-const renderWithLocalization = ({ translations, locale, localePrefix }, children) => {
-  return (
-    <Localization
-      translations={translations}
-      locale={locale || 'en'}
-      localePrefix={localePrefix}
-      returnKeyForNotFound={true}
-    >
-      {children}
-    </Localization>
-  );
-};
-
-const mapStateToProps = (state, { localization: { translate } }) => {
+const mapStateToProps = (state, { I18n }) => {
   const appState = Selectors.getAppState(state);
   const notificationObj = Selectors.getNotificationFromState(state);
   const notification = notificationObj
-    .update('content', content => translate(content, notificationObj.toJS()))
+    .update('content', content => I18n.t(content, notificationObj.toJS()))
     .toJS();
   return {
     hasLoadDataFailure: appState === LOAD_DATA_FAILURE,
@@ -57,6 +44,7 @@ const mapDispatchToProps = {
 
 class UnstyledRolesAdmin extends Component {
   static propTypes = {
+    I18n: I18nPropType,
     hasLoadDataFailure: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
     notification: PropTypes.object.isRequired,
@@ -69,11 +57,11 @@ class UnstyledRolesAdmin extends Component {
 
   render() {
     const {
+      I18n,
       hasLoadDataFailure,
       isLoading,
       notification,
-      dismissNotification,
-      localization: { translate }
+      dismissNotification
     } = this.props;
     return (
       <div>
@@ -88,8 +76,8 @@ class UnstyledRolesAdmin extends Component {
             <EditBar />
             <div styleName="content">
               <div styleName="description">
-                <h2>{translate('screens.admin.roles.index_page.description.title')}</h2>
-                <p>{translate('screens.admin.roles.index_page.description.content')}</p>
+                <h2>{I18n.t('screens.admin.roles.index_page.description.title')}</h2>
+                <p>{I18n.t('screens.admin.roles.index_page.description.content')}</p>
               </div>
               {isLoading ? (
                 <div styleName="loading-spinner">
@@ -109,9 +97,7 @@ class UnstyledRolesAdmin extends Component {
   }
 }
 
-const RolesAdmin = connectLocalization(
-  connect(mapStateToProps, mapDispatchToProps)(cssModules(UnstyledRolesAdmin, styles))
-);
+const RolesAdmin = customConnect({ mapStateToProps, mapDispatchToProps, styles })(UnstyledRolesAdmin);
 
 const devToolsConfig = {
   actionsBlacklist: ['HOVER_ROW', 'UNHOVER_ROW', 'CHANGE_NEW_ROLE_NAME'],
@@ -132,13 +118,13 @@ const createRolesAdminStore = (serverConfig = {}) => {
   return store;
 };
 
-const App = ({ store, serverConfig = {} }) =>
-  renderWithLocalization(
-    serverConfig,
+const App = ({ store, serverConfig = {} }) => (
+  <Localization locale={serverConfig.locale || DEFAULT_LOCALE}>
     <Provider store={store}>
       <RolesAdmin />
     </Provider>
-  );
+  </Localization>
+);
 
 export { UnstyledRolesAdmin, RolesAdmin, createRolesAdminStore };
 

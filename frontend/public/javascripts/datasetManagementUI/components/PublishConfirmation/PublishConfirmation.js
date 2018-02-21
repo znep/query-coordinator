@@ -34,11 +34,11 @@ class PublishConfirmation extends Component {
   }
 
   render() {
-    const { doCancel, doUpdateAndApply, permission, view } = this.props;
+    const { doCancel, doUpdateAndApply, view } = this.props;
 
     const { currentPermission } = this.state;
 
-    const assetWillBePublic = permission === PERMISSIONS.PUBLIC;
+    const assetWillBePublic = currentPermission === PERMISSIONS.PUBLIC;
 
     assetUtils
       .assetWillEnterApprovalsQueueOnPublish({ coreView: view, assetWillBePublic })

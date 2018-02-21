@@ -17,6 +17,7 @@ import {
   DEFAULT_DESKTOP_COLUMN_WIDTH,
   DEFAULT_LINE_HIGHLIGHT_FILL,
   DEFAULT_MOBILE_COLUMN_WIDTH,
+  DIMENSION_LABELS_DEFAULT_HEIGHT,
   DIMENSION_LABELS_FONT_COLOR,
   DIMENSION_LABELS_ROTATION_ANGLE,
   DIMENSION_LABELS_FONT_SIZE,
@@ -54,7 +55,6 @@ const MARGINS = {
 /* eslint-disable no-unused-vars */
 const MAX_COLUMN_COUNT_WITHOUT_PAN = 50;
 /* eslint-enable no-unused-vars */
-const DIMENSION_LABELS_DEFAULT_WIDTH = 115;
 const DIMENSION_LABELS_PIXEL_PER_CHARACTER = 115 / 15; // Empirically determined to work well enough.
 
 function SvgColumnChart($element, vif, options) {
@@ -213,7 +213,7 @@ function SvgColumnChart($element, vif, options) {
     let configuredSize = _.get(self.getVif(), 'configuration.dimensionLabelAreaSize');
 
     if (!_.isFinite(configuredSize)) {
-      configuredSize = DIMENSION_LABELS_DEFAULT_WIDTH;
+      configuredSize = DIMENSION_LABELS_DEFAULT_HEIGHT;
     }
 
     const height = _.isFinite(labelResizeState.overriddenAreaSize) ?

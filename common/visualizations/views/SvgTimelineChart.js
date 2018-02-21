@@ -21,6 +21,7 @@ import {
   DEFAULT_DESKTOP_COLUMN_WIDTH,
   DEFAULT_LINE_HIGHLIGHT_FILL,
   DEFAULT_MOBILE_COLUMN_WIDTH,
+  DIMENSION_LABELS_DEFAULT_HEIGHT,
   DIMENSION_LABELS_FONT_COLOR,
   DIMENSION_LABELS_FONT_SIZE,
   DIMENSION_LABELS_MAX_CHARACTERS,
@@ -57,7 +58,6 @@ const LINE_STROKE_WIDTH = 3;
 const MAX_ROW_COUNT_WITHOUT_PAN = 1000;
 const MINIMUM_HIGHLIGHT_WIDTH = 5;
 const RECOMMENDED_TICK_DISTANCE = 150;
-const DIMENSION_LABELS_DEFAULT_WIDTH = 115;
 const DIMENSION_LABELS_PIXEL_PER_CHARACTER = 115 / 15; // Empirically determined to work well enough.
 
 function SvgTimelineChart($element, vif, options) {
@@ -83,6 +83,7 @@ function SvgTimelineChart($element, vif, options) {
   let dataToRender;
   let dataToRenderBySeries;
   let flyoutDataToRender;
+  let isUsingTimeScale;
   let lastRenderedSeriesWidth = 0;
   let lastRenderedZoomTranslate = 0;
   let maxYValue;
@@ -138,6 +139,10 @@ function SvgTimelineChart($element, vif, options) {
 
       timelineDataToRender = self.getDataToRenderOfSeriesType(dataToRender, SERIES_TYPE_TIMELINE_CHART);
       flyoutDataToRender = self.getDataToRenderOfSeriesType(dataToRender, SERIES_TYPE_FLYOUT);
+
+      isUsingTimeScale = isDimensionCalendarDate(
+        _.get(self.getVif(), 'series[0].dataSource.dimension.columnName'),
+        timelineDataToRender.columnFormats);
 
       measures = getMeasures(self, dataToRender);
 
@@ -292,7 +297,7 @@ function SvgTimelineChart($element, vif, options) {
     let configuredSize = _.get(self.getVif(), 'configuration.dimensionLabelAreaSize');
 
     if (!_.isFinite(configuredSize)) {
-      configuredSize = DIMENSION_LABELS_DEFAULT_WIDTH;
+      configuredSize = isUsingTimeScale ? 0 : DIMENSION_LABELS_DEFAULT_HEIGHT;
     }
 
     const height = _.isFinite(labelResizeState.overriddenAreaSize) ?
@@ -363,9 +368,6 @@ function SvgTimelineChart($element, vif, options) {
 
     referenceLines = self.getReferenceLines();
     precision = _.get(self.getVif(), 'series[0].dataSource.precision');
-
-    const dimensionColumnName = _.get(self.getVif(), 'series[0].dataSource.dimension.columnName');
-    const isUsingTimeScale = isDimensionCalendarDate(dimensionColumnName, timelineDataToRender.columnFormats);
 
     // See comment in renderXAxis() for an explanation as to why this is
     // separate.

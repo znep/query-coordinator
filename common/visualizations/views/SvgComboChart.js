@@ -22,6 +22,7 @@ import {
   DEFAULT_DESKTOP_COLUMN_WIDTH,
   DEFAULT_LINE_HIGHLIGHT_FILL,
   DEFAULT_MOBILE_COLUMN_WIDTH,
+  DIMENSION_LABELS_DEFAULT_HEIGHT,
   DIMENSION_LABELS_FIXED_HEIGHT,
   DIMENSION_LABELS_FONT_COLOR,
   DIMENSION_LABELS_FONT_SIZE,
@@ -56,7 +57,6 @@ const MARGINS = {
   BOTTOM: 32
 };
 
-const DIMENSION_LABELS_DEFAULT_WIDTH = 115;
 const DIMENSION_LABELS_PIXEL_PER_CHARACTER = 115 / 15; // Empirically determined to work well enough.
 
 function SvgComboChart($element, vif, options) {
@@ -218,7 +218,7 @@ function SvgComboChart($element, vif, options) {
     let configuredSize = _.get(self.getVif(), 'configuration.dimensionLabelAreaSize');
 
     if (!_.isFinite(configuredSize)) {
-      configuredSize = DIMENSION_LABELS_DEFAULT_WIDTH;
+      configuredSize = DIMENSION_LABELS_DEFAULT_HEIGHT;
     }
 
     const height = _.isFinite(labelResizeState.overriddenAreaSize) ?

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
 import { COLOR_BY_BUCKETS_COUNT } from 'common/visualizations/views/mapConstants';
 
 const RESIZE_BY_MIN_ALIAS = '__resize_by_min__';
@@ -47,4 +48,49 @@ export default class RenderByHelper {
     return { min: min, avg: avg, max: max };
   }
 
+  static async getMeasuresForRegions(vif) {
+    const domain = _.get(vif, 'series[0].dataSource.domain');
+    const datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
+    const nameColumn = vif.getMeasureForeignKey();
+    const valueColumn = vif.getMeasureColumn();
+    const valueFunction = vif.getMeasureAggregation();
+    const nameAlias = '__shape_id__';
+    const valueAlias = '__value__';
+    const filters = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
+    const requiredVifParams = [domain, datasetUid, nameColumn, valueColumn, valueFunction];
+    const datasetSoqlDataProvider = vif.getDatasetSoqlDataProvider();
+
+    if (!_.every(requiredVifParams, _.isString)) {
+      return null;
+    }
+
+    let queryString = `SELECT ${nameColumn} as ${nameAlias}, ${valueFunction}(${valueColumn}) as ${valueAlias}` +
+      ` GROUP BY ${nameColumn}`;
+
+    if (!_.isEmpty(filters)) {
+      queryString += ` WHERE ${filters.join(' AND ')}`;
+    }
+    queryString += ' LIMIT 10000';
+
+    const measureResult = await datasetSoqlDataProvider.rawQuery(queryString);
+
+    const measures = _.chain(measureResult).
+      map((measureResultItem) => {
+        const shapeId = measureResultItem[nameAlias];
+        if (_.isUndefined(shapeId)) {
+          return shapeId;
+        }
+        return {
+          shapeId,
+          value: Number(measureResultItem[valueAlias]) || 0
+        };
+      }).
+      compact().value();
+
+    if (_.isEmpty(measures)) {
+      return;
+    }
+
+    return measures;
+  }
 }

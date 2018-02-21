@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
+import { MAP_TYPES, POINT_AGGREGATIONS, VIF_CONSTANTS } from 'common/visualizations/views/mapConstants';
 import ChoroplethMapUtils from 'common/visualizations/views/ChoroplethMapUtils';
-import { MAP_TYPES, POINT_AGGREGATIONS } from 'common/visualizations/views/mapConstants';
 
 export function isRegionMap() {
   return this.getMapType() === MAP_TYPES.POINT_MAP &&
@@ -10,7 +10,7 @@ export function isRegionMap() {
 }
 
 export function getNumberOfDataClasses() {
-  return _.get(this, 'series[0].mapOptions.numberOfDataClasses', 5);
+  return _.get(this, 'series[0].mapOptions.numberOfDataClasses', VIF_CONSTANTS.NUMBER_OF_DATA_CLASSES.DEFAULT);
 }
 
 export function getRegionMapBuckets(measures) {

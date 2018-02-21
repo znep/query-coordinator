@@ -137,8 +137,7 @@ module ApplicationHelper
 
 # OP MEASURES
   def op_standalone_measures_enabled?
-    CurrentDomain.module_enabled?(:govStat) &&
-      FeatureFlags.derive(nil, request).open_performance_standalone_measures
+    FeatureFlags.derive(nil, request).open_performance_standalone_measures
   end
 
   def current_user_can_create_measure?

@@ -765,7 +765,6 @@ module BrowseActions
     end
   end
 
-  # should this also check to see if govstat is turned on?
   def measures_catalog_entries_enabled?
     FeatureFlags.derive(nil, defined?(request) ? request : nil)[:open_performance_standalone_measures]
   end

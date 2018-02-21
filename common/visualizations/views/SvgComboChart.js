@@ -38,6 +38,7 @@ import {
   MEASURE_LABELS_FONT_COLOR,
   MEASURE_LABELS_FONT_SIZE,
   MINIMUM_LABEL_WIDTH,
+  MINIMUM_Y_AXIS_TICK_DISTANCE,
   REFERENCE_LINES_STROKE_DASHARRAY,
   REFERENCE_LINES_STROKE_WIDTH,
   REFERENCE_LINES_UNDERLAY_THICKNESS,
@@ -1094,12 +1095,12 @@ function SvgComboChart($element, vif, options) {
     //
     if (isUsingPrimaryAxis()) {
       d3PrimaryYScale = generateYScale(primaryYAxisMinValue, primaryYAxisMaxValue, height);
-      d3PrimaryYAxis = generateYAxis(d3PrimaryYScale, 'left');
+      d3PrimaryYAxis = generateYAxis(d3PrimaryYScale, 'left', height);
     }
 
     if (isUsingSecondaryAxis()) {
       d3SecondaryYScale = generateYScale(secondaryYAxisMinValue, secondaryYAxisMaxValue, height);
-      d3SecondaryYAxis = generateYAxis(d3SecondaryYScale, 'right');
+      d3SecondaryYAxis = generateYAxis(d3SecondaryYScale, 'right', height);
     }
 
     /**
@@ -1291,12 +1292,12 @@ function SvgComboChart($element, vif, options) {
 
       if (isUsingPrimaryAxis()) {
         d3PrimaryYScale = generateYScale(primaryYAxisMinValue, primaryYAxisMaxValue, height);
-        d3PrimaryYAxis = generateYAxis(d3PrimaryYScale, 'left');
+        d3PrimaryYAxis = generateYAxis(d3PrimaryYScale, 'left', height);
       }
 
       if (isUsingSecondaryAxis()) {
         d3SecondaryYScale = generateYScale(secondaryYAxisMinValue, secondaryYAxisMaxValue, height);
-        d3SecondaryYAxis = generateYAxis(d3SecondaryYScale, 'right');
+        d3SecondaryYAxis = generateYAxis(d3SecondaryYScale, 'right', height);
       }
 
       renderXAxis();
@@ -1772,7 +1773,7 @@ function SvgComboChart($element, vif, options) {
       range([height, GLYPH_SPACE_HEIGHT]);
   }
 
-  function generateYAxis(yScale, orient) {
+  function generateYAxis(yScale, orient, height) {
     const column = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
     const formatter = (d) => formatValueHTML(d, column, renderableDataToRender, true);
 
@@ -1781,17 +1782,29 @@ function SvgComboChart($element, vif, options) {
       orient(orient).
       tickFormat(formatter);
 
+    const ticksToFitHeight = Math.ceil(height / MINIMUM_Y_AXIS_TICK_DISTANCE);
     const isCount = _.get(vif, 'series[0].dataSource.measure.aggregationFunction') === 'count';
+
     if (isCount) {
       // If the number of possible values is small, limit number of ticks to force integer values.
       const [minYValue, maxYValue] = yScale.domain();
       const span = maxYValue - minYValue;
+
       if (span < 10) {
         const ticks = d3.range(minYValue, maxYValue + 1, 1);
-        yAxis.tickValues(ticks);
+
+        if (_.isArray(ticks) && (ticks.length < ticksToFitHeight)) {
+          yAxis.tickValues(ticks);
+        } else {
+          yAxis.ticks(ticksToFitHeight);
+        }
+
       } else {
-        yAxis.ticks(10);
+        yAxis.ticks(ticksToFitHeight);
       }
+
+    } else {
+      yAxis.ticks(ticksToFitHeight);
     }
 
     return yAxis;
@@ -2068,7 +2081,7 @@ function SvgComboChart($element, vif, options) {
     const testScale = generateYScale(_.min(values), _.max(values), viewportHeight);
     testSvg.append('g').
       attr('class', 'y axis').
-      call(generateYAxis(testScale, orient));
+      call(generateYAxis(testScale, orient, viewportHeight));
 
     // Get the widths of all generated tick labels.
     const testLabelWidths = _.map(

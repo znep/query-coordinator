@@ -32,6 +32,7 @@ import {
   LINE_DASH_ARRAY,
   MEASURE_LABELS_FONT_COLOR,
   MEASURE_LABELS_FONT_SIZE,
+  MINIMUM_Y_AXIS_TICK_DISTANCE,
   REFERENCE_LINES_STROKE_DASHARRAY,
   REFERENCE_LINES_STROKE_WIDTH,
   REFERENCE_LINES_UNDERLAY_THICKNESS,
@@ -966,18 +967,7 @@ function SvgTimelineChart($element, vif, options) {
     d3XAxis = generateXAxis(d3XScale, width, isUsingTimeScale, dimensionLabelsHeight);
 
     d3YScale = generateYScale(minYValue, maxYValue, height);
-    d3YAxis = generateYAxis(d3YScale);
-
-    const isCount = _.get(vif, 'series[0].dataSource.measure.aggregationFunction') === 'count';
-    if (isCount) {
-      const span = maxYValue - minYValue;
-      if (span < 10) {
-        const ticks = d3.range(minYValue, maxYValue + 1, 1);
-        d3YAxis.tickValues(ticks);
-      } else {
-        d3YAxis.ticks(10);
-      }
-    }
+    d3YAxis = generateYAxis(d3YScale, height);
 
     if (isUsingTimeScale) {
 
@@ -1909,7 +1899,7 @@ function SvgTimelineChart($element, vif, options) {
       range([height, GLYPH_SPACE_HEIGHT]);
   }
 
-  function generateYAxis(yScale) {
+  function generateYAxis(yScale, height) {
     const vif = self.getVif();
     const column = _.get(vif, 'series[0].dataSource.measure.columnName');
     const renderType = _.get(timelineDataToRender, `columnFormats.${column}.renderTypeName`);
@@ -1921,10 +1911,37 @@ function SvgTimelineChart($element, vif, options) {
       formatter = (d) => formatValueHTML(d, column, timelineDataToRender, true);
     }
 
-    return d3.svg.axis().
+    const yAxis = d3.svg.axis().
       scale(yScale).
       orient('left').
       tickFormat(formatter);
+
+    const ticksToFitHeight = Math.ceil(height / MINIMUM_Y_AXIS_TICK_DISTANCE);
+    const isCount = _.get(vif, 'series[0].dataSource.measure.aggregationFunction') === 'count';
+
+    if (isCount) {
+      // If the number of possible values is small, limit number of ticks to force integer values.
+      const [minYValue, maxYValue] = yScale.domain();
+      const span = maxYValue - minYValue;
+
+      if (span < 10) {
+        const ticks = d3.range(minYValue, maxYValue + 1, 1);
+
+        if (_.isArray(ticks) && (ticks.length < ticksToFitHeight)) {
+          yAxis.tickValues(ticks);
+        } else {
+          yAxis.ticks(ticksToFitHeight);
+        }
+
+      } else {
+        yAxis.ticks(ticksToFitHeight);
+      }
+
+    } else {
+      yAxis.ticks(ticksToFitHeight);
+    }
+
+    return yAxis;
   }
 
   function generateTimeXScale(domainStartDate, domainEndDate, width) {

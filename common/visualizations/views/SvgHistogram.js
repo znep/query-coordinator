@@ -21,6 +21,7 @@ import {
   GLYPH_SPACE_HEIGHT,
   MEASURE_LABELS_FONT_COLOR,
   MEASURE_LABELS_FONT_SIZE,
+  MINIMUM_Y_AXIS_TICK_DISTANCE,
   REFERENCE_LINES_STROKE_DASHARRAY,
   REFERENCE_LINES_STROKE_WIDTH,
   REFERENCE_LINES_UNDERLAY_THICKNESS,
@@ -350,7 +351,8 @@ function SvgHistogram($element, vif, options) {
       const d3YAxis = d3.svg.axis().
         scale(d3YScale).
         orient('left').
-        tickFormat(function(d) { return utils.formatNumber(d); });
+        tickFormat((d) => utils.formatNumber(d)).
+        ticks(Math.ceil(viewportHeight / MINIMUM_Y_AXIS_TICK_DISTANCE));
 
       chartSvg.select('.y.axis').
         call(d3YAxis);

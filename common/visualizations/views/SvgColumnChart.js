@@ -32,6 +32,7 @@ import {
   MEASURE_LABELS_FONT_COLOR,
   MEASURE_LABELS_FONT_SIZE,
   MINIMUM_LABEL_WIDTH,
+  MINIMUM_Y_AXIS_TICK_DISTANCE,
   NO_VALUE_SENTINEL,
   REFERENCE_LINES_STROKE_DASHARRAY,
   REFERENCE_LINES_STROKE_WIDTH,
@@ -930,7 +931,7 @@ function SvgColumnChart($element, vif, options) {
     }
 
     d3YScale = generateYScale(minYValue, maxYValue, height);
-    d3YAxis = generateYAxis(d3YScale);
+    d3YAxis = generateYAxis(d3YScale, height);
 
     /**
      * 4. Clear out any existing chart.
@@ -1163,7 +1164,7 @@ function SvgColumnChart($element, vif, options) {
       }
 
       d3YScale = generateYScale(minYValue, maxYValue, height);
-      d3YAxis = generateYAxis(d3YScale);
+      d3YAxis = generateYAxis(d3YScale, height);
 
       renderXAxis();
       renderSeries();
@@ -1564,7 +1565,7 @@ function SvgColumnChart($element, vif, options) {
       range([height, GLYPH_SPACE_HEIGHT]);
   }
 
-  function generateYAxis(yScale) {
+  function generateYAxis(yScale, height) {
     const isOneHundredPercentStacked = _.get(self.getVif(), 'series[0].stacked.oneHundredPercent', false);
     let formatter;
 
@@ -1586,19 +1587,30 @@ function SvgColumnChart($element, vif, options) {
       orient('left').
       tickFormat(formatter);
 
+    const ticksToFitHeight = Math.ceil(height / MINIMUM_Y_AXIS_TICK_DISTANCE);
     const isCount = _.get(vif, 'series[0].dataSource.measure.aggregationFunction') === 'count';
+
     if (isCount) {
       // If the number of possible values is small, limit number of ticks to force integer values.
       const [minYValue, maxYValue] = yScale.domain();
       const span = maxYValue - minYValue;
+
       if (span < 10) {
         const ticks = d3.range(minYValue, maxYValue + 1, 1);
-        yAxis.tickValues(ticks);
-      } else {
-        yAxis.ticks(10);
-      }
-    }
 
+        if (_.isArray(ticks) && (ticks.length < ticksToFitHeight)) {
+          yAxis.tickValues(ticks);
+        } else {
+          yAxis.ticks(ticksToFitHeight);
+        }
+
+      } else {
+        yAxis.ticks(ticksToFitHeight);
+      }
+
+    } else {
+      yAxis.ticks(ticksToFitHeight);
+    }
     return yAxis;
   }
 
@@ -1841,7 +1853,7 @@ function SvgColumnChart($element, vif, options) {
     const testScale = generateYScale(_.min(values), _.max(values), viewportHeight);
     testSvg.append('g').
       attr('class', 'y axis').
-      call(generateYAxis(testScale));
+      call(generateYAxis(testScale, viewportHeight));
 
     // Get the widths of all generated tick labels.
     const testLabelWidths = _.map(

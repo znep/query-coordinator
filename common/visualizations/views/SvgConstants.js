@@ -45,6 +45,7 @@ export const LINE_DASH_ARRAY = '10, 10';
 export const MEASURE_LABELS_FONT_COLOR = '#5e5e5e';
 export const MEASURE_LABELS_FONT_SIZE = 14;
 export const MINIMUM_LABEL_WIDTH = 35;
+export const MINIMUM_Y_AXIS_TICK_DISTANCE = 30;
 export const NO_VALUE_SENTINEL = '__NO_VALUE__';
 export const REFERENCE_LINES_STROKE_DASHARRAY = '6,3';
 export const REFERENCE_LINES_STROKE_WIDTH = 2;

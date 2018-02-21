@@ -1,39 +1,9 @@
 import _ from 'lodash';
-import { CLUSTER_BUCKETS } from 'common/visualizations/views/mapConstants';
-
-export function getPointColorByColumn() {
-  return _.get(this, 'series[0].mapOptions.colorPointsBy');
-}
-
-export function getNumberOfDataClasses() {
-  return _.get(this, 'series[0].mapOptions.numberOfDataClasses', 5);
-}
-
-export function getMaxClusteringZoomLevel() {
-  return _.get(this, 'series[0].mapOptions.maxClusteringZoomLevel', 9);
-}
-
-export function getClusterRadius() {
-  return _.get(this, 'series[0].mapOptions.clusterRadius', 80);
-}
-
-export function getStackRadius() {
-  return _.get(this, 'series[0].mapOptions.stackRadius', 1);
-}
-
-export function getPointResizeByColumn() {
-  return _.get(this, 'series[0].mapOptions.resizePointsBy');
-}
-
-export function getPointOpacity() {
-// Point opacity in vif has a range of 0 to 100.
-// Converting it to 0-1 for using in the paint property
-  return _.get(this, 'configuration.pointOpacity', 100) / 100;
-}
+import { CLUSTER_BUCKETS, VIF_CONSTANTS } from 'common/visualizations/views/mapConstants';
 
 export function getClusterCircleRadius(resizeByRange, aggregateAndResizeBy) {
   const minRadius = 12;
-  const maxRadius = _.get(this, 'series[0].mapOptions.maxClusterSize', 40) / 2;
+  const maxRadius = _.get(this, 'series[0].mapOptions.maxClusterSize', VIF_CONSTANTS.CLUSTER_SIZE.DEFAULT) / 2;
   return {
     type: 'interval',
     property: aggregateAndResizeBy,
@@ -46,14 +16,26 @@ export function getClusterCircleRadius(resizeByRange, aggregateAndResizeBy) {
   };
 }
 
+export function getClusterRadius() {
+  return _.get(this, 'series[0].mapOptions.clusterRadius', VIF_CONSTANTS.CLUSTER_RADIUS.DEFAULT);
+}
+
+export function getMaxClusteringZoomLevel() {
+  return _.get(this, 'series[0].mapOptions.maxClusteringZoomLevel', VIF_CONSTANTS.CLUSTERING_ZOOM.DEFAULT);
+}
+
+export function getNumberOfDataClasses() {
+  return _.get(this, 'series[0].mapOptions.numberOfDataClasses', VIF_CONSTANTS.NUMBER_OF_DATA_CLASSES.DEFAULT);
+}
+
 export function getPointCircleRadius(resizeByRange, aggregateAndResizeBy) {
-  if (!_.isString(this.getPointResizeByColumn())) {
-    return _.get(this, 'series[0].mapOptions.pointMapPointSize', 10) / 2;
+  if (!_.isString(this.getResizePointsByColumn())) {
+    return _.get(this, 'series[0].mapOptions.pointMapPointSize', VIF_CONSTANTS.POINT_MAP_POINT_SIZE.DEFAULT) / 2;
   }
 
-  const minRadius = _.get(this, 'series[0].mapOptions.minimumPointSize', 10) / 2;
-  const maxRadius = _.get(this, 'series[0].mapOptions.maximumPointSize', 18) / 2;
-  const dataClasses = _.get(this, 'series[0].mapOptions.numberOfDataClasses', 5);
+  const minRadius = _.get(this, 'series[0].mapOptions.minimumPointSize', VIF_CONSTANTS.POINT_MAP_MIN_POINT_SIZE.DEFAULT) / 2;
+  const maxRadius = _.get(this, 'series[0].mapOptions.maximumPointSize', VIF_CONSTANTS.POINT_MAP_MAX_POINT_SIZE.DEFAULT) / 2;
+  const dataClasses = _.get(this, 'series[0].mapOptions.numberOfDataClasses', VIF_CONSTANTS.NUMBER_OF_DATA_CLASSES.DEFAULT);
 
   return this.getResizeByRangeBuckets(aggregateAndResizeBy, resizeByRange,
     minRadius, maxRadius, dataClasses, 'exponential');
@@ -70,19 +52,23 @@ export function getPointColor(colorByColumnAlias, colorByCategories) {
     return _.get(this, 'series[0].color.primary', '#ff00ff');
   }
 
-  // +1 for 'other' category
-  const colorPalette = this.getColorPalette(colorByCategories.length + 1);
+  return this.getPaintPropertyForColorByCategories(colorByColumnAlias, colorByCategories);
+}
 
-  if (_.isEmpty(colorByCategories)) {
-    return colorPalette[0];
-  }
+export function getColorPointsByColumn() {
+  return _.get(this, 'series[0].mapOptions.colorPointsBy');
+}
 
-  const stops = _.map(colorByCategories, (colorByCategory, index) => [colorByCategory, colorPalette[index]]);
+export function getPointOpacity() {
+// Point opacity in vif has a range of 0 to 100.
+// Converting it to 0-1 for using in the paint property
+  return _.get(this, 'configuration.pointOpacity', 100) / 100;
+}
 
-  return {
-    property: colorByColumnAlias,
-    type: 'categorical',
-    stops,
-    default: colorPalette[stops.length]
-  };
+export function getResizePointsByColumn() {
+  return _.get(this, 'series[0].mapOptions.resizePointsBy');
+}
+
+export function getStackRadius() {
+  return _.get(this, 'series[0].mapOptions.stackRadius', VIF_CONSTANTS.STACK_RADIUS.DEFAULT);
 }

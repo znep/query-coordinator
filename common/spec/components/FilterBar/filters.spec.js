@@ -22,7 +22,8 @@ describe('filters', () => {
   describe('getFilterHumanText', () => {
     describe('calendar_date columns', () => {
       it('returns the name of the column when the filter is a noop filter', () => {
-        assert.equal(getFilterHumanText(noopFilter, mockCalendarDateColumn), mockCalendarDateColumn.name);
+        const selectLabel = I18n.t('shared.components.filter_bar.select');
+        assert.equal(getFilterHumanText(noopFilter, mockCalendarDateColumn), selectLabel);
       });
 
       it('returns a range of dates otherwise', () => {
@@ -159,7 +160,8 @@ describe('filters', () => {
           // This type won't be generated anymore, but we must support existing usages.
           describe('valueRange', () => {
             it('returns the name of the column when the filter is a noop filter', () => {
-              assert.equal(getFilterHumanText(noopFilter, column), column.name);
+              const selectLabel = I18n.t('shared.components.filter_bar.select');
+              assert.equal(getFilterHumanText(noopFilter, column), selectLabel);
             });
 
             it('returns a "greater than" range when the end of the range is the max of the column', () => {
@@ -204,7 +206,8 @@ describe('filters', () => {
 
     describe('text columns', () => {
       it('returns the name of the column when the filter is a noop filter', () => {
-        assert.equal(getFilterHumanText(noopFilter, mockTextColumn), mockTextColumn.name);
+        const selectLabel = I18n.t('shared.components.filter_bar.select');
+        assert.equal(getFilterHumanText(noopFilter, mockTextColumn), selectLabel);
       });
 
       it('returns the selected value if one value is selected', () => {

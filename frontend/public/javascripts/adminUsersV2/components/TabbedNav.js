@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import RoutingTab from './RoutingTab';
-import { connect as fullConnect, I18nPropType } from '../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import Counts from './Counts';
 import * as Selectors from '../selectors';
 import RolesLoader from '../roles/components/RolesLoader';
@@ -48,4 +48,4 @@ const mapStateToProps = state => ({
   usersAdminPath: Selectors.getUsersAdminPath(state)
 });
 
-export default fullConnect(mapStateToProps)(TabbedNav);
+export default customConnect({ mapStateToProps })(TabbedNav);

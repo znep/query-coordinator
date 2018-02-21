@@ -437,3 +437,8 @@ export const SERIES_TYPE_PIE_CHART = 'pieChart';
 // visualization to render a series of columns or lines.
 export const SERIES_VARIANT_COLUMN = 'column';
 export const SERIES_VARIANT_LINE = 'line';
+
+export const DEFAULT_SHAPE_FILL_OPACITY = 0.79;
+export const DEFAULT_SHAPE_FILL_COLOR = '#969696';
+export const DEFAULT_SHAPE_OUTLINE_COLOR = '#f7f7f7';
+export const DEFAULT_SHAPE_OUTLINE_WIDTH = 1.5;

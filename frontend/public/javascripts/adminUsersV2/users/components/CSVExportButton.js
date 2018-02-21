@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import * as Selectors from '../../selectors';
 
 export class CSVExportButton extends Component {
@@ -23,4 +23,4 @@ const mapStateToProps = state => ({
   href: Selectors.getUsersCsvUrl(state)
 });
 
-export default fullConnect(mapStateToProps)(CSVExportButton);
+export default customConnect({ mapStateToProps })(CSVExportButton);

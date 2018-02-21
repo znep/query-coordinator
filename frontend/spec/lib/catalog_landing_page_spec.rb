@@ -211,7 +211,12 @@ describe CatalogLandingPage do
   end
 
   describe '.should_route?' do
-    let(:configuration) { double(:config) }
+    let(:configuration) { double(:config, properties: properties) }
+    let(:properties) { {} }
+
+    before(:each) do
+      allow(CurrentDomain).to receive(:configuration).with(:catalog_landing_page).and_return(configuration)
+    end
 
     context 'when on a browse page without a search query' do
       let(:path) { '/browse' }
@@ -255,6 +260,16 @@ describe CatalogLandingPage do
 
       it 'should return false' do
         expect(CatalogLandingPage.should_route?(request)).to eq(false)
+      end
+    end
+
+    context 'when on a vanity url' do
+      let(:path) { '/vanity/url' }
+      let(:request) { double(:request, path: path, params: { custom_path: path }) }
+      let(:properties) { { CGI.escape(path) => {} } }
+
+      it 'should return true' do
+        expect(CatalogLandingPage.should_route?(request)).to eq(true)
       end
     end
   end

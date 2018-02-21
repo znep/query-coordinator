@@ -145,7 +145,6 @@ module SocrataSiteChrome
       return false unless site_chrome_current_user
 
       get_feature_flag('open_performance_standalone_measures') &&
-        open_performance_enabled? &&
         (site_chrome_current_user.is_superadmin? || site_chrome_current_user.can_create_measures?)
     end
 
@@ -370,7 +369,7 @@ module SocrataSiteChrome
       language_switcher_locales.map do |locale_key|
         link_to(
           locale_full_name(locale_key),
-          "/#{locale_key}#{request.path}",
+          "/#{locale_key}#{request.fullpath}",
           :class => 'language-switcher-option'
         )
       end

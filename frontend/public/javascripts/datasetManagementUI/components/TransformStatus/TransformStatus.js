@@ -28,6 +28,13 @@ const GEOSPATIAL_TYPES = [
   'polygon'
 ];
 
+export const COL_STATUS = {
+  UNLOADED: 'unloaded',
+  ERROR: 'error',
+  DONE: 'done',
+  IN_PROGRESS: 'inProgress'
+};
+
 const GeospatialShortcut = ({ flyoutId }) => (
   <Link className={styles.geoBadge} onClick={() => console.warn('not implemented!')} data-flyout={flyoutId}>
      <SocrataIcon name="geo" />
@@ -117,13 +124,17 @@ export class TransformStatus extends Component {
     }
   }
 
-  determineColStatus(transform) {
+  determineColStatus() {
+    const { transform, unloadedViewSource, editMode } = this.props;
+
     if (transform.failed_at) {
-      return 'failed';
+      return COL_STATUS.ERROR;
     } else if (transform.finished_at || transform.completed_at) {
-      return 'done';
+      return COL_STATUS.DONE;
+    } else if (editMode && unloadedViewSource) {
+      return COL_STATUS.UNLOADED;
     } else {
-      return 'inProgress';
+      return COL_STATUS.IN_PROGRESS;
     }
   }
 
@@ -139,27 +150,11 @@ export class TransformStatus extends Component {
       isDropping
     } = this.props;
 
-    const inErrorMode = displayState.type === DisplayState.inErrorMode(displayState, transform);
-
-    const rowsProcessed = transform.contiguous_rows_processed || 0;
-
-    const percentage = Math.round(rowsProcessed / totalRows * 100);
-
-    const colStatus = this.determineColStatus(transform);
-
-    const hasErrors = this.hasTransformErrors();
-
-    const progressbarType = colStatus === 'inProgress' ? colStatus : 'done';
-
-    const errorStatusMessage =
-      colStatus === 'done'
-        ? singularOrPlural(transform.error_count, SubI18n.error_exists, SubI18n.errors_exist)
-        : singularOrPlural(
-            transform.error_count,
-            SubI18n.error_exists_scanning,
-            SubI18n.errors_exist_scanning
-          );
-
+    let inErrorMode;
+    let rowsProcessed;
+    let percentage;
+    let hasErrors;
+    let errorStatusMessage;
     let thClasses;
     let progressbarPercent;
     let statusTextMessage;
@@ -167,16 +162,43 @@ export class TransformStatus extends Component {
       ref: flyoutParentEl => (this.flyoutParentEl = flyoutParentEl)
     };
 
+    const colStatus = this.determineColStatus();
+    const progressbarType = colStatus;
+
+    if (colStatus !== COL_STATUS.UNLODED) {
+      inErrorMode = displayState.type === DisplayState.inErrorMode(displayState, transform);
+
+      rowsProcessed = transform.contiguous_rows_processed || 0;
+
+      percentage = Math.round(rowsProcessed / totalRows * 100);
+
+      hasErrors = this.hasTransformErrors();
+
+      errorStatusMessage =
+        colStatus === COL_STATUS.DONE
+          ? singularOrPlural(transform.error_count, SubI18n.error_exists, SubI18n.errors_exist)
+          : singularOrPlural(
+              transform.error_count,
+              SubI18n.error_exists_scanning,
+              SubI18n.errors_exist_scanning
+            );
+    }
+
     switch (colStatus) {
-      case 'failed':
+      case COL_STATUS.ERROR:
         thClasses = styles.failedColumn;
         progressbarPercent = 0;
         statusTextMessage = SubI18n.transform_failed;
         break;
-      case 'done':
+      case COL_STATUS.DONE:
         thClasses = styles.colErrors;
         progressbarPercent = percentage;
         statusTextMessage = SubI18n.no_errors_exist;
+        break;
+      case COL_STATUS.UNLOADED:
+        thClasses = styles.colErrors;
+        progressbarPercent = 100;
+        statusTextMessage = SubI18n.not_loaded;
         break;
       default:
         thClasses = styles.colErrors;
@@ -249,7 +271,9 @@ TransformStatus.propTypes = {
   totalRows: PropTypes.number,
   shortcuts: PropTypes.array.isRequired,
   flyouts: PropTypes.bool.isRequired,
-  onClickError: PropTypes.func.isRequired
+  onClickError: PropTypes.func.isRequired,
+  unloadedViewSource: PropTypes.bool.isRequired,
+  editMode: PropTypes.bool.isRequired
 };
 
 export default TransformStatus;

@@ -68,6 +68,10 @@ export default () => ({
         'pointThreshold': 4500,
         'resizePointsBy': 'columnName',
         'stackRadius': 20,
+        'shapeFillColor': '#969696',
+        'shapeFillOpacity': .79,
+        'shapeOutlineColor': '#f7f7f7',
+        'shapeOutlineWidth': 1.5,
         'weighLinesBy': 'columnName'
       }
     }

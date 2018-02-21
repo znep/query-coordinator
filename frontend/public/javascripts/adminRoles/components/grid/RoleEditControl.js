@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-import cssModules from 'react-css-modules';
-import { connect } from 'react-redux';
+import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 
 import Button from 'common/components/Button';
-import { connectLocalization } from 'common/components/Localization';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import { SocrataIcon } from 'common/components/SocrataIcon';
 
 import * as Actions from '../../actions';
@@ -22,7 +20,7 @@ const mapDispatchToProps = (dispatch, { role }) =>
     dispatch
   );
 
-class DropdownItem extends React.Component {
+class DropdownItem extends Component {
   render() {
     const { hideDropdown, name, onClick } = this.props;
     const handleClick = () => {
@@ -40,8 +38,9 @@ class DropdownItem extends React.Component {
   }
 }
 
-class RoleEditControl extends React.Component {
+class RoleEditControl extends Component {
   static propTypes = {
+    I18n: I18nPropType,
     deleteRole: PropTypes.func.isRequired,
     editRole: PropTypes.func.isRequired,
     renameRole: PropTypes.func.isRequired,
@@ -80,8 +79,8 @@ class RoleEditControl extends React.Component {
   };
 
   handleDeleteRole = () => {
-    const { deleteRole, localization: { translate }, role } = this.props;
-    const confirmationMessage = translate('screens.admin.roles.confirmation.delete_role', {
+    const { I18n, deleteRole, role } = this.props;
+    const confirmationMessage = I18n.t('screens.admin.roles.confirmation.delete_role', {
       name: Selectors.getRoleNameFromRole(role)
     });
     if (window.confirm(confirmationMessage)) {
@@ -90,7 +89,7 @@ class RoleEditControl extends React.Component {
   };
 
   render() {
-    const { editRole, renameRole, localization: { translate } } = this.props;
+    const { I18n, editRole, renameRole } = this.props;
     const { showDropdown } = this.state;
 
     return (
@@ -101,17 +100,17 @@ class RoleEditControl extends React.Component {
         {showDropdown && (
           <ul>
             <DropdownItem
-              name={translate('screens.admin.roles.index_page.edit_controls.rename_role')}
+              name={I18n.t('screens.admin.roles.index_page.edit_controls.rename_role')}
               hideDropdown={this.hideDropdown}
               onClick={renameRole}
             />
             <DropdownItem
-              name={translate('screens.admin.roles.index_page.edit_controls.edit_role')}
+              name={I18n.t('screens.admin.roles.index_page.edit_controls.edit_role')}
               hideDropdown={this.hideDropdown}
               onClick={editRole}
             />
             <DropdownItem
-              name={translate('screens.admin.roles.index_page.edit_controls.delete_role')}
+              name={I18n.t('screens.admin.roles.index_page.edit_controls.delete_role')}
               hideDropdown={this.hideDropdown}
               onClick={this.handleDeleteRole}
             />
@@ -122,4 +121,4 @@ class RoleEditControl extends React.Component {
   }
 }
 
-export default connectLocalization(connect(null, mapDispatchToProps)(cssModules(RoleEditControl, styles)));
+export default customConnect({ mapDispatchToProps, styles })(RoleEditControl);

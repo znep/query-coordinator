@@ -22,6 +22,7 @@ import {
   DEFAULT_DESKTOP_COLUMN_WIDTH,
   DEFAULT_LINE_HIGHLIGHT_FILL,
   DEFAULT_MOBILE_COLUMN_WIDTH,
+  DIMENSION_LABELS_DEFAULT_HEIGHT,
   DIMENSION_LABELS_FIXED_HEIGHT,
   DIMENSION_LABELS_FONT_COLOR,
   DIMENSION_LABELS_FONT_SIZE,
@@ -37,6 +38,7 @@ import {
   MEASURE_LABELS_FONT_COLOR,
   MEASURE_LABELS_FONT_SIZE,
   MINIMUM_LABEL_WIDTH,
+  MINIMUM_Y_AXIS_TICK_DISTANCE,
   REFERENCE_LINES_STROKE_DASHARRAY,
   REFERENCE_LINES_STROKE_WIDTH,
   REFERENCE_LINES_UNDERLAY_THICKNESS,
@@ -53,8 +55,10 @@ import { getMeasures } from '../helpers/measure';
 // The LEFT and RIGHT margins has been removed because it will be dynamically calculated.
 const MARGINS = {
   TOP: 32,
-  BOTTOM: 0
+  BOTTOM: 32
 };
+
+const DIMENSION_LABELS_PIXEL_PER_CHARACTER = 115 / 15; // Empirically determined to work well enough.
 
 function SvgComboChart($element, vif, options) {
   const self = this;
@@ -78,6 +82,20 @@ function SvgComboChart($element, vif, options) {
   let referenceLines;
   let renderableDataToRender;
 
+  const labelResizeState = {
+    draggerElement: null,
+
+    // True during interactive resize, false otherwise.
+    dragging: false,
+
+    // Controls how much horizontal space the labels take up.
+    // The override persists until cleared by a VIF update.
+    // The override is active if this value is defined.
+    // Otherwise, the chart falls back to the space
+    // configured in the VIF or the default.
+    overriddenAreaSize: undefined
+  };
+
   _.extend(this, new SvgVisualization($element, vif, options));
 
   renderTemplate();
@@ -91,6 +109,10 @@ function SvgComboChart($element, vif, options) {
     if (!newData && !dataToRender && !newColumns) {
       return;
     }
+
+    // Forget the label area size the user set - we're
+    // loading a brand new vif.
+    labelResizeState.overriddenAreaSize = undefined;
 
     this.clearError();
 
@@ -116,6 +138,8 @@ function SvgComboChart($element, vif, options) {
       this.updateColumns(newColumns);
     }
 
+    $(labelResizeState.draggerElement).toggleClass('enabled', self.getShowDimensionLabels());
+
     renderData();
   };
 
@@ -139,6 +163,45 @@ function SvgComboChart($element, vif, options) {
    * Private methods
    */
 
+  function labelHeightDragger() {
+    const dragger = document.createElement('div');
+    labelResizeState.draggerElement = dragger;
+
+    dragger.setAttribute('class', 'label-width-dragger');
+
+    d3.select(dragger).call(d3.behavior.drag().
+      on('dragstart', () => {
+        $chartElement.addClass('dragging-label-width-dragger');
+        labelResizeState.dragging = true;
+        labelResizeState.overriddenAreaSize = computeLabelHeight();
+      }).
+      on('drag', () => {
+        labelResizeState.overriddenAreaSize -= d3.event.dy;
+        renderData();
+        hideFlyout();
+      }).
+      on('dragend', () => {
+        $chartElement.removeClass('dragging-label-width-dragger');
+        labelResizeState.dragging = false;
+        renderData();
+        self.emitEvent('SOCRATA_VISUALIZATION_DIMENSION_LABEL_AREA_SIZE_CHANGED', labelResizeState.overriddenAreaSize);
+      })
+    );
+
+    return dragger;
+  }
+
+  function updateLabelHeightDragger(leftOffset, topOffset, width) {
+    // Only move if not dragging. Otherwise,
+    // d3's dragger becomes confused.
+    if (!labelResizeState.dragging) {
+      labelResizeState.draggerElement.setAttribute(
+        'style',
+        `left: ${leftOffset}px; top: ${topOffset}px; width: ${width}px`
+      );
+    }
+  }
+
   function renderTemplate() {
 
     $chartElement = $(
@@ -146,10 +209,32 @@ function SvgComboChart($element, vif, options) {
       {
         'class': 'combo-chart'
       }
-    );
+    ).append(labelHeightDragger());
 
     self.$element.find('.socrata-visualization-container').
       append($chartElement);
+  }
+
+  function computeLabelHeight() {
+    let configuredSize = _.get(self.getVif(), 'configuration.dimensionLabelAreaSize');
+
+    if (!_.isFinite(configuredSize)) {
+      configuredSize = DIMENSION_LABELS_DEFAULT_HEIGHT;
+    }
+
+    const height = _.isFinite(labelResizeState.overriddenAreaSize) ?
+     labelResizeState.overriddenAreaSize :
+     configuredSize;
+
+    const axisLabels = self.getAxisLabels();
+    const topMargin = MARGINS.TOP;
+    const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0);
+
+    return _.clamp(
+      height,
+      0,
+      $chartElement.height() - (topMargin + bottomMargin)
+    );
   }
 
   function renderData() {
@@ -157,9 +242,13 @@ function SvgComboChart($element, vif, options) {
       DEFAULT_MOBILE_COLUMN_WIDTH :
       DEFAULT_DESKTOP_COLUMN_WIDTH;
 
+    const dimensionLabelsHeight = self.getShowDimensionLabels() ?
+      computeLabelHeight() :
+      0;
+
     const axisLabels = self.getAxisLabels();
     const topMargin = MARGINS.TOP + (axisLabels.top ? AXIS_LABEL_MARGIN : 0);
-    const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0);
+    const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0) + dimensionLabelsHeight;
     let viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
     const d3ClipPathId = `combo-chart-clip-path-${_.uniqueId()}`;
     const dataTableDimensionIndex = renderableDataToRender.columns.indexOf('dimension');
@@ -848,7 +937,7 @@ function SvgComboChart($element, vif, options) {
 
     // Compute height based on the presence or absence of x-axis data labels.
     if (self.getShowDimensionLabels()) {
-      height = Math.max(0, viewportHeight - DIMENSION_LABELS_FIXED_HEIGHT);
+      height = viewportHeight;
     } else {
       // In this case we want to mirror the top margin on the bottom so
       // that the chart is visually centered (column charts have no bottom
@@ -873,7 +962,7 @@ function SvgComboChart($element, vif, options) {
       _.range(0, columnDataToRender.rows[0].length - 1),
       d3DimensionXScale);
 
-    d3XAxis = generateXAxis(d3DimensionXScale);
+    d3XAxis = generateXAxis(d3DimensionXScale, dimensionLabelsHeight);
 
     /**
      * 3. Set up the y-scale and y-axis.
@@ -1006,12 +1095,12 @@ function SvgComboChart($element, vif, options) {
     //
     if (isUsingPrimaryAxis()) {
       d3PrimaryYScale = generateYScale(primaryYAxisMinValue, primaryYAxisMaxValue, height);
-      d3PrimaryYAxis = generateYAxis(d3PrimaryYScale, 'left');
+      d3PrimaryYAxis = generateYAxis(d3PrimaryYScale, 'left', height);
     }
 
     if (isUsingSecondaryAxis()) {
       d3SecondaryYScale = generateYScale(secondaryYAxisMinValue, secondaryYAxisMaxValue, height);
-      d3SecondaryYAxis = generateYAxis(d3SecondaryYScale, 'right');
+      d3SecondaryYAxis = generateYAxis(d3SecondaryYScale, 'right', height);
     }
 
     /**
@@ -1196,19 +1285,19 @@ function SvgComboChart($element, vif, options) {
         // Note that we need to recompute height here since
         // $chartElement.height() may have changed when we showed the panning
         // notice.
-        height = Math.max(0, viewportHeight - DIMENSION_LABELS_FIXED_HEIGHT);
+        height = viewportHeight;
       } else {
         height = Math.max(0, viewportHeight - MARGINS.TOP);
       }
 
       if (isUsingPrimaryAxis()) {
         d3PrimaryYScale = generateYScale(primaryYAxisMinValue, primaryYAxisMaxValue, height);
-        d3PrimaryYAxis = generateYAxis(d3PrimaryYScale, 'left');
+        d3PrimaryYAxis = generateYAxis(d3PrimaryYScale, 'left', height);
       }
 
       if (isUsingSecondaryAxis()) {
         d3SecondaryYScale = generateYScale(secondaryYAxisMinValue, secondaryYAxisMaxValue, height);
-        d3SecondaryYAxis = generateYAxis(d3SecondaryYScale, 'right');
+        d3SecondaryYAxis = generateYAxis(d3SecondaryYScale, 'right', height);
       }
 
       renderXAxis();
@@ -1230,6 +1319,8 @@ function SvgComboChart($element, vif, options) {
 
     renderReferenceLines();
     renderErrorBars();
+
+    updateLabelHeightDragger(leftMargin, topMargin + height, width);
 
     /**
      * 6. Set up event handlers for mouse interactions.
@@ -1467,18 +1558,8 @@ function SvgComboChart($element, vif, options) {
       x: leftMargin,
       y: topMargin,
       width: viewportWidth,
-      height: viewportHeight - xAxisAndSeriesSvg.select('.x.axis').node().getBBox().height
+      height: viewportHeight
     });
-  }
-
-  function conditionallyTruncateLabel(label) {
-    label = _.isNull(label) ? noValueLabel : label;
-
-    return (label.length >= DIMENSION_LABELS_MAX_CHARACTERS) ?
-      '{0}…'.format(
-        label.substring(0, DIMENSION_LABELS_MAX_CHARACTERS - 1).trim()
-      ) :
-      label;
   }
 
   function generateXScale(domain, width, hasMultipleNonFlyoutSeries) {
@@ -1511,7 +1592,10 @@ function SvgComboChart($element, vif, options) {
       rangeRoundBands([0, xScale.rangeBand()]);
   }
 
-  function generateXAxis(xScale) {
+  function generateXAxis(xScale, allowedLabelHeight) {
+    // This sucks, but linear interpolation seems good enough.
+    const maximumCharacters = Math.ceil(allowedLabelHeight / DIMENSION_LABELS_PIXEL_PER_CHARACTER);
+
     return d3.svg.axis().
       scale(xScale).
       orient('bottom').
@@ -1528,7 +1612,7 @@ function SvgComboChart($element, vif, options) {
           label = formatValuePlainText(d, column, renderableDataToRender);
         }
 
-        return conditionallyTruncateLabel(label);
+        return self.conditionallyTruncateLabel(label, maximumCharacters);
       }).
       outerTickSize(0);
   }
@@ -1689,7 +1773,7 @@ function SvgComboChart($element, vif, options) {
       range([height, GLYPH_SPACE_HEIGHT]);
   }
 
-  function generateYAxis(yScale, orient) {
+  function generateYAxis(yScale, orient, height) {
     const column = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
     const formatter = (d) => formatValueHTML(d, column, renderableDataToRender, true);
 
@@ -1698,17 +1782,29 @@ function SvgComboChart($element, vif, options) {
       orient(orient).
       tickFormat(formatter);
 
+    const ticksToFitHeight = Math.ceil(height / MINIMUM_Y_AXIS_TICK_DISTANCE);
     const isCount = _.get(vif, 'series[0].dataSource.measure.aggregationFunction') === 'count';
+
     if (isCount) {
       // If the number of possible values is small, limit number of ticks to force integer values.
       const [minYValue, maxYValue] = yScale.domain();
       const span = maxYValue - minYValue;
+
       if (span < 10) {
         const ticks = d3.range(minYValue, maxYValue + 1, 1);
-        yAxis.tickValues(ticks);
+
+        if (_.isArray(ticks) && (ticks.length < ticksToFitHeight)) {
+          yAxis.tickValues(ticks);
+        } else {
+          yAxis.ticks(ticksToFitHeight);
+        }
+
       } else {
-        yAxis.ticks(10);
+        yAxis.ticks(ticksToFitHeight);
       }
+
+    } else {
+      yAxis.ticks(ticksToFitHeight);
     }
 
     return yAxis;
@@ -1985,7 +2081,7 @@ function SvgComboChart($element, vif, options) {
     const testScale = generateYScale(_.min(values), _.max(values), viewportHeight);
     testSvg.append('g').
       attr('class', 'y axis').
-      call(generateYAxis(testScale, orient));
+      call(generateYAxis(testScale, orient, viewportHeight));
 
     // Get the widths of all generated tick labels.
     const testLabelWidths = _.map(

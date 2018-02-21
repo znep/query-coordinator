@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { connect as fullConnect, I18nPropType, getCustomRoleName } from '../../utils';
+import { getRoleDisplayName } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import toString from 'lodash/toString';
+import isNil from 'lodash/isNil';
 import ResultsTable from '../../components/ResultsTable';
 import DateFromNow from '../../components/DateFromNow';
 import DropdownButton, { DropdownItem } from '../../components/DropdownButton';
@@ -63,15 +65,19 @@ export class InvitedUsersTable extends React.Component {
 const mapStateToProps = (state, { I18n }) => {
   const roles = Selectors.getRoles(state);
   const loadingData = Selectors.getInvitedUsersLoading(state) && Selectors.getRolesLoading(state);
+  const userRoleFilter = Selectors.getUserRoleFilter(state);
   const invitedUsers = (loadingData || roles.length === 0) ?
     [] :
-    Selectors.getInvitedUsers(state).map(invitedUser => {
-      const role = roles.find(r => toString(r.id) === toString(invitedUser.pendingRoleId));
-      return {
-        ...invitedUser,
-        role: role.isDefault ? I18n.t(`roles.default_roles.${role.name}.name`) : getCustomRoleName(role, roles, I18n)
-      };
-    });
+    Selectors.getInvitedUsers(state).
+      filter(invitedUser => (isNil(userRoleFilter) || toString(invitedUser.pendingRoleId) === toString(userRoleFilter))).
+      map(
+        invitedUser => {
+          const role = roles.find(r => toString(r.id) === toString(invitedUser.pendingRoleId));
+          return {
+            ...invitedUser,
+            role: getRoleDisplayName(role, roles, I18n)
+          };
+      });
   return {
     invitedUsers,
     loadingData
@@ -83,4 +89,4 @@ const mapDispatchToProps = {
   resendInvitedUserEmail: Actions.resendInvitedUserEmail
 };
 
-export default fullConnect(mapStateToProps, mapDispatchToProps)(InvitedUsersTable);
+export default customConnect({ mapStateToProps, mapDispatchToProps })(InvitedUsersTable);

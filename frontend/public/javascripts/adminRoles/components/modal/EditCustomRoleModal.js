@@ -3,11 +3,10 @@ import noop from 'lodash/fp/noop';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { spring } from 'react-motion';
-import { connect } from 'react-redux';
 
 import Button from 'common/components/Button';
 import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
-import { connectLocalization } from 'common/components/Localization';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import { Modal, ModalContent, ModalFooter, ModalHeader } from 'common/components/Modal';
 
 import * as Actions from '../../actions';
@@ -27,28 +26,26 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  cancelCreateNewRole: Actions.createNewRoleCancel,
-  saveRole: Actions.renameRoleEnd,
-  createRole: Actions.createNewRoleStart
+  onCancel: Actions.editCustomRoleModalCancel,
+  onSubmit: Actions.editCustomRoleModalSubmit
 };
 
 class EditCustomRoleModal extends Component {
   static propTypes = {
-    cancelCreateNewRole: PropTypes.func.isRequired,
-    saveRole: PropTypes.func.isRequired,
-    createRole: PropTypes.func.isRequired,
+    I18n: I18nPropType,
+    onCancel: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
     editingNewRole: PropTypes.bool.isRequired,
     showModal: PropTypes.bool.isRequired
   };
 
   render() {
     const {
-      cancelCreateNewRole,
-      saveRole,
-      createRole,
+      I18n,
+      onCancel,
+      onSubmit,
       editingNewRole,
-      showModal,
-      localization: { translate }
+      showModal
     } = this.props;
     const modalProps = {
       fullScreen: false,
@@ -56,14 +53,13 @@ class EditCustomRoleModal extends Component {
     };
     const headerProps = {
       showCloseButton: false,
-      title: translate(
+      title: I18n.t(
         editingNewRole
           ? 'screens.admin.roles.index_page.custom_role_modal.title'
           : 'screens.admin.roles.index_page.custom_role_modal.rename_title'
       ),
       onDismiss: noop
     };
-    const onSubmit = () => (editingNewRole ? createRole() : saveRole()); // TODO: EN-22314 - Move this logic to sagas
 
     return (
       <ConditionTransitionMotion
@@ -86,11 +82,11 @@ class EditCustomRoleModal extends Component {
 
             <ModalFooter>
               <div>
-                <Button variant="primary" inverse onClick={cancelCreateNewRole}>
-                  {translate('screens.admin.roles.buttons.cancel')}
+                <Button variant="primary" inverse onClick={onCancel}>
+                  {I18n.t('screens.admin.roles.buttons.cancel')}
                 </Button>
                 <Button variant="primary" className={styles['save-button']} onClick={onSubmit}>
-                  {translate(`screens.admin.roles.buttons.${editingNewRole ? 'create' : 'save'}`)}
+                  {I18n.t(`screens.admin.roles.buttons.${editingNewRole ? 'create' : 'save'}`)}
                 </Button>
               </div>
             </ModalFooter>
@@ -101,4 +97,4 @@ class EditCustomRoleModal extends Component {
   }
 }
 
-export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(EditCustomRoleModal));
+export default customConnect({ mapStateToProps, mapDispatchToProps })(EditCustomRoleModal);

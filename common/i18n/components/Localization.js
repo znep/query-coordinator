@@ -5,6 +5,8 @@ import I18nJS from 'i18n-js';
 import pluralization from '../pluralization';
 import { sift } from 'common/js_utils';
 
+export const DEFAULT_LOCALE = 'en';
+
 export default class Localization extends React.Component {
   constructor(props) {
     super(props);

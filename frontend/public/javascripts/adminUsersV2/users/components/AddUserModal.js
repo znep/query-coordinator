@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components/Modal';
 import RolePicker from '../../roles/components/RolePicker';
 import Button from 'common/components/Button';
@@ -134,4 +134,4 @@ const mapDispatchToProps = {
   changeAddUsersForm: Actions.changeAddUsersForm
 };
 
-export default fullConnect(mapStateToProps, mapDispatchToProps)(AddUserModal);
+export default customConnect({ mapStateToProps, mapDispatchToProps })(AddUserModal);

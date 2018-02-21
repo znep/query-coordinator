@@ -64,9 +64,10 @@ export function getCheckboxFilter(column, filter, values) {
     });
   }
 }
+
 export function getFilterHumanText(filter, column) {
   if (filter.function === 'noop') { // eslint-disable-line dot-notation
-    return column.name;
+    return I18n.t('shared.components.filter_bar.select');
   }
 
   switch (column.dataTypeName) {

@@ -10,6 +10,7 @@ import {
   Dropdown
 } from 'common/components';
 import I18n from 'common/i18n';
+import { VIF_CONSTANTS } from 'common/visualizations/views/mapConstants';
 
 import * as actions from '../../actions';
 import BlockLabel from '../shared/BlockLabel';
@@ -568,7 +569,7 @@ export class PresentationPane extends Component {
           <label
             className="block-label"
             htmlFor="point-opacity">{I18n.t('fields.point_opacity.title', { scope })}</label>
-          <div id="point-opacity">
+          <div id="point-opacity-slider-container">
             <DebouncedSlider {...pointOpacityAttributes} />
           </div>
         </div>
@@ -639,8 +640,8 @@ export class PresentationPane extends Component {
       const maximumLineWeight = selectors.getMaximumLineWeight(vifAuthoring);
       const minimumLineWeightAttributes = {
         id: 'minimum-line-weight',
-        rangeMin: 1,
-        rangeMax: 10,
+        rangeMin: VIF_CONSTANTS.LINE_WEIGHT.MIN,
+        rangeMax: VIF_CONSTANTS.LINE_WEIGHT.MAX,
         step: 1,
         value: minimumLineWeight,
         onChange: onMinimumLineWeightChange,
@@ -648,8 +649,8 @@ export class PresentationPane extends Component {
       };
       const maximumLineWeightAttributes = {
         id: 'maximum-line-weight',
-        rangeMin: 1,
-        rangeMax: 10,
+        rangeMin: VIF_CONSTANTS.LINE_WEIGHT.MIN,
+        rangeMax: VIF_CONSTANTS.LINE_WEIGHT.MAX,
         step: 1,
         value: maximumLineWeight,
         onChange: onMaximumLineWeightChange,
@@ -662,8 +663,8 @@ export class PresentationPane extends Component {
             <label
               className="block-label"
               htmlFor="minimum-line-weight">{I18n.t('fields.line_weight.minimum', { scope })}</label>
-            <div id="minimum-line-weight" className="debounced-slider-with-preview">
-              <div className="line-weight-slider-container">
+            <div className="debounced-slider-with-preview">
+              <div className="slider-container">
                 <DebouncedSlider {...minimumLineWeightAttributes} />
               </div>
               <LineWeightPreview lineWeight={minimumLineWeight} />
@@ -674,8 +675,8 @@ export class PresentationPane extends Component {
             <label
               className="block-label"
               htmlFor="maximum-line-weight">{I18n.t('fields.line_weight.maximum', { scope })}</label>
-            <div id="maximum-line-weight" className="debounced-slider-with-preview">
-              <div className="line-weight-slider-container">
+            <div className="debounced-slider-with-preview">
+              <div className="slider-container">
                 <DebouncedSlider {...maximumLineWeightAttributes} />
               </div>
               <LineWeightPreview lineWeight={maximumLineWeight} />
@@ -690,8 +691,8 @@ export class PresentationPane extends Component {
       const lineWeight = selectors.getLineWeight(vifAuthoring);
       const lineWeightAttributes = {
         id: 'line-weight',
-        rangeMin: 1,
-        rangeMax: 10,
+        rangeMin: VIF_CONSTANTS.LINE_WEIGHT.MIN,
+        rangeMax: VIF_CONSTANTS.LINE_WEIGHT.MAX,
         step: 1,
         value: lineWeight,
         onChange: onChangeLineWeight,
@@ -703,9 +704,7 @@ export class PresentationPane extends Component {
           <label
             className="block-label"
             htmlFor="line-weight">{I18n.t('fields.line_weight.title', { scope })}</label>
-          <div id="line-weight">
-            <DebouncedSlider {...lineWeightAttributes} />
-          </div>
+          <DebouncedSlider {...lineWeightAttributes} />
         </div>
       );
     }
@@ -728,8 +727,8 @@ export class PresentationPane extends Component {
       const maximumPointSize = selectors.getMaximumPointSize(vifAuthoring);
       const minimumPointSizeAttributes = {
         id: 'minimum-point-size',
-        rangeMin: 4,
-        rangeMax: 40,
+        rangeMin: VIF_CONSTANTS.POINT_MAP_MIN_POINT_SIZE.MIN,
+        rangeMax: VIF_CONSTANTS.POINT_MAP_MIN_POINT_SIZE.MAX,
         step: 1,
         value: minimumPointSize,
         onChange: onMinimumPointSizeChange,
@@ -737,8 +736,8 @@ export class PresentationPane extends Component {
       };
       const maximumPointSizeAttributes = {
         id: 'maximum-point-size',
-        rangeMin: 4,
-        rangeMax: 40,
+        rangeMin: VIF_CONSTANTS.POINT_MAP_MAX_POINT_SIZE.MIN,
+        rangeMax: VIF_CONSTANTS.POINT_MAP_MAX_POINT_SIZE.MAX,
         step: 1,
         value: maximumPointSize,
         onChange: onMaximumPointSizeChange,
@@ -751,8 +750,8 @@ export class PresentationPane extends Component {
             <label
               className="block-label"
               htmlFor="minimum-point-size">{I18n.t('fields.point_size.minimum', { scope })}</label>
-            <div id="minimum-point-size" className="debounced-slider-with-preview">
-              <div className="point-size-slider-container">
+            <div className="debounced-slider-with-preview">
+              <div className="slider-container">
                 <DebouncedSlider {...minimumPointSizeAttributes} />
               </div>
               <PointSizePreview pointSize={minimumPointSize} />
@@ -763,8 +762,8 @@ export class PresentationPane extends Component {
             <label
               className="block-label"
               htmlFor="maximum-point-size">{I18n.t('fields.point_size.maximum', { scope })}</label>
-            <div id="maximum-point-size" className="debounced-slider-with-preview">
-              <div className="point-size-slider-container">
+            <div className="debounced-slider-with-preview">
+              <div className="slider-container">
                 <DebouncedSlider {...maximumPointSizeAttributes} />
               </div>
               <PointSizePreview pointSize={maximumPointSize} />
@@ -779,8 +778,8 @@ export class PresentationPane extends Component {
       const pointMapPointSize = selectors.getPointMapPointSize(vifAuthoring);
       const pointSizeAttributes = {
         id: 'point-size',
-        rangeMin: 4,
-        rangeMax: 40,
+        rangeMin: VIF_CONSTANTS.POINT_MAP_POINT_SIZE.MIN,
+        rangeMax: VIF_CONSTANTS.POINT_MAP_POINT_SIZE.MAX,
         step: 1,
         value: pointMapPointSize,
         onChange: onChangePointMapPointSize,
@@ -792,7 +791,7 @@ export class PresentationPane extends Component {
           <label
             className="block-label"
             htmlFor="point-size">{I18n.t('fields.point_size.title', { scope })}</label>
-          <div id="point-size">
+          <div id="point-size-slider-container">
             <DebouncedSlider {...pointSizeAttributes} />
           </div>
         </div>
@@ -848,8 +847,8 @@ export class PresentationPane extends Component {
     const maxClusteringZoomLevelSlider = this.renderSliderControl(
       {
         name: 'max_clustering_zoom_level',
-        minValue: 1,
-        maxValue: 22,
+        minValue: VIF_CONSTANTS.CLUSTERING_ZOOM.MIN,
+        maxValue: VIF_CONSTANTS.CLUSTERING_ZOOM.MAX,
         step: 1,
         value: selectors.getMaxClusteringZoomLevel(vifAuthoring),
         onChange: onMaxClusteringZoomLevelChange,
@@ -859,8 +858,8 @@ export class PresentationPane extends Component {
     const pointThresholdSlider = this.renderSliderControl(
       {
         name: 'point_threshold',
-        minValue: 100,
-        maxValue: 10000,
+        minValue: VIF_CONSTANTS.POINT_THRESHOLD.MIN,
+        maxValue: VIF_CONSTANTS.POINT_THRESHOLD.MAX,
         step: 100,
         value: selectors.getPointThreshold(vifAuthoring),
         onChange: onPointThresholdChange,
@@ -870,8 +869,8 @@ export class PresentationPane extends Component {
     const clusterRadiusSlider = this.renderSliderControl(
       {
         name: 'cluster_radius',
-        minValue: 20,
-        maxValue: 120,
+        minValue: VIF_CONSTANTS.CLUSTER_RADIUS.MIN,
+        maxValue: VIF_CONSTANTS.CLUSTER_RADIUS.MAX,
         step: 1,
         value: selectors.getClusterRadius(vifAuthoring),
         onChange: onClusterRadiusChange,
@@ -881,8 +880,8 @@ export class PresentationPane extends Component {
     const maxClusterSizeSlider = this.renderSliderControl(
       {
         name: 'max_cluster_size',
-        minValue: 24,
-        maxValue: 50,
+        minValue: VIF_CONSTANTS.CLUSTER_SIZE.MIN,
+        maxValue: VIF_CONSTANTS.CLUSTER_SIZE.MAX,
         step: 1,
         value: selectors.getMaxClusterSize(vifAuthoring),
         onChange: onMaxClusterSizeChange,
@@ -892,8 +891,8 @@ export class PresentationPane extends Component {
     const stackRadiusSlider = this.renderSliderControl(
       {
         name: 'stack_radius',
-        minValue: 1,
-        maxValue: 80,
+        minValue: VIF_CONSTANTS.STACK_RADIUS.MIN,
+        maxValue: VIF_CONSTANTS.STACK_RADIUS.MAX,
         step: 1,
         value: selectors.getStackRadius(vifAuthoring),
         onChange: onStackRadiusChange,
@@ -1021,30 +1020,107 @@ export class PresentationPane extends Component {
     ];
   }
 
+  renderShapeFillColorControls = () => {
+    const { onChangeShapeFillColor, onChangeShapeFillOpacity, vifAuthoring } = this.props;
+    const shapeFillColor = selectors.getShapeFillColor(vifAuthoring);
+    const shapeFillOpacity = selectors.getShapeFillOpacity(vifAuthoring);
+    const shapeFillColorAttributes = {
+      id: 'shape-fill-color',
+      handleColorChange: onChangeShapeFillColor,
+      palette: COLORS,
+      value: shapeFillColor
+    };
+    const shapeFillOpacityAttributes = {
+      delay: getMapSliderDebounceMs(),
+      id: 'shape-fill-opacity',
+      rangeMax: 100,
+      rangeMin: 0,
+      step: 1,
+      value: shapeFillOpacity,
+      onChange: onChangeShapeFillOpacity
+    };
+
+    return (
+      <AccordionPane key="shapeFillColors" title={I18n.t('subheaders.colors', { scope })}>
+        <div className="authoring-field">
+          <label
+            className="block-label"
+            htmlFor="shape-fill-color">{I18n.t('fields.shape_fill_color.title', { scope })}</label>
+          <ColorPicker {...shapeFillColorAttributes} />
+        </div>
+
+        <div className="authoring-field">
+          <label
+            className="block-label"
+            htmlFor="shape-fill-opacity">{I18n.t('fields.shape_fill_opacity.title', { scope })}</label>
+          <DebouncedSlider {...shapeFillOpacityAttributes} />
+        </div>
+      </AccordionPane>
+    );
+  }
+
+  renderShapeOutlineColorControls = () => {
+    const { onChangeShapeOutlineColor, onChangeShapeOutlineWidth, vifAuthoring } = this.props;
+    const shapeOutlineColor = selectors.getShapeOutlineColor(vifAuthoring);
+    const shapeOutlineWidth = selectors.getShapeOutlineWidth(vifAuthoring);
+    const shapeOutlineColorAttributes = {
+      id: 'shape-outline-color',
+      handleColorChange: onChangeShapeOutlineColor,
+      palette: COLORS,
+      value: shapeOutlineColor
+    };
+    const shapeOutlineWidthAttributes = {
+      delay: getMapSliderDebounceMs(),
+      id: 'shape-outline-width',
+      rangeMax: 8,
+      rangeMin: 0.5,
+      step: 0.5,
+      value: shapeOutlineWidth,
+      onChange: onChangeShapeOutlineWidth
+    };
+
+    return (
+      <AccordionPane key="shapeOutlineColors" title={I18n.t('subheaders.shape_outline', { scope })}>
+        <div className="authoring-field">
+          <label
+            className="block-label"
+            htmlFor="shape-outline-color">{I18n.t('fields.shape_outline_color.title', { scope })}</label>
+          <ColorPicker {...shapeOutlineColorAttributes} />
+        </div>
+
+        <div className="authoring-field">
+          <label
+            className="block-label"
+            htmlFor="shape-outline-width">{I18n.t('fields.shape_outline_width.title', { scope })}</label>
+          <div className="debounced-slider-with-preview">
+            <div className="slider-container">
+              <DebouncedSlider {...shapeOutlineWidthAttributes} />
+            </div>
+            <LineWeightPreview lineWeight={shapeOutlineWidth} />
+          </div>
+        </div>
+      </AccordionPane>
+    );
+  }
+
   renderBoundaryMapControls = () => {
     const { vifAuthoring, metadata } = this.props;
-    const boundaryColorByColumn = selectors.getBoundaryColorByColumn(vifAuthoring);
-    const colorLabelText = I18n.t('fields.boundary_color.title', { scope });
-    const disableDataClassesDropdown = selectors.getQuantificationMethod(vifAuthoring) !== 'numerical';
-    let renderColorPalette = false;
-    let isNumericalColumnSelected = false;
+    const columnName = selectors.getBoundaryColorByColumn(vifAuthoring);
 
-    if (!_.isNull(boundaryColorByColumn)) {
-      renderColorPalette = true;
-      isNumericalColumnSelected = isNumericDimensionType(metadata, { columnName: boundaryColorByColumn });
+    if (_.isNull(columnName)) {
+      return [this.renderShapeFillColorControls(), this.renderShapeOutlineColorControls()];
     }
 
-    const colorControls = (
+    const isNumericalColumnSelected = isNumericDimensionType(metadata, { columnName });
+    const disableDataClassesDropdown = selectors.getQuantificationMethod(vifAuthoring) !== 'numerical';
+
+    return (
       <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope })}>
-        {renderColorPalette ?
-          this.renderColorPaletteForNewGLMaps(colorLabelText) :
-          this.renderPrimaryColorForMaps(colorLabelText)}
+        {this.renderColorPaletteForNewGLMaps(I18n.t('fields.boundary_color.title', { scope }))}
         {isNumericalColumnSelected && this.renderQuantificationMethodOptions()}
         {isNumericalColumnSelected && this.renderDataClassesSelector(disableDataClassesDropdown)}
       </AccordionPane>
     );
-
-    return [colorControls];
   }
 
   renderNewGLMapControls = () => {
@@ -1079,8 +1155,8 @@ export class PresentationPane extends Component {
 
     var pointOpacityAttributes = {
       id: 'point-opacity',
-      rangeMin: 0,
-      rangeMax: 1,
+      rangeMin: VIF_CONSTANTS.POINT_OPACITY.MIN,
+      rangeMax: VIF_CONSTANTS.POINT_OPACITY.MAX,
       step: 0.1,
       value: pointOpacity / 100,
       onChange: onChangePointOpacity,
@@ -1109,7 +1185,7 @@ export class PresentationPane extends Component {
           <label
             className="block-label"
             htmlFor="point-opacity">{I18n.t('fields.point_opacity.title', { scope })}</label>
-          <div id="point-opacity">
+          <div id="point-opacity-slider-container">
             <DebouncedSlider {...pointOpacityAttributes} />
           </div>
         </div>
@@ -1117,7 +1193,7 @@ export class PresentationPane extends Component {
           <label
             className="block-label"
             htmlFor="point-size">{I18n.t('fields.point_size.title', { scope })}</label>
-          <div id="point-size">
+          <div id="point-size-slider-container">
             <DebouncedSlider {...pointSizeAttributes} />
           </div>
         </div>
@@ -1188,7 +1264,7 @@ export class PresentationPane extends Component {
           <label className="block-label" htmlFor="base-layer">
             {I18n.t('fields.base_layer.title', { scope })}>
           </label>
-          <div className="base-layer-dropdown-container">
+          <div id="base-layer-slider-container" className="base-layer-dropdown-container">
             <Dropdown {...baseLayerAttributes} />
           </div>
         </div>
@@ -1196,7 +1272,7 @@ export class PresentationPane extends Component {
           <label className="block-label" htmlFor="base-layer-opacity">
             {I18n.t('fields.base_layer_opacity.title', { scope })}
           </label>
-          <div id="base-layer-opacity">
+          <div id="base-layer-opacity-slider">
             <DebouncedSlider {...baseLayerOpacityAttributes} />
           </div>
         </div>
@@ -1429,6 +1505,22 @@ function mapDispatchToProps(dispatch) {
     onChangeShowSourceDataLink: (event) => {
       const viewSourceDataLink = event.target.checked;
       dispatch(actions.setViewSourceDataLink(viewSourceDataLink));
+    },
+
+    onChangeShapeFillColor: (shapeFillColor) => {
+      dispatch(actions.setShapeFillColor(shapeFillColor));
+    },
+
+    onChangeShapeFillOpacity: (shapeFillOpacity) => {
+      dispatch(actions.setShapeFillOpacity(_.round(shapeFillOpacity, 2)));
+    },
+
+    onChangeShapeOutlineColor: (shapeOutlineColor) => {
+      dispatch(actions.setShapeOutlineColor(shapeOutlineColor));
+    },
+
+    onChangeShapeOutlineWidth: (lineWidth) => {
+      dispatch(actions.setShapeOutlineWidth(_.round(lineWidth, 2)));
     }
   };
 }

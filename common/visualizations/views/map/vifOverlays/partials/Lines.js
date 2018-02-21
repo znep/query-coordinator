@@ -1,10 +1,10 @@
 import _ from 'lodash';
 
-const LAYERS = Object.freeze({
+export const LAYERS = Object.freeze({
   LINE: 'lineLayer'
 });
 
-const SOURCES = Object.freeze({
+export const SOURCES = Object.freeze({
   LINE: 'lineVectorDataSource'
 });
 
@@ -41,7 +41,7 @@ export default class Lines {
 
   update(vif, renderOptions) {
     if (this._shouldChangeSourceOptions(vif, renderOptions)) {
-      this._destroy();
+      this.destroy();
       this.setup(vif, renderOptions);
       return;
     }
@@ -73,7 +73,7 @@ export default class Lines {
     };
   }
 
-  _destroy() {
+  destroy() {
     _.each(LAYERS, (layerId) => {
       this._map.removeLayer(layerId);
     });

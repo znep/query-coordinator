@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import cssModules from 'react-css-modules';
 import { findDOMNode } from 'react-dom';
-import { connect } from 'react-redux';
 import scrollIntoView from 'scroll-into-view';
+
+import { customConnect } from 'common/connectUtils';
 
 import * as Selectors from '../../adminRolesSelectors';
 import styles from './scroll-container.module.scss';
@@ -99,4 +99,4 @@ class ScrollContainer extends Component {
   }
 }
 
-export default connect(mapStateToProps)(cssModules(ScrollContainer, styles));
+export default customConnect({ mapStateToProps, styles })(ScrollContainer);

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { MAP_TYPES, POINT_AGGREGATIONS } from 'common/visualizations/views/mapConstants';
+import { MAP_TYPES, POINT_AGGREGATIONS, VIF_CONSTANTS } from 'common/visualizations/views/mapConstants';
 import ChoroplethMapUtils from 'common/visualizations/views/ChoroplethMapUtils';
 
 export function isRegionMap() {
@@ -9,13 +9,13 @@ export function isRegionMap() {
     !_.isUndefined(this.getShapeDatasetUid());
 }
 
-export function getRegionMapBucketsCount() {
-  return _.get(this, 'series[0].mapOptions.numberOfDataClasses', 5);
+export function getNumberOfDataClasses() {
+  return _.get(this, 'series[0].mapOptions.numberOfDataClasses', VIF_CONSTANTS.NUMBER_OF_DATA_CLASSES.DEFAULT);
 }
 
 export function getRegionMapBuckets(measures) {
   let bucketMethod;
-  if (measures <= this.getRegionMapBucketsCount()) {
+  if (measures <= this.getNumberOfDataClasses()) {
     bucketMethod = 'equalInterval';
   } else {
     bucketMethod = 'jenks';
@@ -24,18 +24,18 @@ export function getRegionMapBuckets(measures) {
   const rawBuckets = new ChoroplethMapUtils({}).createClassBreaks({
     data: _.map(measures, 'value'),
     method: bucketMethod,
-    numberOfClasses: this.getRegionMapBucketsCount()
+    numberOfClasses: this.getNumberOfDataClasses()
   });
 
   const colors = this.getColorPalette(rawBuckets.length - 1);
 
   // Converting
-  //  colors => ['#aaa', '#bbb', '#ccc', '#ddd', ......]
+  //  colors => ['#aaaaaa', '#bbbbbb', '#cccccc', '#ddddddd', ......]
   //  rawBuckets => [6, 121, 106290, 167009, 253225]
   // to
   //  [
-  //    {start: 6, end: 121, color: '#aaa'},
-  //    {start: 121, end: 106290, color: '#bbb'},
+  //    {start: 6, end: 121, color: '#aaaaaa'},
+  //    {start: 121, end: 106290, color: '#bbbbbb'},
   //    ...
   //  ]
   // Note: we are not adjusting end by adding 1 to it,
@@ -51,4 +51,3 @@ export function getRegionMapBuckets(measures) {
     }).
     value();
 }
-

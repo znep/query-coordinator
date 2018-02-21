@@ -4,11 +4,14 @@ import { mapMockVif } from 'common/spec/visualizations/mapMockVif';
 
 import {
   clusterFeature,
+  lineFeature,
   pointFeature,
+  shapeFeature,
   stackFeature
 } from './mockGeojsonFeatures';
 
 describe('MouseInteractionHandler', () => {
+  let event;
   let handlers;
   let mapCanvas;
   let mockMap;
@@ -17,12 +20,19 @@ describe('MouseInteractionHandler', () => {
   let renderOptions;
   let vif;
 
-  const simulateMouseEvent = (event, eventDetails = {}) => {
-    handlers[event](eventDetails);
+  const simulateMouseEvent = (eventName, event = {}) => {
+    handlers[eventName](event);
   };
 
   beforeEach(() => {
     handlers = {};
+    event = {
+      lngLat: [10, 0],
+      point: {
+        x: 506.735595703125,
+        y: 459.0096130371094
+      }
+    };
     mapCanvas = { style: {} };
     mockMap = {
       easeTo: sinon.spy(),
@@ -82,11 +92,55 @@ describe('MouseInteractionHandler', () => {
       mockMap.getZoom.returns(12);
 
       mouseInteractionHandler.setupOrUpdate(vif, renderOptions);
-      simulateMouseEvent('click', { lngLat: [10, 0] });
+      simulateMouseEvent('click', event);
     });
 
     it('should change the mouse cursor to pointer', () => {
-      sinon.assert.calledWith(mockMap.easeTo, { center: [10, 0], zoom: 14 });
+      sinon.assert.calledWith(mockMap.easeTo, { center: event.lngLat, zoom: 14 });
+    });
+  });
+
+  describe('line mouseover', () => {
+    beforeEach(() => {
+      mockMap.queryRenderedFeatures.returns([lineFeature]);
+
+      mouseInteractionHandler.setupOrUpdate(vif, renderOptions);
+      simulateMouseEvent('mousemove', event);
+    });
+
+    it('should change the mouse cursor to auto', () => {
+      assert.equal(mapCanvas.style.cursor, 'auto');
+    });
+
+    it('should show popup for the line', () => {
+      sinon.assert.calledWith(popupHandler.showPopup, {
+        event: event,
+        feature: lineFeature,
+        renderOptions: renderOptions,
+        vif: vif
+      });
+    });
+  });
+
+  describe('shape mouseover', () => {
+    beforeEach(() => {
+      mockMap.queryRenderedFeatures.returns([shapeFeature]);
+
+      mouseInteractionHandler.setupOrUpdate(vif, renderOptions);
+      simulateMouseEvent('mousemove', event);
+    });
+
+    it('should change the mouse cursor to auto', () => {
+      assert.equal(mapCanvas.style.cursor, 'auto');
+    });
+
+    it('should show popup for the shape', () => {
+      sinon.assert.calledWith(popupHandler.showPopup, {
+        event: event,
+        feature: shapeFeature,
+        renderOptions: renderOptions,
+        vif: vif
+      });
     });
   });
 
@@ -95,7 +149,7 @@ describe('MouseInteractionHandler', () => {
       mockMap.queryRenderedFeatures.returns([pointFeature]);
 
       mouseInteractionHandler.setupOrUpdate(vif, renderOptions);
-      simulateMouseEvent('mousemove');
+      simulateMouseEvent('mousemove', event);
     });
 
     it('should change the mouse cursor to auto', () => {
@@ -103,7 +157,12 @@ describe('MouseInteractionHandler', () => {
     });
 
     it('should show popup for the point', () => {
-      sinon.assert.calledWith(popupHandler.showPopup, pointFeature, vif, renderOptions);
+      sinon.assert.calledWith(popupHandler.showPopup, {
+        event: event,
+        feature: pointFeature,
+        renderOptions: renderOptions,
+        vif: vif
+      });
     });
   });
 
@@ -131,7 +190,7 @@ describe('MouseInteractionHandler', () => {
       mockMap.queryRenderedFeatures.returns([stackFeature]);
 
       mouseInteractionHandler.setupOrUpdate(vif, renderOptions);
-      simulateMouseEvent('mousemove');
+      simulateMouseEvent('mousemove', event);
     });
 
     it('should change the mouse cursor to auto', () => {
@@ -139,7 +198,12 @@ describe('MouseInteractionHandler', () => {
     });
 
     it('should show popup for the stack', () => {
-      sinon.assert.calledWith(popupHandler.showPopup, stackFeature, vif, renderOptions);
+      sinon.assert.calledWith(popupHandler.showPopup, {
+        event: event,
+        feature: stackFeature,
+        renderOptions: renderOptions,
+        vif: vif
+      });
     });
   });
 });

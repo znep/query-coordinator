@@ -1,13 +1,12 @@
 import includes from 'lodash/fp/includes';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import cssModules from 'react-css-modules';
 import { spring } from 'react-motion';
-import { connect } from 'react-redux';
 
 import Button from 'common/components/Button';
 import ConditionTransitionMotion from 'common/components/ConditionTransitionMotion';
-import { connectLocalization } from 'common/components/Localization';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 
 import * as Actions from '../actions';
 import * as Selectors from '../adminRolesSelectors';
@@ -31,8 +30,9 @@ const mapDispatchToProps = {
   saveRoles: Actions.saveRoles
 };
 
-class SaveBar extends React.Component {
+class SaveBar extends Component {
   static propTypes = {
+    I18n: I18nPropType,
     editCustomRolesCancel: PropTypes.func.isRequired,
     dirtyRoles: PropTypes.object.isRequired,
     isSaving: PropTypes.bool.isRequired,
@@ -41,7 +41,7 @@ class SaveBar extends React.Component {
   };
 
   renderCancelButton = () => {
-    const { editCustomRolesCancel, isSaving, localization: { translate } } = this.props;
+    const { editCustomRolesCancel, isSaving, I18n } = this.props;
 
     return (
       <Button
@@ -51,13 +51,13 @@ class SaveBar extends React.Component {
         disabled={isSaving}
         onClick={editCustomRolesCancel}
       >
-        {translate('screens.admin.roles.buttons.cancel')}
+        {I18n.t('screens.admin.roles.buttons.cancel')}
       </Button>
     );
   };
 
   renderSaveButton = () => {
-    const { dirtyRoles, isSaving, saveRoles, localization: { translate } } = this.props;
+    const { dirtyRoles, isSaving, saveRoles, I18n } = this.props;
 
     return (
       <Button
@@ -68,7 +68,7 @@ class SaveBar extends React.Component {
         disabled={isSaving}
       >
         <div style={{ visibility: isSaving ? 'hidden' : 'inline' }}>
-          {translate('screens.admin.roles.buttons.save')}
+          {I18n.t('screens.admin.roles.buttons.save')}
         </div>
         {isSaving && (
           <div styleName="spinner-container">
@@ -93,7 +93,7 @@ class SaveBar extends React.Component {
 
 const StyledActionBar = cssModules(SaveBar, styles);
 
-class AnimatedActionBar extends React.Component {
+class AnimatedActionBar extends Component {
   render() {
     const { hasCustomRoles, isEditMode } = this.props;
     return (
@@ -109,4 +109,4 @@ class AnimatedActionBar extends React.Component {
   }
 }
 
-export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(AnimatedActionBar));
+export default customConnect({ mapStateToProps, mapDispatchToProps })(AnimatedActionBar);

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { mapMockVif } from 'common/spec/visualizations/mapMockVif';
+import { COLOR_PALETTE_VALUES } from 'common/authoring_workflow/constants';
 import * as commonVifDecorator from 'common/visualizations/views/map/vifDecorators/commonVifDecorator';
 
 describe('commonVifDecorator', () => {
@@ -53,6 +54,48 @@ describe('commonVifDecorator', () => {
           mapOptionsMinValue, mapOptionsMaxValue, dataClasses, 'exponential');
 
         assert.deepEqual(rangeBuckets, expectedResult);
+      });
+    });
+  });
+
+  describe('colorByPaints', () => {
+    let vif;
+    let decoratedVif;
+    let colorPallete;
+
+    beforeEach(() => {
+      vif = mapMockVif({});
+      colorPallete = vif.series[0].color.palette;
+      decoratedVif = _.merge({}, commonVifDecorator, vif);
+    });
+
+    describe('colorCategories are empty', () => {
+      it('should return first color of color palette ', () => {
+        const colorPallete = vif.series[0].color.palette;
+
+        assert.equal(
+          decoratedVif.getPaintPropertyForColorByCategories('__color_by__', []),
+          COLOR_PALETTE_VALUES[colorPallete][0]
+        );
+      });
+    });
+
+    describe('colorCategories are not null', () => {
+      it('should return paint config with color for each category', () => {
+        const colorPalleteColors = COLOR_PALETTE_VALUES[colorPallete];
+        const expectedResult = {
+          property: '__color_by__',
+          type: 'categorical',
+          stops:[['police', colorPalleteColors[0]],
+          ['county', colorPalleteColors[1]],
+          ['city', colorPalleteColors[2]],
+          ['bus', colorPalleteColors[3]]],
+          default: colorPalleteColors[4]
+        };
+
+        const colorBuckets = decoratedVif.getPaintPropertyForColorByCategories('__color_by__', ['police', 'county', 'city', 'bus']);
+
+        assert.deepEqual(colorBuckets, expectedResult);
       });
     });
   });

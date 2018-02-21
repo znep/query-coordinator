@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import AddUserModal from './AddUserModal';
 import Button from 'common/components/Button';
 import * as Actions from '../actions';
@@ -29,4 +29,4 @@ const mapDispatchToProps = ({
   addUsers: Actions.addUsers
 });
 
-export default fullConnect(null, mapDispatchToProps)(AddUserButton);
+export default customConnect({ mapDispatchToProps })(AddUserButton);

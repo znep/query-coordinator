@@ -31,7 +31,7 @@ export default class Shapes {
       'source': SOURCES.SHAPE,
       'source-layer': '_geojsonTileLayer',
       'paint': {
-        'line-color': vif.getShapeLineColor(renderOptions.colorByCategories),
+        'line-color': vif.getShapeOutlineColor(renderOptions.colorByCategories),
         'line-width': 2
       }
     }, renderOptions.layerStyles.INSERT_FILL_LAYERS_BEFORE);
@@ -43,7 +43,7 @@ export default class Shapes {
       'source-layer': '_geojsonTileLayer',
       'paint': {
         'fill-color': vif.getShapeFillColor(renderOptions.colorBy, renderOptions.colorByCategories),
-        'fill-outline-color': vif.getShapeFillOutlineColor(renderOptions.colorByCategories)
+        'fill-outline-color': vif.getShapeOutlineColor(renderOptions.colorByCategories)
       }
     }, renderOptions.layerStyles.INSERT_FILL_LAYERS_BEFORE);
 
@@ -53,14 +53,14 @@ export default class Shapes {
 
   update(vif, renderOptions) {
     if (this._shouldChangeSourceOptions(vif, renderOptions)) {
-      this._destroy();
+      this.destroy();
       this.setup(vif, renderOptions);
       return;
     }
 
     this._map.setPaintProperty(LAYERS.SHAPE_OUTLINE,
       'line-color',
-      vif.getShapeLineColor(renderOptions.colorByCategories)
+      vif.getShapeOutlineColor(renderOptions.colorByCategories)
     );
     this._map.setPaintProperty(LAYERS.SHAPE_FILL,
       'fill-color',
@@ -68,7 +68,7 @@ export default class Shapes {
     );
     this._map.setPaintProperty(LAYERS.SHAPE_FILL,
       'fill-outline-color',
-      vif.getShapeFillOutlineColor(renderOptions.colorBy, renderOptions.colorByCategories)
+      vif.getShapeOutlineColor(renderOptions.colorBy, renderOptions.colorByCategories)
     );
 
     // The prepend-before for fillLayer will change only on baseMap style change.
@@ -93,7 +93,7 @@ export default class Shapes {
     };
   }
 
-  _destroy() {
+  destroy() {
     _.each(LAYERS, (layerId) => {
       this._map.removeLayer(layerId);
     });

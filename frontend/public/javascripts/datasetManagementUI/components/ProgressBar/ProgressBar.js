@@ -1,5 +1,7 @@
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { COL_STATUS } from 'datasetManagementUI/components/TransformStatus/TransformStatus';
 import styles from './ProgressBar.module.scss';
 
 export default function ProgressBar({ percent, ariaLabel, ariaLabeledBy, type, className }) {
@@ -23,13 +25,16 @@ export default function ProgressBar({ percent, ariaLabel, ariaLabeledBy, type, c
     case 'success':
       progressBar = styles.progressBarSuccess;
       break;
-    case 'error':
+    case COL_STATUS.ERROR:
       progressBar = styles.progressBarError;
       break;
-    case 'inProgress':
+    case COL_STATUS.IN_PROGRESS:
       progressBar = styles.progressBarInProgress;
       break;
-    case 'done':
+    case COL_STATUS.DONE:
+      progressBar = styles.progressBarDone;
+      break;
+    case COL_STATUS.UNLOADED:
       progressBar = styles.progressBarDone;
       break;
     default:
@@ -52,6 +57,6 @@ ProgressBar.propTypes = {
   percent: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   ariaLabel: PropTypes.string,
   ariaLabeledBy: PropTypes.string,
-  type: PropTypes.oneOf(['success', 'error', 'inProgress', 'done']),
+  type: PropTypes.oneOf(['success', ..._.values(COL_STATUS)]),
   className: PropTypes.string
 };

@@ -6,36 +6,38 @@ import Legend from './partials/Legend';
 import { getBaseMapLayerStyles } from '../baseMapStyle';
 
 import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
-import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
 import RenderByHelper from 'common/visualizations/helpers/RenderByHelper';
 
 const OTHER_COLOR_BY_CATEGORY = '__$$other$$__';
 const COLOR_BY_CATEGORY_ALIAS = '__color_by_category__';
-const WEIGH_BY_ALIAS = '__weigh_by__';
+const WEIGHT_BY_ALIAS = '__weigh_by__';
 const COUNT_ALIAS = '__count__';
+const ROWID_ALIAS = '__row_id__';
 
 // Prepares renderByOptions for rendering lines,
 // tile url for fetching lines as geojson
 // and hands it over to lines partial for rendering
 // using mapbox-gl's sources/layers.
 export default class VifLineOverlay extends VifOverlay {
-  constructor(map, visualizationElement) {
+  constructor(map, visualizationElement, mouseInteractionHandler) {
     const sourceIds = [].concat(Lines.sourceIds());
     const layerIds = [].concat(Lines.layerIds());
     super(map, sourceIds, layerIds);
 
     this._legend = new Legend(visualizationElement);
     this._lines = new Lines(map);
+    this._mouseInteractionHandler = mouseInteractionHandler;
   }
 
   async setup(vif) {
     const renderOptions = await this._prepare(vif);
 
     this._legend.show(
-      vif.getColorByBuckets(renderOptions.colorByCategories),
+      vif.getColorsForCategories(renderOptions.colorByCategories),
       'categorical'
     );
     this._lines.setup(vif, renderOptions);
+    this._mouseInteractionHandler.setupOrUpdate(vif, renderOptions);
 
     return renderOptions;
   }
@@ -44,10 +46,11 @@ export default class VifLineOverlay extends VifOverlay {
     const renderOptions = await this._prepare(vif);
 
     this._legend.show(
-      vif.getColorByBuckets(renderOptions.colorByCategories),
+      vif.getColorsForCategories(renderOptions.colorByCategories),
       'categorical'
     );
     this._lines.update(vif, renderOptions);
+    this._mouseInteractionHandler.setupOrUpdate(vif, renderOptions);
 
     return renderOptions;
   }
@@ -58,13 +61,14 @@ export default class VifLineOverlay extends VifOverlay {
   // and returns the renderOptions.
   async _prepare(vif) {
     this._preparingForVif = vif;
-    const colorByColumn = vif.getLineColorByColumn();
-    const weighByColumn = vif.getLineWeighByColumn();
+    const colorByColumn = vif.getColorLinesByColumn();
+    const weightByColumn = vif.getWeighLinesByColumn();
 
     try {
-      const [colorByCategories, resizeByRange] = await Promise.all([
-        RenderByHelper.getColorByCategories(vif, this._lineDataset(vif), colorByColumn),
-        RenderByHelper.getResizeByRange(vif, this._lineDataset(vif), weighByColumn)
+      const [colorByCategories, resizeByRange, datasetMetadata] = await Promise.all([
+        RenderByHelper.getColorByCategories(vif, colorByColumn),
+        RenderByHelper.getResizeByRange(vif, weightByColumn),
+        vif.getDatasetMetadata()
       ]);
 
       if (this._preparingForVif !== vif) {
@@ -72,42 +76,30 @@ export default class VifLineOverlay extends VifOverlay {
       }
 
       return {
+        aggregateAndResizeBy: weightBy(vif),
         colorByCategories,
-        resizeByRange,
-        countBy: COUNT_ALIAS,
         colorBy: COLOR_BY_CATEGORY_ALIAS,
-        aggregateAndResizeBy: weighBy(vif),
+        countBy: COUNT_ALIAS,
+        datasetMetadata,
+        dataUrl: this.getDataUrl(vif, colorByCategories),
+        idBy: ROWID_ALIAS,
         layerStyles: getBaseMapLayerStyles(vif),
-        dataUrl: this.getDataUrl(vif, colorByCategories)
+        resizeByRange
       };
     } catch (error) {
       throw ('Error preparing line map.', error);
     }
   }
 
-  _lineDataset(vif) {
-    const datasetConfig = {
-      domain: vif.getDomain(),
-      datasetUid: vif.getDatasetUid()
-    };
-
-    if (_.isUndefined(this.__lineDatasetInstance) || !_.isEqual(this._existingLineDatasetConfig, datasetConfig)) {
-      this.__lineDatasetInstance = new SoqlDataProvider(datasetConfig, true);
-      this._existingLineDatasetConfig = datasetConfig;
-    }
-
-    return this.__lineDatasetInstance;
-  }
-
   destroy() {
-    super.destroy();
+    this._lines.destroy();
     this._legend.destroy();
   }
 
   getDataUrl(vif, colorByCategories) {
     const columnName = vif.getColumnName();
-    const colorByColumn = vif.getLineColorByColumn();
-    const weighByColumn = vif.getLineWeighByColumn();
+    const colorByColumn = vif.getColorLinesByColumn();
+    const weightByColumn = vif.getWeighLinesByColumn();
 
     let conditions = [`{{'${columnName}' column condition}}`];
     const filters = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
@@ -115,8 +107,10 @@ export default class VifLineOverlay extends VifOverlay {
       conditions.push(filters);
     }
 
-    let selects = [`simplify_preserve_topology(snap_to_grid(${columnName},{snap_precision}),{simplify_precision})`];
-    let groups = [`simplify_preserve_topology(snap_to_grid(${columnName},{snap_precision}),{simplify_precision})`];
+    let selects = [`simplify_preserve_topology(snap_to_grid(${columnName},{snap_precision}),` +
+      `{simplify_precision}), min(:id) as ${ROWID_ALIAS}`];
+    let groups = [`simplify_preserve_topology(snap_to_grid(${columnName},` +
+      '{snap_precision}),{simplify_precision})'];
 
     if (_.isString(colorByColumn) && !_.isEmpty(colorByCategories)) {
       // We are not grouping by colorByColumn. In case that column had 10K unique values,
@@ -143,9 +137,9 @@ export default class VifLineOverlay extends VifOverlay {
       groups.push(COLOR_BY_CATEGORY_ALIAS);
     }
 
-    if (_.isString(weighByColumn)) {
-      selects.push(`sum(${weighByColumn}) as ${WEIGH_BY_ALIAS}`);
-      conditions.push(`${weighByColumn} is NOT NULL`);
+    if (_.isString(weightByColumn)) {
+      selects.push(`sum(${weightByColumn}) as ${WEIGHT_BY_ALIAS}`);
+      conditions.push(`${weightByColumn} is NOT NULL`);
     }
     selects.push(`count(*) as ${COUNT_ALIAS}`);
 
@@ -158,10 +152,10 @@ export default class VifLineOverlay extends VifOverlay {
   }
 }
 
-function weighBy(vif) {
-  const weighByColumn = vif.getLineWeighByColumn();
-  if (_.isString(weighByColumn)) {
-    return WEIGH_BY_ALIAS;
+function weightBy(vif) {
+  const weightByColumn = vif.getWeighLinesByColumn();
+  if (_.isString(weightByColumn)) {
+    return WEIGHT_BY_ALIAS;
   }
   return COUNT_ALIAS;
 }

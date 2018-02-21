@@ -6,8 +6,45 @@
     height: 100%;
     overflow: hidden;
 
+    &.dragging-label-width-dragger {
+      // Override inline "move" cursor set on chart pan area.
+      cursor: ns-resize !important;
+
+      // Tricky to update during drag, so we leave it alone and hide it.
+      .label-width-dragger {
+        opacity: 0;
+      }
+    }
+
     .column {
       cursor: default;
+    }
+
+    .label-width-dragger {
+      $dragger-height: 5px;
+      // Transparent but still interactive region left of the visible drag handle.
+      $extra-handle-height: 20px;
+
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      cursor: ns-resize;
+      display: none;
+
+      padding-top: $extra-handle-height / 2;
+      padding-bottom: $extra-handle-height / 2;
+
+      // Actual visible handle (on hover).
+      border-top: $dragger-height solid transparent;
+
+      &.enabled {
+        display: block;
+      }
+
+      &:hover {
+        border-top-color: rgba(0, 0, 0, 0.3);
+      }
     }
   }
 }

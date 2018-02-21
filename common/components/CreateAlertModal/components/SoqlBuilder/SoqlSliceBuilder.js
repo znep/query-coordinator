@@ -34,7 +34,7 @@ import SoqlSliceBuilderPropType from './SoqlSliceBuilderPropType';
 */
 
 /**
- Used in conjuction with SoqlBuilder. Shows form field(one row of SoqlBuilder) for creating
+ Used in conjunction with SoqlBuilder. Shows form field(one row of SoqlBuilder) for creating
  one slice of a soql query. Different fields are as below
  - Logical operator: AND|OR
  - Statement: Group by
@@ -66,7 +66,7 @@ import SoqlSliceBuilderPropType from './SoqlSliceBuilderPropType';
    {column: 'number', operator: '>', value: '10', logical_operator: 'and'},
    {column: 'date', operator: 'within', start_date: '1/29/2017', end_date: '3/29/2017},
    {column: 'text', '=', value: 'abc', logical_operator: 'no'},
-   {column: 'loaction', 'with in', location: 'abc' lat: '10.344', lng: '23.2323', radius: 5},
+   {column: 'location', 'with in', location: 'abc' lat: '10.344', lng: '23.2323', radius: 5},
    {column: 'group', operator: 'department'},
  ]
 
@@ -152,7 +152,7 @@ class SoqlSliceBuilder extends Component {
       if (removeStatement) {
         this.onSliceParamChange('statement', null);
       }
-      // reseting slice values on column change
+      // resetting slice values on column change
       this.onSliceColumnChange({ column: option.value });
     }
   };
@@ -337,7 +337,7 @@ class SoqlSliceBuilder extends Component {
       return (
         <div styleName="field-selector" className="logical-operator">
           <button
-            styleName="operator-button"
+            styleName="operator-button btn-default"
             onClick={() => this.onSliceParamChange('logical_operator', buttonValue)}
             className="btn btn-default">
             {buttonText}

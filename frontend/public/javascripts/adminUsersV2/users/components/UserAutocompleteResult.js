@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'react-redux';
+import { customConnect } from 'common/connectUtils';
 import _ from 'lodash';
-import cssModules from 'react-css-modules';
 import * as Actions from 'common/autocomplete/actions';
 import { Result } from 'common/autocomplete/components/Results/Result';
 import styles from 'common/autocomplete/components/Results/results.module.scss';
@@ -83,9 +82,7 @@ const mapDispatchToProps = {
   onResultsVisibilityChanged: Actions.resultVisibilityChanged
 };
 
-const ConnectedUserAutocompleteResult = connect(null, mapDispatchToProps)(
-  cssModules(UserAutocompleteResult, styles)
-);
+const ConnectedUserAutocompleteResult = customConnect({ mapDispatchToProps, styles })(UserAutocompleteResult);
 
 export const renderUserAutocompleteResult = (result, index, focused, onChooseResult) => {
   const { matches, user } = result;

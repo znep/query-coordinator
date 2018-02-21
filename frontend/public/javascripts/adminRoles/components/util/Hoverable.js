@@ -2,11 +2,9 @@ import cx from 'classnames';
 import omit from 'lodash/fp/omit';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import cssModules from 'react-css-modules';
-import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { connectLocalization } from 'common/components/Localization';
+import { customConnect } from 'common/connectUtils';
 
 import * as Actions from '../../actions';
 import styles from './hoverable.module.scss';
@@ -49,6 +47,4 @@ class Hoverable extends Component {
   }
 }
 
-export default connectLocalization(
-  connect(mapStateToProps, mapDispatchToProps)(cssModules(Hoverable, styles))
-);
+export default customConnect({ mapStateToProps, mapDispatchToProps, styles })(Hoverable);

@@ -1,19 +1,13 @@
-import { connect as reduxConnect } from 'react-redux';
-import connectLocalization from 'common/i18n/components/connectLocalization';
-import flow from 'lodash/fp/flow';
-
-export { I18nPropType } from 'common/i18n/components/connectLocalization';
-
-/** Utility function that combines localization and redux store, making sure to add the localization
- * first so it can be used in mapStateToProps/mapDispatchToProps
- * @param mapStateToProps
- * @param mapDispatchToProps
- * @returns {*}
+/**
+ * Get the display name for a role
+ * @param {object} role Role to get name for
+ * @param {array} rolesList List of all roles, including default and custom roles
+ * @param {object} I18n Translation getter thing
  */
-export const connect = (mapStateToProps, mapDispatchToProps) => flow(
-  reduxConnect(mapStateToProps, mapDispatchToProps),
-  connectLocalization
-);
+export const getRoleDisplayName = (role, rolesList, I18n) =>
+  role.isDefault ?
+    I18n.t(`roles.default_roles.${role.name}.name`) :
+    getCustomRoleName(role, rolesList, I18n);
 
 /**
  * If the role is not default, but has the same name as a default role,

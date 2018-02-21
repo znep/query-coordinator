@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
+import I18n from 'common/i18n';
 import SocrataUtils from 'common/js_utils';
 import SocrataIcon from 'common/components/SocrataIcon';
 import Picklist from 'common/components/Picklist';
@@ -294,8 +295,7 @@ export class Dropdown extends Component {
     } else if (placeholderIsString) {
       placeholder = [placeholderText(placeholder), caret];
     } else if (placeholder === null) {
-      // TODO: this needs I18n!
-      placeholder = [placeholderText('Select...'), caret];
+      placeholder = [placeholderText(I18n.t('shared.components.dropdown.select')), caret];
     }
 
     const attributes = {

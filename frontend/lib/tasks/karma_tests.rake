@@ -115,14 +115,14 @@ namespace :test do
       begin
         # https://github.com/meh/ruby-thread
         Thread.pool(max_threads).tap do |pool|
-          tasks.each do |task|
+          tasks.each.with_index do |task, index|
             pool.process do
               break if any_task_failed
 
-              puts("STARTING PARALLEL TASK: #{task.name}")
+              puts("STARTING PARALLEL TASK (##{index.succ}): #{task.name}")
               # Capturing each task output to prevent it being interleaved in the terminal output while run
               output, errors, status = Open3.capture3("bundle exec rake #{task.name}")
-              puts("COMPLETED PARALLEL TASK: #{task.name}")
+              puts("COMPLETED PARALLEL TASK (##{index.succ}): #{task.name}")
               logs[task.name] = { stdout: output, stderr: errors, status: status }
 
               unless status.success?

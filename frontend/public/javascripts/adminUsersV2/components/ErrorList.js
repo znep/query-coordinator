@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import connectLocalization from 'common/i18n/components/connectLocalization';
-import { I18nPropType } from '../utils';
+import { localizedConnect, I18nPropType } from 'common/connectUtils';
 
 import has from 'lodash/fp/has';
 import isEmpty from 'lodash/fp/isEmpty';
@@ -42,4 +41,4 @@ class ErrorList extends Component {
   }
 }
 
-export default connectLocalization(ErrorList);
+export default localizedConnect(ErrorList);

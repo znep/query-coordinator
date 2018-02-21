@@ -4,25 +4,68 @@ import d3 from 'd3';
 import I18n from 'common/i18n';
 import MetadataProvider from 'common/visualizations/dataProviders/MetadataProvider';
 import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
-
-import { OTHER_COLOR_BY_CATEGORY } from '../vifOverlays/VifPointOverlay';
 import { COLOR_PALETTE_VALUES_FOR_MAPS } from 'common/authoring_workflow/constants';
+import { OTHER_COLOR_BY_CATEGORY } from 'common/visualizations/views/map/vifOverlays/VifPointOverlay';
 
+export async function getDatasetMetadata() {
+  const datasetConfig = {
+    domain: this.getDomain(),
+    datasetUid: this.getDatasetUid()
+  };
 
-export function getDomain() {
-  return _.get(this, 'series[0].dataSource.domain');
+  return new MetadataProvider(datasetConfig, true).getDatasetMetadata();
 }
 
-export function getDatasetUid() {
-  return _.get(this, 'series[0].dataSource.datasetUid');
+export function getAllFlyoutColumns() {
+  return _.chain([this.getFlyoutTitleColumn()].concat(this.getFlyoutAdditionalColumns())).
+    uniq().
+    compact().
+    value();
 }
 
-export function getColumnName() {
-  return _.get(this, 'series[0].dataSource.dimension.columnName');
+export function getColorsForCategories(colorByCategories) {
+  // Converting
+  //  colors => ['#aaaaaa', '#bbbbbb', '#cccccc', '#dddddd', ......]
+  //  colorByCategories => [2011, 2012, 2013, ......]
+  // to
+  //  [
+  //    {category: 2011, color: '#aaaaaa'},
+  //    {category: 2012, color: '#bbbbbb'},
+  //    ...
+  //  ]
+  if (_.isNull(colorByCategories)) {
+    return [];
+  }
+
+  const colors = this.getColorPalette(colorByCategories.length + 1);
+
+  return _.chain(colorByCategories).
+    zipWith(colors, (category, color) => ({ category, id: category, color })).
+    take(colorByCategories.length).
+    concat({
+      category: 'Other',
+      id: OTHER_COLOR_BY_CATEGORY,
+      color: colors[colorByCategories.length]
+    }).
+    value();
 }
 
-export function getColorPaletteId() {
-  return _.get(this, 'series[0].color.palette');
+export function getPaintPropertyForColorByCategories(colorByColumnAlias, colorByCategories) {
+  // +1 for 'other' category
+  const colorPalette = this.getColorPalette(colorByCategories.length + 1);
+
+  if (_.isEmpty(colorByCategories)) {
+    return colorPalette[0];
+  }
+
+  const stops = _.map(colorByCategories, (colorByCategory, index) => [colorByCategory, colorPalette[index]]);
+
+  return {
+    property: colorByColumnAlias,
+    type: 'categorical',
+    stops,
+    default: colorPalette[stops.length]
+  };
 }
 
 export function getColorPalette(count) {
@@ -35,44 +78,12 @@ export function getColorPalette(count) {
   return colorPaletteGetter(count);
 }
 
-export async function getDatasetMetadata() {
-  const datasetConfig = {
-    domain: this.getDomain(),
-    datasetUid: this.getDatasetUid()
-  };
-
-  return new MetadataProvider(datasetConfig, true).getDatasetMetadata();
+export function getColorPaletteId() {
+  return _.get(this, 'series[0].color.palette');
 }
 
-export function getFlyoutTitleColumn() {
-  return _.get(this, 'series[0].mapOptions.mapFlyoutTitleColumnName');
-}
-
-export function getFlyoutAdditionalColumns() {
-  return _.get(this, 'series[0].mapOptions.additionalFlyoutColumns');
-}
-
-export function getAllFlyoutColumns() {
-  return _.chain([this.getFlyoutTitleColumn()].concat(this.getFlyoutAdditionalColumns())).
-    uniq().
-    compact().
-    value();
-}
-
-export function getMapType() {
-  return _.get(this, 'series[0].mapOptions.mapType');
-}
-
-export function getPointAggregation() {
-  return _.get(this, 'series[0].mapOptions.pointAggregation');
-}
-
-export function getShapeDatasetUid() {
-  return _.get(this, 'configuration.shapefile.uid');
-}
-
-export function getShapeDatasetPrimaryKey() {
-  return _.get(this, 'configuration.shapefile.primaryKey');
+export function getColumnName() {
+  return _.get(this, 'series[0].dataSource.dimension.columnName');
 }
 
 export function getDatasetSoqlDataProvider(cache = true) {
@@ -82,18 +93,42 @@ export function getDatasetSoqlDataProvider(cache = true) {
   }, cache);
 }
 
+export function getDatasetUid() {
+  return _.get(this, 'series[0].dataSource.datasetUid');
+}
+
+export function getDomain() {
+  return _.get(this, 'series[0].dataSource.domain');
+}
+
+export function getFlyoutAdditionalColumns() {
+  return _.get(this, 'series[0].mapOptions.additionalFlyoutColumns');
+}
+
+export function getFlyoutTitleColumn() {
+  return _.get(this, 'series[0].mapOptions.mapFlyoutTitleColumnName');
+}
+
+export function getMapType() {
+  return _.get(this, 'series[0].mapOptions.mapType');
+}
+
+export function getMeasureAggregation() {
+  const aggregateFunction = _.get(this, 'series[0].dataSource.measure.aggregationFunction', 'count');
+  return (aggregateFunction == null) ? 'count' : aggregateFunction;
+}
+
 export function getMeasureColumn() {
   const columnName = _.get(this, 'series[0].dataSource.measure.columnName', '*');
   return (columnName == null) ? '*' : columnName;
 }
 
-export function getMeasureAggregation() {
-  const aggregatFunction = _.get(this, 'series[0].dataSource.measure.aggregationFunction', 'count');
-  return (aggregatFunction == null) ? 'count' : aggregatFunction;
-}
-
 export function getMeasureForeignKey() {
   return _.get(this, 'configuration.computedColumnName');
+}
+
+export function getPointAggregation() {
+  return _.get(this, 'series[0].mapOptions.pointAggregation');
 }
 
 // aggregateAndResizeBy : select as alias used for ResizeBy column in the tile data calls
@@ -133,42 +168,12 @@ export function getResizeByRangeBuckets(aggregateAndResizeBy, resizeByRange,
   };
 }
 
-// Rounds off numbers to nice round values using d3's nice function.
-// For ex:
-//    niceRoundOff(0.92342) => 1
-//    niceRoundOff(19.7899) => 20
-//    niceRoundOff(59) => 60
-//    niceRoundOff(1127) => 1200
-//    niceRoundOff(1333333) => 1400000
-function niceRoundOff(value) {
-  return d3.scale.linear().domain([0, value]).nice().domain()[1];
+export function getShapeDatasetPrimaryKey() {
+  return _.get(this, 'configuration.shapefile.primaryKey');
 }
 
-export function getColorByBuckets(colorByCategories) {
-  // Converting
-  //  colors => ['#aaa', '#bbb', '#ccc', '#ddd', ......]
-  //  colorByCategories => [2011, 2012, 2013, ......]
-  // to
-  //  [
-  //    {category: 2011, color: '#aaa'},
-  //    {category: 2012, color: '#bbb'},
-  //    ...
-  //  ]
-  if (_.isNull(colorByCategories)) {
-    return [];
-  }
-
-  const colors = this.getColorPalette(colorByCategories.length + 1);
-
-  return _.chain(colorByCategories).
-    zipWith(colors, (category, color) => ({ category, id: category, color })).
-    take(colorByCategories.length).
-    concat({
-      category: 'Other',
-      id: OTHER_COLOR_BY_CATEGORY,
-      color: colors[colorByCategories.length]
-    }).
-    value();
+export function getShapeDatasetUid() {
+  return _.get(this, 'configuration.shapefile.uid');
 }
 
 export function getUnits(count) {
@@ -185,4 +190,15 @@ export function getUnits(count) {
       I18n.t('shared.visualizations.charts.common.unit.other') :
       plural;
   }
+}
+
+// Rounds off numbers to nice round values using d3's nice function.
+// For ex:
+//    niceRoundOff(0.92342) => 1
+//    niceRoundOff(19.7899) => 20
+//    niceRoundOff(59) => 60
+//    niceRoundOff(1127) => 1200
+//    niceRoundOff(1333333) => 1400000
+function niceRoundOff(value) {
+  return d3.scale.linear().domain([0, value]).nice().domain()[1];
 }

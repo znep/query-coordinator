@@ -15,6 +15,7 @@ import {
   AXIS_LABEL_MARGIN,
   AXIS_TICK_COLOR,
   DEFAULT_LINE_HIGHLIGHT_FILL,
+  DIMENSION_LABELS_DEFAULT_WIDTH,
   DIMENSION_LABELS_FONT_COLOR,
   DIMENSION_LABELS_FONT_SIZE,
   ERROR_BARS_DEFAULT_BAR_COLOR,
@@ -47,7 +48,6 @@ const MARGINS = {
 
 const DEFAULT_DESKTOP_BAR_HEIGHT = 14;
 const DEFAULT_MOBILE_BAR_HEIGHT = 50;
-const DIMENSION_LABELS_DEFAULT_WIDTH = 115;
 const DIMENSION_LABELS_PIXEL_PER_CHARACTER = 115 / 11; // Empirically determined to work well enough.
 /* eslint-disable no-unused-vars */
 const MAX_BAR_COUNT_WITHOUT_PAN = 50;
@@ -1663,15 +1663,7 @@ function SvgBarChart($element, vif, options) {
 
   function generateYAxis(yScale, allowedLabelWidth) {
     // This sucks, but linear interpolation seems good enough.
-    const allowedLabelCharCount = Math.ceil(allowedLabelWidth / DIMENSION_LABELS_PIXEL_PER_CHARACTER);
-
-    function conditionallyTruncateLabel(label) {
-      label = _.isEmpty(label) ? noValueLabel : label;
-
-      return (label.length >= allowedLabelCharCount) ?
-        `${label.substring(0, allowedLabelCharCount - 1).trim()}…` :
-        label;
-    }
+    const maximumCharacters = Math.ceil(allowedLabelWidth / DIMENSION_LABELS_PIXEL_PER_CHARACTER);
 
     return d3.svg.axis().
       scale(yScale).
@@ -1701,7 +1693,7 @@ function SvgBarChart($element, vif, options) {
           label = ColumnFormattingHelpers.formatValuePlainText(d, column, barDataToRender, true);
         }
 
-        return conditionallyTruncateLabel(label);
+        return self.conditionallyTruncateLabel(label, maximumCharacters);
         // See TODO above.
         // }
       }).

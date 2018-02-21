@@ -10,7 +10,7 @@ describe('ShowRevision page', () => {
       fourfour: 'abcd-1234',
       revisionSeq: '0'
     },
-    isPublishedDataset: false,
+    editMode: false,
     readFromCore: false,
     hasOutputSchema: true
   };

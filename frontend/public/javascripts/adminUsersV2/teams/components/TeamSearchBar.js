@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import Button from 'common/components/Button';
 import EditTeamModal from './EditTeamModal';
 import * as Actions from '../actions';
@@ -49,4 +49,4 @@ const mapDispatchToProps = ({
   addTeam: Actions.addTeam
 });
 
-export default fullConnect(mapStateToProps, mapDispatchToProps)(TeamSearchBar);
+export default customConnect({ mapStateToProps, mapDispatchToProps })(TeamSearchBar);

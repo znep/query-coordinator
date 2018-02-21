@@ -1,14 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import * as Links from 'datasetManagementUI/links/links';
 import { RecentActionsTimestamp } from 'datasetManagementUI/components/RecentActionItems/RecentActionItems';
 import { Link } from 'react-router';
 import styles from './SchemaActions.module.scss';
 
-const SchemaActions = ({ oss, iss, params }) => {
+const SchemaActions = ({ oss, iss, sources, params }) => {
+  function getFallbackDisplayName(sourceId) {
+    return _.get(sources, `${sourceId}.created_by.display_name`, '');
+  }
+
   const items = oss.map((os, idx) => (
     <li key={idx} className={os.isCurrent ? styles.currentSchema : styles.schema}>
-      {os.created_by.display_name} changed the schema <RecentActionsTimestamp date={os.created_at} />
+      {_.get(os, 'created_by.display_name', getFallbackDisplayName(iss[os.input_schema_id].source_id))}{' '}
+      changed the schema <RecentActionsTimestamp date={os.created_at} />
       {os.isCurrent || ' - '}
       {os.isCurrent || (
         <Link
@@ -25,6 +31,7 @@ const SchemaActions = ({ oss, iss, params }) => {
 SchemaActions.propTypes = {
   oss: PropTypes.array.isRequired,
   iss: PropTypes.object.isRequired,
+  sources: PropTypes.object.isRequired,
   params: PropTypes.object.isRequired
 };
 

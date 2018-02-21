@@ -104,6 +104,16 @@ describe('Edit modal reducer', () => {
     });
   });
 
+  describe('SET_DATA_SOURCE_UID', () => {
+    it('updates dataSourceLensUid on the measure', () => {
+      assert.notNestedProperty(state, 'measure.dataSourceLensUid');
+
+      state = reducer(state, actions.editor.setDataSourceUid('test-test'));
+
+      assert.equal(state.measure.dataSourceLensUid, 'test-test');
+    });
+  });
+
   describe('SET_DATA_SOURCE_METADATA_SUCCESS', () => {
     const viewMetadata = {
       id: 'xxxx-xxxx',
@@ -151,20 +161,6 @@ describe('Edit modal reducer', () => {
     });
   });
 
-  describe('SET_DATA_SOURCE_METADATA_FAIL', () => {
-    it('sets `state.errors.setDataSourceMetadataError` to true', () => {
-      state = reducer(state, actions.editor.setDataSourceMetadataFail());
-      assert.isTrue(state.errors.setDataSourceMetadataError);
-    });
-  });
-
-  describe('FETCH_DATA_SOURCE_VIEW_FAIL', () => {
-    it('sets `state.errors.fetchDataSourceViewError` to true', () => {
-      state = reducer(state, actions.editor.fetchDataSourceViewFail());
-      assert.isTrue(state.errors.fetchDataSourceViewError);
-    });
-  });
-
   describe('RESET_DATA_SOURCE', () => {
     it('clears the dataSource from the editor state', () => {
       setDataSourceData(state);
@@ -184,7 +180,7 @@ describe('Edit modal reducer', () => {
 
       state = reducer(state, actions.editor.resetDataSource());
 
-      assert.deepEqual(state.measure.metricConfig, {type: COUNT, reportingPeriod: {}});
+      assert.deepEqual(state.measure.metricConfig, {type: COUNT, reportingPeriod: {}, display: {}});
     });
 
     it('preserves reportingPeriod data', () => {

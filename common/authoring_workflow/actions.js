@@ -1161,3 +1161,35 @@ export function setPitchAndBearing(pitchAndBearing) {
     pitchAndBearing
   };
 }
+
+export const SET_SHAPE_FILL_COLOR = 'SET_SHAPE_FILL_COLOR';
+export function setShapeFillColor(shapeFillColor) {
+  return {
+    type: SET_SHAPE_FILL_COLOR,
+    shapeFillColor
+  };
+}
+
+export const SET_SHAPE_FILL_OPACITY = 'SET_SHAPE_FILL_OPACITY';
+export function setShapeFillOpacity(shapeFillOpacity) {
+  return {
+    type: SET_SHAPE_FILL_OPACITY,
+    shapeFillOpacity
+  };
+}
+
+export const SET_SHAPE_OUTLINE_COLOR = 'SET_SHAPE_OUTLINE_COLOR';
+export function setShapeOutlineColor(shapeOutlineColor) {
+  return {
+    type: SET_SHAPE_OUTLINE_COLOR,
+    shapeOutlineColor
+  };
+}
+
+export const SET_SHAPE_OUTLINE_WIDTH = 'SET_SHAPE_OUTLINE_WIDTH';
+export function setShapeOutlineWidth(shapeOutlineWidth) {
+  return {
+    type: SET_SHAPE_OUTLINE_WIDTH,
+    shapeOutlineWidth
+  };
+}

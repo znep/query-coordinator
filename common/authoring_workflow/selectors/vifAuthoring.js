@@ -2,12 +2,17 @@ import _ from 'lodash';
 import { createSelector } from 'reselect';
 
 import MapHelper from 'common/visualizations/helpers/MapHelper';
+import { VIF_CONSTANTS } from 'common/visualizations/views/mapConstants';
 
 import {
-  VECTOR_BASE_MAP_STYLES,
   COLOR_PALETTES,
+  DEFAULT_SHAPE_FILL_COLOR,
+  DEFAULT_SHAPE_FILL_OPACITY,
+  DEFAULT_SHAPE_OUTLINE_COLOR,
+  DEFAULT_SHAPE_OUTLINE_WIDTH,
   ERROR_BARS_DEFAULT_BAR_COLOR,
-  SERIES_TYPE_FLYOUT
+  SERIES_TYPE_FLYOUT,
+  VECTOR_BASE_MAP_STYLES
 } from '../constants';
 
 export const getVifs = state => _.get(state, 'vifs', {});
@@ -113,7 +118,7 @@ export const getSecondaryColor = createSelector(
 
 export const getPointOpacity = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'configuration.pointOpacity', 1) * 100
+  (vif) => _.get(vif, 'configuration.pointOpacity', VIF_CONSTANTS.POINT_OPACITY.DEFAULT) * 100
 );
 
 export const getPointSize = createSelector(
@@ -123,7 +128,7 @@ export const getPointSize = createSelector(
 
 export const getPointMapPointSize = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.pointMapPointSize', 10)
+  (vif) => _.get(vif, 'series[0].mapOptions.pointMapPointSize', VIF_CONSTANTS.POINT_MAP_POINT_SIZE.DEFAULT)
 );
 
 export const getMapType = createSelector(
@@ -138,42 +143,42 @@ export const getPointSizeByColumn = createSelector(
 
 export const getMinimumPointSize = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.minimumPointSize', 10)
+  (vif) => _.get(vif, 'series[0].mapOptions.minimumPointSize', VIF_CONSTANTS.POINT_MAP_MIN_POINT_SIZE.DEFAULT)
 );
 
 export const getMaximumPointSize = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.maximumPointSize', 18)
+  (vif) => _.get(vif, 'series[0].mapOptions.maximumPointSize', VIF_CONSTANTS.POINT_MAP_MAX_POINT_SIZE.DEFAULT)
 );
 
 export const getNumberOfDataClasses = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.numberOfDataClasses', 5)
+  (vif) => _.get(vif, 'series[0].mapOptions.numberOfDataClasses', VIF_CONSTANTS.NUMBER_OF_DATA_CLASSES.DEFAULT)
 );
 
 export const getMaxClusteringZoomLevel = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.maxClusteringZoomLevel', 9)
+  (vif) => _.get(vif, 'series[0].mapOptions.maxClusteringZoomLevel', VIF_CONSTANTS.CLUSTERING_ZOOM.DEFAULT)
 );
 
 export const getPointThreshold = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.pointThreshold', 4500)
+  (vif) => _.get(vif, 'series[0].mapOptions.pointThreshold', VIF_CONSTANTS.POINT_THRESHOLD.DEFAULT)
 );
 
 export const getClusterRadius = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.clusterRadius', 80)
+  (vif) => _.get(vif, 'series[0].mapOptions.clusterRadius', VIF_CONSTANTS.CLUSTER_RADIUS.DEFAULT)
 );
 
 export const getMaxClusterSize = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.maxClusterSize', 40)
+  (vif) => _.get(vif, 'series[0].mapOptions.maxClusterSize', VIF_CONSTANTS.CLUSTER_SIZE.DEFAULT)
 );
 
 export const getStackRadius = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.stackRadius', 1)
+  (vif) => _.get(vif, 'series[0].mapOptions.stackRadius', VIF_CONSTANTS.STACK_RADIUS.DEFAULT)
 );
 
 export const getPointColorByColumn = createSelector(
@@ -183,7 +188,7 @@ export const getPointColorByColumn = createSelector(
 
 export const getLineWeight = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.lineWeight', 2)
+  (vif) => _.get(vif, 'series[0].mapOptions.lineWeight', VIF_CONSTANTS.LINE_WEIGHT.DEFAULT)
 );
 
 export const getLineWeightByColumn = createSelector(
@@ -193,12 +198,12 @@ export const getLineWeightByColumn = createSelector(
 
 export const getMinimumLineWeight = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.minimumLineWeight', 3)
+  (vif) => _.get(vif, 'series[0].mapOptions.minimumLineWeight', VIF_CONSTANTS.LINE_WEIGHT.MIN)
 );
 
 export const getMaximumLineWeight = createSelector(
   getCurrentVif,
-  (vif) => _.get(vif, 'series[0].mapOptions.maximumLineWeight', 7)
+  (vif) => _.get(vif, 'series[0].mapOptions.maximumLineWeight', VIF_CONSTANTS.LINE_WEIGHT.MAX)
 );
 
 export const getLineColorByColumn = createSelector(
@@ -209,6 +214,26 @@ export const getLineColorByColumn = createSelector(
 export const getBoundaryColorByColumn = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'series[0].mapOptions.colorBoundariesBy', null)
+);
+
+export const getShapeFillColor = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.shapeFillColor', DEFAULT_SHAPE_FILL_COLOR)
+);
+
+export const getShapeFillOpacity = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.shapeFillOpacity', DEFAULT_SHAPE_FILL_OPACITY) * 100
+);
+
+export const getShapeOutlineColor = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.shapeOutlineColor', DEFAULT_SHAPE_OUTLINE_COLOR)
+);
+
+export const getShapeOutlineWidth = createSelector(
+  getCurrentVif,
+  (vif) => _.get(vif, 'series[0].mapOptions.shapeOutlineWidth', DEFAULT_SHAPE_OUTLINE_WIDTH)
 );
 
 export const getQuantificationMethod = createSelector(

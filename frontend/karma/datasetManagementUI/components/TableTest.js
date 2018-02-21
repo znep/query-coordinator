@@ -7,8 +7,17 @@ import dotProp from 'dot-prop-immutable';
 
 const defaultProps = {
   entities: {
+    views: {
+      'kg5j-unyr': {
+        displayType: 'draft',
+      }
+    },
     sources: {
-      312: {}
+      312: {
+        source_type: {
+          type: 'upload'
+        }
+      }
     }
   },
   params: {

@@ -30,25 +30,38 @@ export function* showNotification() {
   yield put(Actions.showNotificationEnd());
 }
 
-// TODO: clean up the logic between this and the save new role workflow - EN-22314
-export function* renameRole() {
+export function* handleRoleModal() {
   const maxCharacterCount = yield select(Selectors.getMaxCharacterCountFromState);
   do {
-    const { submit } = yield race({
-      submit: take(Actions.RENAME_ROLE_END),
-      cancel: take(Actions.CREATE_NEW_ROLE_CANCEL)
+    const action = yield race({
+      submit: take(Actions.EDIT_CUSTOM_ROLE_MODAL_SUBMIT),
+      cancel: take(Actions.EDIT_CUSTOM_ROLE_MODAL_CANCEL)
     });
 
-    if (submit) {
+    if (action.submit) {
       const role = yield select(Selectors.getEditingRoleFromState);
       const validatedRole = Selectors.validateRole(maxCharacterCount, role);
       if (!Selectors.roleHasError(validatedRole)) {
-        return yield put(Actions.saveRoles(Immutable.fromJS([validatedRole])));
+        return validatedRole;
       }
     } else {
       break;
     }
   } while (true);
+}
+
+export function* renameRole() {
+  const validatedRole = yield handleRoleModal();
+  if (validatedRole) {
+    yield put(Actions.saveRoles(Immutable.fromJS([validatedRole])));
+  }
+}
+
+export function* createRole() {
+  const validatedRole = yield handleRoleModal();
+  if (validatedRole) {
+    yield put(Actions.createNewRoleStart());
+  }
 }
 
 export const getRights = role => role.filter(keyIn('name', 'rights')).toJS();
@@ -113,6 +126,7 @@ export default function* rootSaga() {
     takeEvery(Actions.DELETE_ROLE, deleteRole),
     takeEvery(Actions.SAVE_ROLES, saveRoles),
     takeEvery(Actions.SHOW_NOTIFICATION, showNotification),
+    takeEvery(Actions.NEW_CUSTOM_ROLE, createRole),
     takeEvery(Actions.RENAME_ROLE, renameRole),
     takeEvery(Actions.LOAD_DATA, loadData)
   ]);

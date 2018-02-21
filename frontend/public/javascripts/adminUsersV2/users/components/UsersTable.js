@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import ResultsTable from '../../components/ResultsTable';
 import DateFromNow from '../../components/DateFromNow';
 import SocrataIcon from 'common/components/SocrataIcon';
@@ -186,4 +186,4 @@ const mapDispatchToProps = {
   onSort: Actions.sortUserColumn
 };
 
-export default fullConnect(mapStateToProps, mapDispatchToProps)(UsersTable);
+export default customConnect({ mapStateToProps, mapDispatchToProps })(UsersTable);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import DropdownButton, { DropdownItem } from '../../components/DropdownButton';
 import * as Actions from '../actions';
 import * as Selectors from '../../selectors';
@@ -43,4 +43,4 @@ const mapDispatchToProps = {
   removeTeamMember: Actions.removeTeamMember
 };
 
-export default fullConnect(mapStateToProps, mapDispatchToProps)(MemberEditControl);
+export default customConnect({ mapStateToProps, mapDispatchToProps })(MemberEditControl);

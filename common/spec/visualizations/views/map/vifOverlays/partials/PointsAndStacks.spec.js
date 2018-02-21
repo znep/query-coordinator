@@ -128,5 +128,18 @@ describe('PointsAndStacks', () => {
       sinon.assert.calledWith(mockMap.removeSource, 'pointVectorDataSource');
     });
   });
+
+  describe('destroy', () => {
+    it('should destroy the sources and layers', () => {
+      pointsAndStacks.setup(vif, renderOptions);
+
+      pointsAndStacks.destroy();
+
+      sinon.assert.calledWith(mockMap.removeLayer, 'stack-circle');
+      sinon.assert.calledWith(mockMap.removeLayer, 'stack-count-label');
+      sinon.assert.calledWith(mockMap.removeLayer, 'point');
+      sinon.assert.calledWith(mockMap.removeSource, 'pointVectorDataSource');
+    });
+  });
 });
 

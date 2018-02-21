@@ -1,11 +1,9 @@
 import includes from 'lodash/fp/includes';
 import PropTypes from 'prop-types';
-import React from 'react';
-import cssModules from 'react-css-modules';
-import { connect } from 'react-redux';
+import React, { Component } from 'react';
 
 import Button from 'common/components/Button';
-import { connectLocalization } from 'common/components/Localization';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 
 import * as Actions from '../actions';
 import * as Selectors from '../adminRolesSelectors';
@@ -29,8 +27,9 @@ const mapDispatchToProps = {
   startEditCustomRoles: Actions.editCustomRolesStart
 };
 
-class EditBar extends React.Component {
+class EditBar extends Component {
   static propTypes = {
+    I18n: I18nPropType,
     isAddCustomRoleEnabled: PropTypes.bool.isRequired,
     isEditCustomRolesEnabled: PropTypes.bool.isRequired,
     startEditCustomRoles: PropTypes.func.isRequired,
@@ -40,13 +39,13 @@ class EditBar extends React.Component {
 
   render() {
     const {
+      I18n,
       isAddCustomRoleEnabled,
       isEditCustomRolesEnabled,
       hasConfigurableRoleFeature,
       startEditCustomRoles,
       newCustomRole,
-      faqUrl,
-      localization: { translate }
+      faqUrl
     } = this.props;
 
     return (
@@ -54,7 +53,7 @@ class EditBar extends React.Component {
         {faqUrl ? (
           <a href={faqUrl} target="_blank" styleName="faq-button">
             <i className="socrata-icon-question" />
-            {translate('screens.admin.roles.index_page.faq_modal.title')}
+            {I18n.t('screens.admin.roles.index_page.faq_modal.title')}
           </a>
         ) : null}
         {hasConfigurableRoleFeature ? (
@@ -65,13 +64,13 @@ class EditBar extends React.Component {
             onClick={startEditCustomRoles}
           >
             <i className="socrata-icon-edit" />
-            {translate('screens.admin.roles.buttons.edit_custom_roles')}
+            {I18n.t('screens.admin.roles.buttons.edit_custom_roles')}
           </Button>
         ) : null}
         {hasConfigurableRoleFeature ? (
           <Button variant="primary" disabled={!isAddCustomRoleEnabled} onClick={newCustomRole}>
             <i className="socrata-icon-plus3" />
-            {translate('screens.admin.roles.buttons.new_custom_role')}
+            {I18n.t('screens.admin.roles.buttons.new_custom_role')}
           </Button>
         ) : null}
       </div>
@@ -79,4 +78,4 @@ class EditBar extends React.Component {
   }
 }
 
-export default connectLocalization(connect(mapStateToProps, mapDispatchToProps)(cssModules(EditBar, styles)));
+export default customConnect({ mapStateToProps, mapDispatchToProps, styles })(EditBar);

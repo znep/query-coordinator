@@ -107,7 +107,6 @@ describe('MeasureResultCard', () => {
     const computedMeasure = getComputedMeasure({
       result: { value: '33.1234567890123456789' }
     });
-    const measureWithoutDecimalPlaces = {};
     const measureWithFixedDecimalPlaces = _.set({}, 'metricConfig.display.decimalPlaces', 1);
     const measureWithManyDecimalPlaces = _.set({}, 'metricConfig.display.decimalPlaces', 100);
 
@@ -120,16 +119,7 @@ describe('MeasureResultCard', () => {
 
       it('renders a string of maxLength if # of decimal places creates string greater than maxLength', () => {
         const card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithManyDecimalPlaces} />);
-
-        assert.equal(getRenderedValue(card), '33.123'); // Still truncates at a maxLength.
-      });
-    });
-
-    describe('when decimal place display is not specified', () => {
-      it('renders up to the maxLength when no decimal places are specified in display options', () => {
-        const card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={measureWithoutDecimalPlaces} />);
-
-        assert.equal(getRenderedValue(card), '33.123'); // Truncates to the default maxLength of 6.
+        assert.equal(getRenderedValue(card), '33.123'); // Truncates at a maxLength.
       });
     });
 
@@ -140,6 +130,17 @@ describe('MeasureResultCard', () => {
         assert.equal(getRenderedValue(card), computedMeasure.result.value);
       });
     });
+
+    describe('when string would end in a period', () => {
+      it('truncates the trailing period', () => {
+        const computedMeasure = getComputedMeasure({
+          result: { value: '123456.12345' }
+        });
+        const card = shallow(<MeasureResultCard computedMeasure={computedMeasure} measure={{}} />);
+        assert.equal(getRenderedValue(card), '123456');
+      });
+    });
+
   });
 
   // We may want to adjust the logic for when to humanize numbers.

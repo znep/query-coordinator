@@ -3,7 +3,15 @@ import React from 'react'; //eslint-disable-line no-unused-vars
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 
-import { Modal, ModalHeader, ModalContent, ModalFooter } from 'common/components'; //eslint-disable-line no-unused-vars
+//eslint-disable no-unused-vars
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalContent,
+  ModalFooter
+} from 'common/components';
+//eslint-enable no-unused-vars
 
 import '../componentBase';
 import StorytellerUtils from '../../StorytellerUtils';
@@ -216,11 +224,16 @@ function renderModal($element, state) {
     loaded: state !== LOADING
   });
 
-  const saveButtonClasses = classNames(
-    'btn',
-    'btn-primary',
-    { 'btn-busy': state === SAVING }
-  );
+  const dismissButtonProps = {
+    onClick: onDismiss
+  };
+
+  const saveButtonProps = {
+    busy: state === SAVING,
+    disabled: state === LOADING,
+    onClick: onSaveMeasure,
+    variant: 'primary'
+  };
 
   ReactDOM.render(
     <Modal onDismiss={onDismiss} fullScreen={true}>
@@ -252,12 +265,12 @@ function renderModal($element, state) {
       </ModalContent>
 
       <ModalFooter>
-        <button className="btn btn-default" onClick={onDismiss}>
+        <Button {...dismissButtonProps}>
           <span>{I18n.t('editor.modal.buttons.cancel')}</span>
-        </button>
-        <button className={saveButtonClasses} onClick={onSaveMeasure} disabled={state === LOADING}>
+        </Button>
+        <Button {...saveButtonProps}>
           <span>{I18n.t('editor.modal.buttons.save')}</span>
-        </button>
+        </Button>
       </ModalFooter>
     </Modal>,
     $editModal[0]

@@ -129,9 +129,9 @@ export default class UnifiedMap extends SvgVisualization {
         return new VifPointOverlay(this._map, this._element, this._mouseInteractionHandler);
       }
     } else if (newMapType === MAP_TYPES.LINE_MAP) {
-      return new VifLineOverlay(this._map, this._element);
+      return new VifLineOverlay(this._map, this._element, this._mouseInteractionHandler);
     } else if (newMapType === MAP_TYPES.BOUNDARY_MAP) {
-      return new VifShapeOverlay(this._map, this._element);
+      return new VifShapeOverlay(this._map, this._element, this._mouseInteractionHandler);
     } else {
       throw new Error(`Unknown map type ${newMapType}`);
     }

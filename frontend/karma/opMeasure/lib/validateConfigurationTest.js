@@ -11,6 +11,7 @@ describe('validateConfiguration', () => {
       { name: 'Some Dates', fieldName: 'some_dates', dataTypeName: 'calendar_date' }
     ]
   };
+  const validColumns = validViewMetadata.columns;
   const validMetric = {
     arguments: {
       column: 'some_text',
@@ -27,7 +28,7 @@ describe('validateConfiguration', () => {
 
   describe('when there are no validation problems', () => {
     it('sets every key to false', () => {
-      const validation = validateConfiguration(validMetric, validViewMetadata);
+      const validation = validateConfiguration(validMetric, validViewMetadata, validColumns);
 
       const groups = ['calculation', 'dataSource', 'reportingPeriod'];
       assert.hasAllKeys(validation, groups);
@@ -54,7 +55,7 @@ describe('validateConfiguration', () => {
           dateColumn: null
         });
 
-        const validation = validateConfiguration(metric, validViewMetadata);
+        const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
         assert.isTrue(validation.calculation.noReferenceDateColumn);
       });
@@ -66,7 +67,7 @@ describe('validateConfiguration', () => {
           }
         });
 
-        const validation = validateConfiguration(metric, validViewMetadata);
+        const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
         assert.isTrue(validation.calculation.noCountColumn);
       });
@@ -84,7 +85,7 @@ describe('validateConfiguration', () => {
           dateColumn: null
         });
 
-        const validation = validateConfiguration(metric, validViewMetadata);
+        const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
         assert.isTrue(validation.calculation.noReferenceDateColumn);
       });
@@ -96,16 +97,15 @@ describe('validateConfiguration', () => {
           }
         });
 
-        const validation = validateConfiguration(metric, validViewMetadata);
+        const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
         assert.isTrue(validation.calculation.noSumColumn);
       });
 
       it('detects lack of numeric column', () => {
-        const viewMetadata = _.cloneDeep(validViewMetadata);
-        viewMetadata.columns = viewMetadata.columns.slice(1);
+        const columnsWithoutNumeric = validColumns.slice(1);
 
-        const validation = validateConfiguration(metric, viewMetadata);
+        const validation = validateConfiguration(metric, validViewMetadata, columnsWithoutNumeric);
 
         assert.isTrue(validation.calculation.noNumericColumn);
       });
@@ -123,7 +123,7 @@ describe('validateConfiguration', () => {
           dateColumn: null
         });
 
-        const validation = validateConfiguration(metric, validViewMetadata);
+        const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
         assert.isTrue(validation.calculation.noReferenceDateColumn);
       });
@@ -135,16 +135,15 @@ describe('validateConfiguration', () => {
           }
         });
 
-        const validation = validateConfiguration(metric, validViewMetadata);
+        const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
         assert.isTrue(validation.calculation.noRecentValueColumn);
       });
 
       it('detects lack of numeric column', () => {
-        const viewMetadata = _.cloneDeep(validViewMetadata);
-        viewMetadata.columns = viewMetadata.columns.slice(1);
+        const columnsWithoutNumeric = validColumns.slice(1);
 
-        const validation = validateConfiguration(metric, viewMetadata);
+        const validation = validateConfiguration(metric, validViewMetadata, columnsWithoutNumeric);
 
         assert.isTrue(validation.calculation.noNumericColumn);
       });
@@ -164,7 +163,7 @@ describe('validateConfiguration', () => {
           }
         });
 
-        const validation = validateConfiguration(metric, validViewMetadata);
+        const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
         assert.isTrue(validation.calculation.noRateAggregation);
       });
@@ -183,7 +182,7 @@ describe('validateConfiguration', () => {
             dateColumn: null
           });
 
-          const validation = validateConfiguration(metric, validViewMetadata);
+          const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
           assert.isTrue(validation.calculation.noReferenceDateColumn);
         });
@@ -195,7 +194,7 @@ describe('validateConfiguration', () => {
             }
           });
 
-          const validation = validateConfiguration(metric, validViewMetadata);
+          const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
           assert.isTrue(validation.calculation.noNumeratorColumn);
         });
@@ -207,7 +206,7 @@ describe('validateConfiguration', () => {
             }
           });
 
-          const validation = validateConfiguration(metric, validViewMetadata);
+          const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
           assert.isTrue(validation.calculation.noDenominatorColumn);
         });
@@ -219,7 +218,7 @@ describe('validateConfiguration', () => {
             }
           });
 
-          const validation = validateConfiguration(metric, validViewMetadata);
+          const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
           assert.isFalse(validation.calculation.noDenominatorColumn);
         });
@@ -239,7 +238,7 @@ describe('validateConfiguration', () => {
             dateColumn: null
           });
 
-          const validation = validateConfiguration(metric, validViewMetadata);
+          const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
           assert.isTrue(validation.calculation.noReferenceDateColumn);
         });
@@ -251,7 +250,7 @@ describe('validateConfiguration', () => {
             }
           });
 
-          const validation = validateConfiguration(metric, validViewMetadata);
+          const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
           assert.isTrue(validation.calculation.noNumeratorColumn);
         });
@@ -263,7 +262,7 @@ describe('validateConfiguration', () => {
             }
           });
 
-          const validation = validateConfiguration(metric, validViewMetadata);
+          const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
           assert.isTrue(validation.calculation.noDenominatorColumn);
         });
@@ -275,16 +274,15 @@ describe('validateConfiguration', () => {
             }
           });
 
-          const validation = validateConfiguration(metric, validViewMetadata);
+          const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
           assert.isFalse(validation.calculation.noDenominatorColumn);
         });
 
         it('detects lack of numeric column', () => {
-          const viewMetadata = _.cloneDeep(validViewMetadata);
-          viewMetadata.columns = viewMetadata.columns.slice(1);
+          const columnsWithoutNumeric = validColumns.slice(1);
 
-          const validation = validateConfiguration(metric, viewMetadata);
+          const validation = validateConfiguration(metric, validViewMetadata, columnsWithoutNumeric);
 
           assert.isTrue(validation.calculation.noNumericColumn);
         });
@@ -294,9 +292,17 @@ describe('validateConfiguration', () => {
 
   describe('data source group', () => {
     it('detects missing data source', () => {
-      const validation = validateConfiguration(validMetric, null);
+      const validation = validateConfiguration(validMetric, null, validColumns);
 
       assert.isTrue(validation.dataSource.noDataSource);
+    });
+
+    it('detects lack of date column', () => {
+      const columnsWithoutDate = validColumns.slice(0, 2);
+
+      const validation = validateConfiguration(validMetric, validViewMetadata, columnsWithoutDate);
+
+      assert.isTrue(validation.dataSource.noDateColumn);
     });
   });
 
@@ -306,7 +312,7 @@ describe('validateConfiguration', () => {
         reportingPeriod: { startDate: null }
       });
 
-      const validation = validateConfiguration(metric, validViewMetadata);
+      const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
       assert.isTrue(validation.reportingPeriod.noStartDate);
     });
@@ -316,7 +322,7 @@ describe('validateConfiguration', () => {
         reportingPeriod: { type: null }
       });
 
-      const validation = validateConfiguration(metric, validViewMetadata);
+      const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
       assert.isTrue(validation.reportingPeriod.noPeriodType);
     });
@@ -326,7 +332,7 @@ describe('validateConfiguration', () => {
         reportingPeriod: { size: null }
       });
 
-      const validation = validateConfiguration(metric, validViewMetadata);
+      const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
       assert.isTrue(validation.reportingPeriod.noPeriodSize);
     });
@@ -338,7 +344,7 @@ describe('validateConfiguration', () => {
       reportingPeriod: { startDate: null }
     });
 
-    const validation = validateConfiguration(metric, validViewMetadata);
+    const validation = validateConfiguration(metric, validViewMetadata, validColumns);
 
     assert.isTrue(validation.reportingPeriod.noStartDate);
     assert.isTrue(validation.calculation.noReferenceDateColumn);

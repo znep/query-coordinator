@@ -6,33 +6,34 @@ import VifOverlay from './VifOverlay';
 import { getBaseMapLayerStyles } from '../baseMapStyle';
 
 import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
-import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
 import RenderByHelper from 'common/visualizations/helpers/RenderByHelper';
 
 const OTHER_COLOR_BY_CATEGORY = '__$$other$$__';
 const COLOR_BY_CATEGORY_ALIAS = '__color_by_category__';
+const ROWID_ALIAS = '__row_id__';
 
 // Prepares renderByOptions for rendering shapes,tile url for fetching shapes as geojson
 // and hands it over to shapes partial for rendering using mapbox-gl's sources/layers
-
 export default class VifShapeOverlay extends VifOverlay {
-  constructor(map, visualizationElement) {
+  constructor(map, visualizationElement, mouseInteractionHandler) {
     const sourceIds = [].concat(Shapes.sourceIds());
     const layerIds = [].concat(Shapes.layerIds());
     super(map, sourceIds, layerIds);
 
     this._legend = new Legend(visualizationElement);
     this._shapes = new Shapes(map);
+    this._mouseInteractionHandler = mouseInteractionHandler;
   }
 
   async setup(vif) {
     const renderOptions = await this._prepare(vif);
 
     this._legend.show(
-      vif.getColorByBuckets(renderOptions.colorByCategories),
+      vif.getColorsForCategories(renderOptions.colorByCategories),
       'categorical'
     );
     this._shapes.setup(vif, renderOptions);
+    this._mouseInteractionHandler.setupOrUpdate(vif, renderOptions);
 
     return renderOptions;
   }
@@ -41,10 +42,11 @@ export default class VifShapeOverlay extends VifOverlay {
     const renderOptions = await this._prepare(vif);
 
     this._legend.show(
-      vif.getColorByBuckets(renderOptions.colorByCategories),
+      vif.getColorsForCategories(renderOptions.colorByCategories),
       'categorical'
     );
     this._shapes.update(vif, renderOptions);
+    this._mouseInteractionHandler.setupOrUpdate(vif, renderOptions);
 
     return renderOptions;
   }
@@ -57,43 +59,30 @@ export default class VifShapeOverlay extends VifOverlay {
     const colorByColumn = vif.getShapeColorByColumn();
 
     try {
-      const colorByCategories = await RenderByHelper.getColorByCategories(
-        vif,
-        this._shapeDataset(vif),
-        colorByColumn
-        );
+      const [colorByCategories, datasetMetadata] = await Promise.all([
+        RenderByHelper.getColorByCategories(vif, colorByColumn),
+        vif.getDatasetMetadata()
+      ]);
 
       if (this._preparingForVif !== vif) {
         return Promise.reject('VIF updated while preparing');
       }
 
       return {
-        colorByCategories,
         colorBy: COLOR_BY_CATEGORY_ALIAS,
-        layerStyles: getBaseMapLayerStyles(vif),
-        dataUrl: this.getDataUrl(vif, colorByCategories)
+        colorByCategories,
+        datasetMetadata,
+        dataUrl: this.getDataUrl(vif, colorByCategories),
+        idBy: ROWID_ALIAS,
+        layerStyles: getBaseMapLayerStyles(vif)
       };
     } catch (error) {
-      throw ('Error preparing point map.', error);
+      throw ('Error preparing Shape map.', error);
     }
-  }
-
-  _shapeDataset(vif) {
-    const datasetConfig = {
-      domain: vif.getDomain(),
-      datasetUid: vif.getDatasetUid()
-    };
-
-    if (_.isUndefined(this._dataset) || !_.isEqual(this._existingShapeDatasetConfig, datasetConfig)) {
-      this.__shapeDatasetInstance = new SoqlDataProvider(datasetConfig, true);
-      this._existingShapeDatasetConfig = datasetConfig;
-    }
-
-    return this.__shapeDatasetInstance;
   }
 
   destroy() {
-    super.destroy();
+    this._shapes.destroy();
     this._legend.destroy();
   }
 
@@ -107,7 +96,8 @@ export default class VifShapeOverlay extends VifOverlay {
       conditions.push(filters);
     }
 
-    let selects = [`simplify_preserve_topology(snap_to_grid(${columnName},{snap_precision}),{simplify_precision})`];
+    let selects = [`simplify_preserve_topology(snap_to_grid(${columnName},{snap_precision}),{simplify_precision}),` +
+      `min(:id) as ${ROWID_ALIAS}`];
     let groups = [`simplify_preserve_topology(snap_to_grid(${columnName},{snap_precision}),{simplify_precision})`];
 
     if (_.isString(colorByColumn) && !_.isEmpty(colorByCategories)) {

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import ResultsTable from '../../components/ResultsTable';
 import DropdownButton, { DropdownItem } from '../../components/DropdownButton';
 import * as Actions from '../actions';
@@ -95,4 +95,4 @@ const mapDispatchToProps = {
   onDeleteTeam: Actions.deleteTeam
 };
 
-export default fullConnect(mapStateToProps, mapDispatchToProps)(TeamsTable);
+export default customConnect({ mapStateToProps, mapDispatchToProps })(TeamsTable);

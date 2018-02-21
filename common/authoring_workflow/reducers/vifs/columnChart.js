@@ -29,6 +29,10 @@ export default function columnChart(state, action) {
       setBooleanValueOrDefaultValue(state, 'configuration.showDimensionLabels', action.showDimensionLabels, true);
       break;
 
+    case actions.SET_DIMENSION_LABEL_AREA_SIZE:
+      _.set(state, 'configuration.dimensionLabelAreaSize', action.width);
+      break;
+
     case actions.SET_DIMENSION_GROUPING_COLUMN_NAME:
       setDimensionGroupingColumnName(state, action.dimensionGroupingColumnName);
       break;

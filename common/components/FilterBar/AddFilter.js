@@ -58,6 +58,7 @@ export class AddFilter extends Component {
   }
 
   onClickColumn(column) {
+    this.setState({ searchTerm: '' });
     this.props.onClickColumn(column);
     this.toggleColumnPicklist();
   }

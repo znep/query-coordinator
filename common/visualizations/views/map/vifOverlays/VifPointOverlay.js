@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 import RenderByHelper from 'common/visualizations/helpers/RenderByHelper';
-import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
 import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
 import { COLOR_BY_BUCKETS_COUNT } from 'common/visualizations/views/mapConstants';
 
@@ -32,7 +31,7 @@ export default class VifPointOverlay extends VifOverlay {
     const renderOptions = await this._prepare(vif);
 
     this._legend.show(
-      vif.getColorByBuckets(renderOptions.colorByCategories),
+      vif.getColorsForCategories(renderOptions.colorByCategories),
       'categorical'
     );
     this._pointsAndStacks.setup(vif, renderOptions);
@@ -46,7 +45,7 @@ export default class VifPointOverlay extends VifOverlay {
     const renderOptions = await this._prepare(vif);
 
     this._legend.show(
-      vif.getColorByBuckets(renderOptions.colorByCategories),
+      vif.getColorsForCategories(renderOptions.colorByCategories),
       'categorical'
     );
     this._pointsAndStacks.update(vif, renderOptions);
@@ -59,16 +58,16 @@ export default class VifPointOverlay extends VifOverlay {
   // Makes required soql calls
   //    * getting top values for coloring by.
   //    * getting range for resizePointsBy buckets.
-  // and returns the renerOptions.
+  // and returns the renderOptions.
   async _prepare(vif) {
     this._preparingForVif = vif;
-    const colorByColumn = vif.getPointColorByColumn();
-    const resizeByColumn = vif.getPointResizeByColumn();
+    const colorByColumn = vif.getColorPointsByColumn();
+    const resizeByColumn = vif.getResizePointsByColumn();
 
     try {
       const [colorByCategories, resizeByRange, datasetMetadata] = await Promise.all([
-        RenderByHelper.getColorByCategories(vif, this._pointDataset(vif), colorByColumn),
-        RenderByHelper.getResizeByRange(vif, this._pointDataset(vif), resizeByColumn),
+        RenderByHelper.getColorByCategories(vif, colorByColumn),
+        RenderByHelper.getResizeByRange(vif, resizeByColumn),
         vif.getDatasetMetadata()
       ]);
 
@@ -91,29 +90,16 @@ export default class VifPointOverlay extends VifOverlay {
     }
   }
 
-  _pointDataset(vif) {
-    const datasetConfig = {
-      domain: vif.getDomain(),
-      datasetUid: vif.getDatasetUid()
-    };
-
-    if (_.isUndefined(this._dataset) || !_.isEqual(this._existingPointDatasetConfig, datasetConfig)) {
-      this.__pointDatasetInstance = new SoqlDataProvider(datasetConfig, true);
-      this._existingPointDatasetConfig = datasetConfig;
-    }
-
-    return this.__pointDatasetInstance;
-  }
-
   destroy() {
-    super.destroy();
+    this._pointsAndStacks.destroy();
+    this._clusters.destroy();
     this._legend.destroy();
   }
 
   getDataUrl(vif, colorByCategories) {
     const columnName = vif.getColumnName();
-    const colorByColumn = vif.getPointColorByColumn();
-    const resizeByColumn = vif.getPointResizeByColumn();
+    const colorByColumn = vif.getColorPointsByColumn();
+    const resizeByColumn = vif.getResizePointsByColumn();
 
     let conditions = [`{{'${columnName}' column condition}}`];
     const filters = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
@@ -164,7 +150,7 @@ export default class VifPointOverlay extends VifOverlay {
 }
 
 function resizeBy(vif) {
-  const resizeByColumn = vif.getPointResizeByColumn();
+  const resizeByColumn = vif.getResizePointsByColumn();
   if (_.isString(resizeByColumn)) {
     return RESIZE_BY_ALIAS;
   }

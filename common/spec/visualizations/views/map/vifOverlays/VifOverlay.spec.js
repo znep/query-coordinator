@@ -55,28 +55,4 @@ describe('VifOverlay', () => {
     });
 
   });
-
-  describe('destroy', () => {
-
-    describe('layer and source ', () => {
-      it('should remove the map layer and source if already loaded', () => {
-        mockMap.getSource.returns(true);
-
-        vifOverlay.destroy();
-
-        sinon.assert.calledWith(mockMap.removeLayer, 'lineLayer');
-        sinon.assert.calledWith(mockMap.removeSource, 'lineVectorDataSource');
-      });
-
-      it('should not remove the map layer and source if not loaded', () => {
-        mockMap.getSource.returns(false);
-
-        vifOverlay.destroy();
-
-        sinon.assert.neverCalledWith(mockMap.removeLayer, 'lineLayer');
-        sinon.assert.neverCalledWith(mockMap.removeSource, 'lineVectorDataSource');
-      });
-    });
-  });
-
 });

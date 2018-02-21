@@ -703,7 +703,7 @@ describe('SvgColumnChart', () => {
       columnChart.chart.render(null, data);
 
       const $tickLabels = columnChart.element.find('.x.axis text');
-      assert.equal($tickLabels.first().text(), '2017/09…');
+      assert.equal($tickLabels.first().text(), '2017/09/01');
     });
   });
 });

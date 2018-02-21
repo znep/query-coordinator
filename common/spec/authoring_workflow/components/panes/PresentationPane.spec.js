@@ -237,7 +237,7 @@ describe('PresentationPane', () => {
       });
 
       it('renders map opacity', () => {
-        expect(component.querySelector('#base-layer-opacity')).to.exist;
+        expect(component.querySelector('#base-layer-opacity-slider')).to.exist;
       });
     });
 
@@ -300,19 +300,19 @@ describe('PresentationPane', () => {
       });
 
       it('renders point opacity', () => {
-        expect(component.querySelector('#point-opacity')).to.exist;
+        expect(component.querySelector('#point-opacity-slider-container')).to.exist;
       });
 
       it('renders point size', () => {
-        expect(component.querySelector('#point-size')).to.exist;
+        expect(component.querySelector('#point-size-slider-container')).to.exist;
       });
 
       it('renders map type', () => {
-        expect(component.querySelector('#base-layer')).to.exist;
+        expect(component.querySelector('#base-layer-slider-container')).to.exist;
       });
 
       it('renders map opacity', () => {
-        expect(component.querySelector('#base-layer-opacity')).to.exist;
+        expect(component.querySelector('#base-layer-opacity-slider')).to.exist;
       });
     });
 

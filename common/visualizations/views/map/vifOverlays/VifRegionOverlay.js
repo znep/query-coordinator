@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
-import VifOverlay from './VifOverlay';
-import Regions from './partials/Regions';
-import Legend from './partials/Legend';
+import RenderByHelper from 'common/visualizations/helpers/RenderByHelper';
 
-import SoqlHelpers from 'common/visualizations/dataProviders/SoqlHelpers';
-import SoqlDataProvider from 'common/visualizations/dataProviders/SoqlDataProvider';
+import Legend from './partials/Legend';
+import Regions from './partials/Regions';
+import VifOverlay from './VifOverlay';
+
 
 export default class VifRegionOverlay extends VifOverlay {
   constructor(map, visualizationElement) {
@@ -39,7 +39,7 @@ export default class VifRegionOverlay extends VifOverlay {
     this._preparingForVif = vif;
 
     try {
-      const measures = await getMeasures(vif, this._pointDataset(vif));
+      const measures = await RenderByHelper.getMeasuresForRegions(vif);
       const buckets = vif.getRegionMapBuckets(measures);
       const defaultBucket = _.last(buckets);
 
@@ -87,65 +87,7 @@ export default class VifRegionOverlay extends VifOverlay {
   }
 
   destroy() {
-    super.destroy();
+    this._regions.destroy();
     this._legend.destroy();
   }
-
-  _pointDataset(vif) {
-    const domain = _.get(vif, 'series[0].dataSource.domain');
-    const datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
-    const datasetConfig = { domain, datasetUid };
-
-    if (_.isUndefined(this._dataset) || !_.isEqual(this._existingPointDatasetConfig, datasetConfig)) {
-      this.__pointDatasetInstance = new SoqlDataProvider(datasetConfig, true);
-      this._existingPointDatasetConfig = datasetConfig;
-    }
-
-    return this.__pointDatasetInstance;
-  }
-}
-
-async function getMeasures(vif, pointDataset) {
-  const domain = _.get(vif, 'series[0].dataSource.domain');
-  const datasetUid = _.get(vif, 'series[0].dataSource.datasetUid');
-  const nameColumn = vif.getMeasureForeignKey();
-  const valueColumn = vif.getMeasureColumn();
-  const valueFunction = vif.getMeasureAggregation();
-  const nameAlias = '__shape_id__';
-  const valueAlias = '__value__';
-  const filters = SoqlHelpers.whereClauseNotFilteringOwnColumn(vif, 0);
-  const requiredVifParams = [domain, datasetUid, nameColumn, valueColumn, valueFunction];
-
-  if (!_.every(requiredVifParams, _.isString)) {
-    return null;
-  }
-
-  let queryString = `SELECT ${nameColumn} as ${nameAlias}, ${valueFunction}(${valueColumn}) as ${valueAlias}` +
-    ` GROUP BY ${nameColumn}`;
-
-  if (!_.isEmpty(filters)) {
-    queryString += ` WHERE ${filters.join(' AND ')}`;
-  }
-  queryString += ' LIMIT 10000';
-
-  const measureResult = await pointDataset.rawQuery(queryString);
-
-  const measures = _.chain(measureResult).
-    map((measureResultItem) => {
-      const shapeId = measureResultItem[nameAlias];
-      if (_.isUndefined(shapeId)) {
-        return shapeId;
-      }
-      return {
-        shapeId,
-        value: Number(measureResultItem[valueAlias]) || 0
-      };
-    }).
-    compact().value();
-
-  if (_.isEmpty(measures)) {
-    return;
-  }
-
-  return measures;
 }

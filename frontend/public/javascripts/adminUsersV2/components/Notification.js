@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect as fullConnect, I18nPropType } from '../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import { spring } from 'react-motion';
 import ToastNotification from 'common/components/ToastNotification';
 import * as Selectors from '../selectors';
@@ -41,4 +41,4 @@ const mapStateToProps = (state, { I18n }) => {
 };
 
 export { types } from 'common/components/ToastNotification';
-export default fullConnect(mapStateToProps)(Notification);
+export default customConnect({ mapStateToProps })(Notification);

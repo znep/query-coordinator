@@ -7,7 +7,8 @@ import { addNotification } from 'datasetManagementUI/reduxStuff/actions/notifica
 import { createSourceSuccess } from 'datasetManagementUI/reduxStuff/actions/createSource';
 import {
   subscribeToOutputSchemaThings,
-  subscribeToRevision
+  subscribeToRevision,
+  subscribeToSource
 } from 'datasetManagementUI/reduxStuff/actions/subscriptions';
 import {
   addFieldValuesAll,
@@ -60,6 +61,7 @@ export function loadRevision(params) {
         srcs.forEach(src => {
           const payload = normalizeCreateSourceResponse(src);
           dispatch(createSourceSuccess(payload));
+          dispatch(subscribeToSource(src.id, params));
         });
 
         // insert other stuff into store

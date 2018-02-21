@@ -32,6 +32,25 @@ describe SocrataSiteChrome::SiteChromeHelper do
     end
   end
 
+  describe 'language_switcher_options' do
+    before do
+      allow(helper.request).to receive(:fullpath).and_return('/browse?category=foo')
+      allow(helper).to receive(:locale_config).and_return(
+        ActiveSupport::HashWithIndifferentAccess.new(
+          :default_locale => 'en',
+          :available_locales => ['en', 'es']
+        )
+      )
+    end
+
+    it 'returns links for each locale prefixing the current path' do
+      expect(helper.language_switcher_options).to eq([
+        '<a class="language-switcher-option" href="/en/browse?category=foo">English</a>',
+        '<a class="language-switcher-option" href="/es/browse?category=foo">es</a>'
+      ])
+    end
+  end
+
   describe 'aria helper methods' do
     context 'icon_with_aria_text' do
       it 'returns a span with class "icon" with an inner span containing aria text' do

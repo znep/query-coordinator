@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import cssModules from 'react-css-modules';
-import { connect } from 'react-redux';
+
+import { customConnect } from 'common/connectUtils';
 
 import * as selectors from '../../adminRolesSelectors';
 import Grid from '../util/Grid';
@@ -39,4 +39,4 @@ class RolesGrid extends Component {
   }
 }
 
-export default connect(mapStateToProps)(cssModules(RolesGrid, styles));
+export default customConnect({ mapStateToProps, styles })(RolesGrid);

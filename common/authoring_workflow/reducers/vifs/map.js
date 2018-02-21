@@ -1,8 +1,11 @@
 import _ from 'lodash';
 
+import { DEFAULT_SHAPE_FILL_OPACITY, DEFAULT_SHAPE_OUTLINE_WIDTH } from '../../constants';
 import vifs from '../../vifs';
 import baseVifReducer from './base';
 import * as actions from '../../actions';
+
+import { VIF_CONSTANTS } from 'common/visualizations/views/mapConstants';
 
 export default function map(state, action) {
   if (_.isUndefined(state)) {
@@ -41,62 +44,101 @@ export default function map(state, action) {
 
     case actions.SET_POINT_MAP_POINT_SIZE:
       const pointSize = parseFloat(action.pointMapPointSize);
-      _.set(state, 'series[0].mapOptions.pointMapPointSize', _.isFinite(pointSize) ? _.clamp(pointSize, 4, 40) : null);
+      _.set(
+        state,
+        'series[0].mapOptions.pointMapPointSize',
+        setDefault({ value: pointSize, constantKey: 'POINT_MAP_POINT_SIZE' })
+      );
       break;
 
     case actions.SET_LINE_WEIGHT:
       const lineWeight = parseFloat(action.lineWeight);
-      _.set(state, 'series[0].mapOptions.lineWeight', _.isFinite(lineWeight) ? _.clamp(lineWeight, 1, 10) : null);
+      _.set(
+        state,
+        'series[0].mapOptions.lineWeight',
+        setDefault({ value: lineWeight, constantKey: 'LINE_WEIGHT' })
+      );
       break;
 
     case actions.SET_MINIMUM_LINE_WEIGHT:
       const minimumLineWeight = parseFloat(action.minimumLineWeight);
-      _.set(state, 'series[0].mapOptions.minimumLineWeight', _.isFinite(minimumLineWeight) ? _.clamp(minimumLineWeight, 1, 10) : null);
+      _.set(state,
+        'series[0].mapOptions.minimumLineWeight',
+        setDefault({ value: minimumLineWeight, constantKey: 'LINE_MAP_MIN_LINE_WEIGHT' })
+      );
       break;
 
     case actions.SET_MAXIMUM_LINE_WEIGHT:
       const maximumLineWeight = parseFloat(action.maximumLineWeight);
-      _.set(state, 'series[0].mapOptions.maximumLineWeight', _.isFinite(maximumLineWeight) ? _.clamp(maximumLineWeight, 1, 10) : null);
+      _.set(state,
+        'series[0].mapOptions.maximumLineWeight',
+        setDefault({ value: maximumLineWeight, constantKey: 'LINE_MAP_MAX_LINE_WEIGHT' })
+      );
       break;
 
     case actions.SET_MINIMUM_POINT_SIZE:
       const minimumPointSize = parseFloat(action.minimumPointSize);
-      _.set(state, 'series[0].mapOptions.minimumPointSize', _.isFinite(minimumPointSize) ? _.clamp(minimumPointSize, 4, 40) : null);
+      _.set(state,
+        'series[0].mapOptions.minimumPointSize',
+        setDefault({ value: minimumPointSize, constantKey: 'POINT_MAP_MIN_POINT_SIZE' })
+      );
       break;
 
     case actions.SET_MAXIMUM_POINT_SIZE:
       const maximumPointSize = parseFloat(action.maximumPointSize);
-      _.set(state, 'series[0].mapOptions.maximumPointSize', _.isFinite(maximumPointSize) ? _.clamp(maximumPointSize, 4, 40) : null);
+      _.set(state,
+        'series[0].mapOptions.maximumPointSize',
+        setDefault({ value: maximumPointSize, constantKey: 'POINT_MAP_MAX_POINT_SIZE' })
+      );
       break;
 
     case actions.SET_NUMBER_OF_DATA_CLASSES:
       const numberOfDataClasses = parseInt(action.numberOfDataClasses);
-      _.set(state, 'series[0].mapOptions.numberOfDataClasses', _.isFinite(numberOfDataClasses) ? _.clamp(numberOfDataClasses, 2, 7) : null);
+      _.set(
+        state,
+        'series[0].mapOptions.numberOfDataClasses',
+        setDefault({ value: numberOfDataClasses, constantKey: 'NUMBER_OF_DATA_CLASSES' })
+      );
       break;
 
     case actions.SET_MAX_CLUSTERING_ZOOM_LEVEL:
       const maxClusteringZoomLevel = parseInt(action.maxClusteringZoomLevel);
-      _.set(state, 'series[0].mapOptions.maxClusteringZoomLevel', _.isFinite(maxClusteringZoomLevel) ? _.clamp(maxClusteringZoomLevel, 1, 23) : null);
+      _.set(state,
+        'series[0].mapOptions.maxClusteringZoomLevel',
+        setDefault({ value: maxClusteringZoomLevel, constantKey: 'CLUSTERING_ZOOM' })
+      );
       break;
 
     case actions.SET_POINT_THRESHOLD:
       const pointThreshold = parseInt(action.pointThreshold);
-      _.set(state, 'series[0].mapOptions.pointThreshold', _.isFinite(pointThreshold) ? _.clamp(pointThreshold, 100, 10000) : null);
+      _.set(state,
+        'series[0].mapOptions.pointThreshold',
+        setDefault({ value: pointThreshold, constantKey: 'POINT_THRESHOLD' })
+      );
       break;
 
     case actions.SET_CLUSTER_RADIUS:
       const clusterRadius = parseInt(action.clusterRadius);
-      _.set(state, 'series[0].mapOptions.clusterRadius', _.isFinite(clusterRadius) ? _.clamp(clusterRadius, 20, 120) : null);
+      _.set(state,
+        'series[0].mapOptions.clusterRadius',
+        setDefault({ value: clusterRadius, constantKey: 'CLUSTER_RADIUS' })
+      );
       break;
 
     case actions.SET_MAX_CLUSTER_SIZE:
       const maxClusterSize = parseInt(action.maxClusterSize);
-      _.set(state, 'series[0].mapOptions.maxClusterSize', _.isFinite(maxClusterSize) ? _.clamp(maxClusterSize, 24, 50) : null);
+      _.set(state,
+        'series[0].mapOptions.maxClusterSize',
+        setDefault({ value: maxClusterSize, constantKey: 'CLUSTER_SIZE' })
+      );
       break;
 
     case actions.SET_STACK_RADIUS:
       const stackRadius = parseInt(action.stackRadius);
-      _.set(state, 'series[0].mapOptions.stackRadius', _.isFinite(stackRadius) ? _.clamp(stackRadius, 1, 80) : null);
+      _.set(state,
+        'series[0].mapOptions.stackRadius',
+        setDefault({ value: stackRadius, constantKey: 'STACK_RADIUS' })
+      );
       break;
 
     case actions.SET_BASE_LAYER:
@@ -242,6 +284,24 @@ export default function map(state, action) {
       _.set(state, 'configuration.mapPitchAndBearing', action.pitchAndBearing);
       break;
 
+    case actions.SET_SHAPE_FILL_COLOR:
+      _.set(state, 'series[0].mapOptions.shapeFillColor', action.shapeFillColor);
+      break;
+
+    case actions.SET_SHAPE_FILL_OPACITY:
+      const shapeFillOpacity = parseFloat(action.shapeFillOpacity);
+      _.set(state, 'series[0].mapOptions.shapeFillOpacity', _.isNaN(shapeFillOpacity) ? DEFAULT_SHAPE_FILL_OPACITY : _.clamp(shapeFillOpacity, 0, 1));
+      break;
+
+    case actions.SET_SHAPE_OUTLINE_COLOR:
+      _.set(state, 'series[0].mapOptions.shapeOutlineColor', action.shapeOutlineColor);
+      break;
+
+    case actions.SET_SHAPE_OUTLINE_WIDTH:
+      const shapeOutlineWidth = parseFloat(action.shapeOutlineWidth);
+      _.set(state, 'series[0].mapOptions.shapeOutlineWidth', _.isFinite(shapeOutlineWidth) ? _.clamp(shapeOutlineWidth, 0.5, 8) : DEFAULT_SHAPE_OUTLINE_WIDTH);
+      break;
+
     case actions.RECEIVE_METADATA:
     case actions.SET_FILTERS:
     case actions.SET_TITLE:
@@ -258,4 +318,11 @@ export default function map(state, action) {
   }
 
   return state;
+}
+
+function setDefault({ value: defaultValue, constantKey: constantKeyToFetchValue }) {
+  const minValue = VIF_CONSTANTS[constantKeyToFetchValue].MIN;
+  const maxValue = VIF_CONSTANTS[constantKeyToFetchValue].MAX;
+
+  return _.isFinite(defaultValue) ? _.clamp(defaultValue, minValue, maxValue) : null;
 }

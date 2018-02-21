@@ -59,7 +59,9 @@ class RadiusSlider extends Component {
     };
 
     return (
-      <div styleName="radius-slider">
+      // Adding classname so that we can override styling for radius sliders added in sitechrome header,
+      // which requires two variations of radius slider
+      <div styleName="radius-slider" className="radius-slider">
         <div styleName="section radius-section">
           <Slider {...sliderProps} />
         </div>

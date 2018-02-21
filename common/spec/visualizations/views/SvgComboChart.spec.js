@@ -608,7 +608,7 @@ describe('SvgComboChart', () => {
       comboChart.chart.render(null, data);
 
       const $tickLabels = comboChart.element.find('.x.axis text');
-      assert.equal($tickLabels.first().text(), '2017/09…');
+      assert.equal($tickLabels.first().text(), '2017/09/01');
     });
   });
 });

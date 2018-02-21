@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect } from '../../utils';
+import { customConnect } from 'common/connectUtils';
 import Autocomplete from 'common/autocomplete/components/Autocomplete';
 import { renderUserAutocompleteResult } from './UserAutocompleteResult';
 import UserFilter from './UserFilter';
@@ -44,4 +44,4 @@ const mapDispatchToProps = {
   userAutocomplete: Actions.userAutocomplete
 };
 
-export default fullConnect(null, mapDispatchToProps)(UserSearchBar);
+export default customConnect({ mapDispatchToProps })(UserSearchBar);

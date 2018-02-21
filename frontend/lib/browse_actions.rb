@@ -279,6 +279,10 @@ module BrowseActions
       catalog_config = Hashie::Mash.new
     end
 
+    vanity_params = if defined?(@catalog_landing_page)
+      @catalog_landing_page.params_for_catalog.deep_symbolize_keys
+    end || {}
+
     # grab the user's params unless we're forcing default
     if options[:force_default]
       user_params = {}
@@ -311,6 +315,7 @@ module BrowseActions
       merge(configured_options). # whatever they configured is somewhat important
       merge(options).            # whatever the call configures is more important
       merge(configured_params).  # gives the domain a chance to override the call
+      merge(vanity_params).      # custom params from Catalog Landing Page config
       merge(user_params)         # anything from the queryparam is most important
 
     # munge params to types we expect
@@ -760,7 +765,6 @@ module BrowseActions
     end
   end
 
-  # should this also check to see if govstat is turned on?
   def measures_catalog_entries_enabled?
     FeatureFlags.derive(nil, defined?(request) ? request : nil)[:open_performance_standalone_measures]
   end

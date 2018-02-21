@@ -24,8 +24,6 @@ describe('VifPointOverlay', () => {
       addSource: sinon.spy(),
       addLayer: sinon.spy(),
       getSource: sinon.stub().returns({}),
-      removeSource: sinon.spy(),
-      removeLayer: sinon.spy(),
       setPaintProperty: sinon.spy(),
       style: {}
     };
@@ -36,11 +34,13 @@ describe('VifPointOverlay', () => {
     vifPointOverlay = new VifPointOverlay(mockMap, visualizationElement, mouseInteractionHandler);
     vifPointOverlay._pointsAndStacks = {
       setup: sinon.spy(),
-      update: sinon.spy()
+      update: sinon.spy(),
+      destroy: sinon.spy()
     };
     vifPointOverlay._clusters = {
       setup: sinon.spy(),
-      update: sinon.spy()
+      update: sinon.spy(),
+      destroy: sinon.spy()
     };
     vifPointOverlay._legend = {
       show: sinon.spy(),
@@ -266,10 +266,8 @@ describe('VifPointOverlay', () => {
     it('should remove the map layer, source and legend', () => {
       vifPointOverlay.destroy();
 
-      sinon.assert.calledWith(mockMap.removeLayer, 'stack-circle');
-      sinon.assert.calledWith(mockMap.removeLayer, 'stack-count-label');
-      sinon.assert.calledWith(mockMap.removeLayer, 'point');
-      sinon.assert.calledWith(mockMap.removeSource, 'pointVectorDataSource');
+      sinon.assert.called(vifPointOverlay._pointsAndStacks.destroy);
+      sinon.assert.called(vifPointOverlay._clusters.destroy);
       sinon.assert.called(vifPointOverlay._legend.destroy);
     });
   });

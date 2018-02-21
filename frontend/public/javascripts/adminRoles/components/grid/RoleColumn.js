@@ -1,12 +1,11 @@
 import cond from 'lodash/fp/cond';
 import constant from 'lodash/fp/constant';
 import stubTrue from 'lodash/fp/stubTrue';
+import isNil from 'lodash/isNil';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import cssModules from 'react-css-modules';
-import { connect } from 'react-redux';
 
-import { connectLocalization } from 'common/components/Localization';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 
 import * as selectors from '../../adminRolesSelectors';
 import Grid from '../util/Grid';
@@ -23,6 +22,7 @@ const mapStateToProps = state => ({
 
 class RoleColumn extends Component {
   static propTypes = {
+    I18n: I18nPropType,
     editingRole: PropTypes.object.isRequired,
     isEditCustomRolesAppState: PropTypes.bool.isRequired,
     isEditIndividualRoleAppState: PropTypes.bool.isRequired,
@@ -32,12 +32,12 @@ class RoleColumn extends Component {
 
   render() {
     const {
+      I18n,
       editingRole,
       isEditCustomRolesAppState,
       isEditIndividualRoleAppState,
       rightCategories,
-      role,
-      localization: { translate }
+      role
     } = this.props;
     const editingThisColumn = selectors.getIdFromRole(role) === selectors.getIdFromRole(editingRole);
     const editingColumn = (isEditIndividualRoleAppState && editingThisColumn) || isEditCustomRolesAppState;
@@ -51,10 +51,16 @@ class RoleColumn extends Component {
       [stubTrue, constant('custom-role-column')]
     ])();
 
+    const roleId = selectors.getIdFromRole(role);
     const roleName = selectors.getRoleNameFromRole(role);
     const roleDisplayName = isDefault
-      ? translate(selectors.getRoleNameTranslationKeyPathFromRole(role))
+      ? I18n.t(selectors.getRoleNameTranslationKeyPathFromRole(role))
       : roleName;
+
+    const numberOfUsers = selectors.getNumberOfUsersFromRole(role);
+    const numberOfInvitedUsers = selectors.getNumberOfInvitedUsersFromRole(role);
+    const showNUmberOfInvitedUsers = !isNil(numberOfInvitedUsers) && numberOfInvitedUsers > 0;
+
     return (
       <Grid.Column styleName={styleName}>
         <Grid.Header styleName="role-header-cell">
@@ -74,17 +80,23 @@ class RoleColumn extends Component {
           />
         ))}
         <Grid.Cell styleName="role-footer-cell">
-          <a href={`/admin/users?roleId=${selectors.getIdFromRole(role)}`}>
-            {selectors.getNumberOfUsersFromRole(role)}
+          <a href={`/admin/users?roleId=${roleId}`}>
+            {I18n.t('screens.admin.roles.index_page.grid.user_count', {
+              count: numberOfUsers
+            })}
           </a>
-          {' / '}
-          <a href={`/admin/users/invited?roleId=${selectors.getIdFromRole(role)}`}>
-            {`${selectors.getNumberOfInvitedUsersFromRole(role)} ${translate('screens.admin.roles.index_page.grid.invited')}`}
-          </a>
+          {showNUmberOfInvitedUsers &&
+            <span>
+              {' / '}
+              <a href={`/admin/users/invited?roleId=${roleId}`}>
+                {`${selectors.getNumberOfInvitedUsersFromRole(role)} ${I18n.t('screens.admin.roles.index_page.grid.invited')}`}
+              </a>
+            </span>
+          }
         </Grid.Cell>
       </Grid.Column>
     );
   }
 }
 
-export default connectLocalization(connect(mapStateToProps)(cssModules(RoleColumn, styles)));
+export default customConnect({ mapStateToProps, styles })(RoleColumn);

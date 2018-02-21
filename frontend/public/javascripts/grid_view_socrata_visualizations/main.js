@@ -2,7 +2,7 @@
 
 import { FeatureFlags } from 'common/feature_flags';
 import Visualizations from 'common/visualizations';
-import { assetWillEnterApprovalsQueueOnPublish } from 'common/asset/utils';
+import { assetWillEnterApprovalsQueueWhenMadePublic } from 'common/asset/utils';
 import { assetIsPending } from 'common/asset/utils/helpers';
 
 import ColumnEditor from './column_editor';
@@ -38,9 +38,8 @@ function updatePageBasedOnApprovalOutcome(assetWillEnterApprovalsQueue) {
 
 window.onload = () => {
   if (!FeatureFlags.value('enable_new_dataset_sharing_ux')) {
-    assetWillEnterApprovalsQueueOnPublish({
-      coreView: window.blist.dataset,
-      assetWillBePublic: blist.dataset.isPendingPublic()
+    assetWillEnterApprovalsQueueWhenMadePublic({
+      coreView: window.blist.dataset
     }).then((result) => updatePageBasedOnApprovalOutcome(result));
   }
 };

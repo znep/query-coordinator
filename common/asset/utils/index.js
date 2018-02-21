@@ -29,3 +29,29 @@ export const assetWillEnterApprovalsQueueOnPublish = ({ coreView, assetWillBePub
     return Promise.resolve(getResult(helpers.assetIsApproved(coreView)));
   }
 };
+
+// EN-21598: Returns Promise of whether the given asset will enter the approvals queue when it is made Public
+export const assetWillEnterApprovalsQueueWhenMadePublic = ({ coreView }) => {
+  if (!FeatureFlags.value('use_fontana_approvals')) {
+    return Promise.resolve(false);
+  }
+
+  const getResult = (assetIsAutoApproved) => {
+    return !!(
+      !assetIsAutoApproved &&
+      helpers.currentUserHasRights() &&
+      helpers.manualApprovalRequiredForProvenanceType(coreView)
+    );
+  };
+
+  if (coreView.publishedViewUid) {
+    // If the asset has a publishedViewUid then we check its published view for the 'approved' status.
+    return (
+      helpers.fetchPublishedCoreView(coreView.publishedViewUid).then((publishedCoreView) =>
+        getResult(helpers.assetIsApproved(publishedCoreView))
+      )
+    );
+  } else {
+    return Promise.resolve(getResult(helpers.assetIsApproved(coreView)));
+  }
+};

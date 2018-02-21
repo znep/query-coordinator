@@ -14,5 +14,8 @@ export const APPROVAL_STATUS_APPROVED = 'approved';
 export const APPROVAL_STATUS_REJECTED = 'rejected';
 export const APPROVAL_STATUS_PENDING = 'pending';
 
+export const APPROVAL_SETTINGS_AUTOMATIC = 'automatic';
+export const APPROVAL_SETTINGS_MANUAL = 'manual';
+
 export const AUTHORITY_OFFICIAL = 'official';
 export const AUTHORITY_COMMUNITY = 'community';

@@ -11,6 +11,12 @@ export const setActivePanel = (panelId) => ({
   panelId
 });
 
+export const SET_DATA_SOURCE_UID = 'SET_DATA_SOURCE_UID';
+export const setDataSourceUid = (uid) => ({
+  type: SET_DATA_SOURCE_UID,
+  uid
+});
+
 export const SET_DATA_SOURCE_METADATA_SUCCESS = 'SET_DATA_SOURCE_METADATA_SUCCESS';
 export const setDataSourceMetadataSuccess =
   (uid, rowCount, dataSourceView, displayableFilterableColumns) => ({
@@ -26,23 +32,6 @@ export const setDataSourceMetadataFail = () => ({
   type: SET_DATA_SOURCE_METADATA_FAIL
 });
 
-export const fetchDataSourceViewSuccess = (uid, rowCount, dataSourceView, displayableFilterableColumns) => {
-  return async (dispatch) => {
-    if (_.some(displayableFilterableColumns, ['renderTypeName', 'calendar_date'])) {
-      dispatch(
-        setDataSourceMetadataSuccess(uid, rowCount, dataSourceView, displayableFilterableColumns)
-      );
-    } else {
-      dispatch(setDataSourceMetadataFail());
-    }
-  };
-};
-
-export const FETCH_DATA_SOURCE_VIEW_FAIL = 'FETCH_DATA_SOURCE_VIEW_FAIL';
-export const fetchDataSourceViewFail = () => ({
-  type: FETCH_DATA_SOURCE_VIEW_FAIL
-});
-
 // Loads the metadata for the view found at dataSourceLensUid.
 export const fetchDataSourceView = (uid) => {
   return async (dispatch, getState) => {
@@ -54,6 +43,12 @@ export const fetchDataSourceView = (uid) => {
       // Already fetched.
       return;
     }
+
+    // Set the uid, regardless of success or failure. This may help recover in
+    // the event that a dataset can't be fetched due to being deleted or not yet
+    // migrated. We'll rely on the validation logic to indicate that a selection
+    // was attempted but not able to be completed.
+    dispatch(setDataSourceUid(uid));
 
     const soqlDataProvider = new SoqlDataProvider({
       domain: window.location.hostname,
@@ -75,7 +70,7 @@ export const fetchDataSourceView = (uid) => {
       columns = await metadataProvider.getDisplayableFilterableColumns(metadata);
 
       dispatch(
-        fetchDataSourceViewSuccess(
+        setDataSourceMetadataSuccess(
           uid,
           rowCount,
           metadata,
@@ -84,7 +79,7 @@ export const fetchDataSourceView = (uid) => {
       );
     } catch (ex) {
       console.error(ex);
-      dispatch(fetchDataSourceViewFail());
+      dispatch(setDataSourceMetadataFail());
     }
   };
 };

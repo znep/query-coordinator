@@ -3275,10 +3275,10 @@ en:
           see_tasks: See tasks
         data_source:
           message_default: Select the dataset that contains the data pertaining to this measure.
-          message_empty: The selected dataset doesn't have any data yet, so you won't be able to compute a metric.
-          message_invalid: The selected dataset is not suitable for a measure or could not be found.
-          message_no_date_column: The selected dataset does not contain a date column, so you won't be able to compute a metric.
-          message_valid: The dataset you've selected is valid and has data (%{rowCount} rows); you can now configure the metric calculation.
+          message_empty: Your selected dataset contains no rows of data. You may not be able to set your metric calculation until rows are added.
+          message_no_date_column: This dataset has no date column. Please configure a date column or select another dataset.
+          message_not_synced_html: There is a delay with <a href="https://support.socrata.com/hc/en-us/articles/115012661308-Socrata-Data-Refresh-Process" target="_blank">dataset syncing</a>. If you have additional questions, please contact support.
+          message_valid: Your dataset has %{rowCount} rows. You may now configure your measure's calculation.
           reset: Reset
           selected_dataset_label: "Selected dataset:"
           selected_dataset_placeholder: none

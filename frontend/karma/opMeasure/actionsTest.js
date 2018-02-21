@@ -17,6 +17,11 @@ describe('thunk actions', () => {
     mockStore = configureStore([thunk]);
   });
 
+  afterEach(() => {
+    EditorActionsAPI.__ResetDependency__('SoqlDataProvider');
+    EditorActionsAPI.__ResetDependency__('MetadataProvider');
+  });
+
   describe('openEditModal', () => {
     it('clones the view measure coreView and opens the edit modal', (done) => {
       const measure = { test: 'foo' };
@@ -52,17 +57,13 @@ describe('thunk actions', () => {
         });
       });
 
-      afterEach(() => {
-        EditorActionsAPI.__ResetDependency__('MetadataProvider');
-        EditorActionsAPI.__ResetDependency__('SoqlDataProvider');
-      });
-
       it('restores non-persisted data source state', (done) => {
         const measure = {
           dataSourceLensUid: 'test-test',
           test: 'foo'
         };
         const expectedActions = [
+          editorActions.SET_DATA_SOURCE_UID,
           editorActions.SET_DATA_SOURCE_METADATA_SUCCESS,
           editorActions.OPEN_EDIT_MODAL
         ];
@@ -162,10 +163,6 @@ describe('thunk actions', () => {
     let getDisplayableFilterableColumnsStub;
     let viewMetadata;
 
-    afterEach(() => {
-      EditorActionsAPI.__ResetDependency__('SoqlDataProvider');
-    });
-
     describe('a valid 4x4 is provided', () => {
       beforeEach(() => {
         viewMetadata = { id: 'test-test', columns: [] };
@@ -186,6 +183,9 @@ describe('thunk actions', () => {
       it('dispatches fetchDataSourceView(four-four)', (done) => {
         const expectedActions = [
           {
+            uid: 'test-test',
+            type: editorActions.SET_DATA_SOURCE_UID
+          }, {
             uid: 'test-test',
             type: editorActions.SET_DATA_SOURCE_METADATA_SUCCESS,
             rowCount: 12345,
@@ -216,10 +216,6 @@ describe('thunk actions', () => {
     let getDisplayableFilterableColumnsStub;
     let viewMetadata;
 
-    afterEach(() => {
-      EditorActionsAPI.__ResetDependency__('SoqlDataProvider');
-    });
-
     describe('when a valid 4x4 is provided', () => {
       beforeEach(() => {
         viewMetadata = { id: 'test-test', columns: [] };
@@ -238,9 +234,12 @@ describe('thunk actions', () => {
       });
 
       describe('for a dataset with a date column', () => {
-        it('dispatches setDataSourceMetadataSuccess', (done) => {
+        it('dispatches setDataSourceUid and setDataSourceMetadataSuccess', (done) => {
           const expectedActions = [
             {
+              type: editorActions.SET_DATA_SOURCE_UID,
+              uid: 'test-test'
+            }, {
               type: editorActions.SET_DATA_SOURCE_METADATA_SUCCESS,
               uid: 'test-test',
               rowCount: 12345,
@@ -260,27 +259,48 @@ describe('thunk actions', () => {
           });
         });
       });
+    });
 
-      describe('for a dataset without a date column', () => {
-        it('dispatches setDataSourceMetadataFail', (done) => {
-          const notADateColumn = { name: 'foo', renderTypeName: 'text' };
-          getDisplayableFilterableColumnsStub = sinon.stub().resolves([notADateColumn]);
+    describe('when a valid 4x4 is not provided', () => {
+      beforeEach(() => {
+        getRowCountStub = sinon.stub().rejects();
+        getDatasetMetadataStub = sinon.stub().rejects();
+        getDisplayableFilterableColumnsStub = sinon.stub();
 
-          const expectedActions = [
-            {
-              type: editorActions.SET_DATA_SOURCE_METADATA_FAIL
-            }
-          ];
+        EditorActionsAPI.__Rewire__('SoqlDataProvider', function() {
+          this.getRowCount = getRowCountStub;
+        });
 
-          const store = mockStore();
-          store.dispatch(editorActions.fetchDataSourceView(uid));
+        EditorActionsAPI.__Rewire__('MetadataProvider', function() {
+          this.getDatasetMetadata = getDatasetMetadataStub;
+          this.getDisplayableFilterableColumns = getDisplayableFilterableColumnsStub;
+        });
 
-          _.defer(() => {
-            assert.deepEqual(store.getActions(), expectedActions);
-            sinon.assert.calledOnce(getRowCountStub);
-            sinon.assert.calledOnce(getDatasetMetadataStub);
-            done();
-          });
+        sinon.stub(console, 'error');
+      });
+
+      afterEach(() => {
+        console.error.restore();
+      });
+
+      it('dispatches setDataSourceUid and setDataSourceMetadataFail', (done) => {
+        const expectedActions = [
+          {
+            type: editorActions.SET_DATA_SOURCE_UID,
+            uid: 'test-test'
+          },
+          {
+            type: editorActions.SET_DATA_SOURCE_METADATA_FAIL
+          }
+        ];
+
+        const store = mockStore();
+        store.dispatch(editorActions.fetchDataSourceView(uid));
+
+        _.defer(() => {
+          assert.deepEqual(store.getActions(), expectedActions);
+          sinon.assert.calledOnce(getRowCountStub);
+          done();
         });
       });
     });

@@ -66,7 +66,7 @@ const setCalculationType = (state, type) => {
 };
 
 const resetDataSource = (state) => {
-  const { measure, errors } = state;
+  const { measure } = state;
   const defaultCalculationType = CalculationTypes.COUNT;
   const reportingPeriod = _.get(measure, 'metricConfig.reportingPeriod', {});
 
@@ -84,12 +84,7 @@ const resetDataSource = (state) => {
     },
     cachedRowCount: undefined,
     dataSourceView: null,
-    displayableFilterableColumns: [],
-    errors: {
-      ...errors,
-      fetchDataSourceViewError: false,
-      setDataSourceMetadataError: false
-    }
+    displayableFilterableColumns: []
   };
 };
 
@@ -127,12 +122,24 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       };
     }
 
+    // Unlike SET_DATA_SOURCE_METADATA_SUCCESS, this is dispatched when a data
+    // source is selected by the user. It triggers regardless of whether the
+    // data source fetch is successful or not.
+    case actions.editor.SET_DATA_SOURCE_UID: {
+      const newState = updateMeasureProperty(resetDataSource(state), 'dataSourceLensUid', action.uid);
+      return {
+        ...newState,
+        // These property values serve as in-flight indicators.
+        cachedRowCount: null,
+        dataSourceView: {}
+      };
+    }
+
+    // N.B.: This action is dispatched when the editor is loaded if the measure
+    // already has a data source configured. It does not imply the user chose a
+    // new data source - we could just be loading an existing measure.
     case actions.editor.SET_DATA_SOURCE_METADATA_SUCCESS: {
       const { uid, rowCount, dataSourceView, displayableFilterableColumns } = action;
-      // N.B.: This action is dispatched when the editor is loaded. It does not imply the user
-      // chose a new data source - we could just be loading an existing measure.
-      // This means that we won't touch the metricConfig - if the user is switching data
-      // sources, dispatch a SET_DATA_SOURCE_UID first to reset the metricConfig to defaults.
       assertIsString(uid);
       assertIsNumber(rowCount);
       assertIsOneOfTypes(dataSourceView, 'object');
@@ -150,39 +157,19 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
         },
         cachedRowCount: rowCount,
         dataSourceView: dataSourceView,
-        displayableFilterableColumns: displayableFilterableColumns,
-        errors: {
-          fetchDataSourceViewError: false,
-          setDataSourceMetadataError: false
-        }
+        displayableFilterableColumns: displayableFilterableColumns
       };
     }
 
-    // Invalid state: dataset fetch request failed
-    case actions.editor.FETCH_DATA_SOURCE_VIEW_FAIL: {
-      const { errors } = state;
-
+    case actions.editor.SET_DATA_SOURCE_METADATA_FAIL:
       return {
         ...state,
-        errors: {
-          ...errors,
-          fetchDataSourceViewError: true
-        }
+        // Unset the in-flight indicators. These values match what gets set
+        // during resetDataSource.
+        cachedRowCount: undefined,
+        dataSourceView: null
       };
-    }
 
-    // Invalid state: set dataset metadata failed due to missing calendar_date column
-    case actions.editor.SET_DATA_SOURCE_METADATA_FAIL: {
-      const { errors } = state;
-
-      return {
-        ...state,
-        errors: {
-          ...errors,
-          setDataSourceMetadataError: true
-        }
-      };
-    }
 
     // Default state: no dataset selected
     case actions.editor.RESET_DATA_SOURCE: {

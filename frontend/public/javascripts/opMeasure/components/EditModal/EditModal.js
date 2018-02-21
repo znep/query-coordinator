@@ -200,9 +200,13 @@ EditModal.defaultProps = {
 };
 
 function mapStateToProps(state) {
-  const { dataSourceView, measure } = state.editor;
+  const { dataSourceView, displayableFilterableColumns, measure } = state.editor;
 
-  const validation = validateConfiguration(_.get(measure, 'metricConfig'), dataSourceView);
+  const validation = validateConfiguration(
+    _.get(measure, 'metricConfig'),
+    dataSourceView,
+    displayableFilterableColumns
+  );
 
   return _.merge({ validation }, state.editor);
 }

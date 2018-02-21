@@ -8,6 +8,7 @@ import I18n from 'common/i18n';
 import { formatNumber } from 'common/js_utils';
 import AssetSelector from 'common/components/AssetSelector';
 
+import validateConfiguration from '../../lib/validateConfiguration';
 import { changeDataSource, resetDataSource } from '../../actions/editor';
 
 const i18nOptions = { scope: 'open_performance.measure.edit_modal.data_source' };
@@ -73,7 +74,7 @@ export class DataPanel extends Component {
           </span>
         </p>
         <p>
-          {I18n.t('message_valid', _.merge(i18nOptions, { rowCount: formatNumber(rowCount) }))}
+          {I18n.t('message_valid', _.merge({ rowCount: formatNumber(rowCount) }, i18nOptions))}
           {' | '}
           {this.renderResetLink()}
         </p>
@@ -104,16 +105,15 @@ export class DataPanel extends Component {
     const { errors } = this.props;
 
     let errorMsg;
-    if (errors.fetchDataSourceViewError) {
-      errorMsg = I18n.t('message_invalid', i18nOptions);
-    }
-    if (errors.setDataSourceMetadataError) {
+    if (errors.badDataSource) {
+      errorMsg = I18n.t('message_not_synced_html', i18nOptions);
+    } else if (errors.noDateColumn) {
       errorMsg = I18n.t('message_no_date_column', i18nOptions);
     }
 
     return (
       <div className="selected-dataset alert error">
-        <p>{errorMsg}</p>
+        <p dangerouslySetInnerHTML={{ __html: errorMsg }} />
       </div>
     );
   }
@@ -181,8 +181,8 @@ DataPanel.propTypes = {
   onChangeDataSource: PropTypes.func,
   onResetDataSource: PropTypes.func,
   errors: PropTypes.shape({
-    fetchDataSourceViewError: PropTypes.bool,
-    setDataSourceMetadataError: PropTypes.bool
+    badDataSource: PropTypes.bool,
+    noDateColumn: PropTypes.bool
   })
 };
 
@@ -190,13 +190,21 @@ export function mapStateToProps(state) {
   const measure = _.get(state, 'editor.measure', {});
   const dataSourceName = _.get(state, 'editor.dataSourceView.name', '');
   const rowCount = _.get(state, 'editor.cachedRowCount');
-  const errors = _.get(state, 'editor.errors', {});
+
+  const validation = validateConfiguration(
+    _.get(measure, 'metricConfig'),
+    _.get(state, 'editor.dataSourceView'),
+    _.get(state, 'editor.displayableFilterableColumns')
+  );
+
+  const { noDataSource, noDateColumn } = validation.dataSource;
+  const badDataSource = noDataSource && !_.isNil(measure.dataSourceLensUid);
 
   return {
     measure,
     dataSourceName,
     rowCount,
-    errors
+    errors: { noDateColumn, badDataSource }
   };
 }
 

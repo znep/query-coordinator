@@ -39,6 +39,7 @@ const setCalculationType = (state, type) => {
   });
 
   const pathsToKeep = [
+    'measure.metricConfig.display.decimalPlaces',
     'measure.metricConfig.reportingPeriod',
     'measure.metricConfig.dateColumn'
   ];
@@ -69,6 +70,7 @@ const resetDataSource = (state) => {
   const { measure } = state;
   const defaultCalculationType = CalculationTypes.COUNT;
   const reportingPeriod = _.get(measure, 'metricConfig.reportingPeriod', {});
+  const display = _.get(measure, 'metricConfig.display', {});
 
   return {
     ...state,
@@ -76,6 +78,9 @@ const resetDataSource = (state) => {
       ...measure,
       dataSourceLensUid: null,
       metricConfig: {
+        display: {
+          ...display
+        },
         reportingPeriod: {
           ...reportingPeriod
         },
@@ -343,6 +348,12 @@ export default (state = _.cloneDeep(INITIAL_STATE), action) => {
       if (_.isNil(currentStartDate)) {
         const defaultStartDate = moment().startOf('year').format('YYYY-MM-DD');
         _.set(nextState, 'measure.metricConfig.reportingPeriod.startDate', defaultStartDate);
+      }
+
+      // TODO: seems like we probably want something like _.merge({}, defaultMeasure, action.measure)
+      const decimalPlaces = _.get(nextState, 'measure.metricConfig.display.decimalPlaces');
+      if (_.isNil(decimalPlaces)) {
+        _.set(nextState, 'measure.metricConfig.display.decimalPlaces', 2);
       }
 
       return nextState;

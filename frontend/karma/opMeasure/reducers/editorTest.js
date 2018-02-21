@@ -180,7 +180,7 @@ describe('Edit modal reducer', () => {
 
       state = reducer(state, actions.editor.resetDataSource());
 
-      assert.deepEqual(state.measure.metricConfig, {type: COUNT, reportingPeriod: {}});
+      assert.deepEqual(state.measure.metricConfig, {type: COUNT, reportingPeriod: {}, display: {}});
     });
 
     it('preserves reportingPeriod data', () => {

@@ -74,7 +74,9 @@ export class MeasureResultCard extends Component {
       { percent: asPercent }
     );
     let formatted = result;
-    const parts = result.split('.');
+    const parts = result.split('.'); // BigNumber default separator is '.'
+
+    const separator = I18n.defaultSeparator;
 
     if (parts[0].length > 6) {
       // This is a large number, where decimal places are kind of irrelavant.
@@ -84,12 +86,16 @@ export class MeasureResultCard extends Component {
       if (decimalPlaces === 0) {
         formatted = parts[0];
       } else if (decimalPlaces !== -1 && parts[1].length > decimalPlaces) {
-        formatted = `${parts[0]}${I18n.defaultSeparator}${parts[1].substring(0, decimalPlaces)}`;
+        formatted = `${parts[0]}${separator}${parts[1].substring(0, decimalPlaces)}`;
       }
     }
     // We might still not have room for however many decimalPlaces are requested.
     if (formatted.length > maxLength) {
       formatted = formatted.substring(0, maxLength);
+      // There might be a trailing separator that should be removed.
+      if (formatted.endsWith(separator)) {
+        formatted = formatted.substring(0, formatted.length - 1);
+      }
     }
 
     return (
@@ -201,7 +207,7 @@ MeasureResultCard.defaultProps = {
 MeasureResultCard.propTypes = {
   measure: PropTypes.shape({
     // Add more as additional parts of the measure are used.
-    metric: PropTypes.shape({
+    metricConfig: PropTypes.shape({
       display: PropTypes.shape({
         label: PropTypes.string,
         decimalPlaces: PropTypes.number,

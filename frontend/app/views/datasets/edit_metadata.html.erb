@@ -332,6 +332,8 @@
       $(document).ready(function() {
 
         /**
+         * STEP FIVE - Redirect
+         *
          * This might seem silly. What seems more silly to me is the fact that doing a GET to
          * /d/<four-four>/edit_metadata will actually somehow cause the Rails app to do a PUT
          * to Core Server to overwrite whatever the view is in the database with whatever Rails
@@ -357,6 +359,9 @@
           redirectToEditMetadataCacheBustingUrl();
         }
 
+        /**
+         * STEP FOUR - Actually purge the file from the file data store.
+         */
         function actuallyPurgeFile(domain, fourByFour, fileId) {
           var url = 'https://' + domain + '/api/views/' + fourByFour + '/files/' + fileId;
 
@@ -394,6 +399,19 @@
               url: 'https://' + domain + '/api/views/' + fourByFour + '?method=getPublicationGroup',
               success: function(response) {
 
+                /**
+                 * STEP THREE - If we have expunged the file reference from both the
+                 *              unpublished and the published versions of the view
+                 *              (where the version of the view in question actually
+                 *              exists), then delete the file through the file data API.
+                 */
+                function conditionallyPurgeFile() {
+
+                  if (filePurgedFromUnpublishedView && filePurgedFromPublishedView) {
+                    actuallyPurgeFile(domain, fourByFour, blobId);
+                  }
+                }
+
                 function conditionallyPurgeFileFromView(view) {
                   var cleanAttachments = _.get(view, 'metadata.attachments', []).
                     filter(function(attachment) {
@@ -419,14 +437,7 @@
                         filePurgedFromPublishedView = true;
                       }
 
-                      /**
-                       * STEP THREE - If we have expunged the file reference from both the
-                       *              unpublished and the published versions of the view,
-                       *              then delete the file through the file data API.
-                       */
-                      if (filePurgedFromUnpublishedView && filePurgedFromPublishedView) {
-                        actuallyPurgeFile(domain, fourByFour, blobId);
-                      }
+                      conditionallyPurgeFile();
                     },
                     error: showUnsafeDeleteError
                   });
@@ -440,8 +451,17 @@
                 var unpublishedView = _.find(response, {publicationStage: 'unpublished'});
                 var publishedView = _.find(response, {publicationStage: 'published'});
 
-                conditionallyPurgeFileFromView(unpublishedView);
-                conditionallyPurgeFileFromView(publishedView);
+                if (_.isUndefined(unpublishedView)) {
+                  filePurgedFromUnpublishedView = true;
+                } else {
+                  conditionallyPurgeFileFromView(unpublishedView);
+                }
+
+                if (_.isUndefined(publishedView)) {
+                  filePurgedFromPublishedView = true;
+                } else {
+                  conditionallyPurgeFileFromView(publishedView);
+                }
               },
               error: showUnsafeDeleteError
             });

@@ -11,13 +11,18 @@ import {
   SOURCES as LINE_SOURCES
 } from '../vifOverlays/partials/Lines';
 
+import {
+  LAYERS as SHAPES_LAYERS,
+  SOURCES as SHAPES_SOURCES
+} from '../vifOverlays/partials/Shapes';
+
 const MOUSE_CLICKABLE_LAYER_IDS = [CLUSTER_LAYERS.CLUSTER_CIRCLE];
 const CUSTOM_FLYOUT_LAYERS = [POINT_AND_STACK_LAYERS.STACK_CIRCLE];
-const GENERIC_FLYOUT_LAYERS = [POINT_AND_STACK_LAYERS.POINT, LINE_LAYERS.LINE];
+const GENERIC_FLYOUT_LAYERS = [POINT_AND_STACK_LAYERS.POINT, LINE_LAYERS.LINE, SHAPES_LAYERS.SHAPE_FILL];
 const FLYOUT_LAYERS = CUSTOM_FLYOUT_LAYERS.concat(GENERIC_FLYOUT_LAYERS);
 
-// Handles mouse events (mousemove, click) for points/stacks/clusters displayed
-// by VifPointOverlay.
+// Handles mouse events (mousemove, click) for points/stacks/clusters/lines/shapes displayed
+// by VifPointOverlay, VifLineOverlay and VifShapeOverlay.
 // Sample Feature: (Geojson object got from mapbox-gl map)
 //    {
 //      "type": "Feature",
@@ -88,6 +93,10 @@ export default class MouseInteractionHandler {
   // and show tipsy for it.
   _onMouseMove = (event) => {
     let mouseInteractableLayerIds = MOUSE_CLICKABLE_LAYER_IDS.concat(CUSTOM_FLYOUT_LAYERS);
+
+    if (_.isEmpty(this._vif)) {
+      return;
+    }
 
     if (!_.isEmpty(this._vif.getAllFlyoutColumns())) {
       mouseInteractableLayerIds = mouseInteractableLayerIds.concat(GENERIC_FLYOUT_LAYERS);

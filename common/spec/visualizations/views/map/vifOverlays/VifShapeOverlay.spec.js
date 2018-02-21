@@ -1,12 +1,15 @@
-import { mapMockVif } from './../../../mapMockVif';
+import $ from 'jquery';
 
-import VifShapeOverlay from 'common/visualizations/views/map/vifOverlays/VifShapeOverlay';
 import DataProvider from 'common/visualizations/dataProviders/DataProvider';
+import VifShapeOverlay from 'common/visualizations/views/map/vifOverlays/VifShapeOverlay';
+import { mapMockVif } from 'common/spec/visualizations/mapMockVif';
 
 describe('VifShapeOverlay', () => {
-  let vifShapeOverlay;
-  let mockMap;
+  const visualizationElement = $('<div>', { 'class': 'socrata-visualization' });
   let fakeServer;
+  let mockMap;
+  let mouseInteractionHandler;
+  let vifShapeOverlay;
 
   beforeEach(() => {
     mockMap = {
@@ -16,7 +19,10 @@ describe('VifShapeOverlay', () => {
       setPaintProperty: sinon.spy(),
       style: {}
     };
-    vifShapeOverlay = new VifShapeOverlay(mockMap);
+    mouseInteractionHandler = {
+      setupOrUpdate: sinon.spy()
+    };
+    vifShapeOverlay = new VifShapeOverlay(mockMap, visualizationElement, mouseInteractionHandler);
     vifShapeOverlay._shapes = {
       setup: sinon.spy(),
       update: sinon.spy(),
@@ -40,16 +46,19 @@ describe('VifShapeOverlay', () => {
   });
 
   describe('colorBoundariesBy not configured', () => {
+    let query;
     let vif;
     beforeEach(() => {
       vif = mapMockVif({});
       vif.series[0].mapOptions.colorBoundariesBy = null;
+      query = '$query=select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}),' +
+        "min(:id) as __row_id__ where {{'point' column condition}}";
     });
 
     it('should render shapes without colorByCategories column configured', async() => {
       const expectedRenderOptions = sinon.match({
         colorByCategories: null,
-        dataUrl: sinon.match("$query=select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}) where {{'point' column condition}}"),
+        dataUrl: sinon.match(query),
         colorBy: '__color_by_category__'
       });
 
@@ -61,7 +70,7 @@ describe('VifShapeOverlay', () => {
     it('should render shapes without colorByCategories column configured', async() => {
       const expectedRenderOptions = sinon.match({
         colorByCategories: null,
-        dataUrl: sinon.match("$query=select simplify_preserve_topology(snap_to_grid(point,{snap_precision}),{simplify_precision}) where {{'point' column condition}}"),
+        dataUrl: sinon.match(query),
         colorBy: '__color_by_category__'
       });
 

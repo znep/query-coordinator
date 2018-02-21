@@ -6,6 +6,7 @@ import {
   clusterFeature,
   lineFeature,
   pointFeature,
+  shapeFeature,
   stackFeature
 } from './mockGeojsonFeatures';
 
@@ -115,6 +116,28 @@ describe('MouseInteractionHandler', () => {
       sinon.assert.calledWith(popupHandler.showPopup, {
         event: event,
         feature: lineFeature,
+        renderOptions: renderOptions,
+        vif: vif
+      });
+    });
+  });
+
+  describe('shape mouseover', () => {
+    beforeEach(() => {
+      mockMap.queryRenderedFeatures.returns([shapeFeature]);
+
+      mouseInteractionHandler.setupOrUpdate(vif, renderOptions);
+      simulateMouseEvent('mousemove', event);
+    });
+
+    it('should change the mouse cursor to auto', () => {
+      assert.equal(mapCanvas.style.cursor, 'auto');
+    });
+
+    it('should show popup for the shape', () => {
+      sinon.assert.calledWith(popupHandler.showPopup, {
+        event: event,
+        feature: shapeFeature,
         renderOptions: renderOptions,
         vif: vif
       });

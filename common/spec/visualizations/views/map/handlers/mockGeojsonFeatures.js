@@ -50,6 +50,27 @@ export const pointFeature = {
   }
 };
 
+export const shapeFeature = {
+  type: 'Feature',
+  geometry: {
+    type: 'MultiPolygon',
+    coordinates: [[[
+      [-87.94, 41.998],
+      [-87.94, 42.001],
+      [-87.935, 42.001],
+      [-87.936, 42],
+      [-87.938, 41.998],
+      [-87.94, 41.998]
+    ]]]
+  },
+  properties: {
+    '__row_id__':'row-a6uq.cdkg-n9cm'
+  },
+  layer: {
+    id: 'shape-fill'
+  }
+};
+
 export const stackFeature = {
   type: 'Feature',
   geometry: {

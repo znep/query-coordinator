@@ -2,18 +2,14 @@ import _ from 'lodash';
 
 import PopupFactory from '../PopupFactory';
 import { setPopupContentForLine } from '../contentFormatters/lineContentFormatter';
-import { setPopupContentForStack } from '../contentFormatters/stackContentFormatter';
 import { setPopupContentForPoint } from '../contentFormatters/pointContentFormatter';
-import { LAYERS as CLUSTER_LAYERS } from '../vifOverlays/partials/Clusters';
-import {
-  LAYERS as POINT_AND_STACK_LAYERS,
-  SOURCES as POINT_AND_STACK_SOURCES
-} from '../vifOverlays/partials/PointsAndStacks';
+import { setPopupContentForShape } from '../contentFormatters/shapeContentFormatter';
+import { setPopupContentForStack } from '../contentFormatters/stackContentFormatter';
 
-import {
-  LAYERS as LINE_LAYERS,
-  SOURCES as LINE_SOURCES
-} from '../vifOverlays/partials/Lines';
+import { LAYERS as CLUSTER_LAYERS } from '../vifOverlays/partials/Clusters';
+import { LAYERS as LINE_LAYERS } from '../vifOverlays/partials/Lines';
+import { LAYERS as POINT_AND_STACK_LAYERS } from '../vifOverlays/partials/PointsAndStacks';
+import { LAYERS as SHAPES_LAYERS } from '../vifOverlays/partials/Shapes';
 
 export default class PopupHandler {
   constructor(map) {
@@ -63,6 +59,8 @@ export default class PopupHandler {
       return setPopupContentForStack(popupParams);
     } else if (featureId === LINE_LAYERS.LINE) {
       return await setPopupContentForLine(popupParams);
+    } else if (featureId === SHAPES_LAYERS.SHAPE_FILL) {
+      return await setPopupContentForShape(popupParams);
     } else {
       throw new Error(`Unkown layer hover on ${featureId}`);
     }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import Pager from 'common/components/Pager';
 import ResultsTable from '../../components/ResultsTable';
 import MemberScreenName from './MemberScreenName';
@@ -118,4 +118,4 @@ const mapDispatchToProps = {
   onSort: () => console.log('onSort') // Actions.sortColumn
 };
 
-export default fullConnect(mapStateToProps, mapDispatchToProps)(TeamListTable);
+export default customConnect({ mapStateToProps, mapDispatchToProps })(TeamListTable);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import { Dropdown } from 'common/components';
 import * as Selectors from '../../selectors';
 
@@ -40,4 +40,4 @@ const mapStateToProps = (state, { I18n }) => {
   };
 };
 
-export default fullConnect(mapStateToProps)(TeamRolePicker);
+export default customConnect({ mapStateToProps })(TeamRolePicker);

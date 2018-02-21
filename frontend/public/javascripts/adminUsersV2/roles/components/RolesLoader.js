@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { connect } from 'react-redux';
+import { reduxConnect } from 'common/connectUtils';
 import { withRouter } from 'react-router';
 import flow from 'lodash/fp/flow';
 import get from 'lodash/fp/get';
@@ -22,4 +22,4 @@ const mapDispatchToProps = {
   changeUserRoleFilter: rolesActions.changeUserRoleFilter
 };
 
-export default flow(connect(null, mapDispatchToProps), withRouter)(RolesLoader);
+export default flow(reduxConnect(null, mapDispatchToProps), withRouter)(RolesLoader);

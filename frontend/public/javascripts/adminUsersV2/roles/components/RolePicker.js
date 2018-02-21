@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect, I18nPropType, getRoleDisplayName } from '../../utils';
+import { getRoleDisplayName } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import { Dropdown } from 'common/components';
 import * as Selectors from '../../selectors';
 
@@ -59,4 +60,4 @@ const mapStateToProps = (state, { I18n }) => {
   };
 };
 
-export default fullConnect(mapStateToProps)(RolePicker);
+export default customConnect({ mapStateToProps })(RolePicker);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import * as Selectors from '../../selectors';
 import * as Actions from '../actions';
 import { Link } from 'react-router';
@@ -80,4 +80,4 @@ const mapDispatchToProps = (dispatch, { params: { teamId }}) => bindActionCreato
   editTeam: () => Actions.editTeam(teamId)
 }, dispatch);
 
-export default fullConnect(mapStateToProps, mapDispatchToProps)(TeamView);
+export default customConnect({ mapStateToProps, mapDispatchToProps })(TeamView);

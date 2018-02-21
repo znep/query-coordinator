@@ -9,6 +9,8 @@ import rootReducer from './reducers';
 import { AppContainer } from 'react-hot-loader';
 import sagas from './sagas';
 
+const serverConfig = window.serverConfig;
+
 const sagaMiddleware = createSagaMiddleware();
 
 const middleware = [
@@ -29,7 +31,7 @@ const composeEnhancers =
   compose;
 
 const preloadedState = {
-  config: { ...window.serverConfig, enableTeams: FeatureFlags.value('enable_teams') }
+  config: { ...serverConfig, enableTeams: FeatureFlags.value('enable_teams') }
 };
 const store = createStore(rootReducer, preloadedState, composeEnhancers(applyMiddleware(...middleware)));
 sagaMiddleware.run(sagas);
@@ -37,7 +39,7 @@ sagaMiddleware.run(sagas);
 const render = Component => {
   ReactDOM.render(
     <AppContainer>
-      <Component store={store} />
+      <Component store={store} locale={serverConfig.locale} />
     </AppContainer>,
     document.querySelector('#app')
   );

@@ -12,7 +12,7 @@ import isEmpty from 'lodash/fp/isEmpty';
 import map from 'lodash/fp/map';
 import pick from 'lodash/fp/pick';
 
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 
 export class AddTeamMembersModal extends Component {
   static propTypes = {
@@ -111,4 +111,4 @@ const mapDispatchToProps = {
   userSearchQueryChanged: event => Actions.userSearchQueryChanged(event.target.value)
 };
 
-export default fullConnect(mapStateToProps, mapDispatchToProps)(AddTeamMembersModal);
+export default customConnect({ mapStateToProps, mapDispatchToProps })(AddTeamMembersModal);

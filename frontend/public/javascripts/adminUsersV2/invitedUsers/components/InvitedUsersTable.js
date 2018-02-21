@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { connect as fullConnect, I18nPropType, getRoleDisplayName } from '../../utils';
+import { getRoleDisplayName } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import toString from 'lodash/toString';
 import isNil from 'lodash/isNil';
 import ResultsTable from '../../components/ResultsTable';
@@ -88,4 +89,4 @@ const mapDispatchToProps = {
   resendInvitedUserEmail: Actions.resendInvitedUserEmail
 };
 
-export default fullConnect(mapStateToProps, mapDispatchToProps)(InvitedUsersTable);
+export default customConnect({ mapStateToProps, mapDispatchToProps })(InvitedUsersTable);

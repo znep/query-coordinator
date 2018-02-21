@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect as fullConnect, I18nPropType } from '../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import AssetCounts from './AssetCounts';
 import * as Selectors from '../selectors';
 
@@ -52,4 +52,4 @@ const mapStateToProps = state => ({
   teamsLoading: Selectors.getTeamsLoadingData(state)
 });
 
-export default fullConnect(mapStateToProps)(Counts);
+export default customConnect({ mapStateToProps })(Counts);

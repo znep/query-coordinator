@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Router, Route, Redirect, browserHistory } from 'react-router';
-import { connect as fullConnect } from '../utils';
+import { customConnect } from 'common/connectUtils';
 import InvitedUsers from '../invitedUsers/components/InvitedUsers';
 import Teams from '../teams/components/Teams';
 import Users from '../users/components/Users';
@@ -61,4 +61,4 @@ const mapStateToProps = state => ({
   usersAdminPath: Selectors.getUsersAdminPath(state)
 });
 
-export default fullConnect(mapStateToProps, mapDispatchToProps)(TabbedView);
+export default customConnect({ mapStateToProps, mapDispatchToProps })(TabbedView);

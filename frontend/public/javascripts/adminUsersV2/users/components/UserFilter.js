@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import RolePicker from '../../roles/components/RolePicker';
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import * as RoleActions from '../../roles/actions';
 import * as Selectors from '../../selectors';
 
@@ -42,4 +42,4 @@ const mapDispatchToProps = {
   onRoleChange: RoleActions.changeUserRoleFilter
 };
 
-export default fullConnect(mapStateToProps, mapDispatchToProps)(UserFilter);
+export default customConnect({ mapStateToProps, mapDispatchToProps })(UserFilter);

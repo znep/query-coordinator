@@ -5,7 +5,7 @@ import * as Selectors from '../../selectors';
 import * as Actions from '../actions';
 import Button from 'common/components/Button';
 
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import EditTeamFormInputs from './EditTeamFormInputs';
 
 export class EditTeamModal extends Component {
@@ -94,4 +94,4 @@ const mapDispatchToProps = {
   submitModal: Actions.submitEditTeamModal
 };
 
-export default fullConnect(mapStateToProps, mapDispatchToProps)(EditTeamModal);
+export default customConnect({ mapStateToProps, mapDispatchToProps })(EditTeamModal);

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as Selectors from '../../selectors';
 import * as Actions from '../actions';
-import { connect as fullConnect, I18nPropType } from '../../utils';
+import { customConnect, I18nPropType } from 'common/connectUtils';
 import ErrorList from '../../components/ErrorList';
 
 export class EditTeamFormInputs extends Component {
@@ -68,4 +68,4 @@ const mapDispatchToProps = {
   onChange: Actions.updateTeamForm
 };
 
-export default fullConnect(mapStateToProps, mapDispatchToProps)(EditTeamFormInputs);
+export default customConnect({ mapStateToProps, mapDispatchToProps })(EditTeamFormInputs);

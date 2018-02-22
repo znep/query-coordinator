@@ -1,3 +1,4 @@
+const $ = require('jquery');
 import _ from 'lodash';
 import mapboxgl from 'mapbox-gl';
 
@@ -43,6 +44,15 @@ export default class VifBaseMap {
         bearing: mapOptions.bearing
       });
     }
+
+    if (_.get(vif, 'series[0].type') === 'map') {
+      if (getTitle(this._existingVif) !== getTitle(vif) ||
+        getDescription(this._existingVif) !== getDescription(vif)) {
+        // resize the map canvas to fit to it's container height
+        $('.socrata-visualization').trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
+      }
+    }
+
     this._existingVif = vif;
   }
 
@@ -111,4 +121,12 @@ function isVectorTile(style) {
 
 function getBaseMapOpacity(vif) {
   return Number(_.get(vif, 'configuration.baseMapOpacity', 1));
+}
+
+function getTitle(vif) {
+  return _.get(vif, 'title');
+}
+
+function getDescription(vif) {
+  return _.get(vif, 'description');
 }

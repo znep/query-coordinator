@@ -473,6 +473,13 @@ function SvgVisualization($element, vif, options) {
     self.$container.removeClass('socrata-visualization-busy');
   };
 
+  this.triggerMapResizeIfNewGLMaps = () => {
+    if (_.get(self.getVif(), 'series[0].type') === 'map') {
+      // resize the map canvas to fit to it's container height
+      self.$container.trigger('SOCRATA_VISUALIZATION_INVALIDATE_SIZE');
+    }
+  };
+
   this.showViewSourceDataLink = function() {
     const viewSourceDataOverride = _.get(self.getVif(), 'origin.url');
     const renderLink = function(href) {
@@ -492,6 +499,7 @@ function SvgVisualization($element, vif, options) {
       // request has returned, if it is made.
       self.sourceDataLinkVisible = true;
       self.showInfo();
+      self.triggerMapResizeIfNewGLMaps();
     };
 
     if (!_.isEmpty(viewSourceDataOverride)) {
@@ -522,6 +530,7 @@ function SvgVisualization($element, vif, options) {
       self.$container.removeClass('socrata-visualization-view-source-data');
       self.sourceDataLinkVisible = false;
       self.hideInfo();
+      self.triggerMapResizeIfNewGLMaps();
     }
   };
 

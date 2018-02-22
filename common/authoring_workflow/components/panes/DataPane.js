@@ -3,17 +3,34 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
+import { AccordionContainer, AccordionPane } from 'common/components';
+import { FeatureFlags } from 'common/feature_flags';
 import I18n from 'common/i18n';
+
+import { setTreatNullValuesAsZero, setXAxisScalingMode } from '../../actions';
+import BlockLabel from '../shared/BlockLabel';
+import BoundaryMapOptionsSelector from '../BoundaryMapOptionsSelector';
+import ComboChartMeasureSelector from '../ComboChartMeasureSelector';
+import DimensionGroupingColumnNameSelector from '../DimensionGroupingColumnNameSelector';
+import DimensionSelector from '../DimensionSelector';
+import DisplayOptions from '../DisplayOptions';
+import ErrorBarsOptions from '../ErrorBarsOptions';
+import LineMapOptionsSelector from '../LineMapOptionsSelector';
+import MeasureSelector from '../MeasureSelector';
 import {
-  getValidMeasures,
   isPointMapColumn,
   isLineMapColumn,
   isBoundaryMapColumn,
-  hasData,
   hasError,
   isDimensionTypeCalendarDate,
   isLoading
 } from '../../selectors/metadata';
+import PointMapAggregationSelector from '../PointMapAggregationSelector';
+import PointMapOptionsSelector from '../PointMapOptionsSelector';
+import RegionSelector from '../RegionSelector';
+import SelectedDimensionIndicator from '../SelectedDimensionIndicator';
+import TimelinePrecisionSelector from '../TimelinePrecisionSelector';
 import {
   getAnyDimension,
   getDimension,
@@ -31,35 +48,15 @@ import {
   isPieChart,
   isTimelineChart
 } from '../../selectors/vifAuthoring';
-import {
-  setTreatNullValuesAsZero,
-  setXAxisScalingMode
-} from '../../actions';
-import { SERIES_TYPE_FLYOUT } from '../../constants';
 
-import { AccordionContainer, AccordionPane } from 'common/components';
-import BlockLabel from '../shared/BlockLabel';
-import ComboChartMeasureSelector from '../ComboChartMeasureSelector';
-import DimensionGroupingColumnNameSelector from '../DimensionGroupingColumnNameSelector';
-import DimensionSelector from '../DimensionSelector';
-import DisplayOptions from '../DisplayOptions';
-import ErrorBarsOptions from '../ErrorBarsOptions';
-import MeasureSelector from '../MeasureSelector';
-import RegionSelector from '../RegionSelector';
-import SelectedDimensionIndicator from '../SelectedDimensionIndicator';
-import TimelinePrecisionSelector from '../TimelinePrecisionSelector';
-import PointMapOptionsSelector from '../PointMapOptionsSelector';
-import LineMapOptionsSelector from '../LineMapOptionsSelector';
-import BoundaryMapOptionsSelector from '../BoundaryMapOptionsSelector';
-import PointMapAggregationSelector from '../PointMapAggregationSelector';
-import { FeatureFlags } from 'common/feature_flags';
+const scope = 'shared.visualizations.panes.data';
 
 export class DataPane extends Component {
   renderMetadataLoading = () => {
     return (
       <div className="alert">
         <div className="metadata-loading">
-          <span className="spinner-default metadata-loading-spinner"></span> {I18n.t('shared.visualizations.panes.data.loading_metadata')}
+          <span className="spinner-default metadata-loading-spinner"></span> {I18n.t('loading_metadata', { scope })}
         </div>
       </div>
     );
@@ -68,7 +65,7 @@ export class DataPane extends Component {
   renderMetadataError = () => {
     return (
       <div className="metadata-error alert error">
-        <strong>{I18n.t('shared.visualizations.panes.data.uhoh')}</strong> {I18n.t('shared.visualizations.panes.data.loading_metadata_error')}
+        <strong>{I18n.t('uhoh', { scope })}</strong> {I18n.t('loading_metadata_error', { scope })}
       </div>
     );
   }
@@ -76,10 +73,10 @@ export class DataPane extends Component {
   renderTreatNullValuesAsZero = () => {
     const { vifAuthoring } = this.props;
     const inputAttributes = {
+      defaultChecked: getTreatNullValuesAsZero(vifAuthoring),
       id: 'treat-null-values-as-zero',
       type: 'checkbox',
-      onChange: this.props.onChangeTreatNullValuesAsZero,
-      defaultChecked: getTreatNullValuesAsZero(vifAuthoring)
+      onChange: this.props.onChangeTreatNullValuesAsZero
     };
 
     return (
@@ -89,7 +86,7 @@ export class DataPane extends Component {
           <span className="fake-checkbox">
             <span className="icon-checkmark3"></span>
           </span>
-          {I18n.t('shared.visualizations.panes.data.fields.treat_null_values_as_zero.title')}
+          {I18n.t('fields.treat_null_values_as_zero.title', { scope })}
         </label>
       </div>
     );
@@ -121,7 +118,7 @@ export class DataPane extends Component {
           <span className="fake-checkbox">
             <span className="icon-checkmark3"></span>
           </span>
-          {I18n.t('shared.visualizations.panes.data.fields.x_axis_scaling_mode.title')}
+          {I18n.t('fields.x_axis_scaling_mode.title', { scope })}
         </label>
       </div>
     );
@@ -134,7 +131,7 @@ export class DataPane extends Component {
       !hasErrorBars(vifAuthoring);
 
     return shouldRender ? (
-      <AccordionPane title={I18n.t('shared.visualizations.panes.data.fields.dimension_grouping_column_name.title')}>
+      <AccordionPane title={I18n.t('fields.dimension_grouping_column_name.title', { scope })}>
         <DimensionGroupingColumnNameSelector />
       </AccordionPane>
     ) : null;
@@ -145,7 +142,7 @@ export class DataPane extends Component {
     const shouldRender = isTimelineChart(vifAuthoring);
 
     return shouldRender ? (
-      <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.timeline_options')}>
+      <AccordionPane title={I18n.t('subheaders.timeline_options', { scope })}>
         <TimelinePrecisionSelector />
         {this.renderTreatNullValuesAsZero()}
         {this.renderXAxisScalingMode()}
@@ -171,7 +168,7 @@ export class DataPane extends Component {
     const translationKey = translationKeys[visualizationType];
 
     return shouldRender ? (
-      <AccordionPane title={I18n.t(`shared.visualizations.panes.data.fields.${translationKey}.title`)}>
+      <AccordionPane title={I18n.t(`fields.${translationKey}.title`, { scope })}>
         <DisplayOptions />
       </AccordionPane>
     ) : null;
@@ -183,7 +180,7 @@ export class DataPane extends Component {
       !isGroupingOrHasMultipleNonFlyoutSeries(vifAuthoring);
 
     return shouldRender ? (
-      <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.error_bars')}>
+      <AccordionPane title={I18n.t('subheaders.error_bars', { scope })}>
         <ErrorBarsOptions />
       </AccordionPane>
     ) : null;
@@ -223,8 +220,8 @@ export class DataPane extends Component {
       <div className="authoring-field">
         <div className="measure-list-container">
           <BlockLabel
-            title={I18n.translate('shared.visualizations.panes.data.fields.combo_chart_measure_selector.title')}
-            description={I18n.translate('shared.visualizations.panes.data.fields.combo_chart_measure_selector.description')} />
+            title={I18n.translate('fields.combo_chart_measure_selector.title', { scope })}
+            description={I18n.translate('fields.combo_chart_measure_selector.description', { scope })} />
           {measureSelector}
         </div>
       </div>
@@ -276,7 +273,7 @@ export class DataPane extends Component {
 
       if (isPointMap) {
         return (
-          <AccordionPane key="point-aggregation" title={I18n.t('shared.visualizations.panes.data.subheaders.point_aggregation')}>
+          <AccordionPane key="point-aggregation" title={I18n.t('subheaders.point_aggregation', { scope })}>
             <PointMapAggregationSelector />
           </AccordionPane>
         );
@@ -284,8 +281,41 @@ export class DataPane extends Component {
     }
   }
 
+  renderDimensionSelector = () => {
+    const { vifAuthoring } = this.props;
+
+    const dimensionSelector = (
+      <div className="authoring-field" key="dimensionSelector">
+        <DimensionSelector />
+      </div>
+    );
+
+    if (isNewGLMap(vifAuthoring)) {
+      const geoColumnSelectorTitle = (
+        <BlockLabel
+          htmlFor="geo-column-selection"
+          key="geoColumnSelectorTitle"
+          title={I18n.t('fields.geo_column.title', { scope })} />
+      );
+
+      return [geoColumnSelectorTitle, dimensionSelector];
+    }
+
+    const selectedDimensionIndicator = (
+      <div className="authoring-field" key="selectedDimensionIndicator">
+        <BlockLabel
+          htmlFor="dimension-selection"
+          title={I18n.t('fields.dimension.title', { scope })}
+          description={I18n.t('fields.dimension.description', { scope })} />
+        <SelectedDimensionIndicator />
+      </div>
+    );
+
+    return [selectedDimensionIndicator, dimensionSelector];
+  }
+
   render() {
-    const { metadata } = this.props;
+    const { metadata, vifAuthoring } = this.props;
 
     let metadataInfo;
     if (hasError(metadata)) {
@@ -302,20 +332,12 @@ export class DataPane extends Component {
     const regionSelector = this.renderRegionSelector();
     const renderNewMapOptionsSelector = this.renderNewMapOptionsSelector();
     const renderPointAggregationOptions = this.renderPointAggregationOptions();
+    const renderDimensionSelector = this.renderDimensionSelector();
 
     const sections = (
       <AccordionContainer>
-        <AccordionPane title={I18n.t('shared.visualizations.panes.data.subheaders.data_selection')}>
-          <div className="authoring-field">
-            <BlockLabel
-              htmlFor="dimension-selection"
-              title={I18n.t('shared.visualizations.panes.data.fields.dimension.title')}
-              description={I18n.t('shared.visualizations.panes.data.fields.dimension.description')} />
-            <SelectedDimensionIndicator />
-          </div>
-          <div className="authoring-field">
-            <DimensionSelector />
-          </div>
+        <AccordionPane title={I18n.t('subheaders.data_selection', { scope })}>
+          {renderDimensionSelector}
           {renderNewMapOptionsSelector}
           {measureSelector}
           {regionSelector}

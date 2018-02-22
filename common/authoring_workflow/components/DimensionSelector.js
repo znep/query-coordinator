@@ -1,40 +1,35 @@
 import _ from 'lodash';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Picklist } from 'common/components';
-import I18n from 'common/i18n';
+import { connect } from 'react-redux';
+
+import { Dropdown, Picklist } from 'common/components';
 import Dimension from './Dimension';
+import I18n from 'common/i18n';
 
-import {
-  setDimension,
-  setOrderBy,
-  setXAxisScalingMode
-} from '../actions';
-
-import {
-  getRecommendedDimensions,
-  getValidDimensions,
-  hasData
-} from '../selectors/metadata';
-
-import {
-  getAnyDimension,
-  getVisualizationType
-} from '../selectors/vifAuthoring';
+import { setDimension, setOrderBy, setXAxisScalingMode } from '../actions';
+import { getRecommendedDimensions, getValidDimensions, hasData } from '../selectors/metadata';
+import { getAnyDimension, getVisualizationType, isNewGLMap } from '../selectors/vifAuthoring';
 
 export class DimensionSelector extends Component {
-  constructor(props) {
-    super(props);
+  onChangeDimension = (dimension) => {
+    if (dimension == null) {
+      return;
+    }
 
-    _.bindAll(this, [
-      'renderDimensionOption',
-      'renderDimensionSelector',
-      'onChangeDimension'
-    ]);
+    const { onSelectDimension, onSelectOrderBy, onSetXAxisScalingModePan } = this.props;
+
+    onSelectDimension(dimension);
+
+    if (dimension.type === 'calendar_date') {
+      onSelectOrderBy('dimension', 'asc');
+    } else {
+      onSelectOrderBy('measure', 'desc');
+      onSetXAxisScalingModePan();
+    }
   }
 
-  renderDimensionOption(recommended, option) { // eslint-disable-line react/sort-comp
+  renderDimensionOption = (recommended, option) => {
     return (
       <div className="dataset-column-selector-option">
         <Dimension type={option.type} name={option.title} recommended={recommended} />
@@ -42,41 +37,58 @@ export class DimensionSelector extends Component {
     );
   }
 
-  renderDimensionSelector() {
-    const { metadata, vifAuthoring } = this.props;
+  renderDimensionSelector = () => {
+    const { metadata, vifAuthoring, onSelectDimension } = this.props;
     const dimension = getAnyDimension(vifAuthoring);
-    const type = getVisualizationType(vifAuthoring);
+    const scope = 'shared.visualizations.panes.data.fields.dimension.groups';
+    const visualizationType = getVisualizationType(vifAuthoring);
     const value = dimension.columnName;
-
     const recommendedDimensionRenderer = this.renderDimensionOption.bind(this, true);
     const dimensionRenderer = this.renderDimensionOption.bind(this, false);
-
     const buildOption = (recommended, group) => {
-      return dimension => ({
-        title: dimension.name,
-        value: dimension.fieldName,
-        type: dimension.renderTypeName,
+      return (dimension) => ({
+        group,
         render: recommended ? recommendedDimensionRenderer : dimensionRenderer,
-        group
+        title: dimension.name,
+        type: dimension.renderTypeName,
+        value: dimension.fieldName
       });
     };
-
-    const toRenderableRecommendedOption = buildOption(
-      true,
-      I18n.t('shared.visualizations.panes.data.fields.dimension.groups.recommended_columns')
+    const toRenderableOption = buildOption(false, I18n.t('all_columns', { scope }));
+    const renderableOptions = _.map(getValidDimensions(metadata), toRenderableOption);
+    const toRenderableRecommendedOption = buildOption(true, I18n.t('recommended_columns', { scope }));
+    const renderableRecommendedOptions = _.map(
+      getRecommendedDimensions(metadata, visualizationType),
+      toRenderableRecommendedOption
     );
-    const toRenderableOption = buildOption(false, I18n.t('shared.visualizations.panes.data.fields.dimension.groups.all_columns'));
+    let dimensionAttributes = {};
+
+    if (isNewGLMap(vifAuthoring)) {
+      dimensionAttributes = {
+        id: 'geo-column-selection',
+        options: [
+          ...renderableRecommendedOptions,
+          ...renderableOptions
+        ],
+        value,
+        onSelection: onSelectDimension
+      };
+
+      return (
+        <div className="geo-column-selector-container">
+          <Dropdown {...dimensionAttributes} />
+        </div>
+      );
+    }
 
     const isNotSelectedDimension = (option) => option.value !== value;
 
-    const dimensions = [
-      ..._.map(getRecommendedDimensions(metadata, type), toRenderableRecommendedOption).filter(isNotSelectedDimension),
-      ..._.map(getValidDimensions(metadata), toRenderableOption).filter(isNotSelectedDimension)
-    ];
-
-    const dimensionAttributes = {
+    dimensionAttributes = {
       id: 'dimension-selection',
-      options: dimensions,
+      options: [
+        ...renderableRecommendedOptions.filter(isNotSelectedDimension),
+        ...renderableOptions.filter(isNotSelectedDimension)
+      ],
       onChange: this.onChangeDimension,
       onSelection: this.onChangeDimension,
       value
@@ -89,27 +101,8 @@ export class DimensionSelector extends Component {
     );
   }
 
-  onChangeDimension(dimension) {
-    const { onSelectDimension, onSelectOrderBy, onSetXAxisScalingModePan } = this.props;
-
-    if (dimension == null) {
-      return;
-    }
-
-    onSelectDimension(dimension);
-
-    if (dimension.type === 'calendar_date') {
-      onSelectOrderBy('dimension', 'asc');
-    } else {
-      onSelectOrderBy('measure', 'desc');
-      onSetXAxisScalingModePan();
-    }
-  }
-
   render() {
-    return hasData(this.props.metadata) ?
-      this.renderDimensionSelector() :
-      null;
+    return hasData(this.props.metadata) ? this.renderDimensionSelector() : null;
   }
 }
 

@@ -5,6 +5,17 @@ import defaultProps from '../defaultProps';
 import renderComponent from '../renderComponent';
 import { DimensionSelector } from 'common/authoring_workflow/components/DimensionSelector';
 
+const newGLMapVifAuthoring = {
+  authoring: {
+    selectedVisualizationType: 'map'
+  },
+  vifs: {
+    map: {
+      series: [{ type: 'map' }]
+    }
+  }
+};
+
 describe('DimensionSelector', () => {
   describe('rendering', () => {
     let component;
@@ -21,13 +32,24 @@ describe('DimensionSelector', () => {
       });
     });
 
-    describe('with data', () => {
+    describe('with data for non-map visualization', () => {
       beforeEach(() => {
         component = renderComponent(DimensionSelector, defaultProps());
       });
 
       it('renders dimension selection', () => {
         assert.isOk(component.querySelector('#dimension-selection'));
+      });
+    });
+
+    describe('with data for map visualization', () => {
+      beforeEach(() => {
+        const overrides = { vifAuthoring: newGLMapVifAuthoring };
+        component = renderComponent(DimensionSelector, defaultProps(overrides));
+      });
+
+      it('renders geo column selection', () => {
+        assert.isOk(component.querySelector('#geo-column-selection'));
       });
     });
   });

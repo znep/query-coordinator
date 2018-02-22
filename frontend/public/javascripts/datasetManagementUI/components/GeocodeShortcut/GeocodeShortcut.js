@@ -30,6 +30,21 @@ const COMBINED = 'COMBINED';
 const LATLNG = 'LATLNG';
 
 class GeocodeShortcut extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { initialOutputSchemaId: props.revision.output_schema_id };
+    this.handleSave = this.handleSave.bind(this);
+  }
+  componentWillUnmount() {
+    const { revision, revertRevisionOutputSchema } = this.props;
+    const currentOutputSchemaId = revision.output_schema_id;
+    const initialOutputSchemaId = this.state.initialOutputSchemaId;
+
+    if (initialOutputSchemaId !== currentOutputSchemaId) {
+      // revert the revision output schema to what it was before
+      revertRevisionOutputSchema(initialOutputSchemaId, currentOutputSchemaId);
+    }
+  }
   createNewOutputSchema(desiredColumns) {
     return this.props
       .newOutputSchema(desiredColumns)
@@ -44,7 +59,15 @@ class GeocodeShortcut extends Component {
         return resp;
       });
   }
-
+  handleSave(evt) {
+    evt.preventDefault();
+    const { desiredColumns } = this.props.formState;
+    this.createNewOutputSchema(desiredColumns).then(resp => {
+      // reset the initialOutputSchemaId so the state isn't reverted in componentWillUnmount
+      this.setState({ initialOutputSchemaId: resp.resource.id });
+      this.props.redirectToOutputSchema(resp.resource.id);
+    });
+  }
   render() {
     const {
       params,
@@ -57,7 +80,6 @@ class GeocodeShortcut extends Component {
       anySelected,
       isPreviewable
     } = this.props;
-
     const {
       mappings,
       shouldHideOriginal,
@@ -66,7 +88,6 @@ class GeocodeShortcut extends Component {
       desiredColumns,
       configurationError
     } = this.props.formState;
-
 
     const onPreview = () => this.createNewOutputSchema(desiredColumns).then(resp => {
       redirectGeocodePane(resp.resource.id);
@@ -120,6 +141,11 @@ class GeocodeShortcut extends Component {
       <div className={styles.content}>
         <div className={styles.formWrap}>
           <form>
+            <button
+              id="save-geocode-form"
+              onClick={this.handleSave}
+              style={{ display: 'none' }}>&nbsp;</button>
+
             {fieldSet}
 
             <HideOriginal
@@ -180,6 +206,8 @@ GeocodeShortcut.propTypes = {
   newOutputSchema: PropTypes.func.isRequired,
   showError: PropTypes.func.isRequired,
   redirectGeocodePane: PropTypes.func.isRequired,
+  redirectToOutputSchema: PropTypes.func.isRequired,
+  revertRevisionOutputSchema: PropTypes.func.isRequired,
   params: PropTypes.object.isRequired,
   formState: PropTypes.object.isRequired,
 
@@ -193,6 +221,7 @@ GeocodeShortcut.propTypes = {
   outputColumns: PropTypes.array.isRequired,
   outputColumn: PropTypes.object,
   allOutputColumns: PropTypes.array.isRequired,
+  revision: PropTypes.object.isRequired,
 
   anySelected: PropTypes.bool.isRequired,
   isPreviewable: PropTypes.bool.isRequired

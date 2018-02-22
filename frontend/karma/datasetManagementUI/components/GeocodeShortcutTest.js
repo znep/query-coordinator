@@ -21,6 +21,9 @@ describe('components/GeocodeShortcut', () => {
       inputSchemaId: 97,
       outputSchemaId: 137
     },
+    revision: {
+      output_schema_id: 137
+    },
     view: entities.views['ky4m-3w3d'],
     inputSchema: entities.input_schemas[97],
     inputColumns: Selectors.columnsForInputSchema(entities, 97),
@@ -40,6 +43,7 @@ describe('components/GeocodeShortcut', () => {
     showError: _.noop,
     newOutputSchema: _.noop,
     redirectGeocodePane: _.noop,
+    redirectToOutputSchema: _.noop,
     entities
   };
 

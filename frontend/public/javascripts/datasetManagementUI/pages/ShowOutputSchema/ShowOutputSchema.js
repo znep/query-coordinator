@@ -20,6 +20,7 @@ import SaveParseOptionsButton from './SaveParseOptionsButton';
 import SaveGeocodeShortcutButton from './SaveGeocodeShortcutButton';
 import SaveColButton from './SaveColButton';
 import styles from './ShowOutputSchema.module.scss';
+import { editRevision, updateRevision } from 'datasetManagementUI/reduxStuff/actions/revisions';
 
 function getCurrentPane(location) {
   if (_.includes(location.pathname, 'georeference')) {
@@ -117,7 +118,6 @@ ShowOutputSchema.propTypes = {
 export function mapStateToProps(state, ownProps) {
   const params = ownProps.params;
   const entities = state.entities;
-
   const revisionSeq = _.toNumber(params.revisionSeq);
   const revision = _.find(entities.revisions, { fourfour: params.fourfour, revision_seq: revisionSeq });
   const outputSchemaId = _.toNumber(params.outputSchemaId);
@@ -168,6 +168,24 @@ function mergeProps(stateProps, { dispatch }, ownProps) {
       dispatch(Actions.saveCurrentOutputSchemaId(revision, outputSchemaId, params)).then(() => {
         browserHistory.push(Links.revisionBase(ownProps.params));
       });
+    },
+    revertRevisionOutputSchema: (outputSchemaId, currentOutputSchemaId = null) => {
+      const updateObj = { blob_id: null, output_schema_id: outputSchemaId };
+      // update the revision on the server
+      return dispatch(updateRevision(updateObj, ownProps.params))
+        .then(resp => {
+          // update the revision in the locall UI state
+          dispatch(
+            editRevision(resp.resource.id, { output_schema_id: outputSchemaId })
+          );
+
+          // update the url browser history to reflect the reverted schema ID
+          const newPathname = Links.changeOutputSchema(currentOutputSchemaId, outputSchemaId);
+          if (newPathname) {
+            browserHistory.push(newPathname);
+          }
+          return resp;
+        });
     },
     redirectToOutputSchema: (outputSchemaId) => {
       dispatch(Actions.redirectToOutputSchema(stateProps.params, outputSchemaId));

@@ -1,3 +1,5 @@
+import { browserHistory } from 'react-router';
+
 const base = params => {
   let prefix = '';
 
@@ -41,6 +43,20 @@ export const showOutputSchema = (params, sourceId, inputSchemaId, outputSchemaId
   }
 };
 
+// Replaces the output schema ID in the current url path.
+// Returns `null` if no output schema ID is found in URL or if there is no change
+export const changeOutputSchema = (oldOutputSchemaId, newOutputSchemaId) => {
+  if (!oldOutputSchemaId || !newOutputSchemaId || oldOutputSchemaId === newOutputSchemaId) {
+    return null;
+  }
+  const { pathname } = browserHistory.getCurrentLocation();
+  const schemaIdRegexp = new RegExp(`/output/${oldOutputSchemaId}`);
+  if (schemaIdRegexp.test(pathname)) {
+    return pathname.replace(schemaIdRegexp, `/output/${newOutputSchemaId}`);
+  }
+
+  return null;
+};
 
 export const showBlobPreview = (params, blobId) => `${revisionBase(params)}/sources/${blobId}/preview`;
 

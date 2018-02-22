@@ -14,10 +14,18 @@ class GeocodeShortcutPane extends Component {
     dispatch(FormActions.setFormState('geocodeShortcutForm', newFormState));
   }
   render() {
-    const { params, location, newOutputSchema } = this.props;
+    const {
+      params, location, newOutputSchema, revision, redirectToOutputSchema, revertRevisionOutputSchema
+    } = this.props;
     return (
       <div className={classNames(styles.contentWrap, styles.optionsWrap)}>
-        <GeocodeShortcut params={params} location={location} newOutputSchema={newOutputSchema} />
+        <GeocodeShortcut
+          params={params}
+          revision={revision}
+          location={location}
+          newOutputSchema={newOutputSchema}
+          redirectToOutputSchema={redirectToOutputSchema}
+          revertRevisionOutputSchema={revertRevisionOutputSchema} />
       </div>
     );
   }
@@ -27,9 +35,12 @@ GeocodeShortcutPane.propTypes = {
   params: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired,
   geocodeShortcutForm: PropTypes.object,
+  redirectToOutputSchema: PropTypes.func,
+  revertRevisionOutputSchema: PropTypes.func,
   dispatch: PropTypes.func,
   newOutputSchema: PropTypes.func,
-  columns: PropTypes.arrayOf(PropTypes.object)
+  columns: PropTypes.arrayOf(PropTypes.object),
+  revision: PropTypes.object
 };
 
 export default GeocodeShortcutPane;

@@ -30,6 +30,16 @@ export const assetWillEnterApprovalsQueueOnPublish = ({ coreView, assetWillBePub
   }
 };
 
+// Same as above, but without the need to check for auto-approval since this is a new derived view.
+export const derivedViewWillEnterApprovalsQueueOnSave = ({ parentCoreView }) => {
+  return !!(
+    FeatureFlags.value('use_fontana_approvals') &&
+    helpers.currentUserHasRights() &&
+    helpers.assetIsPublic(parentCoreView) &&
+    helpers.manualApprovalRequiredForProvenanceType(parentCoreView)
+  );
+};
+
 // EN-21598: Returns Promise of whether the given asset will enter the approvals queue when it is made Public
 export const assetWillEnterApprovalsQueueWhenMadePublic = ({ coreView }) => {
   if (!FeatureFlags.value('use_fontana_approvals')) {

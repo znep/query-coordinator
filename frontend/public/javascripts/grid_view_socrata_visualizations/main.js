@@ -2,7 +2,7 @@
 
 import { FeatureFlags } from 'common/feature_flags';
 import Visualizations from 'common/visualizations';
-import { assetWillEnterApprovalsQueueWhenMadePublic } from 'common/asset/utils';
+import * as assetUtils from 'common/asset/utils';
 import { assetIsPending } from 'common/asset/utils/helpers';
 
 import ColumnEditor from './column_editor';
@@ -17,13 +17,10 @@ window.blist.gridViewRowEditor = RowEditor;
 function updatePageBasedOnApprovalOutcome(assetWillEnterApprovalsQueue) {
   if (assetWillEnterApprovalsQueue) {
 
-    // EN-21601: If we're on a derived view, conditionally show an approval warning message
+    // EN-21601: If we're on a working copy, conditionally show an approval warning message
     if (blist.dataset.publishedViewUid) {
-      document.getElementById('derived-view-approval-message').style.display = 'inherit';
+      document.getElementById('working-copy-approval-message').style.display = 'inherit';
     }
-
-    // EN-21596: Show approval warning message in the Save new derived view dialog
-    document.getElementById('save-new-derived-view-approval-message').style.display = 'inherit';
 
     // EN-21598: Show approval message next to "Public" radio button if the asset is currently private.
     if (!blist.dataset.isPublic()) {
@@ -38,8 +35,13 @@ function updatePageBasedOnApprovalOutcome(assetWillEnterApprovalsQueue) {
 
 window.onload = () => {
   if (!FeatureFlags.value('enable_new_dataset_sharing_ux')) {
-    assetWillEnterApprovalsQueueWhenMadePublic({
-      coreView: window.blist.dataset
-    }).then((result) => updatePageBasedOnApprovalOutcome(result));
+    assetUtils.assetWillEnterApprovalsQueueWhenMadePublic({ coreView: window.blist.dataset }).then(
+      (result) => updatePageBasedOnApprovalOutcome(result)
+    );
+
+    if (assetUtils.derivedViewWillEnterApprovalsQueueOnSave({ parentCoreView: window.blist.dataset })) {
+      // EN-21596: Show approval warning message in the Save new derived view dialog
+      document.getElementById('save-new-derived-view-approval-message').style.display = 'inherit';
+    }
   }
 };

@@ -11,6 +11,7 @@ import AdvancedAlertFooter from './AdvancedAlert/AdvancedAlertFooter';
 import AlertInfo from './AlertInfo';
 import CreateCustomAlert from './CustomAlert';
 import CustomAlertFooter from './CustomAlert/CustomAlertFooter';
+import { CUSTOM_ALERT_PAGES } from './constants';
 import CreateAlertApi from './api/CreateAlertApi';
 import DeleteAlert from './DeleteAlert';
 import styles from './index.module.scss';
@@ -34,7 +35,7 @@ class CreateAlertModal extends Component {
 
   state = {
     alertName: '',
-    currentCustomAlertPage: 'alertType',
+    currentCustomAlertPage: CUSTOM_ALERT_PAGES.ALERT_TYPE_PAGE,
     customAlert: [],
     customAlertTriggerType: '',
     customAlertType: '',
@@ -68,11 +69,11 @@ class CreateAlertModal extends Component {
       selectedTab = (editAlertType === 'abstract' ? 'customAlert' : 'advancedAlert');
       alertName = _.get(alert, 'name');
       mapboxAccessToken = _.get(this.props, 'mapboxAccessToken');
-      rawSoqlQuery = _.get(alert, 'query_string');
-      viewId = _.get(alert, 'dataset_uid');
-      customAlert = _.get(alert, 'abstract_params', []);
-      customAlertTriggerType = (_.get(alert, 'changes_on') === 'entire_data' ? 'rolling' : '');
-      currentCustomAlertPage = 'parameters';
+      rawSoqlQuery = _.get(alert, 'queryString');
+      viewId = _.get(alert, 'datasetUid');
+      customAlert = _.get(alert, 'abstractParams', []);
+      customAlertTriggerType = (_.get(alert, 'changesOn') === 'entire_data' ? 'rolling' : '');
+      currentCustomAlertPage = CUSTOM_ALERT_PAGES.PARAMETERS_PAGE;
     } else {
       // using sessionData view id in create alert mode
       viewId = _.get(window, 'sessionData.viewId');
@@ -188,24 +189,24 @@ class CreateAlertModal extends Component {
   getAlertParams = () => {
     const { alertName, customAlert, rawSoqlQuery, selectedTab } = this.state;
     const { alert } = this.props;
-    const alertParams = { type: 'push' };
+    const alertParams = {};
 
     // params will be changed based on alert type
     if (_.isEmpty(alert)) {
       alertParams.domain = window.location.host;
-      alertParams.dataset_uid = _.get(window, 'sessionData.viewId');
+      alertParams.datasetUid = _.get(window, 'sessionData.viewId');
     } else {
       alertParams.domain = _.get(alert, 'domain');
-      alertParams.dataset_uid = _.get(alert, 'dataset_uid');
+      alertParams.datasetUid = _.get(alert, 'datasetUid');
     }
     if (selectedTab === 'customAlert') {
-      alertParams.watch_on = 'data';
-      alertParams.changes_on = 'entire_data';
-      alertParams.query_type = 'abstract';
-      alertParams.abstract_params = customAlert.map(alert => _.omitBy(alert, _.isNil));
+      alertParams.watchOn = 'data';
+      alertParams.changesOn = 'entire_data';
+      alertParams.queryType = 'abstract';
+      alertParams.abstractParams = customAlert.map(alert => _.omitBy(alert, _.isNil));
     } else {
-      alertParams.query_string = rawSoqlQuery;
-      alertParams.query_type = 'raw';
+      alertParams.queryString = rawSoqlQuery;
+      alertParams.queryType = 'raw';
     }
 
     alertParams.name = alertName;
@@ -421,11 +422,11 @@ CreateAlertModal.defaultProps = {
 
 CreateAlertModal.propTypes = {
   alert: PropTypes.shape({
-    abstract_params: PropTypes.array,
-    changes_on: PropTypes.string,
-    dataset_uid: PropTypes.string,
+    abstractParams: PropTypes.array,
+    changesOn: PropTypes.string,
+    datasetUid: PropTypes.string,
     name: PropTypes.string,
-    query_string: PropTypes.string
+    queryString: PropTypes.string
   }),
   editAlertType: PropTypes.string,
   editMode: PropTypes.bool,

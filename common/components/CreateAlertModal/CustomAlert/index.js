@@ -8,6 +8,7 @@ import I18n from 'common/i18n';
 import SocrataIcon from 'common/components/SocrataIcon';
 import Spinner from 'common/components/Spinner';
 
+import { CUSTOM_ALERT_PAGES } from '../constants';
 import styles from './index.module.scss';
 import SoqlBuilder from '../components/SoqlBuilder';
 
@@ -133,11 +134,11 @@ class CreateCustomAlert extends Component {
   renderCustomAlertContent() {
     const { customAlertPage, editMode } = this.props;
 
-    if (customAlertPage === 'alertType' && !editMode) {
+    if (customAlertPage === CUSTOM_ALERT_PAGES.ALERT_TYPE_PAGE && !editMode) {
       return this.renderAlertTypePage();
-    } else if (customAlertPage === 'parameters') {
+    } else if (customAlertPage === CUSTOM_ALERT_PAGES.PARAMETERS_PAGE) {
       return this.renderAlertParametersPage();
-    } else if (customAlertPage === 'trigger') {
+    } else if (customAlertPage === CUSTOM_ALERT_PAGES.TRIGGER_PAGE) {
       return this.renderAlertTriggerSelectionPage();
     }
   }
@@ -148,23 +149,23 @@ class CreateCustomAlert extends Component {
     const crumbs = [
       {
         disable: editMode,
-        id: 'alertType',
+        id: CUSTOM_ALERT_PAGES.ALERT_TYPE_PAGE,
         name: I18n.t('breadcrumb.alert_type', { scope: this.translationScope }),
-        onClick: () => { (!editMode && this.onBreadcrumbClick('alertType')); },
+        onClick: () => { (!editMode && this.onBreadcrumbClick(CUSTOM_ALERT_PAGES.ALERT_TYPE_PAGE)); },
         showArrowIcon: true
       },
       {
         disable: disableParamPage,
-        id: 'parameters',
+        id: CUSTOM_ALERT_PAGES.PARAMETERS_PAGE,
         name: I18n.t('breadcrumb.parameters', { scope: this.translationScope }),
-        onClick: () => { (!disableParamPage && this.onBreadcrumbClick('parameters')); },
+        onClick: () => { (!disableParamPage && this.onBreadcrumbClick(CUSTOM_ALERT_PAGES.PARAMETERS_PAGE)); },
         showArrowIcon: true
       },
       {
         disable: !enableSaveButton,
-        id: 'trigger',
+        id: CUSTOM_ALERT_PAGES.TRIGGER_PAGE,
         name: I18n.t('breadcrumb.trigger', { scope: this.translationScope }),
-        onClick: () => { (enableSaveButton && this.onBreadcrumbClick('trigger')); },
+        onClick: () => { (enableSaveButton && this.onBreadcrumbClick(CUSTOM_ALERT_PAGES.TRIGGER_PAGE)); },
         showArrowIcon: false
       }
     ];
@@ -203,7 +204,7 @@ class CreateCustomAlert extends Component {
 }
 
 CreateCustomAlert.defaultProps = {
-  customAlertPage: 'alertType',
+  customAlertPage: CUSTOM_ALERT_PAGES.ALERT_TYPE_PAGE,
   editMode: false
 };
 

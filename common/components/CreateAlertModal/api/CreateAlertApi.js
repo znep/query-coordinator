@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 import airbrake from 'common/airbrake';
 import { checkStatus, defaultHeaders, fetchJson } from 'common/http';
+import { toApiParams } from './AlertConverter';
 
 export default class CreateAlertApi {
   static validate = (alertParams) => {
@@ -10,7 +11,7 @@ export default class CreateAlertApi {
       method: 'POST',
       headers: defaultHeaders,
       credentials: 'same-origin',
-      body: JSON.stringify({ alert: alertParams })
+      body: JSON.stringify({ alert: toApiParams(alertParams) })
     });
   };
 
@@ -19,7 +20,7 @@ export default class CreateAlertApi {
       method: 'POST',
       headers: defaultHeaders,
       credentials: 'same-origin',
-      body: JSON.stringify({ alert: alertParams })
+      body: JSON.stringify({ alert: toApiParams(alertParams) })
     });
   };
 
@@ -28,7 +29,7 @@ export default class CreateAlertApi {
       method: 'POST',
       headers: defaultHeaders,
       credentials: 'same-origin',
-      body: JSON.stringify({ alert: alertParams })
+      body: JSON.stringify({ alert: toApiParams(alertParams) })
     }).then((response) => response.data);
   };
 
@@ -37,7 +38,7 @@ export default class CreateAlertApi {
       method: 'PUT',
       headers: defaultHeaders,
       credentials: 'same-origin',
-      body: JSON.stringify({ alert: params })
+      body: JSON.stringify({ alert: toApiParams(params) })
     }).then((response) => response.data);
   };
 

@@ -3,3 +3,9 @@ export const LOCATION_COLUMN_TYPES = ['location', 'point', 'line', 'multipolygon
 export const DATE_COLUMN_TYPES = ['floating_timestamp', 'calendar_date', 'date'];
 export const STRING_COLUMN_TYPES = ['string', 'text'];
 export const NUMBER_COLUMN_TYPES = ['amount', 'number', 'money'];
+
+export const CUSTOM_ALERT_PAGES = {
+  ALERT_TYPE_PAGE: 'alertType',
+  PARAMETERS_PAGE: 'parameters',
+  TRIGGER_PAGE: 'trigger'
+};

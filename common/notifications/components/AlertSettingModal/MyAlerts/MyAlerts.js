@@ -79,8 +79,8 @@ class MyAlerts extends Component {
 
   domainUrl(alert) {
     const domainName = _.get(alert, 'domain', '');
-    const datasetId = _.get(alert, 'dataset_uid', '');
-    const datasetName = _.get(alert, 'dataset_name', '');
+    const datasetId = _.get(alert, 'datasetUid', '');
+    const datasetName = _.get(alert, 'datasetName', '');
 
     return (`//${domainName}/dataset/${this.formatDatasetName(datasetName)}/${datasetId}`);
   }
@@ -93,7 +93,7 @@ class MyAlerts extends Component {
           <a styleName="alert-dataset" href={this.domainUrl(alert)} target="_blank">
             {alert.dataset_name}
           </a>
-          <span styleName="alert-query">{alert.query_string}</span>
+          <span styleName="alert-query">{alert.queryString}</span>
         </td>
         <td styleName="edit-column">
           <div href onClick={() => this.onEditButtonClick(alert)}> Edit </div>
@@ -132,7 +132,7 @@ class MyAlerts extends Component {
   render() {
     const { isAlertsLoading, showEditAlertModal, currentSelectedAlert } = this.state;
     const { mapboxAccessToken } = this.props;
-    let editAlertType = _.get(currentSelectedAlert, 'query_type', 'raw');
+    let editAlertType = _.get(currentSelectedAlert, 'queryType', 'raw');
     const createAlertModal = (
       <CreateAlertModal
         alert={currentSelectedAlert}

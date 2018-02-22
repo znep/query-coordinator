@@ -1,5 +1,6 @@
 import 'whatwg-fetch';
 import { checkStatus } from 'common/notifications/api/helper';
+import { fromApiParams } from 'common/components/CreateAlertModal/api/AlertConverter';
 
 function getDefaultHeaders() {
   return {
@@ -18,7 +19,7 @@ export const MyAlertsApi = (() => {
       }).
       then((response) => checkStatus(response, 'An error was encountered while getting alert preferences, please try again or contact support@socrata.com')).
       then((response) => response.json()).
-      then((response) => response.data);
+      then((response) => fromApiParams(response.data));
     }
   };
 })();

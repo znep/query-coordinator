@@ -60,9 +60,6 @@ http_interactions:
             "id" : 3,
             "name" : "Ultimate",
             "accountModules" : [ {
-              "name" : "sdp_customizer",
-              "description" : "Access is granted to the SDP customizer"
-            }, {
               "name" : "basic_visualization",
               "description" : "Bar, Pie, Line Charts, Heat Maps, Point Maps"
             }, {
@@ -72,17 +69,8 @@ http_interactions:
               "name" : "basic_metrics",
               "description" : "Aggregate usage counts, web propagation summary, day-old metrics"
             }, {
-              "name" : "advanced_metrics",
-              "description" : "Detailed usage counts, web prop details, > 30 days, real-time"
-            }, {
               "name" : "community_comment_moderation",
               "description" : "Comments can be community moderated"
-            }, {
-              "name" : "dataset_append",
-              "description" : "Datasets can be appended to"
-            }, {
-              "name" : "dataset_refresh",
-              "description" : "Datasets can be refreshed replaced"
             }, {
               "name" : "dataset_nomination",
               "description" : "Visitors can nominate datasets for inclusion"
@@ -105,23 +93,11 @@ http_interactions:
               "name" : "allow_comments",
               "description" : "Allow users to comment on datasets"
             }, {
-              "name" : "form_publish",
-              "description" : "Ability to publish forms"
-            }, {
-              "name" : "map_publish",
-              "description" : "Ability to publish maps"
-            }, {
-              "name" : "digital_signatures",
-              "description" : "Create digital signatures for datasets to prove integrity"
-            }, {
               "name" : "federations",
               "description" : "Share datasets across domains"
             }, {
               "name" : "esri_integration",
               "description" : "ESRI map layer datasets"
-            }, {
-              "name" : "cell_comments",
-              "description" : "Allow commenting on individual cells"
             }, {
               "name" : "use_soda2",
               "description" : "Force the domain to use SODA2 API"
@@ -129,7 +105,6 @@ http_interactions:
             "config" : {
               "metering.monthly.limit" : 5368709120000,
               "snapshots" : 20,
-              "administrator_cap" : 10,
               "account_lockout_minutes" : 30
             }
           }
@@ -539,9 +514,6 @@ http_interactions:
             "id" : 3,
             "name" : "Ultimate",
             "accountModules" : [ {
-              "name" : "sdp_customizer",
-              "description" : "Access is granted to the SDP customizer"
-            }, {
               "name" : "basic_visualization",
               "description" : "Bar, Pie, Line Charts, Heat Maps, Point Maps"
             }, {
@@ -551,17 +523,8 @@ http_interactions:
               "name" : "basic_metrics",
               "description" : "Aggregate usage counts, web propagation summary, day-old metrics"
             }, {
-              "name" : "advanced_metrics",
-              "description" : "Detailed usage counts, web prop details, > 30 days, real-time"
-            }, {
               "name" : "community_comment_moderation",
               "description" : "Comments can be community moderated"
-            }, {
-              "name" : "dataset_append",
-              "description" : "Datasets can be appended to"
-            }, {
-              "name" : "dataset_refresh",
-              "description" : "Datasets can be refreshed replaced"
             }, {
               "name" : "dataset_nomination",
               "description" : "Visitors can nominate datasets for inclusion"
@@ -584,23 +547,11 @@ http_interactions:
               "name" : "allow_comments",
               "description" : "Allow users to comment on datasets"
             }, {
-              "name" : "form_publish",
-              "description" : "Ability to publish forms"
-            }, {
-              "name" : "map_publish",
-              "description" : "Ability to publish maps"
-            }, {
-              "name" : "digital_signatures",
-              "description" : "Create digital signatures for datasets to prove integrity"
-            }, {
               "name" : "federations",
               "description" : "Share datasets across domains"
             }, {
               "name" : "esri_integration",
               "description" : "ESRI map layer datasets"
-            }, {
-              "name" : "cell_comments",
-              "description" : "Allow commenting on individual cells"
             }, {
               "name" : "use_soda2",
               "description" : "Force the domain to use SODA2 API"
@@ -608,7 +559,6 @@ http_interactions:
             "config" : {
               "metering.monthly.limit" : 5368709120000,
               "snapshots" : 20,
-              "administrator_cap" : 10,
               "account_lockout_minutes" : 30
             }
           }
@@ -1363,9 +1313,6 @@ http_interactions:
             "id" : 3,
             "name" : "Ultimate",
             "accountModules" : [ {
-              "name" : "sdp_customizer",
-              "description" : "Access is granted to the SDP customizer"
-            }, {
               "name" : "basic_visualization",
               "description" : "Bar, Pie, Line Charts, Heat Maps, Point Maps"
             }, {
@@ -1375,17 +1322,8 @@ http_interactions:
               "name" : "basic_metrics",
               "description" : "Aggregate usage counts, web propagation summary, day-old metrics"
             }, {
-              "name" : "advanced_metrics",
-              "description" : "Detailed usage counts, web prop details, > 30 days, real-time"
-            }, {
               "name" : "community_comment_moderation",
               "description" : "Comments can be community moderated"
-            }, {
-              "name" : "dataset_append",
-              "description" : "Datasets can be appended to"
-            }, {
-              "name" : "dataset_refresh",
-              "description" : "Datasets can be refreshed replaced"
             }, {
               "name" : "dataset_nomination",
               "description" : "Visitors can nominate datasets for inclusion"
@@ -1408,23 +1346,11 @@ http_interactions:
               "name" : "allow_comments",
               "description" : "Allow users to comment on datasets"
             }, {
-              "name" : "form_publish",
-              "description" : "Ability to publish forms"
-            }, {
-              "name" : "map_publish",
-              "description" : "Ability to publish maps"
-            }, {
-              "name" : "digital_signatures",
-              "description" : "Create digital signatures for datasets to prove integrity"
-            }, {
               "name" : "federations",
               "description" : "Share datasets across domains"
             }, {
               "name" : "esri_integration",
               "description" : "ESRI map layer datasets"
-            }, {
-              "name" : "cell_comments",
-              "description" : "Allow commenting on individual cells"
             }, {
               "name" : "use_soda2",
               "description" : "Force the domain to use SODA2 API"
@@ -1432,7 +1358,6 @@ http_interactions:
             "config" : {
               "metering.monthly.limit" : 5368709120000,
               "snapshots" : 20,
-              "administrator_cap" : 10,
               "account_lockout_minutes" : 30
             }
           }

@@ -16,15 +16,15 @@ export default (props) => {
   // transpiler crashed in Storyteller when trying to
   // compile. Transforming to an if/else resolved the
   // crash.
-  if (column.dataTypeName === 'calendar_date') {
+  if (column.renderTypeName === 'calendar_date') {
     SpecificFilter = CalendarDateFilter;
-  } else if (column.dataTypeName === 'money') {
+  } else if (column.renderTypeName === 'money') {
     SpecificFilter = NumberFilter;
-  } else if (column.dataTypeName === 'number') {
+  } else if (column.renderTypeName === 'number') {
     SpecificFilter = NumberFilter;
-  } else if (column.dataTypeName === 'text') {
+  } else if (column.renderTypeName === 'text') {
     SpecificFilter = TextFilter;
-  } else if (column.dataTypeName === 'checkbox') {
+  } else if (column.renderTypeName === 'checkbox') {
     SpecificFilter = CheckboxFilter;
   } else {
     return null;

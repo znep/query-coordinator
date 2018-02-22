@@ -34,7 +34,7 @@ describe('FilterBar', () => {
         {
           name: 'Some Word',
           fieldName: 'some_word',
-          dataTypeName: 'text'
+          renderTypeName: 'text'
         }
       ],
       filters: [],

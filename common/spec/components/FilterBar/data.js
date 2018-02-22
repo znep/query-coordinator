@@ -91,7 +91,7 @@ export const mockBinaryOperatorFilter = {
 };
 
 export const mockMoneyColumn = {
-  dataTypeName: 'money',
+  renderTypeName: 'money',
   fieldName: 'dinosaurMoney',
   name: 'Dinosaur Money',
   rangeMin: .1,
@@ -99,7 +99,7 @@ export const mockMoneyColumn = {
 };
 
 export const mockNumberColumn = {
-  dataTypeName: 'number',
+  renderTypeName: 'number',
   fieldName: 'dinosaurAge',
   name: 'Dinosaur Age (approximate)',
   rangeMin: 1.12,
@@ -107,7 +107,7 @@ export const mockNumberColumn = {
 };
 
 export const mockCalendarDateColumn = {
-  dataTypeName: 'calendar_date',
+  renderTypeName: 'calendar_date',
   fieldName: 'dinosaurTime',
   name: 'Dinosaur Time (approximate)',
   rangeMin: '1400-12-01T00:00:00',
@@ -115,7 +115,7 @@ export const mockCalendarDateColumn = {
 };
 
 export const mockTextColumn = {
-  dataTypeName: 'text',
+  renderTypeName: 'text',
   fieldName: 'dinosaurName',
   name: 'Dinosaur Name (approximate)',
   top: [
@@ -128,7 +128,7 @@ export const mockTextColumn = {
 };
 
 export const mockCheckboxColumn = {
-  dataTypeName: 'checkbox',
+  renderTypeName: 'checkbox',
   fieldName: 'internal',
   name: 'Internal',
   top: [

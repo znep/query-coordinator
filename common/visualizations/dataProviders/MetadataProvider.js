@@ -318,27 +318,17 @@ function MetadataProvider(config, useCache = false) {
    * @param datasetMetadata A metadata object or a Promise for a metadata object
    *                        (optional; will fetch fresh metadata if omitted)
    */
-  this.getDisplayableFilterableColumns = (datasetMetadata = this.getDatasetMetadata()) => {
+  this.getDisplayableFilterableColumns = async (datasetMetadata = this.getDatasetMetadata()) => {
     const metadataPromise = datasetMetadata instanceof Promise ?
       datasetMetadata : Promise.resolve(_.cloneDeep(datasetMetadata));
 
-    return metadataPromise.
-      then((datasetMetadata) => {
-        return Promise.all([
-          Promise.resolve(datasetMetadata),
-          soqlDataProvider.getColumnStats(datasetMetadata.columns)
-        ]);
-      }).
-      then((resolutions) => {
-        const [datasetMetadata, columnStats] = resolutions;
-        const columns = _.merge([], columnStats, datasetMetadata.columns);
-        const getDisplayableFilterableColumns = _.flow(
-          getDisplayableColumns,
-          (displayableColumns) => getFilterableColumns({ columns: displayableColumns })
-        );
-
-        return Promise.resolve(getDisplayableFilterableColumns({ columns }));
-      });
+    datasetMetadata = await metadataPromise;
+    const displayableColumns = getDisplayableColumns(datasetMetadata);
+    const columnStats = await soqlDataProvider.getColumnStats(displayableColumns);
+    // Since we merge by index, column stats array should line up perfectly with displayable columns.
+    utils.assert(columnStats.length === displayableColumns.length);
+    const columns = _.merge([], columnStats, displayableColumns);
+    return getFilterableColumns({ columns });
   };
 
   const metadataRequestCache = {};

@@ -13,12 +13,12 @@ describe('FilterEditor', () => {
     assert.isNull(element.type());
   });
 
-  const checkRenderedComponent = (expectedComponent, dataTypeName) => {
-    describe(dataTypeName, () => {
+  const checkRenderedComponent = (expectedComponent, renderTypeName) => {
+    describe(renderTypeName, () => {
       it(`passes through props to a ${expectedComponent.displayName}`, () => {
         const props = {
           column: {
-            dataTypeName,
+            renderTypeName,
             rangeMin: 0,
             rangeMax: 0
           },

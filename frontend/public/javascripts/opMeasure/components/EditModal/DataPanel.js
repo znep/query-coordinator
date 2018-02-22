@@ -121,7 +121,7 @@ export class DataPanel extends Component {
   renderAssetSelector() {
     const assetSelectorProps = {
       baseFilters: {
-        assetTypes: 'datasets',
+        assetTypes: 'datasets,filters',
         published: true
       },
       onAssetSelected: (assetData) => {

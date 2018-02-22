@@ -236,6 +236,7 @@ describe('SvgVisualization', () => {
       {
         name: 'Blood Alcohol Level',
         fieldName: 'blood_alcohol_level',
+        renderTypeName: 'number',
         dataTypeName: 'number',
         rangeMin: 1,
         rangeMax: 10

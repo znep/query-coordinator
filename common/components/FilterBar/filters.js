@@ -70,7 +70,7 @@ export function getFilterHumanText(filter, column) {
     return I18n.t('shared.components.filter_bar.select');
   }
 
-  switch (column.dataTypeName) {
+  switch (column.renderTypeName) {
     case 'calendar_date': {
       const { start, end } = filter.arguments;
 
@@ -95,7 +95,7 @@ export function getFilterHumanText(filter, column) {
       return getCheckboxFilterHumanText(filter, column);
 
     default:
-      console.error(`Unsupported column type "${column.dataTypeName}"`); // eslint-disable-line no-console
+      console.error(`Unsupported column type "${column.renderTypeName}"`); // eslint-disable-line no-console
   }
 }
 

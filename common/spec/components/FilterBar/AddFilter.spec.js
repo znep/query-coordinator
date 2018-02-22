@@ -76,12 +76,12 @@ describe('AddFilter', () => {
           {
             name: 'Some Number',
             fieldName: 'some_number',
-            dataTypeName: 'number'
+            renderTypeName: 'number'
           },
           {
             name: 'Some Word',
             fieldName: 'some_word',
-            dataTypeName: 'text'
+            renderTypeName: 'text'
           }
         ]
       }));
@@ -97,12 +97,12 @@ describe('AddFilter', () => {
           {
             name: 'Some Number',
             fieldName: 'some_number',
-            dataTypeName: 'number'
+            renderTypeName: 'number'
           },
           {
             name: 'Some Word',
             fieldName: 'some_word',
-            dataTypeName: 'text'
+            renderTypeName: 'text'
           }
         ]
       }));
@@ -125,7 +125,7 @@ describe('AddFilter', () => {
           {
             name: 'Some Word',
             fieldName: 'some_word',
-            dataTypeName: 'text'
+            renderTypeName: 'text'
           }
         ],
         onClickColumn: onClickColumnStub
@@ -144,7 +144,7 @@ describe('AddFilter', () => {
           {
             name: 'Some Word',
             fieldName: 'some_word',
-            dataTypeName: 'text'
+            renderTypeName: 'text'
           }
         ]
       }));
@@ -166,7 +166,7 @@ describe('AddFilter', () => {
           {
             name: 'Some Word',
             fieldName: 'some_word',
-            dataTypeName: 'text'
+            renderTypeName: 'text'
           }
         ]
       }));

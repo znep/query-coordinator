@@ -365,8 +365,8 @@ FilterBar.propTypes = {
    * The columns prop is an array of column objects.  Each column object must contain:
    *   - fieldName (string), the internal column name to query against.
    *   - name (string), the human-readable name of the column.
-   *   - dataTypeName (string), the name of a data type.
-   * If the dataTypeName is "money" or "number", additional fields must be present:
+   *   - renderTypeName (string), the name of a data type.
+   * If the renderTypeName is "money" or "number", additional fields must be present:
    *   - rangeMin (number), the minimum value present in the column.
    *   - rangeMax (number), the maximum value present in the column.
    * This list will be used to construct the list of filters available for use.  Eventually,

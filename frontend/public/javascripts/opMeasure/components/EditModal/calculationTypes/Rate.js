@@ -71,12 +71,12 @@ export class Rate extends Component {
     }
 
     // eslint-disable-next-line max-len
-    const headerText = I18n.t(`open_performance.measure.edit_modal.calculation.types.rate.conditions.header.${numeratorColumn.dataTypeName}`);
+    const headerText = I18n.t(`open_performance.measure.edit_modal.calculation.types.rate.conditions.header.${numeratorColumn.renderTypeName}`);
 
     const header = (
       <div className="rate-metric-numerator-column-condition-header">
         <h6>
-          <SocrataIcon name={getIconForDataType(numeratorColumn.dataTypeName)} />
+          <SocrataIcon name={getIconForDataType(numeratorColumn.renderTypeName)} />
           {headerText}
         </h6>
         {I18n.t('open_performance.measure.edit_modal.calculation.types.rate.conditions.subheader')}
@@ -108,7 +108,7 @@ export class Rate extends Component {
       // those, the date picker will open as soon as the user starts editing the filter. This
       // is very confusing. However, for all other types, focusing the first textbox/slider/etc
       // is helpful.
-      autoFocus: numeratorColumn.dataTypeName !== 'calendar_date',
+      autoFocus: numeratorColumn.renderTypeName !== 'calendar_date',
       title: I18n.t('open_performance.measure.edit_modal.calculation.types.rate.set_column_conditions'),
       isOpen: true,
       onDismiss: this.onFilterFlannelDismiss,

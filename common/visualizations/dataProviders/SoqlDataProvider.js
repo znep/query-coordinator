@@ -247,11 +247,11 @@ function SoqlDataProvider(config, useCache = false) {
   this.getColumnStats = function(columns) {
     utils.assert(_.isArray(columns), 'columns parameter must be an array');
     const promises = _.map(columns, function(column) {
-      const { dataTypeName } = column;
+      const { renderTypeName } = column;
       // For number and calendar_date columns, we need the min and max of the column
-      if (_.includes(['money', 'number', 'calendar_date'], dataTypeName)) {
+      if (_.includes(['money', 'number', 'calendar_date'], renderTypeName)) {
         return Promise.resolve(getNumberColumnStats(column));
-      } else if (dataTypeName === 'text') {
+      } else if (renderTypeName === 'text') {
         return Promise.resolve(getTextColumnStats(column));
       } else {
         return Promise.resolve(null);
@@ -349,8 +349,8 @@ function SoqlDataProvider(config, useCache = false) {
     return path;
   }
 
-  function buildNumberRange(dataTypeName, min, max) {
-    switch (dataTypeName) {
+  function buildNumberRange(renderTypeName, min, max) {
+    switch (renderTypeName) {
       case 'money':
       case 'number':
         return {
@@ -367,11 +367,11 @@ function SoqlDataProvider(config, useCache = false) {
   }
 
   function getNumberColumnStats(column) {
-    const { fieldName, dataTypeName, cachedContents } = column;
+    const { fieldName, renderTypeName, cachedContents } = column;
 
     if (_.has(cachedContents, 'smallest') && _.has(cachedContents, 'largest')) {
       return buildNumberRange(
-        dataTypeName,
+        renderTypeName,
         _.get(cachedContents, 'smallest'),
         _.get(cachedContents, 'largest')
       );
@@ -385,7 +385,7 @@ function SoqlDataProvider(config, useCache = false) {
 
       return makeSoqlGetRequest(path).then((result) => {
         return Promise.resolve(
-          buildNumberRange(dataTypeName, result[0][minAlias], result[0][maxAlias])
+          buildNumberRange(renderTypeName, result[0][minAlias], result[0][maxAlias])
         );
       });
     }
@@ -394,7 +394,7 @@ function SoqlDataProvider(config, useCache = false) {
 
 
   function getTextColumnStats(column) {
-    const { fieldName, dataTypeName, cachedContents } = column;
+    const { fieldName, renderTypeName, cachedContents } = column;
 
     if (_.has(cachedContents, 'top')) {
       return {

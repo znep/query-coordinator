@@ -34,7 +34,7 @@ export default class ColumnDropdown extends Component {
       options: _.map(columns, (column) => ({
         title: column.name,
         value: column.fieldName,
-        icon: <SocrataIcon name={getIconForDataType(column.dataTypeName)} />
+        icon: <SocrataIcon name={getIconForDataType(column.renderTypeName)} />
       })),
       value: columnFieldName,
       id,

@@ -82,7 +82,7 @@ export class AddFilter extends Component {
   renderColumnOption(column) {
     return (option) => (
       <div className="filter-bar-column-option">
-        <SocrataIcon name={getIconForDataType(column.dataTypeName)} />
+        <SocrataIcon name={getIconForDataType(column.renderTypeName)} />
         <span>{option.title}</span>
       </div>
     );

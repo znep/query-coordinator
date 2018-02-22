@@ -318,7 +318,7 @@ export class FilterItem extends Component {
 
 FilterItem.propTypes = {
   column: PropTypes.shape({
-    dataTypeName: PropTypes.oneOf(['calendar_date', 'checkbox', 'money', 'number', 'text']),
+    renderTypeName: PropTypes.oneOf(['calendar_date', 'checkbox', 'money', 'number', 'text']),
     name: PropTypes.string.isRequired
   }).isRequired,
   controlSize: PropTypes.oneOf(['small', 'medium', 'large']),

@@ -43,7 +43,7 @@ describe('filters', () => {
 
     describe('numeric columns', () => {
       [mockMoneyColumn, mockNumberColumn].forEach((column) => {
-        describe(column.dataTypeName, () => {
+        describe(column.renderTypeName, () => {
           describe('rangeInclusive', () => {
             const filter = {
               function: 'rangeInclusive',

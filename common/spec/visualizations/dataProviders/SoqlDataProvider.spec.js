@@ -1028,26 +1028,31 @@ describe('SoqlDataProvider', () => {
 
     const moneyColumn = {
       fieldName: 'moneyColumn',
+      renderTypeName: 'money',
       dataTypeName: 'money'
     };
 
     const numberColumn = {
       fieldName: 'numberColumn',
+      renderTypeName: 'number',
       dataTypeName: 'number'
     };
 
     const textColumn = {
       fieldName: 'textColumn',
+      renderTypeName: 'text',
       dataTypeName: 'text'
     };
 
     const fakeColumn = {
       fieldName: 'soFakeYouDontEvenKnow',
+      renderTypeName: 'elusive',
       dataTypeName: 'elusive'
     };
 
     const calendarDateColumn = {
       fieldName: 'calendarDateColumn',
+      renderTypeName: 'calendar_date',
       dataTypeName: 'calendar_date'
     };
 
@@ -1066,6 +1071,22 @@ describe('SoqlDataProvider', () => {
     it('errors if input is not an array', () => {
       assert.throw(() => soqlDataProvider.getColumnStats());
       assert.throw(() => soqlDataProvider.getColumnStats({}));
+    });
+
+    it('fetches stats based on renderTypeName, not dataTypeName', () => {
+      // count(textColumn)
+      const countedTextColumn = {
+        fieldName: 'textColumn',
+        renderTypeName: 'number',
+        dataTypeName: 'text'
+      };
+
+      soqlDataProvider.getColumnStats([countedTextColumn]);
+      const { url } = server.requests[0];
+      assert.lengthOf(server.requests, 1);
+      assert.match(url, /select.+min/);
+      assert.match(url, /select.+max/);
+      assert.notMatch(url, /select.+count/);
     });
 
     it('fetches stats for money columns', () => {
@@ -1087,6 +1108,7 @@ describe('SoqlDataProvider', () => {
     it('fetches stats for number column from core metadata if available', () => {
       soqlDataProvider.getColumnStats([{
         dataTypeName: 'number',
+        renderTypeName: 'number',
         cachedContents: {
           smallest: 1,
           largest: 10
@@ -1111,6 +1133,7 @@ describe('SoqlDataProvider', () => {
     it('fetches stats for calendar_date column from core metadata if available', () => {
       soqlDataProvider.getColumnStats([{
         dataTypeName: 'calendar_date',
+        renderTypeName: 'calendar_date',
         cachedContents: {
           smallest: '2017-01-31T00:00:00',
           largest: '2019-12-31T00:00:00'
@@ -1133,6 +1156,7 @@ describe('SoqlDataProvider', () => {
 
     it('fetches stats for text column from core metadata if available', () => {
       return soqlDataProvider.getColumnStats([{
+        renderTypeName: 'text',
         dataTypeName: 'text',
         cachedContents: {
           top: [{ item: 'best', count: 10 }]
@@ -1198,7 +1222,7 @@ describe('SoqlDataProvider', () => {
 
     const textColumn = {
       fieldName: 'textColumn',
-      dataTypeName: 'text'
+      renderTypeName: 'text'
     };
 
     beforeEach(() => {

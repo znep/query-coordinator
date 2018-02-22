@@ -539,10 +539,24 @@ describe('MetadataProvider', () => {
   });
 
   describe('getDisplayableFilterableColumns', () => {
+    const testDatasetMetadata = testData.GROUPED_ON_DATE_311_DATASET_METADATA;
+    const testDatasetColumns = testDatasetMetadata.columns;
+
     beforeEach(() => {
       server.respondImmediately = true;
-      server.respondWith('GET', 'https://example.com/api/views/test-test.json?read_from_nbe=true&version=2.1', [200, { 'Content-Type': 'application/json' }, JSON.stringify(SAMPLE_DATASET_METADATA)]);
-      server.respondWith('GET', /api\/id/, [200, { 'Content-Type': 'application/json' }, JSON.stringify([{}])]);
+      server.respondWith(
+        'GET',
+        'https://example.com/api/views/test-test.json?read_from_nbe=true&version=2.1',
+        [200, { 'Content-Type': 'application/json' }, JSON.stringify(testDatasetMetadata)]
+      );
+      server.respondWith(
+        'GET',
+        /api\/id/,
+        [200, { 'Content-Type': 'application/json' }, JSON.stringify([{
+          count: 20,
+          item: 'some_item'
+        }])]
+      );
     });
 
     afterEach(() => {
@@ -554,6 +568,40 @@ describe('MetadataProvider', () => {
         assert.deepEqual(getFilterableColumns({ columns }), columns);
         assert.deepEqual(getDisplayableColumns({ columns }), columns);
       });
+    });
+
+    it('removes hidden columns', async () => {
+      const columns = await metadataProvider.getDisplayableFilterableColumns();
+      const expectedNonHiddenCount = 2;
+      assert.isAbove(testDatasetMetadata.columns.length, expectedNonHiddenCount); // Test sanity.
+      assert.lengthOf(columns, expectedNonHiddenCount);
+      assert.notProperty(columns[0], 'flags');
+      assert.notProperty(columns[1], 'flags');
+    });
+
+    it('augments columns with column stats', async () => {
+      const groupedColumns = await metadataProvider.getDisplayableFilterableColumns();
+
+      const dateColumn = _.find(groupedColumns, { fieldName: 'created_date' });
+      assert.propertyVal(dateColumn, 'rangeMin', '2016-10-01T00:00:00');
+      assert.propertyVal(dateColumn, 'rangeMax', '2018-01-29T00:00:00');
+
+      // This used to be a text column, but the grouped view is count()ing
+      // on this column.
+      const numberColumn = _.find(groupedColumns, { fieldName: 'status' });
+      assert.propertyVal(numberColumn, 'dataTypeName', 'text'); // Originally a text column.
+      assert.propertyVal(numberColumn, 'renderTypeName', 'number');
+      assert.propertyVal(numberColumn, 'rangeMin', 8); // from cachedContents
+      assert.propertyVal(numberColumn, 'rangeMax', 2424); // from cachedContents
+
+      const ungroupedColumnsChicago = await metadataProvider.getDisplayableFilterableColumns(
+        testData.CHICAGO_CRIMES_DATASET_METADATA
+      );
+      const textColumn = _.find(ungroupedColumnsChicago, { fieldName: 'primary_type' });
+      const firstTopItem = textColumn.top[0];
+      assert.propertyVal(firstTopItem, 'count', 20);
+      assert.propertyVal(firstTopItem, 'item', 'some_item');
+
     });
   });
 

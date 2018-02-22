@@ -6635,6 +6635,15 @@ en:
       uploading: Uploading your file
     link_account:
       success: Your external account has been linked.
+    oauth:
+      authorize:
+        body_header_html: is requesting <strong>read and write</strong> access to your Socrata account.
+        body_html: 'This means that they will be able to access and modify all of your account information and Datasets on all Socrata-powered websites. This is a <strong>one-time grant</strong>, meaning you have to grant your permission, as you are doing now, each time the application wants to access your data.'
+        button_allow: Allow
+        button_cancel: Cancel
+        choose_html: 'Choose <strong>Allow</strong> only if you wish to allow the application access to your account.'
+        content_header: '%{app_name} would like to access your information'
+        title: An Application is Requesting Access
     profile:
       app_tokens:
         item:

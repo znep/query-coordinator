@@ -1,11 +1,11 @@
 <%- content_for :head do -%>
-  <title>An Application is Requesting Access | <%= get_site_title %></title>
+  <title><%= t('screens.oauth.authorize.title') %> | <%= get_site_title %></title>
   <%= rendered_stylesheet_tag 'oauth-authorize' %>
 <%- end -%>
 
 <div class="modalContentBox wide">
   <div class="contentHeader">
-    <h1><%= @app_token.name %> would like to access your information</h1>
+    <h1><%= t('screens.oauth.authorize.content_header', :app_name => @app_token.name) %></h1>
   </div>
 
   <div class="dialogContents">
@@ -22,24 +22,21 @@
         <%- else -%>
           <strong><%= @app_token.name %></strong>
         <%- end -%>
-        is requesting <strong>read and write</strong> access to your Socrata account.
+        <%= t('screens.oauth.authorize.body_header_html') %>
       </h2>
       <p>
-        This means that they will be able to access and modify all of your account information
-        and Datasets on all Socrata-powered websites. This is a <strong>one-time grant</strong>,
-        meaning you have to grant your permission, as you are doing now, each time the
-        application wants to access your data.
+        <%= t('screens.oauth.authorize.body_html') %>
       </p>
       <p>
-        Choose <strong>Allow</strong> only if you wish to allow the application access to your account.
+        <%= t('screens.oauth.authorize.choose_html') %>
       </p>
     </div>
 
     <div class="buttonArea">
       <%= form_tag "/oauth/do_authorize?#{@oauth_params.to_param}" do -%>
-        <input type="submit" value="Allow" class="button default"/>
+        <input type="submit" value="<%= t('screens.oauth.authorize.button_allow') %>" class="button default"/>
       <%- end -%>
-      <a href="<%= @redirect_uri %>" class="button">Cancel</a>
+      <a href="<%= @redirect_uri %>" class="button"><%= t('screens.oauth.authorize.button_cancel') %></a>
     </div>
   </div>
 </div>

@@ -6,6 +6,8 @@ import { RecentActionsTimestamp } from 'datasetManagementUI/components/RecentAct
 import { Link } from 'react-router';
 import styles from './SchemaActions.module.scss';
 
+const SubI18n = I18n.schema_actions;
+
 const SchemaActions = ({ oss, iss, sources, params }) => {
   function getFallbackDisplayName(sourceId) {
     return _.get(sources, `${sourceId}.created_by.display_name`, '');
@@ -14,13 +16,13 @@ const SchemaActions = ({ oss, iss, sources, params }) => {
   const items = oss.map((os, idx) => (
     <li key={idx} className={os.isCurrent ? styles.currentSchema : styles.schema}>
       {_.get(os, 'created_by.display_name', getFallbackDisplayName(iss[os.input_schema_id].source_id))}{' '}
-      changed the schema <RecentActionsTimestamp date={os.created_at} />
+      {SubI18n.schema_changed} <RecentActionsTimestamp date={os.created_at} />
       {os.isCurrent || ' - '}
       {os.isCurrent || (
         <Link
           className={styles.restoreLink}
           to={Links.showOutputSchema(params, iss[os.input_schema_id].source_id, os.input_schema_id, os.id)}>
-          restore
+          {SubI18n.restore}
         </Link>
       )}
     </li>

@@ -139,7 +139,7 @@ class ParseOptions extends Component {
             <form>
               <Fieldset
                 title={SubI18n.title}
-                subtitle={"Manage how your file will be interpreted"}>
+                subtitle={SubI18n.subtitle}>
                 <ParseOption
                   name={'header_count'}
                   error={errors.header_count}
@@ -159,7 +159,7 @@ class ParseOptions extends Component {
                 <ParseOption
                   name={'encoding'}
                   error={errors.encoding}
-                  placeholder={'Automatic'}
+                  placeholder={SubI18n.automatic}
                   getOption={this.getOption}
                   setOption={this.setOption('encoding')} />
                 <ParseOption

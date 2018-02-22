@@ -161,7 +161,7 @@ export class DragDropUpload extends Component {
                     <h2>{I18n.show_uploads.message}</h2>
                     <div className={styles.browseMsg}>{I18n.show_uploads.submessage}</div>
                     <label id="upload-label" className={styles.uploadButton} htmlFor="file">
-                      Browse
+                      {I18n.show_uploads.browse}
                     </label>
                     <input
                       id="file"

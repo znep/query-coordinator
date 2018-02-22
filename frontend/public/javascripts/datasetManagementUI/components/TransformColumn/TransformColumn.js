@@ -11,6 +11,8 @@ import ColumnDoc from './ColumnDoc';
 import SoQLResults from '../../containers/SoQLResultsContainer';
 import { cloneOutputColumn, buildNewOutputColumn } from '../../reduxStuff/actions/showOutputSchema';
 
+const SubI18n = I18n.transform_column;
+
 const renderFunctionDoc = (completion) => (
   <FunctionDoc completion={completion} />
 );
@@ -119,10 +121,10 @@ class TransformColumn extends React.Component {
 
     const evaluateButton = !this.compilationFailed() ?
       (<button className={styles.evaluateButton} onClick={this.evaluateExpr}>
-        Run
+        {SubI18n.run_transform}
         <SocrataIcon name={'play'} />
       </button>) : (<button className={styles.cannotEvaluateButton}>
-        Compilation Failed
+        {SubI18n.compile_fail}
         <SocrataIcon name={'failed'} />
       </button>);
 

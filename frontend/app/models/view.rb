@@ -337,7 +337,9 @@ class View < Model
 
   def self.category_tree
     categories = CurrentDomain.configuration('view_categories').raw_properties
-    top_level_cats = @@default_categories.clone
+    top_level_cats = {
+      '' => { text: "-- #{I18n.t('core.no_category')} --", value: '' }
+    }
     categories.each do |c, o|
       next if !o.enabled
       c = c.titleize_if_necessary
@@ -2081,10 +2083,6 @@ class View < Model
       :viewCount => viewCount
     }
   end
-
-  @@default_categories = {
-    '' => { text: "-- #{I18n.t 'core.no_category'} --", value: '' }
-  }
 
   # Sorts are enabled and disabled by feature modules
   @@sorts = [

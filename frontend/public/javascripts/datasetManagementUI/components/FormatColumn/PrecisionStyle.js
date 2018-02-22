@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Dropdown } from 'common/components';
+import I18n from 'common/i18n';
+
+const scope = 'dataset_management_ui.format_column';
 
 const currencyFormats = [
   { value: 'USD', title: 'United States, Dollars (USD)' },
@@ -99,23 +102,23 @@ const currencyFormats = [
 const numberFormats = [
   {
     value: 'standard',
-    title: 'Standard'
+    title: I18n.t('number_format.standard', { scope })
   },
   {
     value: 'scientific',
-    title: 'Scientific'
+    title: I18n.t('number_format.scientific', { scope })
   },
   {
     value: 'percentage',
-    title: 'Percentage'
+    title: I18n.t('number_format.percentage', { scope })
   },
   {
     value: 'currency',
-    title: 'Currency'
+    title: I18n.t('number_format.currency', { scope })
   },
   {
     value: 'financial',
-    title: 'Financial'
+    title: I18n.t('number_format.financial', { scope })
   }
 ];
 
@@ -142,7 +145,7 @@ function PrecisionStyle({ onChange, format }) {
 
   return (
     <div>
-      <label>Display Format</label>
+      <label>{I18n.t('display_format', { scope })}</label>
       <Dropdown {...dropdownProps} />
       {currencyFormatter}
     </div>

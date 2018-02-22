@@ -2301,6 +2301,7 @@ en:
         upload_a_file: Upload a file
       dataset_metadata_label: Dataset Metadata
       dataset_tab:
+        add_attachments: Add Attachments
         errors:
           invalid_email: Please enter a valid email address.
           invalid_url: Please enter a valid url.
@@ -2360,6 +2361,12 @@ en:
       left: Left
       center: Center
       hide_thousands: Hide thousands separator
+      number_format:
+        standard: Standard
+        scientific: Scientific
+        percentage: Percentage
+        currency: Currency
+        financial: Financial
       override_thousands: Override Thousands Separator
       override_decimal: Override Decimal Separator
       formatting_preview: Formatting Preview
@@ -2384,6 +2391,7 @@ en:
       replace: Replace
       append_vs_update: When you have a row identifier set, and a row in the incoming data has the same identifier, the row in your dataset will be replaced with the new one. When you do not have a row identifier set, all incoming rows will be appended to your dataset.
     parse_options:
+      automatic: Automatic
       title: File Configuration Options
       header_count: Header Count
       column_header: Header Row Position
@@ -2397,6 +2405,10 @@ en:
       header_count_must_be_gt_column_header: Must be greater than Column Header
       header_count_gt_error: Header Count must be greater than or equal to Header Row Position
       must_be_an_int: Must be an integer
+      subtitle: Manage how your file will be interpreted
+    schema_actions:
+      schema_changed: changed the schema
+      restore: restore
     show_output_schema:
       add_col: Add Column
       geocode: Add georeference
@@ -2561,6 +2573,7 @@ en:
       error_invalid_name: invalid name
       no_source_col: No Source Column
     show_uploads:
+      browse: Browse
       filetypes: Parsable file types are
       flash_error_message: Unsupported file type
       directory_error_message: Directory uploads are not supported.
@@ -2593,6 +2606,9 @@ en:
       successful:
         body: You did it!  Congratulations!
         title: Import Succeeded!
+    transform_column:
+      run_transform: Run
+      compile_fail: Compilation Failed
     upload_warning: An upload is in progress, and will be left incomplete if you close this tab.
     upsert_jobs:
       job_id: Job {0}

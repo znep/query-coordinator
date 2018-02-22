@@ -6,9 +6,11 @@ tbody tr.malformedRow {
   background: $error-light;
   font-size: 13px;
 
-  td {
+td {
     border-width: 0px;
     padding: 5px 3px 4px 7px;
+    width: auto !important;
+    min-width: 250px;
   }
 
   .location {

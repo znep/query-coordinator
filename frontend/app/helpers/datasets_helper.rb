@@ -50,7 +50,7 @@ module DatasetsHelper
   end
 
   def licenses()
-    licenses = ExternalConfig.for(:license).merged_licenses
+    licenses = ExternalConfig.for(:license).merged_licenses.clone
     licenses["-- #{t 'core.licenses.no_license'} --"] = ''
     licenses.to_a.sort_by(&:first)
   end

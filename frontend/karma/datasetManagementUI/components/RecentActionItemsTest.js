@@ -9,6 +9,8 @@ import {
   TaskSetFailedActivity,
   OutputSchemaActivity
 } from 'datasetManagementUI/components/RecentActionItems/RecentActionItems';
+import { useTestTranslations } from 'common/i18n';
+import frontendTranslations from 'frontend/config/locales/en.yml';
 
 describe('components/RecentActionItems', () => {
   let initialConfig;
@@ -26,12 +28,17 @@ describe('components/RecentActionItems', () => {
   });
 
   describe('RevisionActivity', () => {
-    const props = {
-      createdAt: new Date('2017-08-31T20:20:01.942Z'),
-      createdBy: 'user'
-    };
+    let props = null;
+    let component = null;
 
-    const component = shallow(<RevisionActivity details={props} />);
+    beforeEach(() => {
+      props = {
+        createdAt: new Date('2017-08-31T20:20:01.942Z'),
+        createdBy: 'user'
+      };
+      useTestTranslations(frontendTranslations.en);
+      component = shallow(<RevisionActivity details={props} />);
+    });
 
     it('renders the right icon', () => {
       assert.equal(component.find('SocrataIcon').prop('name'), 'plus2');
@@ -50,25 +57,28 @@ describe('components/RecentActionItems', () => {
   });
 
   describe('SourceActivity', () => {
-    const props = {
-      createdAt: new Date('2017-08-31T20:20:01.942Z'),
-      createdBy: 'user',
-      source: {
-        source_type: {
-          type: 'upload'
+    let props = null;
+    let component = null;
+
+    beforeEach(() => {
+      props = {
+        createdAt: new Date('2017-08-31T20:20:01.942Z'),
+        createdBy: 'user',
+        source: {
+          source_type: {
+            type: 'upload'
+          }
         }
-      }
-    };
-
-
+      };
+      useTestTranslations(frontendTranslations.en);
+      component = shallow(<SourceActivity details={props} />);
+    });
 
     it('renders the right icon', () => {
-      const component = shallow(<SourceActivity details={props} />);
       assert.equal(component.find('SocrataIcon').prop('name'), 'data');
     });
 
     it('renders the right message', () => {
-      const component = shallow(<SourceActivity details={props} />);
       assert.equal(
         component.find('p').first().text(),
         `${props.createdBy} uploaded a file`
@@ -76,7 +86,7 @@ describe('components/RecentActionItems', () => {
     });
 
     it('renders a change message when there is a previous source', () => {
-      const component = shallow(<SourceActivity details={{
+      const component2 = shallow(<SourceActivity details={{
         ...props,
         previousSource: {
           source_type: {
@@ -86,11 +96,10 @@ describe('components/RecentActionItems', () => {
       }} />);
 
       assert.equal(
-        component.find('p').first().text(),
+        component2.find('p').first().text(),
         `${props.createdBy} changed the file configuration`
       );
     });
-
 
     it('renders a timestamp', () => {
       const component = shallow(<SourceActivity details={props} />);
@@ -134,12 +143,17 @@ describe('components/RecentActionItems', () => {
   });
 
   describe('TaskSetActivity', () => {
-    const props = {
-      createdAt: new Date('2017-08-31T20:20:01.942Z'),
-      createdBy: 'user'
-    };
+    let props = null;
+    let component = null;
 
-    const component = shallow(<TaskSetActivity details={props} />);
+    beforeEach(() => {
+      props = {
+        createdAt: new Date('2017-08-31T20:20:01.942Z'),
+        createdBy: 'user'
+      };
+      useTestTranslations(frontendTranslations.en)
+      component = shallow(<TaskSetActivity details={props} />);
+    });
 
     it('renders the right icon', () => {
       assert.equal(component.find('SocrataIcon').prop('name'), 'dataset');
@@ -158,12 +172,18 @@ describe('components/RecentActionItems', () => {
   });
 
   describe('TaskSetFinishedActivity', () => {
-    const props = {
-      createdAt: new Date('2017-08-31T20:20:01.942Z'),
-      createdBy: 'user'
-    };
+    let props = null;
+    let component = null;
 
-    const component = shallow(<TaskSetFinishedActivity details={props} />);
+    beforeEach(() => {
+      props = {
+        createdAt: new Date('2017-08-31T20:20:01.942Z'),
+        createdBy: 'user'
+      };
+
+      useTestTranslations(frontendTranslations.en);
+      component = shallow(<TaskSetFinishedActivity details={props} />);
+    });
 
     it('renders the right icon', () => {
       assert.equal(component.find('SocrataIcon').prop('name'), 'checkmark3');
@@ -182,12 +202,17 @@ describe('components/RecentActionItems', () => {
   });
 
   describe('TaskSetFailedActivity', () => {
-    const props = {
-      createdAt: new Date('2017-08-31T20:20:01.942Z'),
-      createdBy: 'user'
-    };
+    let props = null;
+    let component = null;
 
-    const component = shallow(<TaskSetFailedActivity details={props} />);
+    beforeEach(() => {
+      props = {
+        createdAt: new Date('2017-08-31T20:20:01.942Z'),
+        createdBy: 'user'
+      };
+      useTestTranslations(frontendTranslations.en);
+      component = shallow(<TaskSetFailedActivity details={props} />);
+    });
 
     it('renders the right icon', () => {
       assert.equal(component.find('SocrataIcon').prop('name'), 'failed');

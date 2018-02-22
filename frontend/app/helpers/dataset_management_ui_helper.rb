@@ -10,6 +10,7 @@ module DatasetManagementUiHelper
       airbrakeProjectId: ENV['PUBLISHING_AIRBRAKE_PROJECT_ID'] || APP_CONFIG.publishing_airbrake_project_id,
       currentUser: User.current_user,
       localePrefix: locale_prefix,
+      locale: I18n.locale.to_s,
       featureFlags: feature_flags_as_json,
       :mapboxAccessToken => ENV['MAPBOX_ACCESS_TOKEN'] || APP_CONFIG.mapbox_access_token,
       usersnapProjectID: 'b08ab2ec-8952-4e7f-8e61-85501ece585a'

@@ -172,7 +172,7 @@ const FIELDSETS = {
     fields: [
       {
         name: 'attachments',
-        buttonText: 'Add Attachments',
+        buttonText: I18n.metadata_manage.dataset_tab.add_attachments,
         elementType: 'attachmentsInput',
         validations: [areUnique]
       }

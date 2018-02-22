@@ -35,7 +35,7 @@ export const derivedViewWillEnterApprovalsQueueOnSave = ({ parentCoreView }) => 
   return !!(
     FeatureFlags.value('use_fontana_approvals') &&
     helpers.currentUserHasRights() &&
-    helpers.assetIsPublic(parentCoreView) &&
+    (helpers.assetIsPublic(parentCoreView) || helpers.assetIsPending(parentCoreView)) &&
     helpers.manualApprovalRequiredForProvenanceType(parentCoreView)
   );
 };

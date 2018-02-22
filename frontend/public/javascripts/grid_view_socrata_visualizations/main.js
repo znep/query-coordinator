@@ -33,15 +33,13 @@ function updatePageBasedOnApprovalOutcome(assetWillEnterApprovalsQueue) {
   }
 }
 
-window.onload = () => {
-  if (!FeatureFlags.value('enable_new_dataset_sharing_ux')) {
-    assetUtils.assetWillEnterApprovalsQueueWhenMadePublic({ coreView: window.blist.dataset }).then(
-      (result) => updatePageBasedOnApprovalOutcome(result)
-    );
+if (!FeatureFlags.value('enable_new_dataset_sharing_ux')) {
+  assetUtils.assetWillEnterApprovalsQueueWhenMadePublic({ coreView: window.blist.dataset }).then(
+    (result) => updatePageBasedOnApprovalOutcome(result)
+  );
 
-    if (assetUtils.derivedViewWillEnterApprovalsQueueOnSave({ parentCoreView: window.blist.dataset })) {
-      // EN-21596: Show approval warning message in the Save new derived view dialog
-      document.getElementById('save-new-derived-view-approval-message').style.display = 'inherit';
-    }
+  if (assetUtils.derivedViewWillEnterApprovalsQueueOnSave({ parentCoreView: window.blist.dataset })) {
+    // EN-21596: Show approval warning message in the Save new derived view dialog
+    document.getElementById('save-new-derived-view-approval-message').style.display = 'inherit';
   }
-};
+}

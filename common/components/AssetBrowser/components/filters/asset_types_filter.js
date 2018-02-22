@@ -42,11 +42,6 @@ export class AssetTypesFilter extends Component {
         icon: <AssetTypeIcon displayType="datalens" />
       },
       {
-        title: I18n.t(isUsaid ? 'options.data_assets' : 'options.external', { scope }),
-        value: 'hrefs,federated_hrefs',
-        icon: <AssetTypeIcon displayType={isUsaid ? 'data_asset' : 'href'} />
-      },
-      {
         title: I18n.t('options.files', { scope }),
         value: 'files',
         icon: <AssetTypeIcon displayType="attachment" />
@@ -62,9 +57,19 @@ export class AssetTypesFilter extends Component {
         icon: <AssetTypeIcon displayType="form" />
       },
       {
+        title: I18n.t(isUsaid ? 'options.data_assets' : 'options.external', { scope }),
+        value: 'hrefs,federated_hrefs',
+        icon: <AssetTypeIcon displayType={isUsaid ? 'data_asset' : 'href'} />
+      },
+      {
         title: I18n.t('options.maps', { scope }),
         value: 'maps',
         icon: <AssetTypeIcon displayType="map" />
+      },
+      {
+        title: I18n.t('options.measures', { scope }),
+        value: 'measures',
+        icon: <AssetTypeIcon displayType="measure" />
       },
       {
         title: I18n.t('options.working_copies', { scope }),

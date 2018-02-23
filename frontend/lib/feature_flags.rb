@@ -147,8 +147,12 @@ class FeatureFlags
         flag_set << iframe_parameters(request.referer) if is_iframe
       end
 
-      return flag_set.first if service == :monitor && flag_set.size == 1
-      service_class::Utils.derive(*flag_set, configs: descriptions(full: false))
+      # No need to pull descriptions in this case, since no merging is necessary
+      if service == :monitor && flag_set.reject(&:blank?).size == 1
+        service_class::Utils.wrapper_class.new(flag_set.first)
+      else
+        service_class::Utils.derive(*flag_set, configs: descriptions(full: false))
+      end
     end
   end
 end

@@ -1424,7 +1424,7 @@ function SvgTimelineChart($element, vif, options) {
       // We do not want to apply formatting if the label is `(Other)` category
       if (!_.isEqual(label, I18n.t('shared.visualizations.charts.common.other_category'))) {
         const groupingColumn = _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
-        label = _.isNil(groupingColumn) ? label : formatValueHTML(label, groupingColumn, timelineDataToRender, true);
+        label = _.isNil(groupingColumn) ? label : formatValuePlainText(label, groupingColumn, timelineDataToRender, true);
       }
 
       let value = series.rows[dimensionIndex][measureIndex];
@@ -1694,8 +1694,7 @@ function SvgTimelineChart($element, vif, options) {
 
     const $labelValueRows = data.map((datum, seriesIndex) => {
       const measure = dataToRenderBySeries[seriesIndex].measure;
-      const labelMatcher = new RegExp(I18n.t('shared.visualizations.charts.common.unlabeled_measure_prefix') + seriesIndex);
-      const label = labelMatcher.test(datum.label) ? '' : datum.label;
+      const label = datum.label || noValueLabel;
 
       const $labelCell = $('<td>', { 'class': 'socrata-flyout-cell' }).
         text(label).

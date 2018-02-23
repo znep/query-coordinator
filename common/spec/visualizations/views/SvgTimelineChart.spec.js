@@ -488,10 +488,16 @@ describe('SvgTimelineChart', () => {
           let payload = event.originalEvent.detail;
           let $content = $(payload.content);
 
-          const $flyoutRows = $content.find('.socrata-flyout-row');
           assert.equal($content.find('.socrata-flyout-title').text(), 'Sept. 1, 2017 to Sept. 2, 2017');
+
+          const $flyoutRows = $content.find('.socrata-flyout-row');
           assert.lengthOf($flyoutRows, multiSeriesTestData.rows[0].length - 1);
-          assert.match($flyoutRows.text(), /\(No value\)/); // handles nulls
+
+          let cells = $($flyoutRows[2]).find('.socrata-flyout-cell'); // get last row
+          assert.equal(cells.length, 2);
+          assert.equal($(cells[0]).text(), '(No value)'); // verify the dimension label
+          assert.equal($(cells[1]).text(), '(No value)'); // verify the value label
+
           done();
         });
 

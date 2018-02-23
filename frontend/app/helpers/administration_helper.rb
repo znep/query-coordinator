@@ -200,6 +200,12 @@ module AdministrationHelper
     feature_flag?('configurable_roles', request) && user_can?(UserRights::MANAGE_USERS)
   end
 
+  # if configurable_roles is off, we still show the roles option but just for superadmins under a different section
+  # if configurable_roles is on, it shows up in the normal spot
+  def show_superadmin_roles?
+    current_user.try(:is_superadmin?) && !feature_flag?('configurable_roles', request)
+  end
+
   def user_can_see_routing_approval?
     using_approvals?(:old) && current_user.can_approve?
   end

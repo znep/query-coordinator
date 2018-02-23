@@ -15,7 +15,7 @@ const mapStateToProps = state => {
   const hasCustomRoles = Selectors.stateHasCustomRoles(state);
 
   return {
-    hasConfigurableRoleFeature: Selectors.configurableRoleFeatureFlagFromState(state),
+    hasConfigurableRoleFeature: Selectors.currentUserHasFlag('admin') || Selectors.configurableRoleFeatureFlagFromState(state),
     isEditCustomRolesEnabled: hasCustomRoles && includes(appState, [DEFAULT]),
     isAddCustomRoleEnabled: includes(appState, [DEFAULT, EDIT_CUSTOM_ROLES]),
     faqUrl: Selectors.getFaqUrlFromState(state)

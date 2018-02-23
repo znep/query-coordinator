@@ -1,4 +1,5 @@
 import Immutable from 'immutable';
+import get from 'lodash/get';
 import cond from 'lodash/fp/cond';
 import constant from 'lodash/fp/constant';
 import curry from 'lodash/fp/curry';
@@ -142,6 +143,8 @@ export const stateHasCustomRoles = state => getRolesFromState(state).some(roleIs
 
 export const configurableRoleFeatureFlagFromState = state =>
   state.getIn(['featureFlags', 'configurable_roles']);
+
+export const currentUserHasFlag = get(window, 'socrata.currentUser.flags', []).includes;
 
 export const updateRoleWithError = curry((error, role) => role.merge({ error, hasError: true }));
 

@@ -10,6 +10,7 @@ import SocrataIcon from 'common/components/SocrataIcon';
 import { MeasureTitle } from './MeasureTitle';
 import withComputedMeasure from './withComputedMeasure';
 import { PeriodTypes } from '../lib/constants';
+import ReportingPeriods from '../lib/reportingPeriods';
 import computedMeasurePropType from '../propTypes/computedMeasurePropType';
 
 // Calculates and displays a measure as a tile
@@ -141,6 +142,19 @@ export class MeasureResultCard extends Component {
     const reportingPeriod = _.get(measure, 'metricConfig.reportingPeriod', {});
     const isClosed = reportingPeriod.type === PeriodTypes.CLOSED;
 
+    let reportingPeriodDates;
+    let latestReporintPeriodMessage;
+
+    if (ReportingPeriods.isConfigValid(reportingPeriod)) {
+      reportingPeriodDates = new ReportingPeriods(reportingPeriod).seriesToDate();
+      const latestReportingPeriodStart = _.last(reportingPeriodDates).start.format('M/D/YY');
+      const latestReportingPeriodEnd = _.last(reportingPeriodDates).end.format('M/D/YY');
+
+      latestReporintPeriodMessage = isClosed ?
+        `${latestReportingPeriodStart} - ${latestReportingPeriodEnd}` :
+        `${I18n.t('shared.performance_measures.measure.since')} ${latestReportingPeriodStart}`;
+    }
+
     return (
       <div className="reporting-period-type">
         {
@@ -148,6 +162,9 @@ export class MeasureResultCard extends Component {
             I18n.t('shared.performance_measures.measure.as_of_last') :
             I18n.t('shared.performance_measures.measure.as_of_today')
         }
+        <div className="reporting-period-latest">
+          {`${latestReporintPeriodMessage}`}
+        </div>
       </div>
     );
   }

@@ -12,6 +12,7 @@ en:
         as_of_last: as of last closed reporting period
         as_of_today: as of today
         dividing_by_zero: Denominator of the rate's fraction is zero
+        since: since
     asset_browser:
       alert_messages:
         resource_approved:

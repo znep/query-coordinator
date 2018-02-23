@@ -13,6 +13,30 @@ describe('ColumnDropdown', () => {
     { fieldName: 'second', name: 'Second', dataTypeName: 'number', renderTypeName: 'number' }
   ];
 
+  it('enables the dropdown if columns are present', () => {
+    const props = {
+      displayableFilterableColumns,
+      measureArgument: 'fakeMeasureArgument',
+      measure,
+      onSelectColumn: () => {}
+    };
+
+    const dropdownProps = shallow(<ColumnDropdown {...props} />).find(Dropdown).props();
+    assert.propertyVal(dropdownProps, 'disabled', false);
+  });
+
+  it('disables the dropdown if no columns are present', () => {
+    const props = {
+      displayableFilterableColumns: [],
+      measureArgument: 'fakeMeasureArgument',
+      measure,
+      onSelectColumn: () => {}
+    };
+
+    const dropdownProps = shallow(<ColumnDropdown {...props} />).find(Dropdown).props();
+    assert.propertyVal(dropdownProps, 'disabled', true);
+  });
+
   it('delegates column visibility to isColumnUsableWithMeasureArgument', () => {
     const isColumnUsableWithMeasureArgument = sinon.stub().callsFake(
       (column, measure, measureArgument) => {

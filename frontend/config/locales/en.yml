@@ -3273,7 +3273,7 @@ en:
               no_count_column: Select a column to count for your calculation.
               no_denominator_column: Select a denominator column for your rate calculation.
               no_numerator_column: Select a numerator column for your rate calculation.
-              no_numeric_column: Your selected data source doesn't have numeric columns, so it can't be used for the selected calculation type. Please change your data source or calculation type.
+              no_numeric_column: Your selected dataset doesn't have numeric columns. Please select another dataset.
               no_rate_aggregation: Select an aggregation type for your calculation.
               no_recent_value_column: Select a numeric value column for your calculation.
               no_reference_date_column: Select a date reference column for your calculation.

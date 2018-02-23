@@ -27,6 +27,7 @@ export default class ColumnDropdown extends Component {
     });
 
     const dropdownOptions = {
+      disabled: _.isEmpty(columns),
       placeholder: I18n.t('open_performance.measure.edit_modal.calculation.choose_column'),
       onSelection: (option) => {
         onSelectColumn(option.value);

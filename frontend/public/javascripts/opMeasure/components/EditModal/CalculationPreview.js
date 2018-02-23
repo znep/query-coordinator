@@ -10,9 +10,17 @@ import MeasureResultCard from 'common/performance_measures/components/MeasureRes
 import { CalculationTypes } from 'common/performance_measures/lib/constants';
 
 import { setUnitLabel, setDecimalPlaces, toggleDisplayAsPercent } from '../../actions/editor';
+import validateConfiguration from '../../lib/validateConfiguration';
 
 // Right hand preview and display options for calculation
 export class CalculationPreview extends Component {
+
+  shouldDisableDisplayOptions() {
+    const { measure, dataSourceView } = this.props;
+    const validation = validateConfiguration(_.get(measure, 'metricConfig'), dataSourceView);
+    return validation.calculation.noNumericColumn;
+  }
+
   renderDisplayAsPercent() {
     const {
       calculationType,
@@ -28,7 +36,8 @@ export class CalculationPreview extends Component {
     const displayAsPercentAttributes = {
       id: displayAsPercentId,
       onChange: onToggleDisplayAsPercent,
-      checked: displayAsPercent
+      checked: displayAsPercent,
+      disabled: this.shouldDisableDisplayOptions()
     };
 
     return (
@@ -57,7 +66,8 @@ export class CalculationPreview extends Component {
       className: 'text-input',
       type: 'number',
       onChange: (event) => onChangeDecimalPlaces(parseInt(event.target.value, 10)),
-      value: decimalPlaces
+      value: decimalPlaces,
+      disabled: this.shouldDisableDisplayOptions()
     };
 
     const rowUnitId = 'metric_unit_label';
@@ -69,7 +79,8 @@ export class CalculationPreview extends Component {
       placeholder: I18n.t(
         'open_performance.measure.edit_modal.calculation.display_options.unit_label_placeholder'
       ),
-      value: unitLabel
+      value: unitLabel,
+      disabled: this.shouldDisableDisplayOptions()
     };
 
     return (
@@ -109,6 +120,7 @@ CalculationPreview.defaultProps = {
 
 CalculationPreview.propTypes = {
   calculationType: PropTypes.string,
+  dataSourceView: PropTypes.object,
   decimalPlaces: PropTypes.number,
   displayAsPercent: PropTypes.bool,
   onChangeDecimalPlaces: PropTypes.func,
@@ -119,7 +131,7 @@ CalculationPreview.propTypes = {
 };
 
 export function mapStateToProps(state) {
-  const { measure } = state.editor;
+  const { measure, dataSourceView } = state.editor;
   const calculationType = _.get(measure, 'metricConfig.type');
   const decimalPlaces = _.get(measure, 'metricConfig.display.decimalPlaces', 0);
   const displayAsPercent = _.get(measure, 'metricConfig.display.asPercent', false);
@@ -127,6 +139,7 @@ export function mapStateToProps(state) {
 
   return {
     calculationType,
+    dataSourceView,
     decimalPlaces,
     displayAsPercent,
     unitLabel,

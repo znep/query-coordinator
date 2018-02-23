@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import { Simulate } from 'react-dom/test-utils';
 import { shallow } from 'enzyme';
 
-import { CalculationTypes } from 'common/performance_measures/lib/constants';
+import { CalculationTypes, RateAggregationTypes } from 'common/performance_measures/lib/constants';
 import { CalculationPreview, mapStateToProps } from 'opMeasure/components/EditModal/CalculationPreview';
 
 describe('CalculationPreview', () => {
@@ -33,7 +33,8 @@ describe('CalculationPreview', () => {
       const props = {
         onChangeDecimalPlaces: sinon.stub(),
         onChangeUnitLabel: sinon.stub(),
-        unitLabel: ''
+        unitLabel: '',
+        measure: {}
       };
 
       const element = shallow(<CalculationPreview {...props} />);
@@ -50,7 +51,8 @@ describe('CalculationPreview', () => {
       const props = {
         onChangeDecimalPlaces: sinon.stub(),
         onChangeUnitLabel: sinon.stub(),
-        unitLabel: ''
+        unitLabel: '',
+        measure: {}
       };
 
       const element = shallow(<CalculationPreview {...props} />);
@@ -69,7 +71,7 @@ describe('CalculationPreview', () => {
       describe(`${calculationType} measures`, () => {
         it(shouldShow ? 'should show' : 'should not show', () => {
           assert.lengthOf(
-            shallow(<CalculationPreview calculationType={calculationType} />).
+            shallow(<CalculationPreview calculationType={calculationType} measure={{}} />).
               find('.metric-display-as-percent'),
             shouldShow ? 1 : 0
           );
@@ -81,6 +83,7 @@ describe('CalculationPreview', () => {
       const props = {
         onToggleDisplayAsPercent: sinon.stub(),
         calculationType: CalculationTypes.RATE,
+        measure: {}
       };
 
       const element = shallow(<CalculationPreview {...props} />);
@@ -88,6 +91,73 @@ describe('CalculationPreview', () => {
       element.find('.metric-display-as-percent Checkbox').props().onChange();
 
       sinon.assert.calledOnce(props.onToggleDisplayAsPercent);
+    });
+  });
+
+  describe('when there are no numeric columns', () => {
+    it('unit label and decimal place inputs are disabled for sum calculations', () => {
+      const props = {
+        unitLabel: '',
+        measure: {
+          metricConfig: { type: CalculationTypes.SUM }
+        },
+        dataSourceView: {
+          columns: [{fieldName: 'something with text', dataTypeName: 'text'}]
+        }
+      };
+
+      const element = shallow(<CalculationPreview {...props} />);
+      const unitLabelProps = element.find('#metric_unit_label').props();
+      const decimalPlacesProps = element.find('#metric_decimal_places').props();
+
+      assert.propertyVal(unitLabelProps, 'disabled', true);
+      assert.propertyVal(decimalPlacesProps, 'disabled', true);
+    });
+
+    it('unit label and decimal place inputs are disabled for recent value calculations', () => {
+      const props = {
+        unitLabel: '',
+        measure: {
+          metricConfig: { type: CalculationTypes.RECENT }
+        },
+        dataSourceView: {
+          columns: [{fieldName: 'something with text', dataTypeName: 'text'}]
+        }
+      };
+
+      const element = shallow(<CalculationPreview {...props} />);
+      const unitLabelProps = element.find('#metric_unit_label').props();
+      const decimalPlacesProps = element.find('#metric_decimal_places').props();
+
+      assert.propertyVal(unitLabelProps, 'disabled', true);
+      assert.propertyVal(decimalPlacesProps, 'disabled', true);
+    });
+
+    it('unit, decimal place, and display as percent inputs are disabled for rate (sum) calculations', () => {
+      const props = {
+        calculationType: CalculationTypes.RATE,
+        unitLabel: '',
+        measure: {
+          metricConfig: {
+            type: CalculationTypes.RATE,
+            arguments: {
+              aggregationType: RateAggregationTypes.SUM
+            }
+          }
+        },
+        dataSourceView: {
+          columns: [{fieldName: 'something with text', dataTypeName: 'text'}]
+        }
+      };
+
+      const element = shallow(<CalculationPreview {...props} />);
+      const unitLabelProps = element.find('#metric_unit_label').props();
+      const decimalPlacesProps = element.find('#metric_decimal_places').props();
+      const checkboxProps = element.find('#metric_display_as_percent').props();
+
+      assert.propertyVal(unitLabelProps, 'disabled', true);
+      assert.propertyVal(decimalPlacesProps, 'disabled', true);
+      assert.propertyVal(checkboxProps, 'disabled', true);
     });
   });
 });

@@ -69,7 +69,8 @@ describe('lib/queryBuilder', () => {
       date: {
         start: '2016-01-01',
         end: '2017-12-12'
-      }
+      },
+      asUTC: false
     };
 
     it('returns null with no filters', () => {

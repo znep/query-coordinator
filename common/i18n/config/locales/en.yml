@@ -416,6 +416,7 @@ en:
       flannel:
         close_popup: Close popup
       info_pane:
+        awaiting_approval: Awaiting approval
         community: Community
         less: Less
         less_info: Less Info

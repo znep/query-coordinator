@@ -1,13 +1,16 @@
+import $ from 'jquery';
 import _ from 'lodash';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import $ from 'jquery';
-import classNames from 'classnames';
+
 import collapsible from 'common/collapsible';
-import purify from 'common/purify';
 import I18n from 'common/i18n';
-import SocrataIcon from '../SocrataIcon';
+import purify from 'common/purify';
+import * as assetUtilsHelpers from 'common/asset/utils/helpers';
+
 import EditableText from '../EditableText';
+import SocrataIcon from '../SocrataIcon';
 
 /**
  * The InfoPane is a component that is designed to render a hero element with useful information
@@ -264,8 +267,14 @@ class InfoPane extends Component {
       renderButtons,
       provenance,
       provenanceIcon,
-      hideProvenance
+      hideProvenance,
+      view
     } = this.props;
+
+    const awaitingApprovalMessage = (isPrivate && view && assetUtilsHelpers.assetIsPending(view.coreView)) ?
+      <span className="awaiting-approval-message">
+        {I18n.t('shared.components.info_pane.awaiting_approval')}
+      </span> : null;
 
     const privateIcon = isPrivate ?
       <span
@@ -294,6 +303,7 @@ class InfoPane extends Component {
             <div className="entry-header-contents">
               <div className="entry-title">
                 <h1 className="info-pane-name">
+                  {awaitingApprovalMessage}
                   {privateIcon}
                   <span itemProp="name">
                     {nameElement}

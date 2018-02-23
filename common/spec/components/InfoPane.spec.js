@@ -270,4 +270,39 @@ describe('InfoPane', () => {
       });
     });
   });
+
+  describe('awaiting approval message', () => {
+    const getViewPropWithApprovalState = (approvalState) => ({
+      coreView: {
+        approvals: [{
+          outcome: 'publicize',
+          state: approvalState
+        }]
+      }
+    });
+
+    it('does not explode if a view is not present in the props', () => {
+      const props = { isPrivate: true, view: undefined };
+      const element = renderComponent(InfoPane, getProps(props));
+      assert.isNull(element.querySelector('.awaiting-approval-message'));
+    });
+
+    it('does not render when an asset is public', () => {
+      const props = { isPrivate: false, view: undefined };
+      const element = renderComponent(InfoPane, getProps(props));
+      assert.isNull(element.querySelector('.awaiting-approval-message'));
+    });
+
+    it('does not render when an asset is private and not pending approval', () => {
+      const props = { isPrivate: true, view: getViewPropWithApprovalState('rejected') };
+      const element = renderComponent(InfoPane, getProps(props));
+      assert.isNull(element.querySelector('.awaiting-approval-message'));
+    });
+
+    it('renders when an asset is private and pending approval', () => {
+      const props = { isPrivate: true, view: getViewPropWithApprovalState('pending') };
+      const element = renderComponent(InfoPane, getProps(props));
+      assert.ok(element.querySelector('.awaiting-approval-message'));
+    });
+  });
 });

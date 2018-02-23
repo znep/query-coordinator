@@ -16,6 +16,16 @@
     font-size: 29px;
     font-weight: 300;
     letter-spacing: -0.5px;
+    position: relative;
+
+    .awaiting-approval-message {
+      color: $warning;
+      position: absolute;
+      top: -1rem;
+      left: 6px;
+      font-size: 12px;
+      font-weight: normal;
+    }
 
     .socrata-icon-private {
       color: $warning;
@@ -98,7 +108,7 @@
         }
       }
     }
-    
+
     &.hide {
       display: none;
     }

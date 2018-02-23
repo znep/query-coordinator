@@ -33,7 +33,7 @@ function updatePageBasedOnApprovalOutcome(assetWillEnterApprovalsQueue) {
   }
 }
 
-if (!FeatureFlags.value('enable_new_dataset_sharing_ux')) {
+if (!FeatureFlags.value('enable_new_dataset_sharing_ux') && window.blist.dataset) {
   assetUtils.assetWillEnterApprovalsQueueWhenMadePublic({ coreView: window.blist.dataset }).then(
     (result) => updatePageBasedOnApprovalOutcome(result)
   );

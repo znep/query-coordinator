@@ -1573,13 +1573,7 @@ function SvgColumnChart($element, vif, options) {
       formatter = d3.format('.0%'); // rounds to a whole number percentage
     } else {
       const column = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
-      const renderType = _.get(columnDataToRender, `columnFormats.${column}.renderTypeName`);
-
-      if (renderType === 'money') {
-        formatter = ColumnFormattingHelpers.createMoneyFormatter(column, columnDataToRender);
-      } else {
-        formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, columnDataToRender, true);
-      }
+      formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, columnDataToRender, true);
     }
 
     const yAxis = d3.svg.axis().
@@ -1868,8 +1862,6 @@ function SvgColumnChart($element, vif, options) {
     // For reference, the original chart width was hard-coded to 50px.
     return _.max(testLabelWidths.concat(MINIMUM_LABEL_WIDTH)) + LABEL_PADDING_WIDTH;
   }
-
-  // Formats a value from the dataset for rendering within the chart.
 }
 
 module.exports = SvgColumnChart;

@@ -1820,13 +1820,7 @@ function SvgBarChart($element, vif, options) {
       formatter = d3.format('.0%'); // rounds to a whole number percentage
     } else {
       const column = _.get(self.getVif(), 'series[0].dataSource.measure.columnName');
-      const renderType = _.get(barDataToRender, `columnFormats.${column}.renderTypeName`);
-
-      if (renderType === 'money') {
-        formatter = ColumnFormattingHelpers.createMoneyFormatter(column, barDataToRender);
-      } else {
-        formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, barDataToRender, true);
-      }
+      formatter = (d) => ColumnFormattingHelpers.formatValueHTML(d, column, barDataToRender, true);
     }
 
     const axis = d3.svg.axis().

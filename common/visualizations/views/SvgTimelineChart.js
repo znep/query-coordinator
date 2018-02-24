@@ -6,7 +6,6 @@ const utils = require('common/js_utils');
 // Project Imports
 const SvgVisualization = require('./SvgVisualization');
 import {
-  createMoneyFormatter,
   formatValueHTML,
   formatValuePlainText
 } from '../helpers/ColumnFormattingHelpers';
@@ -28,10 +27,12 @@ import {
   DIMENSION_LABELS_ROTATION_ANGLE,
   FONT_STACK,
   GLYPH_SPACE_HEIGHT,
+  LABEL_PADDING_WIDTH,
   LEGEND_BAR_HEIGHT,
   LINE_DASH_ARRAY,
   MEASURE_LABELS_FONT_COLOR,
   MEASURE_LABELS_FONT_SIZE,
+  MINIMUM_LABEL_WIDTH,
   MINIMUM_Y_AXIS_TICK_DISTANCE,
   REFERENCE_LINES_STROKE_DASHARRAY,
   REFERENCE_LINES_STROKE_WIDTH,
@@ -45,11 +46,11 @@ import { getMeasures } from '../helpers/measure';
 // The MARGINS values have been eyeballed to provide enough space for axis
 // labels that have been observed 'in the wild'. They may need to be adjusted
 // slightly in the future, but the adjustments will likely be small in scale.
+// The LEFT margin has been removed because it will be dynamically calculated.
 const MARGINS = {
   TOP: 32,
   RIGHT: 50,
-  BOTTOM: 32,
-  LEFT: 50
+  BOTTOM: 32
 };
 const AREA_DOT_RADIUS = 1;
 const AREA_STROKE_WIDTH = 3;
@@ -326,13 +327,13 @@ function SvgTimelineChart($element, vif, options) {
       0;
 
     const axisLabels = self.getAxisLabels();
-    const leftMargin = MARGINS.LEFT + (axisLabels.left ? AXIS_LABEL_MARGIN : 0);
     const rightMargin = MARGINS.RIGHT + (axisLabels.right ? AXIS_LABEL_MARGIN : 0);
     const topMargin = MARGINS.TOP + (axisLabels.top ? AXIS_LABEL_MARGIN : 0);
     const bottomMargin = MARGINS.BOTTOM + (axisLabels.bottom ? AXIS_LABEL_MARGIN : 0) + dimensionLabelsHeight;
 
-    const viewportWidth = Math.max(0, $chartElement.width() - leftMargin - rightMargin);
     let viewportHeight = Math.max(0, $chartElement.height() - topMargin - bottomMargin);
+    const leftMargin = calculateLeftMargin(viewportHeight) + (axisLabels.left ? AXIS_LABEL_MARGIN : 0);
+    const viewportWidth = Math.max(0, $chartElement.width() - leftMargin - rightMargin);
 
     const d3ClipPathId = `timeline-chart-clip-path-${_.uniqueId()}`;
     const dataTableDimensionIndex = timelineDataToRender.columns.indexOf('dimension');
@@ -1901,14 +1902,7 @@ function SvgTimelineChart($element, vif, options) {
   function generateYAxis(yScale, height) {
     const vif = self.getVif();
     const column = _.get(vif, 'series[0].dataSource.measure.columnName');
-    const renderType = _.get(timelineDataToRender, `columnFormats.${column}.renderTypeName`);
-
-    let formatter;
-    if (renderType === 'money') {
-      formatter = createMoneyFormatter(column, timelineDataToRender);
-    } else {
-      formatter = (d) => formatValueHTML(d, column, timelineDataToRender, true);
-    }
+    const formatter = (d) => formatValueHTML(d, column, timelineDataToRender, true);
 
     const yAxis = d3.svg.axis().
       scale(yScale).
@@ -1991,6 +1985,31 @@ function SvgTimelineChart($element, vif, options) {
     }
 
     return dates;
+  }
+
+  // Calculates the proper left margin for the chart using a simulated Y axis.
+  function calculateLeftMargin(viewportHeight) {
+    const values = _.flatMap(dataToRender.rows, (row) => _.tail(row).map(parseFloat));
+
+    // Generate a Y axis on a fake chart using our real axis generator.
+    const testSvg = d3.select('body').append('svg');
+    const testScale = generateYScale(_.min(values), _.max(values), viewportHeight);
+    testSvg.append('g').
+      attr('class', 'y axis').
+      call(generateYAxis(testScale, viewportHeight));
+
+    // Get the widths of all generated tick labels.
+    const testLabelWidths = _.map(
+      testSvg.selectAll('.tick text')[0],
+      (el) => el.textLength.baseVal.value
+    );
+
+    // Clean up the fake chart.
+    testSvg.remove();
+
+    // Return the largest label width (minimum 35px), plus a bit of padding.
+    // For reference, the original chart width was hard-coded to 50px.
+    return _.max(testLabelWidths.concat(MINIMUM_LABEL_WIDTH)) + LABEL_PADDING_WIDTH;
   }
 }
 

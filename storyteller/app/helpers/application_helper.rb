@@ -109,7 +109,7 @@ module ApplicationHelper
   def render_feature_flags_for_javascript
     flags = case Rails.application.config.feature_flag_service
             when :signaller then Signaller::FeatureFlags.on_domain(request.host)
-            when :monitor then FeatureFlagMonitor.flags(on_domain: request.host)
+            when :monitor then FeatureFlagMonitor.flags_on(domain: request.host)
             end
     javascript_tag(<<~OUT, :id => 'feature-flags'
       window.socrata = window.socrata || {};

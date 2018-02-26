@@ -22,9 +22,9 @@
       </div>
     <%- end -%>
   <%- end -%>
-
-  <%= render 'accounts/recaptcha2' %>
-
+  <%- if FeatureFlags.derive(nil, request).use_captcha_for_forms -%>
+    <%= render 'accounts/recaptcha2' %>
+  <%- end -%>
   <div class="submitLine">
     <input type="submit" value="Submit" />
   </div>

@@ -149,7 +149,7 @@ GEM
     fast_stack (0.1.0)
       rake
       rake-compiler
-    feature-flag-monitor (0.2.3)
+    feature-flag-monitor (0.2.4)
       activesupport (~> 4.2)
       diplomat
       httparty (~> 0.13)
@@ -164,9 +164,9 @@ GEM
       activesupport (>= 4.1.0)
     hashie (2.1.2)
     headless (2.3.1)
-    httparty (0.15.6)
+    httparty (0.16.0)
       multi_xml (>= 0.5.2)
-    i18n (0.9.3)
+    i18n (0.9.5)
       concurrent-ruby (~> 1.0)
     inifile (3.0.0)
     jbuilder (2.3.0)
@@ -339,7 +339,7 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.5)
     trollop (2.1.2)
-    tzinfo (1.2.4)
+    tzinfo (1.2.5)
       thread_safe (~> 0.1)
     unicorn (4.9.0)
       kgio (~> 2.6)

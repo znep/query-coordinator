@@ -3549,6 +3549,8 @@ en:
         name: Invite and manage collaborators on stories
       manage_story_visibility:
         name: Manage visibility of stories
+      manage_teams:
+        name: Manage Teams
       manage_users:
         name: Add, remove, and manage users
       moderate_comments:

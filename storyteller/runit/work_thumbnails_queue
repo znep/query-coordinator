@@ -3,4 +3,5 @@
 source /dev/shm/storyteller_secrets.sh
 
 cd $APP_DIR
+source marathon_support/find_consul
 exec su socrata -c 'DELAYED_JOB_MAX_ATTEMPTS=1 QUEUES=thumbnails bin/rake queues:process'

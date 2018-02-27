@@ -8,6 +8,11 @@ set -ev
 export ZOOKEEPER_HOSTS=${ZOOKEEPER_HOSTS:-"$EXTERNAL_IP:2181"}
 export CORESERVICE_URI=${CORESERVICE_URI:-"$EXTERNAL_IP:8080"}
 
+# If we're running in Marathon, use ARK_HOST to find Consul
+if [ ! -z "$ARK_HOST" ]; then
+    export CONSUL_HOST="http://$ARK_HOST:8500"
+fi
+
 # Turn verbose output OFF so we don't echo the output of the secrets file
 set +ev
 

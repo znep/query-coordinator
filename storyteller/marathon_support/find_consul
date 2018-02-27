@@ -1,0 +1,6 @@
+# This is sourced by the files in runit in order to set the Marathon
+# host's consul client rather than going through the ELB.
+
+if [ ! -z "$ARK_HOST" ]; then
+    export CONSUL_SERVICE_URL="http://$ARK_HOST:8500"
+fi

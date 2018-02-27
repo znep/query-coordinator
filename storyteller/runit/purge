@@ -3,4 +3,5 @@
 source /dev/shm/storyteller_secrets.sh
 
 cd $APP_DIR
+source marathon_support/find_consul
 exec su socrata -c 'bin/rake purge'

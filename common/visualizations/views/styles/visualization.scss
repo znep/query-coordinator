@@ -150,6 +150,7 @@ $axis-padding: 42px;
           position: relative;
 
           span {
+            -webkit-print-color-adjust: exact;
             display: inline-block;
             position: absolute;
             height: 16px;
@@ -163,7 +164,6 @@ $axis-padding: 42px;
               top: 17px;
             }
           }
-
         }
       }
     }

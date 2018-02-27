@@ -25,6 +25,7 @@ export class MeasureChart extends Component {
     const dateColumn = _.get(metricConfig, 'dateColumn');
     const calculationType = _.get(metricConfig, 'type');
     const dataSourceLensUid = _.get(measure, 'dataSourceLensUid');
+    const asPercent = _.get(metricConfig, 'display.asPercent', false);
 
     // Not enough info to draw a visualization
     const requiredFields = [
@@ -69,6 +70,7 @@ export class MeasureChart extends Component {
             measure: {
               // KPIs should set each measure columnName to something unique.
               columnName: `${calculationType}_for_${dataSourceLensUid}`,
+              asPercent,
               aggregationFunction: useCountAggregation ?
                 CalculationTypes.COUNT :
                 CalculationTypes.SUM

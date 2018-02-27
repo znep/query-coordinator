@@ -81,6 +81,16 @@ describe('SvgTimelineChart jQuery component', () => {
       it('returns rows', () => {
         assert.deepEqual(result.rows, singleSeries.series[0].dataSource.rows);
       });
+
+      it('sets the measure column renderTypeName to "percent" when measure.asPercent = true', () => {
+        const percentSeries = _.cloneDeep(singleSeries);
+        percentSeries.series[0].dataSource.measure.asPercent = true;
+        const result = inlineDataQuery(
+          { shouldDisplayFilterBar: () => false },
+          percentSeries
+        );
+        assert.equal(result.columnFormats.some_measure_column.renderTypeName, 'percent');
+      });
     });
   });
 });

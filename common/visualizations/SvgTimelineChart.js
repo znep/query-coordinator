@@ -254,17 +254,17 @@ export function inlineDataQuery(visualization, vif) {
   const columns = ['dimension'];
 
   _.each(vif.series, (series) => {
-    const { dataSource } = series;
-    const fieldName = dataSource.measure.columnName;
-    columnFormats[fieldName] = {
-      fieldName,
-      name: series.label, // This is important - it sets the flyout label.
+    const { dataSource, label } = series;
+    const { measure } = dataSource;
+    const { asPercent, columnName } = measure;
+    columnFormats[columnName] = {
+      fieldName: columnName,
+      name: label, // This is important - it sets the flyout label.
       dataTypeName: 'number',
-      renderTypeName: 'number'
+      renderTypeName: asPercent ? 'percent' : 'number'
     };
-    columns.push(fieldName);
+    columns.push(columnName);
   });
-
 
   const inlineDataProvider = new InlineDataProvider(vif);
   // We bypass the TimeDataManager/CategoricalDataManager machinery

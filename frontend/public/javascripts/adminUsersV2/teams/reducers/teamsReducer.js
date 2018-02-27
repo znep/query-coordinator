@@ -39,7 +39,7 @@ const handleLoadTeamsSuccess = (state, { teams }) => ({ ...state, teams });
 const clearForm = set('teamForm', { ...initialState.teamForm });
 
 const handleUpdateTeamForm = (state, { screenName, description }) =>
-  set('teamForm', { screenName, description, errors: [] }, state);
+  set('teamForm', { id: getTeamFormId(state), screenName, description, errors: [] }, state);
 
 const handleLoadTeamSuccess = (state, { team }) =>
   set('teams', getTeamsList(state).map(t => (t.id === team.id ? team : t)), state);
@@ -49,10 +49,7 @@ const handleLoadTeamRolesSuccess = (state, { teamRoles }) => ({ ...state, teamRo
 // TODO: Use the team that is returned
 const handleAddTeamSuccess = (state, { team }) => ({
   ...state,
-  teams: [
-    ...state.teams,
-    team
-  ],
+  teams: [...state.teams, team],
   teamForm: { ...initialState.teamForm }
 });
 
@@ -110,7 +107,7 @@ const handleAddTeamMemberFailure = (state, { error }) => ({
   addMemberErrors: [...getAddMemberErrors(state), error]
 });
 
-const handleSubmitAddTeamMembersModal = (state) => ({
+const handleSubmitAddTeamMembersModal = state => ({
   ...state,
   addMemberErrors: [],
   addMemberSuccesses: []

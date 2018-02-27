@@ -129,11 +129,18 @@ describe('teams/reducers/teamsReducer', () => {
       teams: [team]
     });
   });
-  it('handles UPDATE_TEAM_FORM', () => {
+  it('handles UPDATE_TEAM_FORM for creating new team', () => {
     const screenName = 'team name';
     const description = 'team description';
     expect(reducer({ teamForm: {} }, Actions.updateTeamForm(screenName, description))).to.eql({
-      teamForm: { screenName, description, errors: [] }
+      teamForm: { id: undefined, screenName, description, errors: [] }
+    });
+  });
+  it('handles UPDATE_TEAM_FORM for editing team', () => {
+    const screenName = 'team name';
+    const description = 'team description';
+    expect(reducer({ teamForm: { id: 'team-idxxx', screenName: 'blah', description: 'bloop' } }, Actions.updateTeamForm(screenName, description))).to.eql({
+      teamForm: { id: 'team-idxxx', screenName, description, errors: [] }
     });
   });
   it('handles TEAM_VIEW_NAVIGATION', () => {

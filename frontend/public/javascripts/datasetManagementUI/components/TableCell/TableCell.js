@@ -9,6 +9,7 @@ import renderText from './TextCell';
 import DateCell from './DateCell';
 import LocationCell from './LocationCell';
 import GeospatialCell from './GeospatialCell';
+import PointCell from './PointCell';
 
 class TableCell extends Component {
   shouldComponentUpdate(nextProps) {
@@ -89,6 +90,7 @@ function renderCellValue(value, type, format, isDropping) {
     case 'calendar_date':
       return <DateCell {...props} />;
     case 'point':
+      return <PointCell {...props} />;
     case 'multipoint':
     case 'line':
     case 'multiline':

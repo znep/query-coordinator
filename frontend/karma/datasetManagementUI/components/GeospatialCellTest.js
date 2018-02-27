@@ -5,15 +5,6 @@ import { shallow } from 'enzyme';
 
 describe('components/TableCell/GeospatialCell', () => {
 
-  it('renders a point as WKT', () => {
-    const value = {
-      type: 'Point',
-      coordinates: [10, 20]
-    };
-    const element = shallow(<GeospatialCell value={value} />).dive();
-    assert.isTrue(element.exists());
-    assert.equal(element.find('div').text(), 'Point(...)');
-  });
 
   it('renders a multipolygon as WKT', () => {
     const value = {

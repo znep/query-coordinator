@@ -40,14 +40,14 @@ describe('components/TableCell', () => {
     assert.isTrue(element.hasClass('transformFailed'));
   });
 
-  it('renders a geospatial cell when type=point', () => {
+  it('renders a geospatial cell when type=polygon', () => {
     const cellValue = {
       ok: {
-        type: 'Point',
-        coordinates: [10, 20]
+        type: 'Polygon',
+        coordinates: [[10, 20]]
       }
     };
-    const element = shallow(<TableCell cell={cellValue} type={'point'} />);
+    const element = shallow(<TableCell cell={cellValue} type={'polygon'} />);
     assert.isTrue(element.exists());
     assert.isTrue(element.find('GeospatialCell').exists());
   });

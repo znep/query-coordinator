@@ -1159,7 +1159,7 @@ function SvgTimelineChart($element, vif, options) {
         attr('height', viewportHeight).
         attr('stroke', 'none').
         attr('width', viewportWidth).
-        on('mousemove', handleMouseMove).
+        on('mousemove', handleMouseMove(leftMargin)).
         on(
           'mouseleave',
           () => {
@@ -1222,7 +1222,8 @@ function SvgTimelineChart($element, vif, options) {
                   dataToRender: timelineDataToRender,
                   datum,
                   dimensionIndex,
-                  dimensionValue
+                  dimensionValue,
+                  leftMargin
                 });
               }
             }
@@ -1379,76 +1380,79 @@ function SvgTimelineChart($element, vif, options) {
     return d3.max([maxMeasureValue, maxReferenceLinesValue]);
   }
 
-  function handleMouseMove() {
-    const precision = _.get(self.getVif(), 'series[0].dataSource.precision');
-    const rawDate = d3XScale.invert(d3.mouse(this)[0] - xAxisPanDistanceFromZoom);
-    const bisectorIndex = d3.bisectLeft(bisectorDates, rawDate);
-    const firstSeriesRows = dataToRenderBySeries[0].rows;
+  function handleMouseMove(leftMargin) {
+    return function doHandleMouseMove() {
+      const precision = _.get(self.getVif(), 'series[0].dataSource.precision');
+      const rawDate = d3XScale.invert(d3.mouse(this)[0] - xAxisPanDistanceFromZoom);
+      const bisectorIndex = d3.bisectLeft(bisectorDates, rawDate);
+      const firstSeriesRows = dataToRenderBySeries[0].rows;
 
-    const dimensionIndex = _.clamp(
-      (precision !== 'none') ? bisectorIndex - 1 : bisectorIndex,
-      0,
-      firstSeriesRows.length - 1
-    );
+      const dimensionIndex = _.clamp(
+        (precision !== 'none') ? bisectorIndex - 1 : bisectorIndex,
+        0,
+        firstSeriesRows.length - 1
+      );
 
-    const dimensionValueIndex = 0;
-    let xOffset;
+      const dimensionValueIndex = 0;
+      let xOffset;
 
-    const startDate = parseDate(firstSeriesRows[dimensionIndex][dimensionValueIndex]);
-    const endDate = getIncrementedDateByPrecision(startDate, timelineDataToRender.precision);
+      const startDate = parseDate(firstSeriesRows[dimensionIndex][dimensionValueIndex]);
+      const endDate = getIncrementedDateByPrecision(startDate, timelineDataToRender.precision);
 
-    if (allSeriesAreLineVariant()) {
-      xOffset = d3XScale(startDate);
-    } else {
+      if (allSeriesAreLineVariant()) {
+        xOffset = d3XScale(startDate);
+      } else {
+
+        if (precision !== 'none') {
+          // For area (bucketed) variants, we need to shift the rendered points by
+          // half the width of the domain interval to the right in order for the
+          // peaks to appear in the middle of the intervals, as opposed to the
+          // beginning of them (if we do not do this shift, the a range of 2001-2002
+          // and a value of 1000 looks like the 1000 was measured on Jan 1, 2001).
+          xOffset = d3XScale(
+            new Date(
+              startDate.getTime() +
+              getSeriesHalfIntervalWidthInMs(dataToRenderBySeries[0])
+            )
+          );
+        } else {
+          xOffset = d3XScale(startDate);
+        }
+      }
+
+      const data = dataToRenderBySeries.map((series) => {
+        const measureIndex = 1;
+
+        let label = series.columns[measureIndex];
+        // We do not want to apply formatting if the label is `(Other)` category
+        if (!_.isEqual(label, I18n.t('shared.visualizations.charts.common.other_category'))) {
+          const groupingColumn = _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
+          label = _.isNil(groupingColumn) ? label : formatValuePlainText(label, groupingColumn, timelineDataToRender, true);
+        }
+
+        let value = series.rows[dimensionIndex][measureIndex];
+
+        return {
+          label,
+          value
+        };
+      });
+
+      const payload = {
+        data,
+        dimensionIndex,
+        leftMargin,
+        startDate,
+        xOffset
+      };
 
       if (precision !== 'none') {
-        // For area (bucketed) variants, we need to shift the rendered points by
-        // half the width of the domain interval to the right in order for the
-        // peaks to appear in the middle of the intervals, as opposed to the
-        // beginning of them (if we do not do this shift, the a range of 2001-2002
-        // and a value of 1000 looks like the 1000 was measured on Jan 1, 2001).
-        xOffset = d3XScale(
-          new Date(
-            startDate.getTime() +
-            getSeriesHalfIntervalWidthInMs(dataToRenderBySeries[0])
-          )
-        );
-      } else {
-        xOffset = d3XScale(startDate);
-      }
-    }
-
-    const data = dataToRenderBySeries.map((series) => {
-      const measureIndex = 1;
-
-      let label = series.columns[measureIndex];
-      // We do not want to apply formatting if the label is `(Other)` category
-      if (!_.isEqual(label, I18n.t('shared.visualizations.charts.common.other_category'))) {
-        const groupingColumn = _.get(self.getVif(), 'series[0].dataSource.dimension.grouping.columnName');
-        label = _.isNil(groupingColumn) ? label : formatValuePlainText(label, groupingColumn, timelineDataToRender, true);
+        payload.endDate = endDate;
       }
 
-      let value = series.rows[dimensionIndex][measureIndex];
-
-      return {
-        label,
-        value
-      };
-    });
-
-    const payload = {
-      data,
-      dimensionIndex,
-      startDate,
-      xOffset
+      showHighlight(startDate, endDate);
+      showFlyout(payload);
     };
-
-    if (precision !== 'none') {
-      payload.endDate = endDate;
-    }
-
-    showHighlight(startDate, endDate);
-    showFlyout(payload);
   }
 
   function showCircleHighlight(circleElement, measure) {
@@ -1571,7 +1575,7 @@ function SvgTimelineChart($element, vif, options) {
     );
   }
 
-  function showGroupFlyout({ dataToRender, datum, dimensionIndex, dimensionValue }) {
+  function showGroupFlyout({ dataToRender, datum, dimensionIndex, dimensionValue, leftMargin }) {
     // Group measures
     const titleHTML = dimensionValue || noValueLabel;
     const $titleRow = $('<tr>', { 'class': 'socrata-flyout-title' }).
@@ -1652,7 +1656,7 @@ function SvgTimelineChart($element, vif, options) {
       content: $tableContainer,
       dark: true,
       flyoutOffset: {
-        left: (boundingClientRect.left + MARGINS.LEFT + flyoutXOffset + halfBandWidth + translateXOffset),
+        left: (boundingClientRect.left + leftMargin + flyoutXOffset + halfBandWidth + translateXOffset),
         top: (boundingClientRect.top + MARGINS.TOP + maxFlyoutValueOffset)
       },
       rightSideHint: false
@@ -1664,7 +1668,7 @@ function SvgTimelineChart($element, vif, options) {
     );
   }
 
-  function showFlyout({ data, dimensionIndex, endDate, startDate, xOffset }) {
+  function showFlyout({ data, dimensionIndex, endDate, leftMargin, startDate, xOffset }) {
     let title;
 
     if (_.isNil(endDate)) {
@@ -1787,7 +1791,7 @@ function SvgTimelineChart($element, vif, options) {
       flyoutOffset: {
         left: (
           boundingClientRect.left +
-          MARGINS.LEFT +
+          leftMargin +
           (axisLabels.left ? AXIS_LABEL_MARGIN : 0) +
           xOffset
         ),

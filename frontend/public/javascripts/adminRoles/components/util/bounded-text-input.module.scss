@@ -10,3 +10,14 @@ $character-count-color: #a1a1a1;
   position: absolute;
   right: .25em;
 }
+
+// legacy style whack-a-mole
+// double up the classes to increase the specificity 🙈
+:global(.text-input.text-input) {
+  border: solid 1px #c8c8c8;
+  font-size: 15px;
+  font-family: "Open Sans", "Helvetica", Arial, sans-serif;
+  padding: 10px;
+  margin-bottom: 13px;
+  line-height: normal;
+}

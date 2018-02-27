@@ -11,7 +11,7 @@ def bundle(command, path: 'site_chrome')
 end
 
 def rspec(path)
-  sh("cd #{path} && rspec") do |ok, res|
+  sh("cd #{path} && bundle exec rspec") do |ok, res|
     yield(ok, res) if block_given?
   end
 end

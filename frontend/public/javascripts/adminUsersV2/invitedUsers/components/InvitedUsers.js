@@ -6,7 +6,6 @@ import UserFilter from '../../users/components/UserFilter';
 const InvitedUsers = () => (
   <div>
     <div className="user-search-bar search-bar">
-      <div className="invited-users-search-bar-spacer"/>
       <UserFilter />
       <AddUserButton />
     </div>

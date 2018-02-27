@@ -29,8 +29,10 @@ class UserSearchBar extends Component {
 
     return (
       <div className="user-search-bar search-bar">
-        <Autocomplete className="user-autocomplete" {...autocompleteOptions} />
-        <UserFilter />
+        <div className="user-search-bar-filters">
+          <Autocomplete className="user-autocomplete" {...autocompleteOptions} />
+          <UserFilter />
+        </div>
         <AddUserButton />
       </div>
     );

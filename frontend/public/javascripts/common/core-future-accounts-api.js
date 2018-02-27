@@ -2,9 +2,19 @@ import { checkStatus, fetchJson, defaultHeaders } from 'common/http';
 import _ from 'lodash';
 import 'url-search-params-polyfill';
 
+// NOTE: Do not change this to an arrow function since it's actually used in an instanceof
+// which apparently doesn't work with arrow functions
 function FutureAccountsCreationError(errors, fileName, lineNumber) {
   const instance = new Error(fileName, lineNumber);
-  instance.errors = errors;
+  instance.errors = errors.map(error => {
+    switch (error) {
+      case 'Cannot create a future account for yourself':
+        return { translationKey: 'users.errors.create_user_for_self' };
+      default:
+        return error;
+    }
+  });
+
   Object.setPrototypeOf(instance, Object.getPrototypeOf(this));
   return instance;
 }

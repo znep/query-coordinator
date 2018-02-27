@@ -7171,6 +7171,7 @@ en:
       remove_team_member_failure: Unable to remove '%{displayName}' from team
       remove_team_member_success: Removed '%{displayName}' from team
     errors:
+      create_user_for_self: You cannot add yourself as a user
       invalid_email: "'%{value}' is not a valid email"
       invalid_role_selected: No role selected
       no_emails_provided: No email addresses provided

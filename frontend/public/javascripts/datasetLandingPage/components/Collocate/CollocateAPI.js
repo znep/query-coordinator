@@ -3,7 +3,7 @@ import { fetchJsonWithDefaultHeaders } from 'common/http';
 function postCollocate(source, dest, explain) {
   const url = `/api/collocate?explain=${explain}`;
   const body = JSON.stringify(
-    { collocations: [[`_${source}`, `_${dest}`]] }
+    { collocations: [[source, dest]] }
   );
 
   const fetchOptions = {

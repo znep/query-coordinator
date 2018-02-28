@@ -63,7 +63,7 @@ COPY storyteller/.npmrc /tmp/.npmrc
 RUN cd /tmp && ${TIMECMD} npm install
 RUN mkdir -p ${APP_DIR} && mv /tmp/node_modules ${APP_DIR}
 
-COPY marathon_support ${APP_DIR}/marathon_support
+COPY storyteller/marathon_support ${APP_DIR}/marathon_support
 
 # Add application code
 ADD . ${PLATFORM_UI_DIR}

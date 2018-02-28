@@ -1,10 +1,12 @@
+<% translation_scope = 'shared.site_chrome.admin.settings' %>
+
 <span class="socrata-icon-settings"></span>
 
 <ul role="menu" aria-hidden="true">
   <%- if current_user_can_see_activity_logs? -%>
     <li>
       <a href="<%= site_chrome_massage_url('/admin/activity_feed') %>">
-        <span><%= t('shared.site_chrome.admin.settings.activity_log') %></span>
+        <span><%= t('activity_log', :scope => translation_scope) %></span>
       </a>
     </li>
   <%- end -%>
@@ -12,13 +14,13 @@
   <%- if current_user_can_see_asset_inventory? && !use_internal_asset_manager? -%>
     <li>
       <a href="<%= site_chrome_massage_url('/admin/datasets') %>">
-        <span><%= t('shared.site_chrome.admin.settings.datasets') %></span>
+        <span><%= t('datasets', :scope => translation_scope) %></span>
       </a>
     </li>
   <% else %>
     <li>
       <a href="<%= site_chrome_massage_url('/admin/assets') %>">
-        <span><%= t('shared.site_chrome.admin.settings.asset_inventory') %></span>
+        <span><%= t('asset_inventory', :scope => translation_scope) %></span>
       </a>
     </li>
   <%- end -%>
@@ -26,7 +28,7 @@
   <%- if current_user_can_see_analytics? -%>
     <li>
       <a href="<%= site_chrome_massage_url('/admin/analytics') %>">
-        <span><%= t('shared.site_chrome.admin.settings.analytics') %></span>
+        <span><%= t('analytics', :scope => translation_scope) %></span>
       </a>
     </li>
   <%- end -%>
@@ -34,7 +36,13 @@
   <%- if current_user_can_see_users? -%>
     <li>
       <a href="<%= site_chrome_massage_url('/admin/users') %>">
-        <span><%= t('shared.site_chrome.admin.settings.users') %></span>
+        <span>
+          <%- if get_feature_flag('enable_teams') -%>
+            <%= t('users_and_teams', :scope => translation_scope) %>
+          <%- else -%>
+            <%= t('users', :scope => translation_scope) %>
+          <%- end -%>
+        </span>
       </a>
     </li>
   <%- end -%>
@@ -43,7 +51,7 @@
     <li class="separator"></li>
     <li>
       <a href="<%= site_chrome_massage_url('/admin') %>">
-        <span><%= t('shared.site_chrome.admin.settings.administration') %></span>
+        <span><%= t('administration', :scope => translation_scope) %></span>
       </a>
     </li>
   <%- end -%>

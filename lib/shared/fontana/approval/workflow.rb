@@ -5,8 +5,6 @@ module Fontana
     class Workflow
       include HTTParty
 
-      APPROVALS_API_URI = URI.parse("#{CORESERVICE_URI}/approvals")
-
       default_timeout 5.seconds.to_i
       format :json
 
@@ -23,7 +21,7 @@ module Fontana
 
           unless workflow_id
             workflow_id = get(
-              APPROVALS_API_URI,
+              approvals_api_uri,
               :headers => instance.approval_request_headers
             ).parsed_response.find { |workflow| workflow.to_h['outcome'] == 'publicize' }.to_h['id']
           end
@@ -31,7 +29,7 @@ module Fontana
           raise RuntimeError.new('Unable to determine workflow_id') unless workflow_id
 
           response = get(
-            "#{APPROVALS_API_URI}/#{workflow_id}",
+            "#{approvals_api_uri}/#{workflow_id}",
             :headers => instance.approval_request_headers
           ).parsed_response.with_indifferent_access
 
@@ -48,15 +46,41 @@ module Fontana
           end
           instance
         end
+
+        def settings(workflow_id = nil)
+          workflow = find(workflow_id)
+          if workflow.try(:steps).present?
+            return {
+              :official => workflow.steps.first.official_task.manual? ? 'manual' : 'automatic',
+              :community => workflow.steps.first.community_task.manual? ? 'manual' : 'automatic'
+            }
+          else
+            # An approvals workflow with no steps is implicitly treated as "all approvals are automatic"
+            return {
+              :official => 'automatic',
+              :community => 'automatic'
+            }
+          end
+        end
+
+        def approvals_api_uri
+          # Frontend and Storyteller have different ways to access the coreservice uri
+          uri = defined?(CORESERVICE_URI) ? CORESERVICE_URI : CoreServer.coreservice_uri
+          URI.parse("#{uri}/approvals")
+        end
       end
 
       def initialize
         @cookies = nil
       end
 
+      def approvals_api_uri
+        self.class.approvals_api_uri
+      end
+
       def update
         result = self.class.put(
-          "#{APPROVALS_API_URI}/#{id}",
+          "#{approvals_api_uri}/#{id}",
           :headers => approval_request_headers,
           :body => to_json
         )
@@ -74,7 +98,7 @@ module Fontana
       def update_task(task)
         raise RuntimeError.new('Cookies are required to update workflow tasks') unless cookies.present?
         result = self.class.put(
-          APPROVALS_API_URI,
+          approvals_api_uri,
           :query => {
             :method => 'updateTask',
             :taskId => task.id
@@ -93,10 +117,13 @@ module Fontana
       end
 
       def approval_request_headers
+        # Frontend and Storyteller have different ways to access the current domain cname
+        cname = defined?(CurrentDomain) ? CurrentDomain.cname : CoreServer.current_domain.fetch('cname')
+
         {
           'Content-Type' => 'application/json',
           'Cookie' => cookies,
-          'X-Socrata-Host' => CurrentDomain.cname
+          'X-Socrata-Host' => cname
         }.compact
       end
 

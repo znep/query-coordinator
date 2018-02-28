@@ -2,6 +2,10 @@ require 'rails_helper'
 
 RSpec.describe ApplicationHelper, type: :helper do
 
+  before do
+    stub_approvals_settings
+  end
+
   describe '#page_title' do
     let(:view_name) { 'bob' }
     let(:mock_core_response) do

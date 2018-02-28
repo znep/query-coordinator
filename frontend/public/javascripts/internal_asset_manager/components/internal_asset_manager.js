@@ -36,9 +36,9 @@ export default class InternalAssetManager extends Component {
       };
     }
 
-    const approvalSettings = _.get(window, 'socrata.approvals.settings', {});
-    const assetsRequireManualApproval = approvalSettings.official === 'manual' ||
-      approvalSettings.community === 'manual';
+    const approvalsSettings = _.get(window, 'socrata.approvals.settings', {});
+    const assetsRequireManualApproval = approvalsSettings.official === 'manual' ||
+      approvalsSettings.community === 'manual';
 
     return (
       <AssetBrowser

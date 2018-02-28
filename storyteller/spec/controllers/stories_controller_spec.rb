@@ -11,6 +11,7 @@ RSpec.describe StoriesController, type: :controller do
 
     stub_site_chrome
     stub_current_domain
+    stub_approvals_settings
 
     # There is an upcoming refactor for how the API between the gem and the hosting application operates in
     # that the hosting app will pass in the request for the gem to derive of it's state from as a dependency.

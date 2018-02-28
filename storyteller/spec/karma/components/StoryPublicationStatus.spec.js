@@ -4,9 +4,13 @@ import { Simulate } from 'react-dom/test-utils';
 import sinon from 'sinon';
 import { assert } from 'chai';
 
+import { FeatureFlags } from 'common/feature_flags';
+
 import renderComponent from '../renderComponent';
 import I18nMocker from '../I18nMocker';
 import StoryPublicationStatus, {__RewireAPI__ as StoryPublicationStatusAPI} from 'editor/components/StoryPublicationStatus';
+
+const assetUtils = require('common/asset/utils');
 
 describe('StoryPublicationStatus', () => {
   let component;
@@ -74,6 +78,10 @@ describe('StoryPublicationStatus', () => {
 
   beforeEach(() => {
     StoryPublicationStatusAPI.__Rewire__('I18n', I18nMocker);
+
+    FeatureFlags.useTestFixture({
+      use_fontana_approvals: true
+    });
   });
 
   afterEach(() => {
@@ -81,6 +89,18 @@ describe('StoryPublicationStatus', () => {
   });
 
   describe('render', () => {
+    let assetWillEnterApprovalsQueueWhenMadePublicStub;
+
+    beforeEach(() => {
+      assetWillEnterApprovalsQueueWhenMadePublicStub = sinon.
+        stub(assetUtils, 'assetWillEnterApprovalsQueueWhenMadePublic').
+        returns(Promise.resolve(false));
+    });
+
+    afterEach(() => {
+      assetWillEnterApprovalsQueueWhenMadePublicStub.restore();
+    });
+
     function rendersMakePrivateButton() {
       it('renders a "Make Private" button', () => {
         const text = component.querySelector('.flannel-actions button').textContent;
@@ -183,7 +203,69 @@ describe('StoryPublicationStatus', () => {
     });
   });
 
+  describe('approval message', () => {
+
+    describe('when assetWillEnterApprovalsQueueWhenMadePublic is false', () => {
+      let assetWillEnterApprovalsQueueWhenMadePublicStub;
+
+      beforeEach(() => {
+        assetWillEnterApprovalsQueueWhenMadePublicStub = sinon.
+          stub(assetUtils, 'assetWillEnterApprovalsQueueWhenMadePublic').
+          returns(Promise.resolve(true));
+      });
+
+      afterEach(() => {
+        assetWillEnterApprovalsQueueWhenMadePublicStub.restore();
+      });
+
+      createStoryPermissionsManagerMocker();
+      createStoryStoreMocker(false, true);
+      createStoryPublicationStatus();
+
+      it('does not render', () => {
+        assert.notOk(component.querySelector('.approval-message'));
+      });
+    });
+
+    describe('when assetWillEnterApprovalsQueueWhenMadePublic is true', () => {
+      let assetWillEnterApprovalsQueueWhenMadePublicStub;
+
+      beforeEach(() => {
+        assetWillEnterApprovalsQueueWhenMadePublicStub = sinon.
+          stub(assetUtils, 'assetWillEnterApprovalsQueueWhenMadePublic').
+          returns(Promise.resolve(true));
+      });
+
+      afterEach(() => {
+        assetWillEnterApprovalsQueueWhenMadePublicStub.restore();
+      });
+
+      createStoryPermissionsManagerMocker();
+      createStoryStoreMocker(true, true);
+      createStoryPublicationStatus();
+
+      it('renders an approval message', (done) => {
+        _.defer(() => {
+          assert.ok(component.querySelector('.approval-message'));
+          done();
+        });
+      });
+    });
+  });
+
   describe('events', () => {
+    let assetWillEnterApprovalsQueueWhenMadePublicStub;
+
+    beforeEach(() => {
+      assetWillEnterApprovalsQueueWhenMadePublicStub = sinon.
+        stub(assetUtils, 'assetWillEnterApprovalsQueueWhenMadePublic').
+        returns(Promise.resolve(false));
+    });
+
+    afterEach(() => {
+      assetWillEnterApprovalsQueueWhenMadePublicStub.restore();
+    });
+
     describe('when clicking the status button', () => {
       createStoryStoreMocker(true, true);
       createStoryPublicationStatus();
@@ -300,4 +382,3 @@ describe('StoryPublicationStatus', () => {
     });
   });
 });
-

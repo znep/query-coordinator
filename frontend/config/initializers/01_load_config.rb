@@ -1,3 +1,8 @@
+# Load common ruby files to be shared by Frontend and Storyteller
+require "#{Rails.root}/../lib/shared/fontana/approval/workflow"
+require "#{Rails.root}/../lib/shared/fontana/approval/step"
+require "#{Rails.root}/../lib/shared/fontana/approval/task"
+
 # Values in this config will only be picked up on deploy.
 APP_CONFIG = begin
   conf = YAML.load_file("#{Rails.root}/config/config.yml") || {}

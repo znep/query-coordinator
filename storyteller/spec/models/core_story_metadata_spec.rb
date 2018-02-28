@@ -24,6 +24,8 @@ RSpec.describe CoreStoryMetadata do
       'grants' => grants,
       'owner' => { 'id' => owner_id }
     )
+
+    stub_approvals_settings
   end
 
   subject do

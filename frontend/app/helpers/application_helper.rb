@@ -86,23 +86,7 @@ module ApplicationHelper
   end
 
   def approvals_settings
-    if using_approvals?(:new)
-      approval_workflow = Fontana::Approval::Workflow.find
-      if approval_workflow.try(:steps).present?
-        return {
-          :official => approval_workflow.steps.first.official_task.manual? ? 'manual' : 'automatic',
-          :community => approval_workflow.steps.first.community_task.manual? ? 'manual' : 'automatic'
-        }
-      else
-        # An approvals workflow with no steps, is implicitly treated as "all approvals are automatic"
-        # TODO: Encapsulate this logic within the Fontana::Approval::Workflow class(es)
-        return {
-          :official => 'automatic',
-          :community => 'automatic'
-        }
-      end
-    end
-    {}
+    using_approvals?(:new) ? Fontana::Approval::Workflow.settings : {}
   end
 
 # CACHE HELPERS

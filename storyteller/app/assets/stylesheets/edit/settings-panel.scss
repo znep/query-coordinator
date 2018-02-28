@@ -239,6 +239,12 @@
 
 .settings-panel-story-visibility {
   padding: 0 0 1rem 0;
+
+  .approval-message {
+    font-size: 1.2rem;
+    padding-top: 1rem;
+    color: $warning;
+  }
 }
 
 .settings-panel-story-publishing-help-text {

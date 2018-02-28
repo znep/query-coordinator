@@ -69,7 +69,7 @@ describe('asset/utils', () => {
 
     it('returns false if the asset provenance is set to auto approve', (done) => {
       coreView.provenance = constants.AUTHORITY_OFFICIAL;
-      window.socrata.approvals = { settings: { official: constants.APPROVAL_SETTINGS_AUTOMATIC } };
+      window.socrata.approvals = { settings: { official: constants.APPROVALS_SETTINGS_AUTOMATIC } };
 
       assetUtils.assetWillEnterApprovalsQueueOnPublish({ coreView }).then((result) => {
         assert.isFalse(result);
@@ -81,7 +81,7 @@ describe('asset/utils', () => {
       coreView.approvals[0].state = 'pending';
       coreView.provenance = constants.AUTHORITY_OFFICIAL;
       coreView.grants = [{ flags: ['public'] }];
-      window.socrata.approvals = { settings: { official: constants.APPROVAL_SETTINGS_MANUAL } };
+      window.socrata.approvals = { settings: { official: constants.APPROVALS_SETTINGS_MANUAL } };
       window.socrata.currentUser = { rights: ['see_approval_required_on_publish'] };
 
       assetUtils.assetWillEnterApprovalsQueueOnPublish({ coreView }).then((result) => {
@@ -109,14 +109,14 @@ describe('asset/utils', () => {
 
     it('returns false if the asset provenance is set to auto approve', () => {
       coreView.provenance = constants.AUTHORITY_OFFICIAL;
-      window.socrata.approvals = { settings: { official: constants.APPROVAL_SETTINGS_AUTOMATIC } };
+      window.socrata.approvals = { settings: { official: constants.APPROVALS_SETTINGS_AUTOMATIC } };
       assert.isFalse(assetUtils.derivedViewWillEnterApprovalsQueueOnSave({ parentCoreView: coreView }));
     });
 
     it('returns true if all conditions are met', () => {
       coreView.provenance = constants.AUTHORITY_OFFICIAL;
       coreView.grants = [{ flags: ['public'] }];
-      window.socrata.approvals = { settings: { official: constants.APPROVAL_SETTINGS_MANUAL } };
+      window.socrata.approvals = { settings: { official: constants.APPROVALS_SETTINGS_MANUAL } };
       window.socrata.currentUser = { rights: ['see_approval_required_on_publish'] };
 
       assert.isTrue(assetUtils.derivedViewWillEnterApprovalsQueueOnSave({ parentCoreView: coreView }));
@@ -151,7 +151,7 @@ describe('asset/utils', () => {
 
     it('returns false if the asset provenance is set to auto approve', (done) => {
       coreView.provenance = constants.AUTHORITY_OFFICIAL;
-      window.socrata.approvals = { settings: { official: constants.APPROVAL_SETTINGS_AUTOMATIC } };
+      window.socrata.approvals = { settings: { official: constants.APPROVALS_SETTINGS_AUTOMATIC } };
 
       assetUtils.assetWillEnterApprovalsQueueWhenMadePublic({ coreView }).then((result) => {
         assert.isFalse(result);
@@ -162,7 +162,7 @@ describe('asset/utils', () => {
     it('returns true if all conditions are met', (done) => {
       coreView.approvals[0].state = 'pending';
       coreView.provenance = constants.AUTHORITY_OFFICIAL;
-      window.socrata.approvals = { settings: { official: constants.APPROVAL_SETTINGS_MANUAL } };
+      window.socrata.approvals = { settings: { official: constants.APPROVALS_SETTINGS_MANUAL } };
       window.socrata.currentUser = { rights: ['see_approval_required_on_publish'] };
 
       assetUtils.assetWillEnterApprovalsQueueWhenMadePublic({ coreView }).then((result) => {
@@ -182,13 +182,13 @@ describe('asset/utils', () => {
       });
 
       it('returns false when the approvals config is set to automatic for the provenance', () => {
-        window.socrata.approvals = { settings: { community: constants.APPROVAL_SETTINGS_AUTOMATIC } };
+        window.socrata.approvals = { settings: { community: constants.APPROVALS_SETTINGS_AUTOMATIC } };
         coreView.provenance = constants.AUTHORITY_COMMUNITY;
         assert.isFalse(assetUtilsHelpers.manualApprovalRequiredForProvenanceType(coreView));
       });
 
       it('returns true when the approvals config is set to manual for the provenance', () => {
-        window.socrata.approvals = { settings: { community: constants.APPROVAL_SETTINGS_MANUAL } };
+        window.socrata.approvals = { settings: { community: constants.APPROVALS_SETTINGS_MANUAL } };
         coreView.provenance = constants.AUTHORITY_COMMUNITY;
         assert.isTrue(assetUtilsHelpers.manualApprovalRequiredForProvenanceType(coreView));
       });

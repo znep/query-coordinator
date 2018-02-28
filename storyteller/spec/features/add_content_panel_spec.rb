@@ -10,6 +10,7 @@ RSpec.describe 'add content panel', type: :feature, js: true do
     stub_sufficient_rights
     stub_core_view('hasb-lock')
     stub_current_domain
+    stub_approvals_settings
 
     visit '/s/magic-thing/hasb-lock/edit'
     @blocks = page.all('.user-story .block-edit')

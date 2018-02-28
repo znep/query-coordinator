@@ -23,6 +23,14 @@ class ProcrustesStoryMetadata
     true
   end
 
+  def core_view
+    nil
+  end
+
+  def approvals_settings
+    nil
+  end
+
   def default_title
     I18n.t('default_goal_title')
   end

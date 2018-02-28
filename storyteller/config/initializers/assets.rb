@@ -1,5 +1,9 @@
 require "#{Rails.root}/../lib/shared/load_paths"
 
+require "#{Rails.root}/../lib/shared/fontana/approval/workflow"
+require "#{Rails.root}/../lib/shared/fontana/approval/step"
+require "#{Rails.root}/../lib/shared/fontana/approval/task"
+
 # Be sure to restart your server when you modify this file.
 include ::Shared::LoadPaths
 

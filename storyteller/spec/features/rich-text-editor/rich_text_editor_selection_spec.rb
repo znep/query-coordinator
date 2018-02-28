@@ -17,8 +17,9 @@ RSpec.describe 'rich text editor selection', type: :feature, js: true do
     stub_sufficient_rights
     stub_core_view(uid)
     stub_current_domain
+    stub_approvals_settings
 
-    set_feature_flags('enable_getty_images_gallery' => true)
+    set_feature_flags('enable_getty_images_gallery' => true, 'use_fontana_approvals' => true)
 
     visit "/s/magic-thing/#{uid}/edit"
 

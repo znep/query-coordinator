@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe StoriesHelper, type: :helper do
+  before do
+    stub_approvals_settings
+  end
 
   describe '#user_story_json' do
     let(:valid_story) { FactoryGirl.create(:draft_story) }

@@ -6,8 +6,9 @@ RSpec.describe 'view mode', type: :feature, js: true do
     stub_sufficient_rights
     stub_core_view('kchn-sink')
     stub_current_domain
+    stub_approvals_settings
 
-    set_feature_flags('enable_getty_images_gallery' => true)
+    set_feature_flags('enable_getty_images_gallery' => true, 'use_fontana_approvals' => true)
   end
 
   describe 'when rendering an image block' do

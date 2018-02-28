@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 
 import { Button } from 'common/components';
+import { assetWillEnterApprovalsQueueWhenMadePublic } from 'common/asset/utils';
 
 import I18n from '../I18n';
 import Environment from '../../StorytellerEnvironment';
@@ -20,7 +21,8 @@ class StoryPublicationStatus extends Component {
     this.state = {
       isLoading: false,
       hasError: false,
-      isPublicationFlannelVisible: false
+      isPublicationFlannelVisible: false,
+      showApprovalMessage: false
     };
 
     _.bindAll(this, [
@@ -33,6 +35,7 @@ class StoryPublicationStatus extends Component {
       'renderLastSavedMessage',
       'renderPublicationMessage',
       'renderPublishButton',
+      'renderApprovalMessage',
       'renderPrivateButton',
       'renderPublicationFlannel',
       'renderPublicationFlannelOverlay'
@@ -155,6 +158,23 @@ class StoryPublicationStatus extends Component {
     );
   }
 
+  renderApprovalMessage() {
+    const { CORE_VIEW } = Environment;
+    const { showApprovalMessage } = this.state;
+
+    assetWillEnterApprovalsQueueWhenMadePublic({ coreView: CORE_VIEW }).then((result) => {
+      if (showApprovalMessage !== result) {
+        this.setState({ showApprovalMessage: result });
+      }
+    });
+
+    return showApprovalMessage ? (
+      <p className="approval-message">
+        {I18n.t('editor.settings_panel.publishing_section.approval_message')}
+      </p>
+    ) : null;
+  }
+
   renderPrivateButton() {
     const { STORY_UID } = Environment;
     const isPublic =  storyStore.isStoryPublic(STORY_UID);
@@ -189,6 +209,7 @@ class StoryPublicationStatus extends Component {
           {this.renderLastSavedMessage()}
           {this.renderErrorMessage()}
           {this.renderPublishButton()}
+          {this.renderApprovalMessage()}
           {this.renderPublicationMessage()}
         </div>
         {this.renderPrivateButton()}

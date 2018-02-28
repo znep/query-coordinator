@@ -115,6 +115,9 @@
                 <button class="btn btn-alternate-2 btn-dark btn-legacy" <%= ' disabled' unless can_manage_story_visibility?(is_goal) %>>
                   <span><%= t('editor.settings_panel.publishing_section.visibility.make_story_public') %></span>
                 </button>
+                <p class="approval-message hidden">
+                  <%= t('editor.settings_panel.publishing_section.approval_message') %>
+                </p>
               </div>
             </div>
 

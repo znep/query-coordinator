@@ -3,23 +3,25 @@
 class CoreStoryMetadata
   include StoryMetadata
 
-  attr_accessor(:metadata)
+  attr_accessor(:metadata, :core_view, :approvals_settings)
 
   def initialize(uid)
-    core_attributes = CoreServer.get_view(uid) || {}
+    @core_view = CoreServer.get_view(uid) || {}
 
-    grants = core_attributes['grants'] || []
+    @approvals_settings = ::Fontana::Approval::Workflow.settings
+
+    grants = @core_view['grants'] || []
 
     @metadata = {
       uid: uid,
-      title: core_attributes['name'],
-      description: core_attributes['description'] || '',
-      tile_config: core_attributes.dig('metadata', 'tileConfig') || {},
+      title: @core_view['name'],
+      description: @core_view['description'] || '',
+      tile_config: @core_view.dig('metadata', 'tileConfig') || {},
       grants: grants,
       permissions: {
         isPublic: grants.any? { |grant| (grant['flags'] || []).include?('public') }
       },
-      owner_id: core_attributes.dig('owner', 'id')
+      owner_id: @core_view.dig('owner', 'id')
     }
   end
 

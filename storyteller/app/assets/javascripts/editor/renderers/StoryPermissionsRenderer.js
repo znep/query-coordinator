@@ -3,12 +3,13 @@ import $ from 'jquery';
 import I18n from '../I18n';
 import Environment from '../../StorytellerEnvironment';
 import { assert } from 'common/js_utils';
+import { assetWillEnterApprovalsQueueWhenMadePublic } from 'common/asset/utils';
 import { storyStore } from '../stores/StoryStore';
 import { storySaveStatusStore } from '../stores/StorySaveStatusStore';
 import { permissionStore } from '../stores/PermissionStore';
 import { storyPermissionsManager } from '../StoryPermissionsManager';
 
-const { STORY_UID, IS_GOAL } = Environment;
+const { CORE_VIEW, STORY_UID, IS_GOAL } = Environment;
 
 function i18n(key) {
   if (IS_GOAL) {
@@ -22,6 +23,7 @@ export default function StoryPermissionsRenderer() {
   var $visibilityLabel;
   var $visibilityButton;
   var $visibilityButtonText;
+  var $approvalMessageText;
   var $updatePublicLabel;
   var $updatePublicButton;
   var $publishingHelpText;
@@ -37,6 +39,7 @@ export default function StoryPermissionsRenderer() {
   $visibilityLabel = $settingsPanelPublishing.find('.settings-panel-story-visibility h3');
   $visibilityButton = $settingsPanelPublishing.find('.settings-panel-story-visibility button');
   $visibilityButtonText = $visibilityButton.find('span');
+  $approvalMessageText = $settingsPanelPublishing.find('.approval-message');
 
   $updatePublicLabel = $settingsPanelPublishing.find('.settings-panel-story-status h3');
   $updatePublicButton = $settingsPanelPublishing.find('.settings-panel-story-status button');
@@ -114,6 +117,12 @@ export default function StoryPermissionsRenderer() {
 
       $updatePublicButton.prop('disabled', true);
       $publishingHelpText.text(i18n('messages.can_be_shared_publicly'));
+
+      assetWillEnterApprovalsQueueWhenMadePublic({ coreView: CORE_VIEW }).then(function(requiresApproval) {
+        if (requiresApproval) {
+          $approvalMessageText.removeClass('hidden');
+        }
+      });
     }
 
     $settingsPanelStoryStatus.toggleClass('hidden', !isPublic);

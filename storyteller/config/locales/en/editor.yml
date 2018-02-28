@@ -145,6 +145,7 @@ en:
       copy_section:
         section_title: 'Make a Copy...'
       publishing_section:
+        approval_message: 'Making this Story public requires approval'
         section_title: 'Manage Publishing and Visibility'
         saved: 'Saved'
         visibility:

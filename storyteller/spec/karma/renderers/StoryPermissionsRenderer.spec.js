@@ -3,10 +3,14 @@ import _ from 'lodash';
 import sinon from 'sinon';
 import { assert } from 'chai';
 
+import { FeatureFlags } from 'common/feature_flags';
+
 import I18nMocker from '../I18nMocker';
 import Dispatcher from 'editor/Dispatcher';
 import Store, {__RewireAPI__ as StoreAPI} from 'editor/stores/Store';
 import StoryPermissionsRenderer, {__RewireAPI__ as StoryPermissionsRendererAPI} from 'editor/renderers/StoryPermissionsRenderer';
+
+const assetUtils = require('common/asset/utils');
 
 describe('StoryPermissionsRenderer', function() {
 
@@ -71,7 +75,25 @@ describe('StoryPermissionsRenderer', function() {
     });
   }
 
+  function stubApprovalMessage() {
+    let assetWillEnterApprovalsQueueWhenMadePublicStub;
+
+    beforeEach(() => {
+      assetWillEnterApprovalsQueueWhenMadePublicStub = sinon.
+        stub(assetUtils, 'assetWillEnterApprovalsQueueWhenMadePublic').
+        returns(Promise.resolve(false));
+    });
+
+    afterEach(() => {
+      assetWillEnterApprovalsQueueWhenMadePublicStub.restore();
+    });
+  }
+
   beforeEach(function() {
+    FeatureFlags.useTestFixture({
+      use_fontana_approvals: true
+    });
+
     dispatcher = new Dispatcher();
     StoreAPI.__Rewire__('dispatcher', dispatcher);
 
@@ -113,6 +135,8 @@ describe('StoryPermissionsRenderer', function() {
   });
 
   describe('constructor', function() {
+    stubApprovalMessage();
+
     describe('when instantiated', function() {
       describe('with no arguments and a missing publishing DOM element', function() {
         it('raises an exception', function() {
@@ -182,6 +206,7 @@ describe('StoryPermissionsRenderer', function() {
 
   describe('visibilityButton', function() {
     buildAndCleanTemplate();
+    stubApprovalMessage();
 
     describe('when the story is public', function() {
       beforeEach(function() {
@@ -216,6 +241,7 @@ describe('StoryPermissionsRenderer', function() {
 
   describe('updatePublicButton', function() {
     buildAndCleanTemplate();
+    stubApprovalMessage();
 
     describe('when the user lacks permission to publish', function() {
       beforeEach(function() {
@@ -268,4 +294,3 @@ describe('StoryPermissionsRenderer', function() {
     });
   });
 });
-

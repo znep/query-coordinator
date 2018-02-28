@@ -64,6 +64,11 @@
 
   .flannel-content {
     margin-top: 0;
+
+    .approval-message {
+      padding: 1rem 0;
+      color: $warning;
+    }
   }
 
   .flannel-actions {

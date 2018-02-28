@@ -7,8 +7,9 @@ RSpec.describe 'inspiration block list json', type: :feature, js: true do
     stub_sufficient_rights
     stub_valid_initialized_lenses_view
     stub_current_domain
+    stub_approvals_settings
 
-    set_feature_flags('enable_getty_images_gallery' => true)
+    set_feature_flags('enable_getty_images_gallery' => true, 'use_fontana_approvals' => true)
 
     visit '/s/magic-thing/hasb-lock/edit'
   end

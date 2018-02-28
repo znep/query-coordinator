@@ -4,4 +4,5 @@ source /dev/shm/storyteller_secrets.sh
 source /bin/set_metrics_dir
 
 cd $APP_DIR
+source marathon_support/find_consul
 exec su socrata -c 'QUEUE=metrics DELAYED_JOB_SLEEP_DELAY=20 DELAYED_JOB_DESTROY_FAILED_JOBS=false bin/rake queues:process'

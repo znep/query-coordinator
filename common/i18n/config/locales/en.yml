@@ -595,6 +595,7 @@ en:
           asset_inventory: Assets
           datasets: Assets
           users: Users
+          users_and_teams: Users & Teams
         user:
           administration: Administration
           get_help: Get Help

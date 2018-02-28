@@ -7,13 +7,13 @@ import I18n from 'common/i18n';
 
 import { COLUMN_TYPES } from '../constants';
 import {
-  getPointColorByColumn,
-  getPointSizeByColumn,
+  getColorPointsByColumn,
+  getResizePointsByColumn,
   getMapType,
   getPointAggregation
 } from '../selectors/vifAuthoring';
 import { getNonGeoLocationColumns, getNumericalColumns } from '../selectors/metadata';
-import { setPointColorByColumn, setPointSizeByColumn } from '../actions';
+import { setColorPointsByColumn, setResizePointsByColumn } from '../actions';
 
 export class PointMapOptionsSelector extends Component {
   renderPointMapColumnOption = (option) => {
@@ -66,7 +66,7 @@ export class PointMapOptionsSelector extends Component {
       'resize-points-by-value-dropdown',
       getNumericalColumns(metadata),
       onResizePointsByValueSelection,
-      getPointSizeByColumn(vifAuthoring)
+      getResizePointsByColumn(vifAuthoring)
     );
 
     return (
@@ -92,7 +92,7 @@ export class PointMapOptionsSelector extends Component {
       'color-by-value-dropdown',
       getNonGeoLocationColumns(metadata),
       onColorPointsByValueSelection,
-      getPointColorByColumn(vifAuthoring)
+      getColorPointsByColumn(vifAuthoring)
     );
 
     return (
@@ -139,11 +139,11 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onResizePointsByValueSelection: (option) => {
-      dispatch(setPointSizeByColumn(option.value));
+      dispatch(setResizePointsByColumn(option.value));
     },
 
     onColorPointsByValueSelection: (option) => {
-      dispatch(setPointColorByColumn(option.value));
+      dispatch(setColorPointsByColumn(option.value));
     }
   };
 }

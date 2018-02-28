@@ -897,10 +897,10 @@ export function setPointOpacity(pointOpacity) {
   };
 }
 
-export const SET_POINT_SIZE_BY_COLUMN = 'SET_POINT_SIZE_BY_COLUMN';
-export function setPointSizeByColumn(resizePointsBy) {
+export const SET_RESIZE_POINTS_BY_COLUMN = 'SET_RESIZE_POINTS_BY_COLUMN';
+export function setResizePointsByColumn(resizePointsBy) {
   return {
-    type: SET_POINT_SIZE_BY_COLUMN,
+    type: SET_RESIZE_POINTS_BY_COLUMN,
     resizePointsBy
   };
 }
@@ -969,10 +969,10 @@ export function setStackRadius(stackRadius) {
   };
 }
 
-export const SET_POINT_COLOR_BY_COLUMN = 'SET_POINT_COLOR_BY_COLUMN';
-export function setPointColorByColumn(colorPointsBy) {
+export const SET_COLOR_POINTS_BY_COLUMN = 'SET_COLOR_POINTS_BY_COLUMN';
+export function setColorPointsByColumn(colorPointsBy) {
   return {
-    type: SET_POINT_COLOR_BY_COLUMN,
+    type: SET_COLOR_POINTS_BY_COLUMN,
     colorPointsBy
   };
 }
@@ -985,10 +985,10 @@ export function setLineWeight(lineWeight) {
   };
 }
 
-export const SET_LINE_WEIGHT_BY_COLUMN = 'SET_LINE_WEIGHT_BY_COLUMN';
-export function setLineWeightByColumn(weighLinesBy) {
+export const SET_WEIGH_LINES_BY_COLUMN = 'SET_WEIGH_LINES_BY_COLUMN';
+export function setWeighLinesByColumn(weighLinesBy) {
   return {
-    type: SET_LINE_WEIGHT_BY_COLUMN,
+    type: SET_WEIGH_LINES_BY_COLUMN,
     weighLinesBy
   };
 }
@@ -1009,10 +1009,10 @@ export function setMaximumLineWeight(maximumLineWeight) {
   };
 }
 
-export const SET_LINE_COLOR_BY_COLUMN = 'SET_LINE_COLOR_BY_COLUMN';
-export function setLineColorByColumn(colorLinesBy) {
+export const SET_COLOR_LINES_BY_COLUMN = 'SET_COLOR_LINES_BY_COLUMN';
+export function setColorLinesByColumn(colorLinesBy) {
   return {
-    type: SET_LINE_COLOR_BY_COLUMN,
+    type: SET_COLOR_LINES_BY_COLUMN,
     colorLinesBy
   };
 }

@@ -6,9 +6,9 @@ import { Dropdown } from 'common/components';
 import I18n from 'common/i18n';
 
 import { COLUMN_TYPES } from '../constants';
-import { getLineColorByColumn, getLineWeightByColumn, getMapType } from '../selectors/vifAuthoring';
+import { getColorLinesByColumn, getWeighLinesByColumn, getMapType } from '../selectors/vifAuthoring';
 import { getNonGeoLocationColumns, getNumericalColumns } from '../selectors/metadata';
-import { setLineColorByColumn, setLineWeightByColumn } from '../actions';
+import { setColorLinesByColumn, setWeighLinesByColumn } from '../actions';
 
 export class LineMapOptionsSelector extends Component {
   renderLineMapColumnOption = (option) => {
@@ -60,7 +60,7 @@ export class LineMapOptionsSelector extends Component {
       'line-weight-by-value-dropdown',
       getNumericalColumns(metadata),
       onWeighLinesByValueSelection,
-      getLineWeightByColumn(vifAuthoring)
+      getWeighLinesByColumn(vifAuthoring)
     );
 
     return (
@@ -86,7 +86,7 @@ export class LineMapOptionsSelector extends Component {
       'line-color-by-value-dropdown',
       getNonGeoLocationColumns(metadata),
       onColorLinesByValueSelection,
-      getLineColorByColumn(vifAuthoring)
+      getColorLinesByColumn(vifAuthoring)
     );
 
     return (
@@ -133,11 +133,11 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onWeighLinesByValueSelection: (option) => {
-      dispatch(setLineWeightByColumn(option.value));
+      dispatch(setWeighLinesByColumn(option.value));
     },
 
     onColorLinesByValueSelection: (option) => {
-      dispatch(setLineColorByColumn(option.value));
+      dispatch(setColorLinesByColumn(option.value));
     }
   };
 }

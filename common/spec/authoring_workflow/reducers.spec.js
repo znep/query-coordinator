@@ -159,7 +159,7 @@ describe('AuthoringWorkflow reducer', () => {
 
       shouldSetVif('setMapType', 'pointMap', 'series[0].mapOptions.mapType', ['map']);
       shouldSetVif('setPointMapPointSize', 4, 'series[0].mapOptions.pointMapPointSize', ['map']);
-      shouldSetVif('setPointSizeByColumn', 'columnName', 'series[0].mapOptions.resizePointsBy', ['map']);
+      shouldSetVif('setResizePointsByColumn', 'columnName', 'series[0].mapOptions.resizePointsBy', ['map']);
       shouldSetVif('setMinimumPointSize', 4, 'series[0].mapOptions.minimumPointSize', ['map']);
       shouldSetVif('setMaximumPointSize', 7, 'series[0].mapOptions.maximumPointSize', ['map']);
       shouldSetVif('setNumberOfDataClasses', 5, 'series[0].mapOptions.numberOfDataClasses', ['map']);
@@ -168,12 +168,12 @@ describe('AuthoringWorkflow reducer', () => {
       shouldSetVif('setClusterRadius', 50, 'series[0].mapOptions.clusterRadius', ['map']);
       shouldSetVif('setMaxClusterSize', 24, 'series[0].mapOptions.maxClusterSize', ['map']);
       shouldSetVif('setStackRadius', 20, 'series[0].mapOptions.stackRadius', ['map']);
-      shouldSetVif('setPointColorByColumn', 'columnName', 'series[0].mapOptions.colorPointsBy', ['map']);
+      shouldSetVif('setColorPointsByColumn', 'columnName', 'series[0].mapOptions.colorPointsBy', ['map']);
       shouldSetVif('setLineWeight', 5, 'series[0].mapOptions.lineWeight', ['map']);
-      shouldSetVif('setLineWeightByColumn', 'columnName', 'series[0].mapOptions.weighLinesBy', ['map']);
+      shouldSetVif('setWeighLinesByColumn', 'columnName', 'series[0].mapOptions.weighLinesBy', ['map']);
       shouldSetVif('setMinimumLineWeight', 3, 'series[0].mapOptions.minimumLineWeight', ['map']);
       shouldSetVif('setMaximumLineWeight', 7, 'series[0].mapOptions.maximumLineWeight', ['map']);
-      shouldSetVif('setLineColorByColumn', 'columnName', 'series[0].mapOptions.colorLinesBy', ['map']);
+      shouldSetVif('setColorLinesByColumn', 'columnName', 'series[0].mapOptions.colorLinesBy', ['map']);
       shouldSetVif('setPointAggregation', 'heat_map', 'series[0].mapOptions.pointAggregation', ['map']);
       shouldSetVif('setBoundaryColorByColumn', 'columnName', 'series[0].mapOptions.colorBoundariesBy', ['map']);
       shouldSetVif('setQuantificationMethod', 'numerical', 'series[0].mapOptions.quantificationMethod', ['map']);

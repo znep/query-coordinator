@@ -461,7 +461,7 @@ export const load = (dispatch, vif) => {
   }
 
   if (has(paths.resizePointsBy)) {
-    dispatch(actions.setPointSizeByColumn(get(paths.resizePointsBy)));
+    dispatch(actions.setResizePointsByColumn(get(paths.resizePointsBy)));
   }
 
   if (has(paths.minimumPointSize)) {
@@ -501,7 +501,7 @@ export const load = (dispatch, vif) => {
   }
 
   if (has(paths.colorPointsBy)) {
-    dispatch(actions.setPointColorByColumn(get(paths.colorPointsBy)));
+    dispatch(actions.setColorPointsByColumn(get(paths.colorPointsBy)));
   }
 
   if (has(paths.lineWeight)) {
@@ -537,7 +537,7 @@ export const load = (dispatch, vif) => {
   }
 
   if (has(paths.weighLinesBy)) {
-    dispatch(actions.setLineWeightByColumn(get(paths.weighLinesBy)));
+    dispatch(actions.setWeighLinesByColumn(get(paths.weighLinesBy)));
   }
 
   if (has(paths.minimumLineWeight)) {
@@ -549,7 +549,7 @@ export const load = (dispatch, vif) => {
   }
 
   if (has(paths.colorLinesBy)) {
-    dispatch(actions.setLineColorByColumn(get(paths.colorLinesBy)));
+    dispatch(actions.setColorLinesByColumn(get(paths.colorLinesBy)));
   }
 
   if (has(paths.colorBoundariesBy)) {

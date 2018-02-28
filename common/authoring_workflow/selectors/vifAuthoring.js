@@ -136,7 +136,7 @@ export const getMapType = createSelector(
   (vif) => _.get(vif, 'series[0].mapOptions.mapType', null)
 );
 
-export const getPointSizeByColumn = createSelector(
+export const getResizePointsByColumn = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'series[0].mapOptions.resizePointsBy', null)
 );
@@ -181,7 +181,7 @@ export const getStackRadius = createSelector(
   (vif) => _.get(vif, 'series[0].mapOptions.stackRadius', VIF_CONSTANTS.STACK_RADIUS.DEFAULT)
 );
 
-export const getPointColorByColumn = createSelector(
+export const getColorPointsByColumn = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'series[0].mapOptions.colorPointsBy', null)
 );
@@ -191,7 +191,7 @@ export const getLineWeight = createSelector(
   (vif) => _.get(vif, 'series[0].mapOptions.lineWeight', VIF_CONSTANTS.LINE_WEIGHT.DEFAULT)
 );
 
-export const getLineWeightByColumn = createSelector(
+export const getWeighLinesByColumn = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'series[0].mapOptions.weighLinesBy', null)
 );
@@ -206,7 +206,7 @@ export const getMaximumLineWeight = createSelector(
   (vif) => _.get(vif, 'series[0].mapOptions.maximumLineWeight', VIF_CONSTANTS.LINE_WEIGHT.MAX)
 );
 
-export const getLineColorByColumn = createSelector(
+export const getColorLinesByColumn = createSelector(
   getCurrentVif,
   (vif) => _.get(vif, 'series[0].mapOptions.colorLinesBy', null)
 );

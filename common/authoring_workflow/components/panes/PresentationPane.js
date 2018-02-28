@@ -631,10 +631,10 @@ export class PresentationPane extends Component {
 
   renderLineMapWeightControls = () => {
     const { vifAuthoring } = this.props;
-    const isLineWeightByColumnSelected = selectors.getLineWeightByColumn(vifAuthoring);
+    const isWeighLinesByColumnSelected = selectors.getWeighLinesByColumn(vifAuthoring);
     let LineMapWeightControls = null;
 
-    if (isLineWeightByColumnSelected) {
+    if (isWeighLinesByColumnSelected) {
       const { onMinimumLineWeightChange, onMaximumLineWeightChange } = this.props;
       const minimumLineWeight = selectors.getMinimumLineWeight(vifAuthoring);
       const maximumLineWeight = selectors.getMaximumLineWeight(vifAuthoring);
@@ -718,10 +718,10 @@ export class PresentationPane extends Component {
 
   renderPointMapSizeControls = () => {
     const { vifAuthoring } = this.props;
-    const isPointSizeByColumnSelected = selectors.getPointSizeByColumn(vifAuthoring);
+    const isResizePointsByColumnSelected = selectors.getResizePointsByColumn(vifAuthoring);
     let pointMapSizeControls = null;
 
-    if (isPointSizeByColumnSelected) {
+    if (isResizePointsByColumnSelected) {
       const { onMinimumPointSizeChange, onMaximumPointSizeChange } = this.props;
       const minimumPointSize = selectors.getMinimumPointSize(vifAuthoring);
       const maximumPointSize = selectors.getMaximumPointSize(vifAuthoring);
@@ -984,7 +984,7 @@ export class PresentationPane extends Component {
     const colorLabelText = I18n.t('fields.point_color.title', { scope });
     const colorControls = (
       <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope })}>
-        {_.isNull(selectors.getPointColorByColumn(vifAuthoring)) && !isRegionMap ?
+        {_.isNull(selectors.getColorPointsByColumn(vifAuthoring)) && !isRegionMap ?
           this.renderPrimaryColorForMaps(colorLabelText) :
           this.renderColorPaletteForNewGLMaps(colorLabelText)}
         {!isRegionMap && this.renderPointOpacityControls()}
@@ -1008,7 +1008,7 @@ export class PresentationPane extends Component {
     const colorLabelText = I18n.t('fields.line_color.title', { scope });
     const colorControls = (
       <AccordionPane key="colors" title={I18n.t('subheaders.colors', { scope })}>
-        {_.isNull(selectors.getLineColorByColumn(vifAuthoring)) ?
+        {_.isNull(selectors.getColorLinesByColumn(vifAuthoring)) ?
           this.renderPrimaryColorForMaps(colorLabelText) :
           this.renderColorPaletteForNewGLMaps(colorLabelText)}
       </AccordionPane>

@@ -145,19 +145,19 @@ export default function map(state, action) {
       _.set(state, 'configuration.baseLayerUrl', action.baseLayer);
       break;
 
-    case actions.SET_POINT_SIZE_BY_COLUMN:
+    case actions.SET_RESIZE_POINTS_BY_COLUMN:
       _.set(state, 'series[0].mapOptions.resizePointsBy', action.resizePointsBy);
       break;
 
-    case actions.SET_POINT_COLOR_BY_COLUMN:
+    case actions.SET_COLOR_POINTS_BY_COLUMN:
       _.set(state, 'series[0].mapOptions.colorPointsBy', action.colorPointsBy);
       break;
 
-    case actions.SET_LINE_WEIGHT_BY_COLUMN:
+    case actions.SET_WEIGH_LINES_BY_COLUMN:
       _.set(state, 'series[0].mapOptions.weighLinesBy', action.weighLinesBy);
       break;
 
-    case actions.SET_LINE_COLOR_BY_COLUMN:
+    case actions.SET_COLOR_LINES_BY_COLUMN:
       _.set(state, 'series[0].mapOptions.colorLinesBy', action.colorLinesBy);
       break;
 

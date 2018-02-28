@@ -2,10 +2,14 @@ import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { expect, assert } from 'chai';
-import { MetadataTable } from 'common/components';
-import mockView from '../data/mockView';
 import { shallow } from 'enzyme';
 import moment from 'moment-timezone';
+
+import { MetadataTable } from 'common/components';
+import { formatDateWithLocale } from 'common/dates';
+import { FeatureFlags } from 'common/feature_flags';
+
+import mockView from '../data/mockView';
 
 describe('components/MetadataTable', () => {
   const editMetadataUrl = 'https://example.com/editMetadata';
@@ -71,7 +75,6 @@ describe('components/MetadataTable', () => {
     assert.notEqual(wrapper.find('CreateAlertButton'), null);
   });
 
-
   it('renders stats link', () => {
     const wrapper = shallowWithProps({
       statsUrl: 'http://example.com/stats'
@@ -106,6 +109,27 @@ describe('components/MetadataTable', () => {
     };
 
     // These are pretty minimal.
+    it('renders dates section', () => {
+      assert.lengthOf(
+        shallowWithCoreViewProps().find('.metadata-column .metadata-section'),
+        3
+      );
+    });
+
+    describe('when hide_dates_on_primer_and_data_catalog is true', () => {
+      before(() => {
+        FeatureFlags.updateTestFixture({ hide_dates_on_primer_and_data_catalog: true });
+      });
+
+      it('does not render dates section', () => {
+        assert.lengthOf(
+          shallowWithCoreViewProps().find('.metadata-column .metadata-section'),
+          2
+        );
+      });
+
+    });
+
     it('renders attribution', () => {
       assert.ok(shallowWithCoreViewProps({ attribution: 'something' }).contains('something'));
     });

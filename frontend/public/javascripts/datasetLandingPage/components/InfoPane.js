@@ -9,7 +9,7 @@ import subscriptionStore from 'datasetLandingPage/store/subscriptionStore';
 import { onSubscriptionChange as subscriptionChange } from '../actions/view';
 import { FeatureFlags } from 'common/feature_flags';
 
-function mapStateToProps(state) {
+export function mapStateToProps(state) {
   const { view } = state;
 
   const attribution = view.attribution ?
@@ -17,6 +17,23 @@ function mapStateToProps(state) {
     null;
 
   const userNotificationsEnabled = FeatureFlags.value('enable_user_notifications') === true;
+  const hideDates = FeatureFlags.value('hide_dates_on_primer_and_data_catalog') === true;
+
+  const metadataValues = [];
+  if (!hideDates) {
+    metadataValues.push(
+      {
+        label: I18n.common.updated,
+        content: formatDateWithLocale(view.lastUpdatedAt)
+      }
+    );
+  }
+  metadataValues.push(attribution);
+
+  const metadata = {
+    first: metadataValues.shift(),
+    second: metadataValues.shift()
+  };
 
   return {
     name: view.name,
@@ -28,13 +45,7 @@ function mapStateToProps(state) {
     view: view,
     showWatchDatasetFlag:
       (_.get(window, 'sessionData.email', '') !== '' && userNotificationsEnabled),
-    metadata: {
-      first: {
-        label: I18n.common.updated,
-        content: formatDateWithLocale(view.lastUpdatedAt)
-      },
-      second: attribution
-    },
+    metadata,
     onWatchDatasetFlagClick: (ownProps, event) => {
       const promise = view.subscribed ?
         subscriptionStore.unsubscribe(view.subscriptionId) : subscriptionStore.subscribe(view.id);

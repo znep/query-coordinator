@@ -22,7 +22,7 @@ export default {
   isBlobby: false,
   gridUrl: 'gridUrl',
   exportFormats: [ 'csv', 'json', 'csv_for_excel', 'csv_for_excel_europe', 'tsv_for_excel' ],
-  lastUpdatedAt: 'May 5, 2016',
+  lastUpdatedAt: '2017-11-10T12:13:28.000-08:00',
   dataLastUpdatedAt: 'Jan 1, 1970',
   metadataLastUpdatedAt: 'May 5, 2016',
   nbeId: 'abcd-1234',

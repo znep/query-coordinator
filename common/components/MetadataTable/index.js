@@ -217,6 +217,7 @@ class MetadataTable extends Component {
     let contactDatasetOwner;
     let customMetadataTable;
     let dataLastUpdated;
+    let dateSection;
     let downloads;
     let license;
     let statsSection;
@@ -430,6 +431,54 @@ class MetadataTable extends Component {
       );
     }
 
+    if (FeatureFlags.value('hide_dates_on_primer_and_data_catalog') !== true) {
+      dateSection = (
+        <div>
+          <div className="metadata-section">
+            <div className="metadata-row">
+              <div className="metadata-pair">
+                <dt className="metadata-pair-key">
+                  {I18n.t('common.updated')}
+                </dt>
+
+                <dd className="metadata-pair-value">
+                  {formatDateWithLocale(moment.unix(lastUpdatedAt))}
+                </dd>
+              </div>
+            </div>
+
+            <div className="metadata-row middle metadata-flex metadata-detail-groups">
+              {dataLastUpdated}
+
+              <div className="metadata-detail-group">
+                <dt className="metadata-detail-group-title">
+                  {I18n.t('common.metadata.metadata_last_updated')}
+                </dt>
+
+                <dd className="metadata-detail-group-value">
+                  {formatDateWithLocale(moment.unix(metadataLastUpdatedAt))}
+                </dd>
+              </div>
+            </div>
+
+            <div className="metadata-row metadata-detail-groups">
+              <div className="metadata-detail-group">
+                <dt className="metadata-detail-group-title">
+                  {I18n.t('common.metadata.creation_date')}
+                </dt>
+
+                <dd className="metadata-detail-group-value">
+                  {formatDateWithLocale(moment.unix(coreView.createdAt))}
+                </dd>
+              </div>
+            </div>
+          </div>
+
+          <hr aria-hidden />
+        </div>
+      );
+    }
+
     if (!disableContactDatasetOwner) {
       contactDatasetOwner = (
         <button
@@ -491,47 +540,7 @@ class MetadataTable extends Component {
 
           <div className="section-content">
             <dl className="metadata-column fancy">
-              <div className="metadata-section">
-                <div className="metadata-row">
-                  <div className="metadata-pair">
-                    <dt className="metadata-pair-key">
-                      {I18n.t('common.updated')}
-                    </dt>
-
-                    <dd className="metadata-pair-value">
-                      {formatDateWithLocale(moment.unix(lastUpdatedAt))}
-                    </dd>
-                  </div>
-                </div>
-
-                <div className="metadata-row middle metadata-flex metadata-detail-groups">
-                  {dataLastUpdated}
-
-                  <div className="metadata-detail-group">
-                    <dt className="metadata-detail-group-title">
-                      {I18n.t('common.metadata.metadata_last_updated')}
-                    </dt>
-
-                    <dd className="metadata-detail-group-value">
-                      {formatDateWithLocale(moment.unix(metadataLastUpdatedAt))}
-                    </dd>
-                  </div>
-                </div>
-
-                <div className="metadata-row metadata-detail-groups">
-                  <div className="metadata-detail-group">
-                    <dt className="metadata-detail-group-title">
-                      {I18n.t('common.metadata.creation_date')}
-                    </dt>
-
-                    <dd className="metadata-detail-group-value">
-                      {formatDateWithLocale(moment.unix(coreView.createdAt))}
-                    </dd>
-                  </div>
-                </div>
-              </div>
-
-              <hr aria-hidden />
+              {dateSection}
 
               <div className="metadata-section">
                 <div className="metadata-row metadata-flex">

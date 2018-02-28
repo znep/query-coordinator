@@ -536,57 +536,110 @@ describe BrowseController do
     end
 
     before do
-      stub_feature_flags_with(:cetera_search => true)
-
       expect(Federation).to receive(:federations).and_return([]).exactly(3).times
       allow(CurrentDomain).to receive(:cname).and_return('example.com')
     end
 
-    it 'should show created at timestamp when sorting by newest' do
-      stub_request(:get, catalog_endpoint).
-        with(query: query_params.merge(order: 'createdAt')).
-        to_return(stub_response)
+    context 'when hide_dates_on_primer_and_data_catalog is false' do
+      before do
+        stub_feature_flags_with(
+          :cetera_search => true,
+          :hide_dates_on_primer_and_data_catalog => false
+        )
+      end
 
-      get :embed, sortBy: 'newest'
+      it 'should show created at timestamp when sorting by newest' do
+        stub_request(:get, catalog_endpoint).
+          with(query: query_params.merge(order: 'createdAt')).
+          to_return(stub_response)
 
-      expect(response).to have_http_status(:ok)
-      assert_select(selector, 'Created')
-      assert_select(selector, count: 0, text: 'Updated')
+        get :embed, sortBy: 'newest'
+
+        expect(response).to have_http_status(:ok)
+        assert_select(selector, 'Created')
+        assert_select(selector, count: 0, text: 'Updated')
+      end
+
+      it 'should show updated at timestamp when sorting by default' do
+        stub_request(:get, catalog_endpoint).
+          with(query: query_params.merge(order: 'relevance')).
+          to_return(stub_response)
+
+        get :embed # default sort should be relevance
+
+        expect(response).to have_http_status(:ok)
+        assert_select(selector, 'Updated')
+        assert_select(selector, count: 0, text: 'Created')
+      end
+
+      it 'should show updated at timestamp when sorting by last updated' do
+        stub_request(:get, catalog_endpoint).
+          with(query: query_params.merge(order: 'updatedAt')).
+          to_return(stub_response)
+
+        get :embed, sortBy: 'last_modified'
+
+        expect(response).to have_http_status(:ok)
+        assert_select(selector, 'Updated')
+        assert_select(selector, count: 0, text: 'Created')
+      end
+
+      it 'should should set the X-Frame-Options header to ALLOWALL' do
+        stub_request(:get, catalog_endpoint).
+          with(query: query_params.merge(order: 'relevance')).
+          to_return(stub_response)
+
+        get :show, id: 'four-four', customization_id: 'default'
+
+        expect(response).to have_http_status(:ok)
+        expect(response.headers['X-Frame-Options']).to eq('ALLOWALL')
+      end
     end
 
-    it 'should show updated at timestamp when sorting by default' do
-      stub_request(:get, catalog_endpoint).
-        with(query: query_params.merge(order: 'relevance')).
-        to_return(stub_response)
+    context 'when hide_dates_on_primer_and_data_catalog is true' do
+      before do
+        stub_feature_flags_with(
+          :cetera_search => true,
+          :hide_dates_on_primer_and_data_catalog => true
+        )
+      end
 
-      get :embed # default sort should be relevance
+      it 'should not show created at timestamp when sorting by newest' do
+        stub_request(:get, catalog_endpoint).
+          with(query: query_params.merge(order: 'createdAt')).
+          to_return(stub_response)
 
-      expect(response).to have_http_status(:ok)
-      assert_select(selector, 'Updated')
-      assert_select(selector, count: 0, text: 'Created')
-    end
+        get :embed, sortBy: 'newest'
 
-    it 'should show updated at timestamp when sorting by last updated' do
-      stub_request(:get, catalog_endpoint).
-        with(query: query_params.merge(order: 'updatedAt')).
-        to_return(stub_response)
+        expect(response).to have_http_status(:ok)
+        assert_select(selector, count: 0, text: 'Created')
+        assert_select(selector, count: 0, text: 'Updated')
+      end
 
-      get:embed, sortBy: 'last_modified'
+      it 'should now show updated at timestamp when sorting by default' do
+        stub_request(:get, catalog_endpoint).
+          with(query: query_params.merge(order: 'relevance')).
+          to_return(stub_response)
 
-      expect(response).to have_http_status(:ok)
-      assert_select(selector, 'Updated')
-      assert_select(selector, count: 0, text: 'Created')
-    end
+        get :embed # default sort should be relevance
 
-    it 'should should set the X-Frame-Options header to ALLOWALL' do
-      stub_request(:get, catalog_endpoint).
-        with(query: query_params.merge(order: 'relevance')).
-        to_return(stub_response)
+        expect(response).to have_http_status(:ok)
+        assert_select(selector, count: 0, text: 'Updated')
+        assert_select(selector, count: 0, text: 'Created')
+      end
 
-      get :show, id: 'four-four', customization_id: 'default'
+      it 'should not show updated at timestamp when sorting by last updated' do
+        stub_request(:get, catalog_endpoint).
+          with(query: query_params.merge(order: 'updatedAt')).
+          to_return(stub_response)
 
-      expect(response).to have_http_status(:ok)
-      expect(response.headers['X-Frame-Options']).to eq('ALLOWALL')
+        get :embed, sortBy: 'last_modified'
+
+        expect(response).to have_http_status(:ok)
+        assert_select(selector, count: 0, text: 'Updated')
+        assert_select(selector, count: 0, text: 'Created')
+      end
+
     end
   end
 

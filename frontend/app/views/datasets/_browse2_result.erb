@@ -134,14 +134,16 @@
           end
       -%>
 
-      <div class="browse2-result-timestamp">
-        <div class="browse2-result-timestamp-label">
-          <%= timelabel %>
+      <%- unless FeatureFlags.derive(@view, request).hide_dates_on_primer_and_data_catalog -%>
+        <div class="browse2-result-timestamp">
+          <div class="browse2-result-timestamp-label">
+            <%= timelabel %>
+          </div>
+          <div class="browse2-result-timestamp-value">
+            <%= datetime %>
+          </div>
         </div>
-        <div class="browse2-result-timestamp-value">
-          <%= datetime %>
-        </div>
-      </div>
+      <%- end -%>
 
       <%- if result_view_count.present? -%>
 

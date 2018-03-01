@@ -3569,6 +3569,8 @@ en:
         name: View all performance goals
       view_others_datasets:
         name: View all datasets, charts, maps, and other views
+      view_role_definitions:
+        name: View role definitions
       view_story:
         name: View all published stories
       view_stories_stats:

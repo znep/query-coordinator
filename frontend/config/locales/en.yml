@@ -3487,6 +3487,8 @@ en:
     rights:
       approve_nominations:
         name: Approve or reject community-submitted dataset suggestions
+      automatic_sign_out:
+        name: Automatic signout
       can_see_all_assets_tab_siam:
         name: Discover all public and private assets across the organization
       chown_datasets:
@@ -3539,6 +3541,8 @@ en:
         name: Manage performance goals
       manage_provenance:
         name: Update an asset's provenance (community/official) via API
+      manage_role_definitions:
+        name: Manage role definitions
       manage_spatial_lens:
         name: Configure custom map boundaries for Data Lens maps
       manage_stories:
@@ -3555,6 +3559,8 @@ en:
         name: Add, remove, and manage users
       moderate_comments:
         name: Approve or reject community comments on assets
+      restore_datasets:
+        name: Restore datasets
       short_session:
         name: Users automatically signed out after 15 minutes of inactivity
       use_data_connectors:

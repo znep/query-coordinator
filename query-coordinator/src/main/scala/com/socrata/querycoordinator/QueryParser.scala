@@ -4,7 +4,7 @@ import com.socrata.http.client.RequestBuilder
 import com.socrata.querycoordinator.SchemaFetcher.{NoSuchDatasetInSecondary, Successful}
 import com.socrata.querycoordinator.exceptions.JoinedDatasetNotColocatedException
 import com.socrata.querycoordinator.fusion.{CompoundTypeFuser, SoQLRewrite}
-import com.socrata.soql.collection.{OrderedMap}
+import com.socrata.soql.collection.OrderedMap
 import com.socrata.soql.environment._
 import com.socrata.soql.exceptions.SoQLException
 import com.socrata.soql.functions.SoQLFunctions
@@ -13,6 +13,7 @@ import com.socrata.soql.typed._
 import com.socrata.soql.types.SoQLType
 import com.socrata.soql.{SoQLAnalysis, SoQLAnalyzer}
 import com.typesafe.scalalogging.slf4j.Logging
+import org.joda.time.DateTime
 
 
 class QueryParser(analyzer: SoQLAnalyzer[SoQLType], schemaFetcher: SchemaFetcher, maxRows: Option[Int], defaultRowsLimit: Int) {
@@ -22,14 +23,14 @@ class QueryParser(analyzer: SoQLAnalyzer[SoQLType], schemaFetcher: SchemaFetcher
   type AnalysisContext = Map[String, DatasetContext[SoQLType]]
 
   private def go(columnIdMapping: Map[ColumnName, String], schema: Map[String, SoQLType])
-                (f: AnalysisContext => (Seq[SoQLAnalysis[ColumnName, SoQLType]], Map[QualifiedColumnName, String])): Result = {
+                (f: AnalysisContext => (Seq[SoQLAnalysis[ColumnName, SoQLType]], Map[QualifiedColumnName, String], DateTime)): Result = {
     val ds = toAnalysisContext(dsContext(columnIdMapping, schema))
     try {
-      val (analyses, joinColumnIdMapping) = f(ds)
+      val (analyses, joinColumnIdMapping, dateTime) = f(ds)
       limitRows(analyses) match {
         case Right(analyses) =>
           val analysesInColumnIds = remapAnalyses(joinColumnIdMapping, analyses)
-          SuccessfulParse(analysesInColumnIds)
+          SuccessfulParse(analysesInColumnIds, dateTime)
         case Left(result) => result
       }
     } catch {
@@ -105,7 +106,7 @@ class QueryParser(analyzer: SoQLAnalyzer[SoQLType], schemaFetcher: SchemaFetcher
                            selectedSecondaryInstanceBase: RequestBuilder,
                            fuser: SoQLRewrite,
                            schema: Map[String, SoQLType]):
-    AnalysisContext => (Seq[SoQLAnalysis[ColumnName, SoQLType]], Map[QualifiedColumnName, String]) = {
+    AnalysisContext => (Seq[SoQLAnalysis[ColumnName, SoQLType]], Map[QualifiedColumnName, String], DateTime) = {
     analyzeFullQuery(query, columnIdMap, selectedSecondaryInstanceBase, fuser, schema)
   }
 
@@ -114,7 +115,7 @@ class QueryParser(analyzer: SoQLAnalyzer[SoQLType], schemaFetcher: SchemaFetcher
                                selectedSecondaryInstanceBase: RequestBuilder,
                                fuser: SoQLRewrite,
                                schema: Map[String, SoQLType])(ctx: AnalysisContext):
-    (Seq[SoQLAnalysis[ColumnName, SoQLType]], Map[QualifiedColumnName, String]) = {
+    (Seq[SoQLAnalysis[ColumnName, SoQLType]], Map[QualifiedColumnName, String], DateTime) = {
 
 
     val parserParams =
@@ -127,8 +128,8 @@ class QueryParser(analyzer: SoQLAnalyzer[SoQLType], schemaFetcher: SchemaFetcher
 
     val primaryColumnIdMap = columnIdMap.map { case (k, v) => QualifiedColumnName(None, k) -> v }
 
-    val (joinColumnIdMap, joinCtx) =
-      joins.foldLeft((primaryColumnIdMap, ctx)) { (acc, join) =>
+    val (joinColumnIdMap, joinCtx, largestLastModifiedOfJoins) =
+      joins.foldLeft((primaryColumnIdMap, ctx, new DateTime(0))) { (acc, join) =>
         val joinTableName = join.tableLike.head.from.get
         val schemaResult = schemaFetcher(selectedSecondaryInstanceBase, joinTableName.name, None, useResourceName = true)
         schemaResult match {
@@ -144,7 +145,8 @@ class QueryParser(analyzer: SoQLAnalyzer[SoQLType], schemaFetcher: SchemaFetcher
               case (columnId, (_, fieldName)) =>
               (QualifiedColumnName(Some(joinAlias), new ColumnName(fieldName)) -> columnId)
             }
-            (combinedIdMap, combinedCtx)
+            val largestLastModified = if (lastModified.isAfter(acc._3)) lastModified else acc._3
+            (combinedIdMap, combinedCtx, largestLastModified)
           case NoSuchDatasetInSecondary =>
             throw new JoinedDatasetNotColocatedException(joinTableName.name, selectedSecondaryInstanceBase.host)
           case _ =>
@@ -157,12 +159,12 @@ class QueryParser(analyzer: SoQLAnalyzer[SoQLType], schemaFetcher: SchemaFetcher
         val rewrittenOne = fuser.rewrite(Seq(one), columnIdMap, schema).head
         val result = analyzer.analyzeWithSelection(rewrittenOne)(joinCtx)
         val fusedResult = fuser.postAnalyze(Seq(result))
-        (fusedResult, joinColumnIdMap)
+        (fusedResult, joinColumnIdMap, largestLastModifiedOfJoins)
       case moreThanOne =>
         val moreThanOneRewritten = fuser.rewrite(moreThanOne, columnIdMap, schema)
         val result = analyzer.analyze(moreThanOneRewritten)(joinCtx)
         val fusedResult = fuser.postAnalyze(result)
-        (fusedResult, joinColumnIdMap)
+        (fusedResult, joinColumnIdMap, largestLastModifiedOfJoins)
     }
   }
 
@@ -192,10 +194,10 @@ class QueryParser(analyzer: SoQLAnalyzer[SoQLType], schemaFetcher: SchemaFetcher
     go(columnIdMapping, schema)(analyzeMaybeMerge)
   }
 
-  private def soqlMerge(analysesAndColumnIdMap: (Seq[SoQLAnalysis[ColumnName, SoQLType]], Map[QualifiedColumnName, String]))
-    : (Seq[SoQLAnalysis[ColumnName, SoQLType]], Map[QualifiedColumnName, String]) = {
-    val (analyses, qualColumnIdMap) = analysesAndColumnIdMap
-    (SoQLAnalysis.merge(andFn, analyses), qualColumnIdMap)
+  private def soqlMerge(analysesAndColumnIdMap: (Seq[SoQLAnalysis[ColumnName, SoQLType]], Map[QualifiedColumnName, String], DateTime))
+    : (Seq[SoQLAnalysis[ColumnName, SoQLType]], Map[QualifiedColumnName, String], DateTime) = {
+    val (analyses, qualColumnIdMap, dateTime) = analysesAndColumnIdMap
+    (SoQLAnalysis.merge(andFn, analyses), qualColumnIdMap, dateTime)
   }
 }
 
@@ -203,7 +205,7 @@ object QueryParser extends Logging {
 
   sealed abstract class Result
 
-  case class SuccessfulParse(analyses: Seq[SoQLAnalysis[String, SoQLType]]) extends Result
+  case class SuccessfulParse(analyses: Seq[SoQLAnalysis[String, SoQLType]], largestLastModifiedOfJoins: DateTime) extends Result
 
   case class AnalysisError(problem: SoQLException) extends Result
 
